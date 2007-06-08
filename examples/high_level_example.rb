@@ -9,16 +9,16 @@ describe "RR existing object inline interactions" do
     @obj = Object.new
   end
 
-  it "mocks" #do
-#    expect(@obj).to_s {"a value"}
-#    @obj.to_s.should == "a value"
-#    proc {@obj.to_s}.should raise_error
-#
-#    expect(@obj).to_s {"a value"}.twice
-#    @obj.to_s.should == "a value"
-#    @obj.to_s.should == "a value"
-#    proc {@obj.to_s}.should raise_error
-#  end
+  it "mocks" do
+    expect(@obj).to_s {"a value"}
+    @obj.to_s.should == "a value"
+    proc {@obj.to_s}.should raise_error
+
+    expect(@obj).to_s {"a value"}.twice
+    @obj.to_s.should == "a value"
+    @obj.to_s.should == "a value"
+    proc {@obj.to_s}.should raise_error
+  end
 
   it "probes" #do
 #    expect(@obj).to_s

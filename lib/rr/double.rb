@@ -7,12 +7,12 @@ module RR
       @object = object
       @method_name = method_name.to_sym
       @original_method = object.method(method_name) if @object.methods.include?(method_name.to_s)
-      @expectations = []
+      @expectations = {}
       @times_called = 0
     end
 
     def add_expectation(expectation)
-      @expectations << expectation
+      @expectations[expectation.class] = expectation
     end
 
     def twice
@@ -36,13 +36,13 @@ module RR
     end
 
     def verify_input(*args)
-      @expectations.each do |expectation|
+      @expectations.each do |expectation_type, expectation|
         expectation.verify_input *args
       end
     end
 
     def verify
-      @expectations.each do |expectation|
+      @expectations.each do |expectation_type, expectation|
         expectation.verify_double self
       end
     end

@@ -45,6 +45,16 @@ describe RR::Space, "#create_double" do
     double.method_name.should === @method_name
   end
 
+  it "overrides existing doubles" do
+    double = @space.create_double(@object, 'foobar') {}
+    double.add_expectation(RR::Expectations::TimesCalledExpectation.new(1))
+    @object.foobar
+    
+    double2 = @space.create_double(@object, 'foobar') {}
+    double2.add_expectation(RR::Expectations::TimesCalledExpectation.new(1))
+    @object.foobar
+  end
+
   it "overrides the method when passing a block" do
     double = @space.create_double(@object, @method_name) {:foobar}
     @object.methods.should include("__rr__#{@method_name}__rr__")

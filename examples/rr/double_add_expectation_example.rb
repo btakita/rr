@@ -24,6 +24,17 @@ describe RR::Double, "#add_expectation ArgumentEqualityExpectation" do
     @double.add_expectation(@expectation)
     @object.foobar(1)
   end
+
+  it "overrides previous ArgumentEqualityExpectation" do
+    expectation0 = RR::Expectations::ArgumentEqualityExpectation.new(0)
+    @double.add_expectation(expectation0)
+
+    proc {@object.foobar(1)}.should raise_error(RR::Expectations::ArgumentEqualityExpectationError)
+
+    expectation1 = RR::Expectations::ArgumentEqualityExpectation.new(1)
+    @double.add_expectation(expectation1)
+    @object.foobar(1)
+  end
 end
 
 describe RR::Double, "#add_expectation TimesCalledExpectation" do
@@ -40,5 +51,16 @@ describe RR::Double, "#add_expectation TimesCalledExpectation" do
     @double.add_expectation(@expectation)
     @object.foobar
     @double.verify
+  end
+
+  it "overrides previous ArgumentEqualityExpectation" do
+    expectation0 = RR::Expectations::TimesCalledExpectation.new(0)
+    @double.add_expectation(expectation0)
+
+    proc {@object.foobar}.should raise_error(RR::Expectations::TimesCalledExpectationError)
+
+    expectation1 = RR::Expectations::TimesCalledExpectation.new(1)
+    @double.add_expectation(expectation1)
+    @object.foobar
   end
 end
