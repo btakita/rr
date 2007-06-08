@@ -5,10 +5,17 @@ module RR
     
     class ArgumentEqualityExpectation < Expectation
       def initialize(*expected_arguments)
-        @expected_arguments = expected_arguments
+        if expected_arguments.first.is_a?(Anything)
+          @should_match_arguments = false
+        else
+          @should_match_arguments = true
+          @expected_arguments = expected_arguments
+        end
       end
 
       def verify_input(*arguments)
+        return unless @should_match_arguments
+        
         unless @expected_arguments.length == arguments.length
           raise(
             ArgumentEqualityExpectationError,
@@ -22,6 +29,8 @@ module RR
           end
         end
       end
+
+      class Anything; end
     end
   end
 end

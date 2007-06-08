@@ -39,10 +39,13 @@ describe "RR existing object inline interactions" do
 #    proc {@obj.to_s}.should raise_error
 #  end
 
-  it "stubs" #do
-#    stub(@obj).to_s {"a value"}
-#    @obj.to_s.should == "a value"
-#  end
+  it "stubs" do
+    obj = @obj
+    Object.new.instance_eval do
+      stub(obj).to_s {"a value"}
+    end
+    @obj.to_s.should == "a value"
+  end
 end
 
 describe "RR existing object blocks interactions" do

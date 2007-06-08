@@ -90,3 +90,18 @@ describe "RR::Expectations::ArgumentEqualityExpectation", "#verify_input with mu
     )
   end
 end
+
+describe "RR::Expectations::ArgumentEqualityExpectation", "#verify_input with any arguments" do
+  before do
+    @expectation = RR::Expectations::ArgumentEqualityExpectation.new(
+      RR::Expectations::ArgumentEqualityExpectation::Anything.new
+    )
+  end
+
+  it "ensures there are no passed in arguments" do
+    @expectation.verify_input(1)
+    @expectation.verify_input(1,2,3,4,5)
+    @expectation.verify_input("whatever")
+    @expectation.verify_input
+  end
+end
