@@ -8,4 +8,4 @@ require "rr/expectations/expectation"
 require "rr/expectations/argument_equality_expectation"
 require "rr/expectations/times_called_expectation"
 
-require "rr/extensions/kernel_expect"
+require "rr/extensions/kernel"

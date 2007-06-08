@@ -40,7 +40,7 @@ describe "RR existing object inline interactions" do
 #  end
 
   it "stubs" #do
-#    expect(@obj).to_s {"a value"}
+#    stub(@obj).to_s {"a value"}
 #    @obj.to_s.should == "a value"
 #  end
 end
