@@ -1,5 +1,5 @@
 module Kernel
-  def expect(*args)
+  def mock(*args)
     RR::ExpectationProxy.new(RR::Space.instance, *args)
   end
 end

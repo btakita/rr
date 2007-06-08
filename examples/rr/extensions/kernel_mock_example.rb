@@ -1,10 +1,10 @@
 dir = File.dirname(__FILE__)
 require "#{dir}/../../example_helper"
 
-describe Kernel, "#expect" do
+describe Kernel, "#mock" do
   it "sets up the RR call chain" do
     Object.new.instance_eval do
-      proxy = expect
+      proxy = mock
       class << proxy
         attr_reader :subject
       end
