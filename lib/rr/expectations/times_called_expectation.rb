@@ -4,6 +4,8 @@ module RR
     end
     
     class TimesCalledExpectation < Expectation
+      attr_reader :times, :times_called
+      
       def initialize(times=nil, &time_condition_block)
         raise ArgumentError, "Cannot pass in both an argument and a block" if times && time_condition_block
         @times = times || time_condition_block

@@ -4,6 +4,8 @@ module RR
     end
     
     class ArgumentEqualityExpectation < Expectation
+      attr_reader :expected_arguments, :should_match_arguments
+
       def initialize(*expected_arguments)
         if expected_arguments.first.is_a?(Anything)
           @should_match_arguments = false
@@ -28,6 +30,10 @@ module RR
             raise ArgumentEqualityExpectationError, "#{arguments[i].inspect} is not #{expected_argument.inspect}"
           end
         end
+      end
+
+      def should_match_arguments?
+        @should_match_arguments
       end
 
       class Anything; end

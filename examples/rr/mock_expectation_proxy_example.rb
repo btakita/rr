@@ -54,7 +54,9 @@ describe MockExpectationProxy, "#method_missing" do
     @proxy.foobar(1, 2) {:baz}.twice
 
     @subject.foobar(1, 2).should == :baz
-    proc {@subject.foobar(1)}.should raise_error(RR::Expectations::ArgumentEqualityExpectationError)
+    @subject.foobar(1, 2).should == :baz
+    proc {@subject.foobar(1, 2)}.should raise_error(RR::Expectations::TimesCalledExpectationError)
+#    proc {@subject.foobar(1)}.should raise_error(RR::Expectations::ArgumentEqualityExpectationError)
   end
 end
 

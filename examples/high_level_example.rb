@@ -9,6 +9,10 @@ describe "RR existing object inline interactions" do
     @obj = Object.new
   end
 
+  after(:each) do
+    RR::Space.instance.verify_doubles
+  end
+
   it "mocks" do
     obj = @obj
 
@@ -28,16 +32,17 @@ describe "RR existing object inline interactions" do
     proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
   end
 
-  it "probes" #do
-#    expect(@obj).to_s
-#    @obj.to_s.should == "foobar"
-#    proc {@obj.to_s}.should raise_error
-#
-#    expect(@obj).to_s.twice
-#    @obj.to_s.should == "foobar"
-#    @obj.to_s.should == "foobar"
-#    proc {@obj.to_s}.should raise_error
-#  end
+  it "probes" do
+    expected_to_s_value = @obj.to_s
+    probe(@obj).to_s
+    @obj.to_s.should == expected_to_s_value
+    proc {@obj.to_s}.should raise_error
+
+    probe(@obj).to_s.twice
+    @obj.to_s.should == expected_to_s_value
+    @obj.to_s.should == expected_to_s_value
+    proc {@obj.to_s}.should raise_error
+  end
 
   it "stubs" do
     obj = @obj

@@ -18,10 +18,29 @@ module RR
     end
 
     def create_double(object, method_name, &implementation)
+      if old_double = @doubles[object][method_name.to_sym]
+        old_double.reset
+      end
       double = Double.new(self, object, method_name.to_sym)
       @doubles[object][method_name.to_sym] = double
       double.override(&implementation) if implementation
       double
+    end
+
+    def verify_doubles
+      @doubles.each do |object, method_double_map|
+        method_double_map.keys.each do |method_name|
+          verify_double(object, method_name)
+        end
+      end
+    end
+
+    def reset_doubles
+      @doubles.each do |object, method_double_map|
+        method_double_map.keys.each do |method_name|
+          reset_double(object, method_name)
+        end
+      end
     end
 
     def verify_double(object, method_name)
@@ -31,6 +50,7 @@ module RR
 
     def reset_double(object, method_name)
       double = @doubles[object].delete(method_name)
+      @doubles.delete(object) if @doubles[object].empty?
       double.reset
     end
   end
