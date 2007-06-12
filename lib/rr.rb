@@ -1,7 +1,7 @@
 dir = File.dirname(__FILE__)
 
 require "rr/double"
-require "rr/mock_expectation_proxy"
+require "rr/mock_creation_proxy"
 require "rr/stub_expectation_proxy"
 require "rr/probe_expectation_proxy"
 require "rr/space"

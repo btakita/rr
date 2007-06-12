@@ -1,6 +1,6 @@
 module Kernel
   def mock(*args)
-    RR::MockExpectationProxy.new(RR::Space.instance, *args)
+    RR::MockCreationProxy.new(RR::Space.instance, *args)
   end
 
   def stub(*args)

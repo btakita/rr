@@ -3,17 +3,17 @@ require "#{dir}/../example_helper"
 
 module RR
 
-describe MockExpectationProxy, :shared => true do
+describe MockCreationProxy, :shared => true do
   before(:each) do
     @space = RR::Space.new
   end
 end
 
-describe MockExpectationProxy, ".new with nothing passed in" do
-  it_should_behave_like "RR::MockExpectationProxy"
+describe MockCreationProxy, ".new with nothing passed in" do
+  it_should_behave_like "RR::MockCreationProxy"
 
   it "initializes proxy with Object" do
-    proxy = RR::MockExpectationProxy.new(@space)
+    proxy = RR::MockCreationProxy.new(@space)
     class << proxy
       attr_reader :subject
     end
@@ -21,12 +21,12 @@ describe MockExpectationProxy, ".new with nothing passed in" do
   end
 end
 
-describe MockExpectationProxy, ".new with one thing passed in" do
-  it_should_behave_like "RR::MockExpectationProxy"
+describe MockCreationProxy, ".new with one thing passed in" do
+  it_should_behave_like "RR::MockCreationProxy"
 
   it "initializes proxy with passed in object" do
     subject = Object.new
-    proxy = RR::MockExpectationProxy.new(@space, subject)
+    proxy = RR::MockCreationProxy.new(@space, subject)
     class << proxy
       attr_reader :subject
     end
@@ -34,20 +34,20 @@ describe MockExpectationProxy, ".new with one thing passed in" do
   end
 end
 
-describe MockExpectationProxy, ".new with two things passed in" do
-  it_should_behave_like "RR::MockExpectationProxy"
+describe MockCreationProxy, ".new with two things passed in" do
+  it_should_behave_like "RR::MockCreationProxy"
   
   it "raises Argument error" do
-    proc {RR::MockExpectationProxy.new(@space, nil, nil)}.should raise_error(ArgumentError, "wrong number of arguments (2 for 1)")
+    proc {RR::MockCreationProxy.new(@space, nil, nil)}.should raise_error(ArgumentError, "wrong number of arguments (2 for 1)")
   end
 end
 
-describe MockExpectationProxy, "#method_missing" do
-  it_should_behave_like "RR::MockExpectationProxy"
+describe MockCreationProxy, "#method_missing" do
+  it_should_behave_like "RR::MockCreationProxy"
   
   before do
     @subject = Object.new
-    @proxy = RR::MockExpectationProxy.new(@space, @subject)
+    @proxy = RR::MockCreationProxy.new(@space, @subject)
   end
 
   it "sets expectations on the subject" do
