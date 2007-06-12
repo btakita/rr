@@ -24,7 +24,6 @@ module RR
     end
 
     def override(&implementation)
-      method_name = @method_name
       bind_implementation_placeholder implementation
       override_method = <<-METHOD
         def #{@method_name}(*args, &block)
