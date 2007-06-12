@@ -106,6 +106,8 @@ module RR
       double.object.should === @object
       double.method_name.should == @method_name
     end
+
+    it "reuses existing ExpectationProxy defined for object and method name"
   end
 
   describe Space, "#create_double" do

@@ -40,7 +40,8 @@ module RR
       end
       double = Double.new(self, object, method_name.to_sym)
       @doubles[object][method_name.to_sym] = double
-      double.returns(&implementation) if implementation
+      double.bind
+      double.double_method = implementation if implementation
       double
     end
 

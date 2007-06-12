@@ -1,6 +1,7 @@
 module RR
   class Double
     attr_reader :space, :object, :method_name, :original_method, :times_called, :expectations
+    attr_accessor :double_method
     
     def initialize(space, object, method_name)
       @space = space
@@ -15,8 +16,8 @@ module RR
       @expectations[expectation.class] = expectation
     end
 
-    def returns(&implementation)
-      bind_implementation_placeholder implementation
+    def bind
+      define_implementation_placeholder
       returns_method = <<-METHOD
         def #{@method_name}(*args, &block)
           if block
@@ -52,15 +53,17 @@ module RR
     end
 
     protected
-    def bind_implementation_placeholder(implementation)
+    def define_implementation_placeholder
       me = self
       meta.send(:define_method, placeholder_name) do |*args|
-        me.instance_eval do
-          self.verify_input(*args)
-          @times_called += 1
-          implementation.call(*args)
-        end
+        me.send(:call_method, *args)
       end
+    end
+
+    def call_method(*args)
+      self.verify_input(*args)
+      @times_called += 1
+      @double_method.call(*args)
     end
     
     def placeholder_name

@@ -22,7 +22,7 @@ module RR
     end
 
     def returns(&implementation)
-      @double.returns(&implementation)
+      @double.double_method = implementation
       self
     end
 
