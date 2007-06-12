@@ -4,7 +4,7 @@ module Kernel
   end
 
   def stub(*args)
-    RR::StubExpectationProxy.new(RR::Space.instance, *args)
+    RR::StubCreationProxy.new(RR::Space.instance, *args)
   end
 
   def probe(*args)
