@@ -3,17 +3,17 @@ require "#{dir}/../example_helper"
 
 module RR
 
-describe StubCreationProxy, :shared => true do
+describe StubCreator, :shared => true do
   before(:each) do
     @space = RR::Space.new
   end
 end
 
-describe StubCreationProxy, ".new with nothing passed in" do
-  it_should_behave_like "RR::StubCreationProxy"
+describe StubCreator, ".new with nothing passed in" do
+  it_should_behave_like "RR::StubCreator"
 
   it "initializes proxy with Object" do
-    proxy = RR::StubCreationProxy.new(@space)
+    proxy = RR::StubCreator.new(@space)
     class << proxy
       attr_reader :subject
     end
@@ -21,12 +21,12 @@ describe StubCreationProxy, ".new with nothing passed in" do
   end
 end
 
-describe StubCreationProxy, ".new with one thing passed in" do
-  it_should_behave_like "RR::StubCreationProxy"
+describe StubCreator, ".new with one thing passed in" do
+  it_should_behave_like "RR::StubCreator"
 
   it "initializes proxy with passed in object" do
     subject = Object.new
-    proxy = RR::StubCreationProxy.new(@space, subject)
+    proxy = RR::StubCreator.new(@space, subject)
     class << proxy
       attr_reader :subject
     end
@@ -34,20 +34,20 @@ describe StubCreationProxy, ".new with one thing passed in" do
   end
 end
 
-describe StubCreationProxy, ".new with two things passed in" do
-  it_should_behave_like "RR::StubCreationProxy"
+describe StubCreator, ".new with two things passed in" do
+  it_should_behave_like "RR::StubCreator"
   
   it "raises Argument error" do
-    proc {RR::StubCreationProxy.new(@space, nil, nil)}.should raise_error(ArgumentError, "wrong number of arguments (2 for 1)")
+    proc {RR::StubCreator.new(@space, nil, nil)}.should raise_error(ArgumentError, "wrong number of arguments (2 for 1)")
   end
 end
 
-describe StubCreationProxy, "#method_missing" do
-  it_should_behave_like "RR::StubCreationProxy"
+describe StubCreator, "#method_missing" do
+  it_should_behave_like "RR::StubCreator"
   
   before do
     @subject = Object.new
-    @proxy = RR::StubCreationProxy.new(@space, @subject)
+    @proxy = RR::StubCreator.new(@space, @subject)
   end
 
   it "stubs the subject without any args" do

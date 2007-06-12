@@ -1,5 +1,5 @@
 module RR
-  class ProbeCreationProxy
+  class ProbeCreator
     instance_methods.each { |m| undef_method m unless m =~ /^__/ }
     
     def initialize(space, *args)
