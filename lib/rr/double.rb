@@ -23,9 +23,9 @@ module RR
       add_expectation(Expectations::TimesCalledExpectation.new(2))
     end
 
-    def override(&implementation)
+    def returns(&implementation)
       bind_implementation_placeholder implementation
-      override_method = <<-METHOD
+      returns_method = <<-METHOD
         def #{@method_name}(*args, &block)
           if block
             args << block
@@ -35,7 +35,7 @@ module RR
           end
         end
       METHOD
-      meta.class_eval(override_method, __FILE__, __LINE__ - 9)
+      meta.class_eval(returns_method, __FILE__, __LINE__ - 9)
     end
 
     def verify_input(*args)

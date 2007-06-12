@@ -12,7 +12,7 @@ module RR
     protected
     def method_missing(method_name, *args, &returns)
       double = @space.create_double(@subject, method_name)
-      double.override(&double.original_method)
+      double.returns(&double.original_method)
       double.add_expectation(Expectations::ArgumentEqualityExpectation.new(*args))
       double.add_expectation(Expectations::TimesCalledExpectation.new(1))
       double

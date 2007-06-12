@@ -1,18 +1,18 @@
 dir = File.dirname(__FILE__)
 require "#{dir}/../example_helper"
 
-describe RR::Double, "#override", :shared => true do
+describe RR::Double, "#returns", :shared => true do
   it "creates a new method" do
-    override_with = proc {:baz}
-    @double.override &override_with
+    returns_with = proc {:baz}
+    @double.returns &returns_with
     @object.send(@method_name).should == :baz
   end
   
   it "passes in arguments and block into proc" do
     arg1, arg2, block = nil, nil, nil
-    override_with = proc {|arg1, arg2, block| arg1 = arg1; arg2 = arg2; block = block}
+    returns_with = proc {|arg1, arg2, block| arg1 = arg1; arg2 = arg2; block = block}
 
-    @double.override &override_with
+    @double.returns &returns_with
     @object.send(@method_name, 1, 2) {:passed_in_proc}
 
     arg1.should == 1
@@ -21,8 +21,8 @@ describe RR::Double, "#override", :shared => true do
   end
 end
 
-describe RR::Double, "#override where method does not exist" do
-  it_should_behave_like "RR::Double#override"
+describe RR::Double, "#returns where method does not exist" do
+  it_should_behave_like "RR::Double#returns"
 
   before do
     @space = RR::Space.new
@@ -33,8 +33,8 @@ describe RR::Double, "#override where method does not exist" do
   end
 end
 
-describe RR::Double, "#override where method exists" do
-  it_should_behave_like "RR::Double#override"
+describe RR::Double, "#returns where method exists" do
+  it_should_behave_like "RR::Double#returns"
 
   before do
     @space = RR::Space.new

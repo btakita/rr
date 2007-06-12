@@ -23,7 +23,7 @@ module RR
       end
       double = Double.new(self, object, method_name.to_sym)
       @doubles[object][method_name.to_sym] = double
-      double.override(&implementation) if implementation
+      double.returns(&implementation) if implementation
       double
     end
 

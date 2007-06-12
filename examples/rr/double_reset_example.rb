@@ -3,7 +3,7 @@ require "#{dir}/../example_helper"
 
 describe RR::Double, "#reset", :shared => true do
   it "cleans up by removing the __rr__ method" do
-    @double.override {}
+    @double.returns {}
     @object.methods.should include("__rr__foobar__rr__")
 
     @double.reset
@@ -23,7 +23,7 @@ describe RR::Double, "#reset when method does not exist" do
   end
 
   it "removes the method" do
-    @double.override {:baz}
+    @double.returns {:baz}
     @object.foobar.should == :baz
 
     @double.reset
@@ -48,7 +48,7 @@ describe RR::Double, "#reset when method exists" do
   end
 
   it "removes the method" do
-    @double.override {:baz}
+    @double.returns {:baz}
     @object.foobar.should == :baz
 
     @double.reset
