@@ -4,6 +4,7 @@ require "rr/double"
 require "rr/mock_creation_proxy"
 require "rr/stub_creation_proxy"
 require "rr/probe_creation_proxy"
+require "rr/expectation_proxy"
 require "rr/space"
 
 require "rr/expectations/expectation"

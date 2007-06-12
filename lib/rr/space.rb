@@ -14,7 +14,12 @@ module RR
 
     attr_reader :doubles
     def initialize
-      @doubles = Hash.new {|hash, key| hash[key] = Hash.new}
+      @doubles = Hash.new {|hash, subject_object| hash[subject_object] = Hash.new}
+    end
+
+    def create_expectation_proxy(object, method_name, &implementation)
+      double = create_double(object, method_name, &implementation)
+      ExpectationProxy.new(double)
     end
 
     def create_double(object, method_name, &implementation)

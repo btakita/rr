@@ -34,6 +34,30 @@ module RR
     end
   end
 
+  describe Space, "#create_expectation_proxy" do
+    it_should_behave_like "RR::Space"
+
+    before do
+      @space = RR::Space.new
+      @object = Object.new
+      def @object.foobar(*args)
+        :original_foobar
+      end
+      @method_name = :foobar
+    end
+    
+    it "creates an ExpectationProxy with a new double when one does not match the object and method" do
+      @space.doubles[@object].should be_empty
+      proxy = @space.create_expectation_proxy(@object, @method_name)
+
+      @space.doubles[@object].should_not be_empty
+      double = @space.doubles[@object][@method_name]
+      double.class.should == RR::Double
+      double.object.should === @object
+      double.method_name.should == @method_name
+    end
+  end
+
   describe Space, "#create_double" do
     it_should_behave_like "RR::Space"
 

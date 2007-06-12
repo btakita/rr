@@ -11,9 +11,8 @@ module RR
 
     protected
     def method_missing(method_name, *args, &returns)
-      double = @space.create_double(@subject, method_name, &returns)
-      double.add_expectation(Expectations::ArgumentEqualityExpectation.new(Expectations::ArgumentEqualityExpectation::Anything.new))
-      double
+      proxy = @space.create_expectation_proxy(@subject, method_name, &returns)
+      proxy.with(Expectations::ArgumentEqualityExpectation::Anything.new)
     end
   end
 end

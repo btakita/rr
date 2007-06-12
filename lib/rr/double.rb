@@ -15,14 +15,6 @@ module RR
       @expectations[expectation.class] = expectation
     end
 
-    def once
-      add_expectation(Expectations::TimesCalledExpectation.new(1))
-    end
-
-    def twice
-      add_expectation(Expectations::TimesCalledExpectation.new(2))
-    end
-
     def returns(&implementation)
       bind_implementation_placeholder implementation
       returns_method = <<-METHOD
