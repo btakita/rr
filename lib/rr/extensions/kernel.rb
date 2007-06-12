@@ -8,6 +8,6 @@ module Kernel
   end
 
   def probe(*args)
-    RR::ProbeExpectationProxy.new(RR::Space.instance, *args)
+    RR::ProbeCreationProxy.new(RR::Space.instance, *args)
   end
 end

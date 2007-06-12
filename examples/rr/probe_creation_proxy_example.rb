@@ -3,17 +3,17 @@ require "#{dir}/../example_helper"
 
 module RR
 
-describe ProbeExpectationProxy, :shared => true do
+describe ProbeCreationProxy, :shared => true do
   before(:each) do
     @space = RR::Space.new
   end
 end
 
-describe ProbeExpectationProxy, ".new with nothing passed in" do
-  it_should_behave_like "RR::ProbeExpectationProxy"
+describe ProbeCreationProxy, ".new with nothing passed in" do
+  it_should_behave_like "RR::ProbeCreationProxy"
 
   it "initializes proxy with Object" do
-    proxy = RR::ProbeExpectationProxy.new(@space)
+    proxy = RR::ProbeCreationProxy.new(@space)
     class << proxy
       attr_reader :subject
     end
@@ -21,12 +21,12 @@ describe ProbeExpectationProxy, ".new with nothing passed in" do
   end
 end
 
-describe ProbeExpectationProxy, ".new with one thing passed in" do
-  it_should_behave_like "RR::ProbeExpectationProxy"
+describe ProbeCreationProxy, ".new with one thing passed in" do
+  it_should_behave_like "RR::ProbeCreationProxy"
 
   it "initializes proxy with passed in object" do
     subject = Object.new
-    proxy = RR::ProbeExpectationProxy.new(@space, subject)
+    proxy = RR::ProbeCreationProxy.new(@space, subject)
     class << proxy
       attr_reader :subject
     end
@@ -34,20 +34,20 @@ describe ProbeExpectationProxy, ".new with one thing passed in" do
   end
 end
 
-describe ProbeExpectationProxy, ".new with two things passed in" do
-  it_should_behave_like "RR::ProbeExpectationProxy"
+describe ProbeCreationProxy, ".new with two things passed in" do
+  it_should_behave_like "RR::ProbeCreationProxy"
   
   it "raises Argument error" do
-    proc {RR::ProbeExpectationProxy.new(@space, nil, nil)}.should raise_error(ArgumentError, "wrong number of arguments (2 for 1)")
+    proc {RR::ProbeCreationProxy.new(@space, nil, nil)}.should raise_error(ArgumentError, "wrong number of arguments (2 for 1)")
   end
 end
 
-describe ProbeExpectationProxy, "#method_missing" do
-  it_should_behave_like "RR::ProbeExpectationProxy"
+describe ProbeCreationProxy, "#method_missing" do
+  it_should_behave_like "RR::ProbeCreationProxy"
   
   before do
     @subject = Object.new
-    @proxy = RR::ProbeExpectationProxy.new(@space, @subject)
+    @proxy = RR::ProbeCreationProxy.new(@space, @subject)
   end
 
   it "sets expectations on the subject while calling the original method" do
