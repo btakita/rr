@@ -17,6 +17,18 @@ module RR
       @doubles = Hash.new {|hash, subject_object| hash[subject_object] = Hash.new}
     end
 
+    def create_mock_creator(*args)
+      MockCreator.new(self, *args)
+    end
+
+    def create_stub_creator(*args)
+      StubCreator.new(self, *args)
+    end
+
+    def create_probe_creator(*args)
+      ProbeCreator.new(self, *args)
+    end
+
     def create_expectation_proxy(object, method_name, &implementation)
       double = create_double(object, method_name, &implementation)
       ExpectationProxy.new(double)

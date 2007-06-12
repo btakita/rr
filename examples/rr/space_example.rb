@@ -34,15 +34,65 @@ module RR
     end
   end
 
+  describe Space, "#create_mock_creator" do
+    it_should_behave_like "RR::Space"
+
+    before do
+      @space = RR::Space.new
+      @object = Object.new
+    end
+
+    it "creates a MockCreator" do
+      creator = @space.create_mock_creator(@object)
+      creator.foobar(1) {:baz}
+      @object.foobar(1).should == :baz
+      proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
+    end
+  end
+
+  describe Space, "#create_stub_creator" do
+    it_should_behave_like "RR::Space"
+
+    before do
+      @space = RR::Space.new
+      @object = Object.new
+      @method_name = :foobar
+    end
+
+    it "creates a StubCreator" do
+      creator = @space.create_stub_creator(@object)
+      creator.foobar {:baz}
+      @object.foobar.should == :baz
+      @object.foobar.should == :baz
+    end
+  end
+
+  describe Space, "#create_probe_creator" do
+    it_should_behave_like "RR::Space"
+
+    before do
+      @space = RR::Space.new
+      @object = Object.new
+      @method_name = :foobar
+      def @object.foobar(*args)
+        :original_foobar
+      end
+    end
+
+    it "creates a ProbeCreator" do
+      creator = @space.create_probe_creator(@object)
+      creator.foobar(1)
+      @object.foobar(1).should == :original_foobar
+      proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
+    end
+  end
+
   describe Space, "#create_expectation_proxy" do
     it_should_behave_like "RR::Space"
 
     before do
       @space = RR::Space.new
       @object = Object.new
-      def @object.foobar(*args)
-        :original_foobar
-      end
       @method_name = :foobar
     end
     
