@@ -15,6 +15,10 @@ module RR
         end
       end
 
+      def exact_match?(*arguments)
+        @expected_arguments == arguments
+      end
+
       def verify_input(*arguments)
         return unless @should_match_arguments
         
