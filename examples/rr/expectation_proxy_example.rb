@@ -2,7 +2,7 @@ dir = File.dirname(__FILE__)
 require "#{dir}/../example_helper"
 
 module RR
-  describe ExpectationProxy, "#with" do
+  describe ExpectationProxy, :shared => true do
     before do
       @space = RR::Space.new
       @object = Object.new
@@ -10,6 +10,10 @@ module RR
       @double = @space.create_double(@object, @method_name) {}
       @proxy = ExpectationProxy.new(@double)
     end
+  end
+
+  describe ExpectationProxy, "#with" do
+    it_should_behave_like "RR::ExpectationProxy"
 
     it "sets an ArgumentEqualityExpectation" do
       @proxy.with(1).should === @proxy
@@ -19,13 +23,7 @@ module RR
   end
 
   describe ExpectationProxy, "#once" do
-    before do
-      @space = RR::Space.new
-      @object = Object.new
-      @method_name = :foobar
-      @double = @space.create_double(@object, @method_name) {}
-      @proxy = ExpectationProxy.new(@double)
-    end
+    it_should_behave_like "RR::ExpectationProxy"
 
     it "sets up a Times Called Expectation with 1" do
       @proxy.once.should === @proxy
@@ -35,13 +33,7 @@ module RR
   end
 
   describe ExpectationProxy, "#twice" do
-    before do
-      @space = RR::Space.new
-      @object = Object.new
-      @method_name = :foobar
-      @double = @space.create_double(@object, @method_name) {}
-      @proxy = ExpectationProxy.new(@double)
-    end
+    it_should_behave_like "RR::ExpectationProxy"
 
     it "sets up a Times Called Expectation with 2" do
       @proxy.twice.should === @proxy
@@ -51,14 +43,20 @@ module RR
     end
   end
 
-  describe ExpectationProxy, "#returns" do
-    before do
-      @space = RR::Space.new
-      @object = Object.new
-      @method_name = :foobar
-      @double = @space.create_double(@object, @method_name) {}
-      @proxy = ExpectationProxy.new(@double)
+  describe ExpectationProxy, "#times" do
+    it_should_behave_like "RR::ExpectationProxy"
+
+    it "sets up a Times Called Expectation with passed in times" do
+      @proxy.times(3).should === @proxy
+      @object.foobar
+      @object.foobar
+      @object.foobar
+      proc {@object.foobar}.should raise_error(Expectations::TimesCalledExpectationError)
     end
+  end
+
+  describe ExpectationProxy, "#returns" do
+    it_should_behave_like "RR::ExpectationProxy"
 
     it "sets the value of the method" do
       @proxy.returns {:baz}.should === @proxy

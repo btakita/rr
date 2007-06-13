@@ -21,6 +21,11 @@ module RR
       self
     end
 
+    def times(number)
+      @double.add_expectation Expectations::TimesCalledExpectation.new(number)
+      self
+    end
+
     def returns(&implementation)
       @double.double_method = implementation
       self
