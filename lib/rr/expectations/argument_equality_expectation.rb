@@ -19,6 +19,11 @@ module RR
         @expected_arguments == arguments
       end
 
+      def wildcard_match?(*arguments)
+        return true unless @should_match_arguments
+        exact_match?(*arguments)
+      end
+
       def verify_input(*arguments)
         return unless @should_match_arguments
         
