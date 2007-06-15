@@ -1,5 +1,5 @@
 module RR
-  class ExpectationProxy
+  class ScenarioBuilder
     attr_reader :double
     
     def initialize(double)

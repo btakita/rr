@@ -4,7 +4,7 @@ require "rr/double"
 require "rr/mock_creator"
 require "rr/stub_creator"
 require "rr/probe_creator"
-require "rr/expectation_proxy"
+require "rr/scenario_builder"
 require "rr/space"
 
 require "rr/expectations/expectation"

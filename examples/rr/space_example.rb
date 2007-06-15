@@ -87,7 +87,7 @@ module RR
     end
   end
 
-  describe Space, "#create_expectation_proxy" do
+  describe Space, "#create_scenario_builder" do
     it_should_behave_like "RR::Space"
 
     before do
@@ -98,7 +98,7 @@ module RR
     
     it "creates an ExpectationProxy with a new double when one does not match the object and method" do
       @space.doubles[@object].should be_empty
-      proxy = @space.create_expectation_proxy(@object, @method_name)
+      proxy = @space.create_scenario_builder(@object, @method_name)
 
       @space.doubles[@object].should_not be_empty
       double = @space.doubles[@object][@method_name]
