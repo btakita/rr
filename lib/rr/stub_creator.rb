@@ -11,7 +11,7 @@ module RR
 
     protected
     def method_missing(method_name, *args, &returns)
-      proxy = @space.create_scenario_builder(@subject, method_name, &returns)
+      proxy = @space.create_scenario(@subject, method_name, &returns)
       proxy.with(Expectations::ArgumentEqualityExpectation::Anything.new)
     end
   end

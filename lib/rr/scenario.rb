@@ -1,5 +1,5 @@
 module RR
-  class ScenarioBuilder
+  class Scenario
     attr_reader :double
     
     def initialize(double)

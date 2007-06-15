@@ -29,9 +29,9 @@ module RR
       ProbeCreator.new(self, *args)
     end
 
-    def create_scenario_builder(object, method_name, &implementation)
+    def create_scenario(object, method_name, &implementation)
       double = create_double(object, method_name, &implementation)
-      ScenarioBuilder.new(double)
+      Scenario.new(double)
     end
 
     def create_double(object, method_name, &implementation)
