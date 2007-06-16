@@ -29,8 +29,8 @@ module RR
       ProbeCreator.new(self, *args)
     end
 
-    def create_scenario(object, method_name, &implementation)
-      double = create_double(object, method_name, &implementation)
+    def create_scenario(object, method_name)
+      double = create_double(object, method_name)
       Scenario.new(double)
     end
 
@@ -60,7 +60,6 @@ module RR
         end
       end
     end
-
     def verify_double(object, method_name)
       @doubles[object][method_name].verify
       reset_double object, method_name

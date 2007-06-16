@@ -1,7 +1,7 @@
 module RR
   class Scenario
     attr_reader :double
-    
+
     def initialize(double)
       @double = double
     end

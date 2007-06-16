@@ -11,10 +11,11 @@ module RR
 
     protected
     def method_missing(method_name, *args, &returns)
-      proxy = @space.create_scenario(@subject, method_name, &returns)
-      proxy.double.add_expectation(Expectations::ArgumentEqualityExpectation.new(*args))
-      proxy.double.add_expectation(Expectations::TimesCalledExpectation.new(1))
-      proxy
+      scenario = @space.create_scenario(@subject, method_name)
+      scenario.returns(&returns)
+      scenario.double.add_expectation(Expectations::ArgumentEqualityExpectation.new(*args))
+      scenario.double.add_expectation(Expectations::TimesCalledExpectation.new(1))
+      scenario
     end
   end
 end
