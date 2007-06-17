@@ -1,9 +1,11 @@
 dir = File.dirname(__FILE__)
 require "#{dir}/../../example_helper"
 
-describe "RR::Expectations::TimesCalledExpectation", :shared => true do
+module RR
+module Expectations
+describe TimesCalledExpectation, :shared => true do
   before do
-    @space = RR::Space.new
+    @space = Space.new
     @object = Object.new
     @method_name = :foobar
     @double = @space.create_double(@object, @method_name) {}
@@ -11,15 +13,15 @@ describe "RR::Expectations::TimesCalledExpectation", :shared => true do
   end
 
   def raises_expectation_error(&block)
-    proc {block.call}.should raise_error(RR::Expectations::TimesCalledExpectationError)
+    proc {block.call}.should raise_error(TimesCalledExpectationError)
   end
 end
 
-describe "RR::Expectations::TimesCalledExpectation", "#verify" do
+describe TimesCalledExpectation, "#verify" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
-  
+
   it "matches an integer" do
-    @expectation = RR::Expectations::TimesCalledExpectation.new(5)
+    @expectation = TimesCalledExpectation.new(5)
 
     @double.times_called = 5
     @expectation.verify(@double)
@@ -31,7 +33,7 @@ describe "RR::Expectations::TimesCalledExpectation", "#verify" do
   end
 
   it "matches a range" do
-    @expectation = RR::Expectations::TimesCalledExpectation.new(1..2)
+    @expectation = TimesCalledExpectation.new(1..2)
     @double.times_called = 1
     @expectation.verify(@double)
     @double.times_called = 2
@@ -47,7 +49,7 @@ describe "RR::Expectations::TimesCalledExpectation", "#verify" do
   end
 
   it "matches a block" do
-    @expectation = RR::Expectations::TimesCalledExpectation.new {|value| value == 2}
+    @expectation = TimesCalledExpectation.new {|value| value == 2}
 
     @double.times_called = 2
     @expectation.verify(@double)
@@ -59,39 +61,41 @@ describe "RR::Expectations::TimesCalledExpectation", "#verify" do
 
   it "doesn't accept both an argument and a block" do
     proc do
-      RR::Expectations::TimesCalledExpectation.new(2) {|value| value == 2}
+      TimesCalledExpectation.new(2) {|value| value == 2}
     end.should raise_error(ArgumentError, "Cannot pass in both an argument and a block")
   end
 end
 
-describe "RR::Expectations::TimesCalledExpectation", "#verify_input for an integer expectation" do
+describe TimesCalledExpectation, "#verify_input for an integer expectation" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
-  
+
   it "does not exceed expectation" do
-    @expectation = RR::Expectations::TimesCalledExpectation.new(1)
+    @expectation = TimesCalledExpectation.new(1)
     @expectation.verify_input
     raises_expectation_error {@expectation.verify_input}
   end
 end
 
-describe "RR::Expectations::TimesCalledExpectation", "#verify_input for a range expectation" do
+describe TimesCalledExpectation, "#verify_input for a range expectation" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
   it "does not exceed expectation" do
-    @expectation = RR::Expectations::TimesCalledExpectation.new(1..2)
+    @expectation = TimesCalledExpectation.new(1..2)
     @expectation.verify_input
     @expectation.verify_input
     raises_expectation_error {@expectation.verify_input}
   end
 end
 
-describe "RR::Expectations::TimesCalledExpectation", "#verify_input for a proc expectation" do
+describe TimesCalledExpectation, "#verify_input for a proc expectation" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
   it "does nothing" do
-    @expectation = RR::Expectations::TimesCalledExpectation.new {|times| times == 1}
+    @expectation = TimesCalledExpectation.new {|times| times == 1}
     @object.foobar
     @object.foobar
     @object.foobar
   end
+end
+end
 end
