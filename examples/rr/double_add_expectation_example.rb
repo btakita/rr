@@ -1,7 +1,8 @@
 dir = File.dirname(__FILE__)
 require "#{dir}/../example_helper"
 
-describe RR::Double, "#add_expectation", :shared => true do
+module RR
+describe Double, "#add_expectation", :shared => true do
   before do
     @space = RR::Space.new
     @object = Object.new
@@ -10,7 +11,7 @@ describe RR::Double, "#add_expectation", :shared => true do
   end
 end
 
-describe RR::Double, "#add_expectation ArgumentEqualityExpectation" do
+describe Double, "#add_expectation ArgumentEqualityExpectation" do
   it_should_behave_like "RR::Double#add_expectation"
 
   it "fails" do
@@ -37,7 +38,7 @@ describe RR::Double, "#add_expectation ArgumentEqualityExpectation" do
   end
 end
 
-describe RR::Double, "#add_expectation TimesCalledExpectation" do
+describe Double, "#add_expectation TimesCalledExpectation" do
   it_should_behave_like "RR::Double#add_expectation"
 
   it "fails" do
@@ -63,4 +64,5 @@ describe RR::Double, "#add_expectation TimesCalledExpectation" do
     @double.add_expectation(expectation1)
     @object.foobar
   end
+end
 end

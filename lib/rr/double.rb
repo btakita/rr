@@ -1,6 +1,6 @@
 module RR
   class Double
-    attr_reader :space, :object, :method_name, :original_method, :times_called, :expectations
+    attr_reader :space, :object, :method_name, :original_method, :times_called, :expectations, :scenarios
     attr_accessor :double_method
     
     def initialize(space, object, method_name)
@@ -10,6 +10,10 @@ module RR
       @original_method = object.method(method_name) if @object.methods.include?(method_name.to_s)
       @expectations = {}
       @times_called = 0
+    end
+
+    def register_scenario(scenario)
+      
     end
 
     def add_expectation(expectation)

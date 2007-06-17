@@ -4,7 +4,7 @@ require "#{dir}/../example_helper"
 module RR
   describe Scenario, :shared => true do
     before do
-      @space = RR::Space.new
+      @space = Space.new
       @object = Object.new
       @method_name = :foobar
       @double = @space.create_double(@object, @method_name) {}
@@ -18,7 +18,7 @@ module RR
     it "sets an ArgumentEqualityExpectation" do
       @scenario.with(1).should === @scenario
       @object.foobar(1)
-      proc {@object.foobar(2)}.should raise_error(RR::Expectations::ArgumentEqualityExpectationError)
+      proc {@object.foobar(2)}.should raise_error(Expectations::ArgumentEqualityExpectationError)
     end
   end
 
@@ -66,7 +66,7 @@ module RR
 
   describe Scenario, "#original_method" do
     before do
-      @space = RR::Space.new
+      @space = Space.new
       @object = Object.new
       @method_name = :foobar
     end
@@ -84,7 +84,7 @@ module RR
 
   describe Scenario, "#call" do
     before do
-      @space = RR::Space.new
+      @space = Space.new
       @object = Object.new
       @method_name = :foobar
       @scenario = @space.create_scenario(@object, @method_name)
@@ -98,7 +98,7 @@ module RR
 
   describe Scenario, "#exact_match?" do
     before do
-      @space = RR::Space.new
+      @space = Space.new
       @object = Object.new
       @method_name = :foobar
       @scenario = @space.create_scenario(@object, @method_name)
@@ -116,7 +116,7 @@ module RR
 
   describe Scenario, "#wildcard_match?" do
     before do
-      @space = RR::Space.new
+      @space = Space.new
       @object = Object.new
       @method_name = :foobar
       @scenario = @space.create_scenario(@object, @method_name)

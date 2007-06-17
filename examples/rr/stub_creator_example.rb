@@ -2,10 +2,9 @@ dir = File.dirname(__FILE__)
 require "#{dir}/../example_helper"
 
 module RR
-
 describe StubCreator, :shared => true do
   before(:each) do
-    @space = RR::Space.new
+    @space = Space.new
   end
 end
 
@@ -13,7 +12,7 @@ describe StubCreator, ".new with nothing passed in" do
   it_should_behave_like "RR::StubCreator"
 
   it "initializes proxy with Object" do
-    proxy = RR::StubCreator.new(@space)
+    proxy = StubCreator.new(@space)
     class << proxy
       attr_reader :subject
     end
@@ -26,7 +25,7 @@ describe StubCreator, ".new with one thing passed in" do
 
   it "initializes proxy with passed in object" do
     subject = Object.new
-    proxy = RR::StubCreator.new(@space, subject)
+    proxy = StubCreator.new(@space, subject)
     class << proxy
       attr_reader :subject
     end
@@ -38,7 +37,7 @@ describe StubCreator, ".new with two things passed in" do
   it_should_behave_like "RR::StubCreator"
   
   it "raises Argument error" do
-    proc {RR::StubCreator.new(@space, nil, nil)}.should raise_error(ArgumentError, "wrong number of arguments (2 for 1)")
+    proc {StubCreator.new(@space, nil, nil)}.should raise_error(ArgumentError, "wrong number of arguments (2 for 1)")
   end
 end
 
@@ -47,7 +46,7 @@ describe StubCreator, "#method_missing" do
   
   before do
     @subject = Object.new
-    @proxy = RR::StubCreator.new(@space, @subject)
+    @proxy = StubCreator.new(@space, @subject)
   end
 
   it "stubs the subject without any args" do
