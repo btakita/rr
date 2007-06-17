@@ -12,7 +12,9 @@ describe Double, "#verify" do
   end
 
   it "verifies each scenario was met" do
-    scenario = Scenario.new(@double)
+    scenario = Scenario.new
+    @double.register_scenario scenario
+    
     scenario.with(1).once.returns {nil}
     proc {@double.verify}.should raise_error(Expectations::TimesCalledExpectationError)
     @object.foobar(1)

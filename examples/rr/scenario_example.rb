@@ -8,7 +8,7 @@ describe Scenario, :shared => true do
     @object = Object.new
     @method_name = :foobar
     @double = @space.create_double(@object, @method_name) {}
-    @scenario = Scenario.new(@double)
+    @scenario = @space.create_scenario(@double)
   end
 end
 
@@ -74,30 +74,13 @@ describe Scenario, "#returns" do
   end
 end
 
-describe Scenario, "#original_method" do
-  before do
-    @space = Space.new
-    @object = Object.new
-    @method_name = :foobar
-  end
-
-  it "returns the original method of the object when one exists" do
-    def @object.foobar
-      :original_foobar
-    end
-    @double = @space.create_double(@object, @method_name) {}
-    @scenario = Scenario.new(@double)
-
-    @scenario.original_method.call.should == :original_foobar
-  end
-end
-
 describe Scenario, "#call" do
   before do
     @space = Space.new
     @object = Object.new
     @method_name = :foobar
-    @scenario = @space.create_scenario(@object, @method_name)
+    @double = @space.create_double(@object, @method_name)
+    @scenario = @space.create_scenario(@double)
   end
 
   it "calls the return proc when scheduled to call a proc" do
@@ -128,7 +111,8 @@ describe Scenario, "#exact_match?" do
     @space = Space.new
     @object = Object.new
     @method_name = :foobar
-    @scenario = @space.create_scenario(@object, @method_name)
+    @double = @space.create_double(@object, @method_name)
+    @scenario = @space.create_scenario(@double)
   end
 
   it "returns false when no expectation set" do
@@ -157,7 +141,8 @@ describe Scenario, "#wildcard_match?" do
     @space = Space.new
     @object = Object.new
     @method_name = :foobar
-    @scenario = @space.create_scenario(@object, @method_name)
+    @double = @space.create_double(@object, @method_name)
+    @scenario = @space.create_scenario(@double)
   end
 
   it "returns true when arguments are an exact match" do
@@ -175,7 +160,8 @@ describe Scenario, "#verify" do
     @space = Space.new
     @object = Object.new
     @method_name = :foobar
-    @scenario = @space.create_scenario(@object, @method_name)
+    @double = @space.create_double(@object, @method_name)
+    @scenario = @space.create_scenario(@double)
   end
 
   it "verifies that times called expectation was met" do

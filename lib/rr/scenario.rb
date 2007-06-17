@@ -1,13 +1,11 @@
 module RR
   class Scenario
-    attr_reader :double, :times_called, :argument_expectation, :times_called_expectation
+    attr_reader :times_called, :argument_expectation, :times_called_expectation
 
-    def initialize(double)
-      @double = double
+    def initialize
       @implementation = nil
       @argument_expectation = nil
       @times_called_expectation = nil
-      @double.scenarios << self
       @times_called = 0
     end
 
@@ -39,10 +37,6 @@ module RR
     def returns(&implementation)
       @implementation = implementation
       self
-    end
-
-    def original_method
-      @double.original_method
     end
 
     def call(*args)

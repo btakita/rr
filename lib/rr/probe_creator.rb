@@ -11,8 +11,9 @@ module RR
 
     protected
     def method_missing(method_name, *args, &returns)
-      scenario = @space.create_scenario(@subject, method_name)
-      scenario.with(*args).once.returns(&scenario.original_method)
+      double = @space.create_double(@subject, method_name)
+      scenario = @space.create_scenario(double)
+      scenario.with(*args).once.returns(&double.original_method)
     end
   end
 end

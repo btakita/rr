@@ -96,18 +96,15 @@ describe Space, "#create_scenario" do
     @method_name = :foobar
   end
 
-  it "creates an ExpectationProxy with a new double when one does not match the object and method" do
-    @space.doubles[@object].should be_empty
-    proxy = @space.create_scenario(@object, @method_name)
+  it "creates a Scenario and registers it to the double" do
+    double = @space.create_double(@object, @method_name)
+    def double.scenarios
+      @scenarios
+    end
 
-    @space.doubles[@object].should_not be_empty
-    double = @space.doubles[@object][@method_name]
-    double.class.should == Double
-    double.object.should === @object
-    double.method_name.should == @method_name
+    scenario = @space.create_scenario(double)
+    double.scenarios.should include(scenario)
   end
-
-  it "reuses existing ExpectationProxy defined for object and method name"
 end
 
 describe Space, "#create_double when double does not exist" do

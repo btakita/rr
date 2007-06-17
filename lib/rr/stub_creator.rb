@@ -11,7 +11,8 @@ module RR
 
     protected
     def method_missing(method_name, *args, &returns)
-      scenario = @space.create_scenario(@subject, method_name)
+      double = @space.create_double(@subject, method_name)
+      scenario = @space.create_scenario(double)
       scenario.returns(&returns)
       scenario.with(Expectations::ArgumentEqualityExpectation::Anything.new)
     end
