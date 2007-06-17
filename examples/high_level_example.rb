@@ -25,7 +25,7 @@ describe "RR existing object inline interactions" do
     proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
   end
 
-  it "remocks" #do
+  it "re-mocks" #do
 #    obj = @obj
 #    Object.new.instance_eval do
 #      mock(obj).to_s {"a value"}
@@ -46,7 +46,7 @@ describe "RR existing object inline interactions" do
     proc {@obj.to_s}.should raise_error
   end
 
-  it "reprobes" #do
+  it "re-probes" #do
 #    expected_to_s_value = @obj.to_s
 #    probe(@obj).to_s
 #
@@ -61,6 +61,19 @@ describe "RR existing object inline interactions" do
     Object.new.instance_eval do
       stub(obj).to_s {"a value"}
     end
+    @obj.to_s.should == "a value"
+  end
+
+  it "re-stubs" do
+    obj = @obj
+    Object.new.instance_eval do
+      stub(obj).to_s {"a value"}
+    end
+
+    Object.new.instance_eval do
+      stub(obj).to_s {"a value"}
+    end
+    
     @obj.to_s.should == "a value"
   end
 end
