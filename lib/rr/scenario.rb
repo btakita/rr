@@ -7,6 +7,7 @@ module RR
       @implementation = nil
       @argument_expectation = nil
       @times_called_expectation = nil
+      @double.scenarios << self
     end
 
     def with(*args)

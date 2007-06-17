@@ -10,6 +10,7 @@ module RR
       @original_method = object.method(method_name) if @object.methods.include?(method_name.to_s)
       @expectations = {}
       @times_called = 0
+      @scenarios = []
     end
 
     def register_scenario(scenario)
