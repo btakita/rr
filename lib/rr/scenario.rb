@@ -4,29 +4,37 @@ module RR
 
     def initialize(double)
       @double = double
+      @implementation = nil
+      @argument_expectation = nil
+      @times_called_expectation = nil
     end
 
     def with(*args)
-      @double.add_expectation Expectations::ArgumentEqualityExpectation.new(*args)
+      @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
+      @double.add_expectation @argument_expectation
       self
     end
 
     def once
-      @double.add_expectation Expectations::TimesCalledExpectation.new(1)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(1)
+      @double.add_expectation @times_called_expectation
       self
     end
 
     def twice
-      @double.add_expectation Expectations::TimesCalledExpectation.new(2)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(2)
+      @double.add_expectation @times_called_expectation
       self
     end
 
     def times(number)
-      @double.add_expectation Expectations::TimesCalledExpectation.new(number)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(number)
+      @double.add_expectation @times_called_expectation
       self
     end
 
     def returns(&implementation)
+      @implementation = implementation
       @double.double_method = implementation
       self
     end
@@ -34,6 +42,17 @@ module RR
     def original_method
       @double.original_method
     end
-    
+
+    def call(*args)
+      @implementation.call(*args)
+    end
+
+    def exact_match?(*arguments)
+      @argument_expectation.exact_match?(*arguments)
+    end
+
+    def wildcard_match?(*arguments)
+      @argument_expectation.wildcard_match?(*arguments)
+    end    
   end
 end

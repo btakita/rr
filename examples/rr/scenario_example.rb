@@ -81,18 +81,54 @@ module RR
       @scenario.original_method.call.should == :original_foobar
     end
   end
-#
-#  describe Scenario, "#call" do
-#    before do
-#      @space = RR::Space.new
-#      @object = Object.new
-#      @method_name = :foobar
-#    end
-#
-#    it "calls the return proc when scheduled to call a proc" do
-#      @scenario = @space.create_scenario(@object, @method_name)
-#
-#      @scenario.call
-#    end
-#  end
+
+  describe Scenario, "#call" do
+    before do
+      @space = RR::Space.new
+      @object = Object.new
+      @method_name = :foobar
+      @scenario = @space.create_scenario(@object, @method_name)
+    end
+
+    it "calls the return proc when scheduled to call a proc" do
+      @scenario.returns {|arg| "returning #{arg}"}
+      @scenario.call(:foobar).should == "returning foobar"
+    end
+  end
+
+  describe Scenario, "#exact_match?" do
+    before do
+      @space = RR::Space.new
+      @object = Object.new
+      @method_name = :foobar
+      @scenario = @space.create_scenario(@object, @method_name)
+    end
+
+    it "returns true when arguments are an exact match" do
+      @scenario.with(1, 2, 3)
+      @scenario.should be_exact_match(1, 2, 3)
+      @scenario.should_not be_exact_match(1, 2)
+      @scenario.should_not be_exact_match(1)
+      @scenario.should_not be_exact_match()
+      @scenario.should_not be_exact_match("does not match")
+    end
+  end
+
+  describe Scenario, "#wildcard_match?" do
+    before do
+      @space = RR::Space.new
+      @object = Object.new
+      @method_name = :foobar
+      @scenario = @space.create_scenario(@object, @method_name)
+    end
+
+    it "returns true when arguments are an exact match" do
+      @scenario.with(Expectations::ArgumentEqualityExpectation::Anything.new)
+      @scenario.should be_wildcard_match(1, 2, 3)
+      @scenario.should be_wildcard_match(1, 2)
+      @scenario.should be_wildcard_match(1)
+      @scenario.should be_wildcard_match()
+      @scenario.should be_wildcard_match("does not match")
+    end
+  end
 end

@@ -24,6 +24,7 @@ module RR
         exact_match?(*arguments)
       end
 
+      # TODO: Remove this because exact_match and wild_card match will be used instead
       def verify_input(*arguments)
         return unless @should_match_arguments
         
