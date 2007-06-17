@@ -45,10 +45,10 @@ module RR
       double
     end
 
-    def verify_doubles
+    def verifys
       @doubles.each do |object, method_double_map|
         method_double_map.keys.each do |method_name|
-          verify_double(object, method_name)
+          verify(object, method_name)
         end
       end
     end
@@ -60,7 +60,7 @@ module RR
         end
       end
     end
-    def verify_double(object, method_name)
+    def verify(object, method_name)
       @doubles[object][method_name].verify
       reset_double object, method_name
     end

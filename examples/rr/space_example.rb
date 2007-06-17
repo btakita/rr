@@ -4,7 +4,7 @@ require "#{dir}/../example_helper"
 module RR
 describe Space, :shared => true do
   after(:each) do
-    Space.instance.verify_doubles
+    Space.instance.verifys
   end
 end
 
@@ -160,7 +160,7 @@ describe Space, "#create_double" do
   end
 end
 
-describe Space, "#verify_doubles" do
+describe Space, "#verifys" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -194,7 +194,7 @@ describe Space, "#verify_doubles" do
       end
     end
 
-    @space.verify_doubles
+    @space.verifys
     double1_verify_calls.should == 1
     double2_verify_calls.should == 1
     double1_reset_calls.should == 1
@@ -202,7 +202,7 @@ describe Space, "#verify_doubles" do
   end
 end
 
-describe Space, "#verify_double" do
+describe Space, "#verify" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -222,7 +222,7 @@ describe Space, "#verify_double" do
         verify_calls += 1
       end
     end
-    @space.verify_double(@object, @method_name)
+    @space.verify(@object, @method_name)
     verify_calls.should == 1
 
     @space.doubles[@object][@method_name].should be_nil

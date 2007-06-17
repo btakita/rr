@@ -59,7 +59,7 @@ module RR
     end
 
     def verify
-      @times_called_expectation.verify_double(self)
+      @times_called_expectation.verify(self)
     end
   end
 end

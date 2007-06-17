@@ -10,7 +10,7 @@ describe "RR existing object inline interactions" do
   end
 
   after(:each) do
-    RR::Space.instance.verify_doubles
+    RR::Space.instance.verifys
   end
 
   it "mocks" do

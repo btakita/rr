@@ -4,7 +4,7 @@ module RR
       def verify_input(*args)
       end
       
-      def verify_double(double)
+      def verify(double)
       end
     end
   end

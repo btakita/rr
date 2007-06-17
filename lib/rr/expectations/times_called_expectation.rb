@@ -19,7 +19,7 @@ module RR
         return
       end
 
-      def verify_double(double)
+      def verify(double)
         return if @times.is_a?(Integer) && @times == double.times_called
         return if @times.is_a?(Proc) && @times.call(double.times_called)
         return if @times.is_a?(Range) && @times.include?(double.times_called)

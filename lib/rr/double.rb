@@ -40,7 +40,7 @@ module RR
 
     def verify
       @expectations.each do |expectation_type, expectation|
-        expectation.verify_double self
+        expectation.verify self
       end
     end
 

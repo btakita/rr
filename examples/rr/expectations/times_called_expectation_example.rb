@@ -15,34 +15,34 @@ describe "RR::Expectations::TimesCalledExpectation", :shared => true do
   end
 end
 
-describe "RR::Expectations::TimesCalledExpectation", "#verify_double" do
+describe "RR::Expectations::TimesCalledExpectation", "#verify" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
   
   it "matches an integer" do
     @expectation = RR::Expectations::TimesCalledExpectation.new(5)
 
     @double.times_called = 5
-    @expectation.verify_double(@double)
+    @expectation.verify(@double)
 
     @double.times_called = 3
-    raises_expectation_error {@expectation.verify_double(@double)}
+    raises_expectation_error {@expectation.verify(@double)}
     @double.times_called = 6
-    raises_expectation_error {@expectation.verify_double(@double)}
+    raises_expectation_error {@expectation.verify(@double)}
   end
 
   it "matches a range" do
     @expectation = RR::Expectations::TimesCalledExpectation.new(1..2)
     @double.times_called = 1
-    @expectation.verify_double(@double)
+    @expectation.verify(@double)
     @double.times_called = 2
-    @expectation.verify_double(@double)
+    @expectation.verify(@double)
     raises_expectation_error do
       @double.times_called = 0
-      @expectation.verify_double(@double)
+      @expectation.verify(@double)
     end
     raises_expectation_error do
       @double.times_called = 3
-      @expectation.verify_double(@double)
+      @expectation.verify(@double)
     end
   end
 
@@ -50,11 +50,11 @@ describe "RR::Expectations::TimesCalledExpectation", "#verify_double" do
     @expectation = RR::Expectations::TimesCalledExpectation.new {|value| value == 2}
 
     @double.times_called = 2
-    @expectation.verify_double(@double)
+    @expectation.verify(@double)
 
-    raises_expectation_error {@double.times_called = 1; @expectation.verify_double(@double)}
-    raises_expectation_error {@double.times_called = 0; @expectation.verify_double(@double)}
-    raises_expectation_error {@double.times_called = 3; @expectation.verify_double(@double)}
+    raises_expectation_error {@double.times_called = 1; @expectation.verify(@double)}
+    raises_expectation_error {@double.times_called = 0; @expectation.verify(@double)}
+    raises_expectation_error {@double.times_called = 3; @expectation.verify(@double)}
   end
 
   it "doesn't accept both an argument and a block" do
