@@ -1,6 +1,6 @@
 module RR
   class Scenario
-    attr_reader :double
+    attr_reader :double, :times_called
 
     def initialize(double)
       @double = double
@@ -8,6 +8,7 @@ module RR
       @argument_expectation = nil
       @times_called_expectation = nil
       @double.scenarios << self
+      @times_called = 0
     end
 
     def with(*args)
@@ -45,6 +46,7 @@ module RR
     end
 
     def call(*args)
+      @times_called += 1
       @implementation.call(*args)
     end
 
@@ -54,6 +56,10 @@ module RR
 
     def wildcard_match?(*arguments)
       @argument_expectation.wildcard_match?(*arguments)
-    end    
+    end
+
+    def verify
+      @times_called_expectation.verify_double(self)
+    end
   end
 end

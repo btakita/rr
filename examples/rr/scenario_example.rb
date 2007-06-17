@@ -102,6 +102,16 @@ describe Scenario, "#call" do
     @scenario.returns {|arg| "returning #{arg}"}
     @scenario.call(:foobar).should == "returning foobar"
   end
+
+  it "increments times called" do
+    @scenario.returns {:value}
+
+    @scenario.times_called.should == 0
+    @scenario.call(:foobar)
+    @scenario.times_called.should == 1
+    @scenario.call(:foobar)
+    @scenario.times_called.should == 2
+  end
 end
 
 describe Scenario, "#exact_match?" do
@@ -137,6 +147,26 @@ describe Scenario, "#wildcard_match?" do
     @scenario.should be_wildcard_match(1)
     @scenario.should be_wildcard_match()
     @scenario.should be_wildcard_match("does not match")
+  end
+end
+
+describe Scenario, "#verify" do
+  before do
+    @space = Space.new
+    @object = Object.new
+    @method_name = :foobar
+    @scenario = @space.create_scenario(@object, @method_name)
+  end
+
+  it "verifies that times called condition was met" do
+    @scenario.twice.returns {:return_value}
+
+    proc {@scenario.verify}.should raise_error(Expectations::TimesCalledExpectationError)
+    @scenario.call
+    proc {@scenario.verify}.should raise_error(Expectations::TimesCalledExpectationError)
+    @scenario.call
+    
+    proc {@scenario.verify}.should_not raise_error
   end
 end
 end
