@@ -13,10 +13,6 @@ module RR
       @scenarios = []
     end
 
-    def register_scenario(scenario)
-      
-    end
-
     def add_expectation(expectation)
       @expectations[expectation.class] = expectation
     end
