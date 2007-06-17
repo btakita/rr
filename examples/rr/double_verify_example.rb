@@ -11,10 +11,12 @@ describe Double, "#verify" do
     @double = @space.create_double(@object, @method_name) {}
   end
 
-  it "verifies each expectation was met" do
-    expectation = Expectations::TimesCalledExpectation.new(1)
-    @double.add_expectation expectation
+  it "verifies each scenario was met" do
+    scenario = Scenario.new(@double)
+    scenario.with(1).once.returns {nil}
     proc {@double.verify}.should raise_error(Expectations::TimesCalledExpectationError)
+    @object.foobar(1)
+    proc {@double.verify}.should_not raise_error
   end
 end
 end

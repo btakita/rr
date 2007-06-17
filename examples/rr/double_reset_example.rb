@@ -25,8 +25,7 @@ describe Double, "#reset when method does not exist" do
 
   it "removes the method" do
     @double.bind
-    @double.double_method = proc {:baz}
-    @object.foobar.should == :baz
+    @object.methods.should include(@method_name.to_s)
 
     @double.reset
     @object.methods.should_not include(@method_name.to_s)
@@ -51,8 +50,7 @@ describe Double, "#reset when method exists" do
 
   it "removes the method" do
     @double.bind
-    @double.double_method = proc {:baz}
-    @object.foobar.should == :baz
+    @object.methods.should include(@method_name.to_s)
 
     @double.reset
     @object.methods.should include(@method_name.to_s)

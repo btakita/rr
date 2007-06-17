@@ -1,20 +1,13 @@
 module RR
   class Double
-    attr_reader :space, :object, :method_name, :original_method, :times_called, :expectations, :scenarios
-    attr_accessor :double_method
-    
+    attr_reader :space, :object, :method_name, :original_method, :scenarios
+
     def initialize(space, object, method_name)
       @space = space
       @object = object
       @method_name = method_name.to_sym
       @original_method = object.method(method_name) if @object.methods.include?(method_name.to_s)
-      @expectations = {}
-      @times_called = 0
       @scenarios = []
-    end
-
-    def add_expectation(expectation)
-      @expectations[expectation.class] = expectation
     end
 
     def bind
@@ -32,15 +25,9 @@ module RR
       meta.class_eval(returns_method, __FILE__, __LINE__ - 9)
     end
 
-    def verify_input(*args)
-      @expectations.each do |expectation_type, expectation|
-        expectation.verify_input *args
-      end
-    end
-
     def verify
-      @expectations.each do |expectation_type, expectation|
-        expectation.verify self
+      @scenarios.each do |scenario|
+        scenario.verify
       end
     end
 
@@ -62,9 +49,12 @@ module RR
     end
 
     def call_method(*args)
-      self.verify_input(*args)
-      @times_called += 1
-      @double_method.call(*args)
+      scenarios.each do |scenario|
+        return scenario.call(*args) if scenario.exact_match?(*args)
+      end
+      scenarios.each do |scenario|
+        return scenario.call(*args) if scenario.wildcard_match?(*args)
+      end
     end
     
     def placeholder_name

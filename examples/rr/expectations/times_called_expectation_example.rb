@@ -23,40 +23,41 @@ describe TimesCalledExpectation, "#verify" do
   it "matches an integer" do
     @expectation = TimesCalledExpectation.new(5)
 
-    @double.times_called = 5
-    @expectation.verify(@double)
+    @expectation.verify_input
+    @expectation.verify_input
+    @expectation.verify_input
+    raises_expectation_error {@expectation.verify}
+    @expectation.verify_input
+    @expectation.verify_input
+    proc {@expectation.verify}.should_not raise_error
 
-    @double.times_called = 3
-    raises_expectation_error {@expectation.verify(@double)}
-    @double.times_called = 6
-    raises_expectation_error {@expectation.verify(@double)}
+    raises_expectation_error {@expectation.verify_input}
   end
 
   it "matches a range" do
     @expectation = TimesCalledExpectation.new(1..2)
-    @double.times_called = 1
-    @expectation.verify(@double)
-    @double.times_called = 2
-    @expectation.verify(@double)
-    raises_expectation_error do
-      @double.times_called = 0
-      @expectation.verify(@double)
-    end
-    raises_expectation_error do
-      @double.times_called = 3
-      @expectation.verify(@double)
-    end
+    raises_expectation_error {@expectation.verify}
+
+    @expectation.verify_input
+    @expectation.verify
+    @expectation.verify_input
+    @expectation.verify
+
+    raises_expectation_error {@expectation.verify_input}
   end
 
   it "matches a block" do
     @expectation = TimesCalledExpectation.new {|value| value == 2}
 
-    @double.times_called = 2
-    @expectation.verify(@double)
+    raises_expectation_error {@expectation.verify}
+    @expectation.verify_input
+    raises_expectation_error {@expectation.verify}
+    @expectation.verify_input
 
-    raises_expectation_error {@double.times_called = 1; @expectation.verify(@double)}
-    raises_expectation_error {@double.times_called = 0; @expectation.verify(@double)}
-    raises_expectation_error {@double.times_called = 3; @expectation.verify(@double)}
+    proc {@expectation.verify}.should_not raise_error
+
+    @expectation.verify_input
+    raises_expectation_error {@expectation.verify}
   end
 
   it "doesn't accept both an argument and a block" do

@@ -12,9 +12,7 @@ module RR
     protected
     def method_missing(method_name, *args, &returns)
       scenario = @space.create_scenario(@subject, method_name)
-      scenario.returns(&returns)
-      scenario.double.add_expectation(Expectations::ArgumentEqualityExpectation.new(*args))
-      scenario.double.add_expectation(Expectations::TimesCalledExpectation.new(1))
+      scenario.with(*args).once.returns(&returns)
       scenario
     end
   end

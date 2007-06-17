@@ -4,7 +4,7 @@ require "#{dir}/../example_helper"
 module RR
 describe Space, :shared => true do
   after(:each) do
-    Space.instance.verifys
+    Space.instance.verify_doubles
   end
 end
 
@@ -110,7 +110,7 @@ describe Space, "#create_scenario" do
   it "reuses existing ExpectationProxy defined for object and method name"
 end
 
-describe Space, "#create_double" do
+describe Space, "#create_double when double does not exist" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -138,29 +138,38 @@ describe Space, "#create_double" do
     double.method_name.should === @method_name
   end
 
-  it "when existing double, resets the original method and overrides existing double" do
-    original_foobar_method = @object.method(:foobar)
-    double = @space.create_double(@object, 'foobar') {}
-    double.add_expectation(Expectations::TimesCalledExpectation.new(1))
-    @object.foobar
-
-    double.original_method.should == original_foobar_method
-
-    double2 = @space.create_double(@object, 'foobar') {}
-    double2.add_expectation(Expectations::TimesCalledExpectation.new(1))
-    @object.foobar
-
-    double2.reset
-    @object.foobar.should == :original_foobar
-  end
-
   it "overrides the method when passing a block" do
-    double = @space.create_double(@object, @method_name) {:foobar}
+    double = @space.create_double(@object, @method_name)
     @object.methods.should include("__rr__#{@method_name}__rr__")
   end
 end
 
-describe Space, "#verifys" do
+describe Space, "#create_double when double exists" do
+  it_should_behave_like "RR::Space"
+
+  before do
+    @space = Space.new
+    @object = Object.new
+    def @object.foobar(*args)
+      :original_foobar
+    end
+    @method_name = :foobar
+  end
+
+  it "returns the existing double" do
+    original_foobar_method = @object.method(:foobar)
+    double = @space.create_double(@object, 'foobar')
+
+    double.original_method.should == original_foobar_method
+    
+    @space.create_double(@object, 'foobar').should === double
+
+    double.reset
+    @object.foobar.should == :original_foobar
+  end
+end
+
+describe Space, "#verify_doubles" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -171,7 +180,7 @@ describe Space, "#verifys" do
   end
 
   it "verifies and deletes the doubles" do
-    double1 = @space.create_double(@object1, @method_name) {}
+    double1 = @space.create_double(@object1, @method_name)
     double1_verify_calls = 0
     double1_reset_calls = 0
     (class << double1; self; end).class_eval do
@@ -182,7 +191,7 @@ describe Space, "#verifys" do
         double1_reset_calls += 1
       end
     end
-    double2 = @space.create_double(@object2, @method_name) {}
+    double2 = @space.create_double(@object2, @method_name)
     double2_verify_calls = 0
     double2_reset_calls = 0
     (class << double2; self; end).class_eval do
@@ -194,7 +203,7 @@ describe Space, "#verifys" do
       end
     end
 
-    @space.verifys
+    @space.verify_doubles
     double1_verify_calls.should == 1
     double2_verify_calls.should == 1
     double1_reset_calls.should == 1
@@ -202,7 +211,7 @@ describe Space, "#verifys" do
   end
 end
 
-describe Space, "#verify" do
+describe Space, "#verify_double" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -212,7 +221,7 @@ describe Space, "#verify" do
   end
 
   it "verifies and deletes the double" do
-    double = @space.create_double(@object, @method_name) {}
+    double = @space.create_double(@object, @method_name)
     @space.doubles[@object][@method_name].should === double
     @object.methods.should include("__rr__#{@method_name}__rr__")
 
@@ -222,8 +231,27 @@ describe Space, "#verify" do
         verify_calls += 1
       end
     end
-    @space.verify(@object, @method_name)
+    @space.verify_double(@object, @method_name)
     verify_calls.should == 1
+
+    @space.doubles[@object][@method_name].should be_nil
+    @object.methods.should_not include("__rr__#{@method_name}__rr__")
+  end
+
+  it "deletes the double when verifying the double raises an error" do
+    double = @space.create_double(@object, @method_name)
+    @space.doubles[@object][@method_name].should === double
+    @object.methods.should include("__rr__#{@method_name}__rr__")
+
+    verify_called = true
+    (class << double; self; end).class_eval do
+      define_method(:verify) do ||
+        verify_called = true
+        raise "An Error"
+      end
+    end
+    proc {@space.verify_double(@object, @method_name)}.should raise_error
+    verify_called.should be_true
 
     @space.doubles[@object][@method_name].should be_nil
     @object.methods.should_not include("__rr__#{@method_name}__rr__")
@@ -240,7 +268,7 @@ describe Space, "#reset_double" do
   end
 
   it "resets the doubles" do
-    double = @space.create_double(@object, @method_name) {}
+    double = @space.create_double(@object, @method_name)
     @space.doubles[@object][@method_name].should === double
     @object.methods.should include("__rr__#{@method_name}__rr__")
 
@@ -250,8 +278,8 @@ describe Space, "#reset_double" do
   end
 
   it "removes the object from the doubles map when it has no doubles" do
-    double1 = @space.create_double(@object, :foobar1) {}
-    double2 = @space.create_double(@object, :foobar2) {}
+    double1 = @space.create_double(@object, :foobar1)
+    double2 = @space.create_double(@object, :foobar2)
 
     @space.doubles.include?(@object).should == true
     @space.doubles[@object][:foobar1].should_not be_nil
@@ -278,14 +306,14 @@ describe Space, "#reset_doubles" do
   end
 
   it "resets the double and removes it from the doubles list" do
-    double1 = @space.create_double(@object1, @method_name) {}
+    double1 = @space.create_double(@object1, @method_name)
     double1_reset_calls = 0
     (class << double1; self; end).class_eval do
       define_method(:reset) do ||
         double1_reset_calls += 1
       end
     end
-    double2 = @space.create_double(@object2, @method_name) {}
+    double2 = @space.create_double(@object2, @method_name)
     double2_reset_calls = 0
     (class << double2; self; end).class_eval do
       define_method(:reset) do ||

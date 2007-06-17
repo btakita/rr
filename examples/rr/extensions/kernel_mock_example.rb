@@ -17,11 +17,11 @@ describe Kernel, "#mock" do
         end
       end
 
-      proxy = creator.foobar(1, 2) {:baz}
-      double = proxy.double
-      double.expectations[RR::Expectations::TimesCalledExpectation].times.should == 1
-      double.expectations[RR::Expectations::ArgumentEqualityExpectation].should_match_arguments?.should == true
-      double.expectations[RR::Expectations::ArgumentEqualityExpectation].expected_arguments.should == [1, 2]
+      scenario = creator.foobar(1, 2) {:baz}
+      scenario.times_called_expectation.times.should == 1
+      scenario.argument_expectation.should_match_arguments?.should == true
+      scenario.argument_expectation.expected_arguments.should == [1, 2]
+      
       subject.foobar(1, 2).should == :baz
     end
   end
@@ -43,11 +43,10 @@ describe Kernel, "#stub" do
         end
       end
       
-      proxy = creator.foobar(1, 2) {:baz}
-      double = proxy.double
-      double.expectations[RR::Expectations::TimesCalledExpectation].should == nil
-      double.expectations[RR::Expectations::ArgumentEqualityExpectation].should_match_arguments?.should == false
-      double.expectations[RR::Expectations::ArgumentEqualityExpectation].expected_arguments.should == nil
+      scenario = creator.foobar(1, 2) {:baz}
+      scenario.times_called_expectation.should == nil
+      scenario.argument_expectation.should_match_arguments?.should == false
+      scenario.argument_expectation.expected_arguments.should == nil
       subject.foobar(1, 2).should == :baz
     end
   end
@@ -69,11 +68,11 @@ describe Kernel, "#probe" do
         end
       end
 
-      proxy = creator.foobar(1, 2)
-      double = proxy.double
-      double.expectations[RR::Expectations::TimesCalledExpectation].times.should == 1
-      double.expectations[RR::Expectations::ArgumentEqualityExpectation].should_match_arguments?.should == true
-      double.expectations[RR::Expectations::ArgumentEqualityExpectation].expected_arguments.should == [1, 2]
+      scenario = creator.foobar(1, 2)
+      scenario.times_called_expectation.times.should == 1
+      scenario.argument_expectation.should_match_arguments?.should == true
+      scenario.argument_expectation.expected_arguments.should == [1, 2]
+      
       subject.foobar(1, 2).should == :original_value
     end
   end

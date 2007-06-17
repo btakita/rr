@@ -12,21 +12,23 @@ describe Scenario, :shared => true do
   end
 end
 
-describe Scenario, ".new" do
-  it_should_behave_like "RR::Scenario"
-  
-  it "registers self to double" do
-    @double.scenarios.should include(@scenario)
-  end
-end
-
 describe Scenario, "#with" do
   it_should_behave_like "RR::Scenario"
 
   it "sets an ArgumentEqualityExpectation" do
     @scenario.with(1).should === @scenario
-    @object.foobar(1)
-    proc {@object.foobar(2)}.should raise_error(Expectations::ArgumentEqualityExpectationError)
+    @scenario.should be_exact_match(1)
+    @scenario.should_not be_exact_match(2)
+  end
+end
+
+describe Scenario, "#with_any_args" do
+  it_should_behave_like "RR::Scenario"
+
+  it "sets an ArgumentEqualityExpectation::Anything expectation" do
+    @scenario.with_any_args.should === @scenario
+    @scenario.should_not be_exact_match(1)
+    @scenario.should be_wildcard_match(1)
   end
 end
 
@@ -35,8 +37,8 @@ describe Scenario, "#once" do
 
   it "sets up a Times Called Expectation with 1" do
     @scenario.once.should === @scenario
-    @object.foobar
-    proc {@object.foobar}.should raise_error(Expectations::TimesCalledExpectationError)
+    @scenario.call
+    proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
   end
 end
 
@@ -45,9 +47,9 @@ describe Scenario, "#twice" do
 
   it "sets up a Times Called Expectation with 2" do
     @scenario.twice.should === @scenario
-    @object.foobar
-    @object.foobar
-    proc {@object.foobar}.should raise_error(Expectations::TimesCalledExpectationError)
+    @scenario.call
+    @scenario.call
+    proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
   end
 end
 
@@ -56,10 +58,10 @@ describe Scenario, "#times" do
 
   it "sets up a Times Called Expectation with passed in times" do
     @scenario.times(3).should === @scenario
-    @object.foobar
-    @object.foobar
-    @object.foobar
-    proc {@object.foobar}.should raise_error(Expectations::TimesCalledExpectationError)
+    @scenario.call
+    @scenario.call
+    @scenario.call
+    proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
   end
 end
 
@@ -68,7 +70,7 @@ describe Scenario, "#returns" do
 
   it "sets the value of the method" do
     @scenario.returns {:baz}.should === @scenario
-    @object.foobar.should == :baz
+    @scenario.call.should == :baz
   end
 end
 
@@ -103,14 +105,21 @@ describe Scenario, "#call" do
     @scenario.call(:foobar).should == "returning foobar"
   end
 
-  it "increments times called" do
-    @scenario.returns {:value}
+  it "returns nil when to returns is not set" do
+    @scenario.call.should be_nil
+  end
 
-    @scenario.times_called.should == 0
+  it "works when times_called is not set" do
+    @scenario.returns {:value}
+    @scenario.call
+  end
+
+  it "verifes the times_called does not exceed the TimesCalledExpectation" do
+    @scenario.times(2).returns {:value}
+
     @scenario.call(:foobar)
-    @scenario.times_called.should == 1
     @scenario.call(:foobar)
-    @scenario.times_called.should == 2
+    proc {@scenario.call(:foobar)}.should raise_error(Expectations::TimesCalledExpectationError)
   end
 end
 
@@ -122,13 +131,24 @@ describe Scenario, "#exact_match?" do
     @scenario = @space.create_scenario(@object, @method_name)
   end
 
-  it "returns true when arguments are an exact match" do
+  it "returns false when no expectation set" do
+    @scenario.should_not be_exact_match()
+    @scenario.should_not be_exact_match(nil)
+    @scenario.should_not be_exact_match(Object.new)
+    @scenario.should_not be_exact_match(1, 2, 3)
+  end
+
+  it "returns false when arguments are not an exact match" do
     @scenario.with(1, 2, 3)
-    @scenario.should be_exact_match(1, 2, 3)
     @scenario.should_not be_exact_match(1, 2)
     @scenario.should_not be_exact_match(1)
     @scenario.should_not be_exact_match()
     @scenario.should_not be_exact_match("does not match")
+  end
+
+  it "returns true when arguments are an exact match" do
+    @scenario.with(1, 2, 3)
+    @scenario.should be_exact_match(1, 2, 3)
   end
 end
 
@@ -158,7 +178,7 @@ describe Scenario, "#verify" do
     @scenario = @space.create_scenario(@object, @method_name)
   end
 
-  it "verifies that times called condition was met" do
+  it "verifies that times called expectation was met" do
     @scenario.twice.returns {:return_value}
 
     proc {@scenario.verify}.should raise_error(Expectations::TimesCalledExpectationError)
@@ -166,6 +186,14 @@ describe Scenario, "#verify" do
     proc {@scenario.verify}.should raise_error(Expectations::TimesCalledExpectationError)
     @scenario.call
     
+    proc {@scenario.verify}.should_not raise_error
+  end
+
+  it "does not raise an error when there is no times called expectation" do
+    proc {@scenario.verify}.should_not raise_error
+    @scenario.call
+    proc {@scenario.verify}.should_not raise_error
+    @scenario.call
     proc {@scenario.verify}.should_not raise_error
   end
 end

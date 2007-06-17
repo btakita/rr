@@ -3,7 +3,7 @@ module RR
     class ArgumentEqualityExpectationError < RuntimeError
     end
     
-    class ArgumentEqualityExpectation < Expectation
+    class ArgumentEqualityExpectation
       attr_reader :expected_arguments, :should_match_arguments
 
       def initialize(*expected_arguments)

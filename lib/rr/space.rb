@@ -34,21 +34,20 @@ module RR
       Scenario.new(double)
     end
 
-    def create_double(object, method_name, &implementation)
-      if old_double = @doubles[object][method_name.to_sym]
-        old_double.reset
-      end
+    def create_double(object, method_name)
+      double = @doubles[object][method_name.to_sym]
+      return double if double
+
       double = Double.new(self, object, method_name.to_sym)
       @doubles[object][method_name.to_sym] = double
       double.bind
-      double.double_method = implementation if implementation
       double
     end
 
-    def verifys
+    def verify_doubles
       @doubles.each do |object, method_double_map|
         method_double_map.keys.each do |method_name|
-          verify(object, method_name)
+          verify_double(object, method_name)
         end
       end
     end
@@ -60,8 +59,10 @@ module RR
         end
       end
     end
-    def verify(object, method_name)
+    
+    def verify_double(object, method_name)
       @doubles[object][method_name].verify
+    ensure
       reset_double object, method_name
     end
 

@@ -7,7 +7,6 @@ require "rr/probe_creator"
 require "rr/scenario"
 require "rr/space"
 
-require "rr/expectations/expectation"
 require "rr/expectations/argument_equality_expectation"
 require "rr/expectations/times_called_expectation"
 

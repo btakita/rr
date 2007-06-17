@@ -3,7 +3,7 @@ module RR
     class TimesCalledExpectationError < RuntimeError
     end
     
-    class TimesCalledExpectation < Expectation
+    class TimesCalledExpectation
       attr_reader :times, :times_called
       
       def initialize(times=nil, &time_condition_block)
@@ -12,17 +12,17 @@ module RR
         @times_called = 0
       end
 
-      def verify_input(*args)
+      def verify_input
         @times_called += 1
         verify_input_error if @times.is_a?(Integer) && @times_called > @times
         verify_input_error if @times.is_a?(Range) && @times_called > @times.end
         return
       end
 
-      def verify(double)
-        return if @times.is_a?(Integer) && @times == double.times_called
-        return if @times.is_a?(Proc) && @times.call(double.times_called)
-        return if @times.is_a?(Range) && @times.include?(double.times_called)
+      def verify
+        return if @times.is_a?(Integer) && @times == @times_called
+        return if @times.is_a?(Proc) && @times.call(@times_called)
+        return if @times.is_a?(Range) && @times.include?(@times_called)
         raise TimesCalledExpectationError
       end
 

@@ -1,6 +1,6 @@
 module RR
   class Scenario
-    attr_reader :double, :times_called
+    attr_reader :double, :times_called, :argument_expectation, :times_called_expectation
 
     def initialize(double)
       @double = double
@@ -13,31 +13,31 @@ module RR
 
     def with(*args)
       @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
-      @double.add_expectation @argument_expectation
+      self
+    end
+
+    def with_any_args
+      @argument_expectation = Expectations::ArgumentEqualityExpectation.new(Expectations::ArgumentEqualityExpectation::Anything.new)
       self
     end
 
     def once
       @times_called_expectation = Expectations::TimesCalledExpectation.new(1)
-      @double.add_expectation @times_called_expectation
       self
     end
 
     def twice
       @times_called_expectation = Expectations::TimesCalledExpectation.new(2)
-      @double.add_expectation @times_called_expectation
       self
     end
 
     def times(number)
       @times_called_expectation = Expectations::TimesCalledExpectation.new(number)
-      @double.add_expectation @times_called_expectation
       self
     end
 
     def returns(&implementation)
       @implementation = implementation
-      @double.double_method = implementation
       self
     end
 
@@ -46,11 +46,16 @@ module RR
     end
 
     def call(*args)
-      @times_called += 1
-      @implementation.call(*args)
+      @times_called_expectation.verify_input if @times_called_expectation
+      if @implementation
+        return @implementation.call(*args)
+      else
+        return nil
+      end
     end
 
     def exact_match?(*arguments)
+      return false unless @argument_expectation 
       @argument_expectation.exact_match?(*arguments)
     end
 
@@ -59,7 +64,9 @@ module RR
     end
 
     def verify
-      @times_called_expectation.verify(self)
+      return true unless @times_called_expectation
+      @times_called_expectation.verify
+      true
     end
   end
 end
