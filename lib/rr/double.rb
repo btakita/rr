@@ -11,7 +11,7 @@ module RR
     end
     
     def register_scenario(scenario)
-      @scenarios << scenario
+      @scenarios.unshift(scenario)
     end
 
     def bind

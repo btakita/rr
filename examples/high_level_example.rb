@@ -25,19 +25,18 @@ describe "RR existing object inline interactions" do
     proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
   end
 
-  it "re-mocks" #do
-#    obj = @obj
-#    Object.new.instance_eval do
-#      mock(obj).to_s {"a value"}
-#    end
-#
-#    Object.new.instance_eval do
-#      mock(obj).to_s {"a value"}.twice
-#    end
-#    @obj.to_s.should == "a value"
-#    @obj.to_s.should == "a value"
-#    proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
-#  end
+  it "re-mocks" do
+    obj = @obj
+    Object.new.instance_eval do
+      mock(obj).to_s {"a value"}
+    end
+    Object.new.instance_eval do
+      mock(obj).to_s {"a value"}.twice
+    end
+    @obj.to_s.should == "a value"
+    @obj.to_s.should == "a value"
+    proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
+  end
 
   it "probes" do
     expected_to_s_value = @obj.to_s
@@ -46,15 +45,15 @@ describe "RR existing object inline interactions" do
     proc {@obj.to_s}.should raise_error
   end
 
-  it "re-probes" #do
-#    expected_to_s_value = @obj.to_s
-#    probe(@obj).to_s
-#
-#    probe(@obj).to_s.twice
-#    @obj.to_s.should == expected_to_s_value
-#    @obj.to_s.should == expected_to_s_value
-#    proc {@obj.to_s}.should raise_error
-#  end
+  it "re-probes" do
+    expected_to_s_value = @obj.to_s
+    probe(@obj).to_s
+
+    probe(@obj).to_s.twice
+    @obj.to_s.should == expected_to_s_value
+    @obj.to_s.should == expected_to_s_value
+    proc {@obj.to_s}.should raise_error
+  end
 
   it "stubs" do
     obj = @obj
