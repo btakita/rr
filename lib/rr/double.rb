@@ -59,6 +59,7 @@ module RR
       @scenarios.each do |scenario|
         return scenario.call(*args) if scenario.wildcard_match?(*args)
       end
+      raise ScenarioNotFoundError, "No scenario for arguments #{args.inspect}"
     end
     
     def placeholder_name

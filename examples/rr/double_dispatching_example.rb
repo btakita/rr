@@ -66,5 +66,18 @@ describe Double, " method dispatching where there are scenarios with duplicate A
 
     @object.foobar(:anything).should == :return_2
   end
+  
+  it "raises ScenarioNotFoundError error when arguments do not match a scenario" do
+    scenario_1 = @space.create_scenario(@double)
+    scenario_1.with(1, 2)
+
+    scenario_2 = @space.create_scenario(@double)
+    scenario_2.with(3)
+
+    proc {@object.foobar(:no_matching_args)}.should raise_error(
+      ScenarioNotFoundError,
+      "No scenario for arguments [:no_matching_args]"
+    )
+  end
 end
 end

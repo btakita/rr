@@ -1,0 +1,2 @@
+class ScenarioNotFoundError < RuntimeError
+end

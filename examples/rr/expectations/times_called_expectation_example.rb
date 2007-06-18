@@ -8,8 +8,9 @@ describe TimesCalledExpectation, :shared => true do
     @space = Space.new
     @object = Object.new
     @method_name = :foobar
-    @double = @space.create_double(@object, @method_name) {}
-    def @double.times_called=(value); @times_called = value; end
+    @double = @space.create_double(@object, @method_name)
+    @scenario = @space.create_scenario(@double)
+    @scenario.with_any_args
   end
 
   def raises_expectation_error(&block)
