@@ -14,7 +14,7 @@ module RR
       double = @space.create_double(@subject, method_name)
       scenario = @space.create_scenario(double)
       scenario.returns(&returns)
-      scenario.with(Expectations::ArgumentEqualityExpectation::Anything.new)
+      scenario.with_any_args
     end
   end
 end

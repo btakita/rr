@@ -146,7 +146,17 @@ describe Scenario, "#wildcard_match?" do
   end
 
   it "returns true when arguments are an exact match" do
-    @scenario.with(Expectations::ArgumentEqualityExpectation::Anything.new)
+    @scenario.with(1, 2, 3)
+    @scenario.should be_wildcard_match(1, 2, 3)
+    @scenario.should_not be_wildcard_match(1, 2)
+    @scenario.should_not be_wildcard_match(1)
+    @scenario.should_not be_wildcard_match()
+    @scenario.should_not be_wildcard_match("does not match")
+  end
+
+  it "returns true when with_any_args" do
+    @scenario.with_any_args
+
     @scenario.should be_wildcard_match(1, 2, 3)
     @scenario.should be_wildcard_match(1, 2)
     @scenario.should be_wildcard_match(1)

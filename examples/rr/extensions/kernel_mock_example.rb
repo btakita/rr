@@ -19,7 +19,7 @@ describe Kernel, "#mock" do
 
       scenario = creator.foobar(1, 2) {:baz}
       scenario.times_called_expectation.times.should == 1
-      scenario.argument_expectation.should_match_arguments?.should == true
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
       scenario.argument_expectation.expected_arguments.should == [1, 2]
       
       subject.foobar(1, 2).should == :baz
@@ -45,8 +45,7 @@ describe Kernel, "#stub" do
       
       scenario = creator.foobar(1, 2) {:baz}
       scenario.times_called_expectation.should == nil
-      scenario.argument_expectation.should_match_arguments?.should == false
-      scenario.argument_expectation.expected_arguments.should == nil
+      scenario.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
       subject.foobar(1, 2).should == :baz
     end
   end
@@ -70,7 +69,7 @@ describe Kernel, "#probe" do
 
       scenario = creator.foobar(1, 2)
       scenario.times_called_expectation.times.should == 1
-      scenario.argument_expectation.should_match_arguments?.should == true
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
       scenario.argument_expectation.expected_arguments.should == [1, 2]
       
       subject.foobar(1, 2).should == :original_value

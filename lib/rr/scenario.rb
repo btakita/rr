@@ -15,7 +15,7 @@ module RR
     end
 
     def with_any_args
-      @argument_expectation = Expectations::ArgumentEqualityExpectation.new(Expectations::ArgumentEqualityExpectation::Anything.new)
+      @argument_expectation = Expectations::AnyArgumentExpectation.new
       self
     end
 
