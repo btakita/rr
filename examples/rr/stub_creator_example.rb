@@ -11,25 +11,25 @@ end
 describe StubCreator, ".new with nothing passed in" do
   it_should_behave_like "RR::StubCreator"
 
-  it "initializes proxy with Object" do
-    proxy = StubCreator.new(@space)
-    class << proxy
+  it "initializes creator with Object" do
+    creator = StubCreator.new(@space)
+    class << creator
       attr_reader :subject
     end
-    proxy.subject.class.should == Object
+    creator.subject.class.should == Object
   end
 end
 
 describe StubCreator, ".new with one thing passed in" do
   it_should_behave_like "RR::StubCreator"
 
-  it "initializes proxy with passed in object" do
+  it "initializes creator with passed in object" do
     subject = Object.new
-    proxy = StubCreator.new(@space, subject)
-    class << proxy
+    creator = StubCreator.new(@space, subject)
+    class << creator
       attr_reader :subject
     end
-    proxy.subject.should === subject
+    creator.subject.should === subject
   end
 end
 
@@ -46,11 +46,11 @@ describe StubCreator, "#method_missing" do
   
   before do
     @subject = Object.new
-    @proxy = StubCreator.new(@space, @subject)
+    @creator = StubCreator.new(@space, @subject)
   end
 
   it "stubs the subject without any args" do
-    @proxy.foobar {:baz}
+    @creator.foobar {:baz}
     @subject.foobar.should == :baz
   end
 

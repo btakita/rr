@@ -83,27 +83,27 @@ describe "RR existing object blocks interactions" do
   end
 
   it "mocks" #do
-#    expect @obj do
-#      to_s {"a value"}
-#      to_sym {:crazy}
+#    mock @obj do |m|
+#      m.to_s {"a value"}
+#      m.to_sym {:crazy}
 #    end
 #    @obj.to_s.should == "a value"
 #    @obj.to_sym.should == :crazy
 #  end
 
   it "probes" #do
-#    expect @obj do
-#      to_s
-#      to_sym
+#    probe @obj do |d|
+#      d.to_s
+#      d.to_sym
 #    end
 #    @obj.to_s.should == "foobar"
 #    @obj.to_sym.should == :foobar
 #  end
 
   it "stubs" #do
-#    expect @obj do
-#      to_s {"a value"}
-#      to_sym {:crazy}
+#    stub @obj do |d|
+#      d.to_s {"a value"}
+#      d.to_sym {:crazy}
 #    end
 #    @obj.to_s.should == "a value"
 #    @obj.to_sym.should == :crazy
