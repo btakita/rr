@@ -17,6 +17,10 @@ module RR
       def wildcard_match?(*arguments)
         exact_match?(*arguments)
       end
+
+      def ==(other)
+        @expected_arguments == other.expected_arguments
+      end
     end
   end
 end
