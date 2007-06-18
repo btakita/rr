@@ -24,24 +24,6 @@ module RR
         exact_match?(*arguments)
       end
 
-      # TODO: Remove this because exact_match and wild_card match will be used instead
-      def verify_input(*arguments)
-        return unless @should_match_arguments
-        
-        unless @expected_arguments.length == arguments.length
-          raise(
-            ArgumentEqualityExpectationError,
-            "#{arguments.length} argument passed in. Expected #{@expected_arguments.length}."
-          )
-        end
-
-        @expected_arguments.each_with_index do |expected_argument, i|
-          unless expected_argument == arguments[i]
-            raise ArgumentEqualityExpectationError, "#{arguments[i].inspect} is not #{expected_argument.inspect}"
-          end
-        end
-      end
-
       def should_match_arguments?
         @should_match_arguments
       end

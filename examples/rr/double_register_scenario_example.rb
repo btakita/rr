@@ -21,5 +21,7 @@ describe Double, "#register_scenario" do
     @double.register_scenario scenario
     @double.scenarios.should include(scenario)
   end
+
+  it "replaces scenario that matches the passed in scenario"
 end
 end
