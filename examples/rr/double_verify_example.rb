@@ -8,7 +8,7 @@ describe Double, "#verify" do
     @object = Object.new
     @method_name = :foobar
     @object.methods.should_not include(@method_name.to_s)
-    @double = @space.create_double(@object, @method_name) {}
+    @double = @space.create_double(@object, @method_name)
   end
 
   it "verifies each scenario was met" do

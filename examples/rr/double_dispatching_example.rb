@@ -8,7 +8,7 @@ describe Double, " method dispatching where there are no scenarios with duplicat
     @object = Object.new
     @method_name = :foobar
     @object.methods.should_not include(@method_name.to_s)
-    @double = @space.create_double(@object, @method_name) {}
+    @double = @space.create_double(@object, @method_name)
   end
 
   it "dispatches to Scenario that has an exact match" do
@@ -40,7 +40,7 @@ describe Double, " method dispatching where there are scenarios with duplicate A
     @object = Object.new
     @method_name = :foobar
     @object.methods.should_not include(@method_name.to_s)
-    @double = @space.create_double(@object, @method_name) {}
+    @double = @space.create_double(@object, @method_name)
   end
 
   it "dispatches to Scenario that has an exact match" do
