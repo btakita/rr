@@ -1,6 +1,6 @@
 module Kernel
   def mock(subject, &definition)
-    RR::Space.instance.create_mock_creator(subject)
+    RR::Space.instance.create_mock_creator(subject, &definition)
   end
 
   def stub(subject)

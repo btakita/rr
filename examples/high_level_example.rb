@@ -79,17 +79,24 @@ end
 
 describe "RR existing object blocks interactions" do
   before(:each) do
-    @obj = :foobar
+    @obj = Object.new
   end
 
-  it "mocks" #do
-#    mock @obj do |m|
-#      m.to_s {"a value"}
-#      m.to_sym {:crazy}
-#    end
-#    @obj.to_s.should == "a value"
-#    @obj.to_sym.should == :crazy
-#  end
+  after(:each) do
+    RR::Space.instance.reset_doubles
+  end
+
+  it "mocks" do
+    obj = @obj
+    Object.new.instance_eval do
+      mock obj do |c|
+        c.to_s {"a value"}
+        c.to_sym {:crazy}
+      end
+    end
+    @obj.to_s.should == "a value"
+    @obj.to_sym.should == :crazy
+  end
 
   it "probes" #do
 #    probe @obj do |d|

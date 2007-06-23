@@ -17,8 +17,8 @@ module RR
       @doubles = Hash.new {|hash, subject_object| hash[subject_object] = Hash.new}
     end
 
-    def create_mock_creator(subject)
-      MockCreator.new(self, subject)
+    def create_mock_creator(subject, &definition)
+      MockCreator.new(self, subject, &definition)
     end
 
     def create_stub_creator(subject)

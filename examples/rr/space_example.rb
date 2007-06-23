@@ -48,6 +48,14 @@ describe Space, "#create_mock_creator" do
     @object.foobar(1).should == :baz
     proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
   end
+
+  it "uses block definition when passed a block" do
+    creator = @space.create_mock_creator(@object) do |c|
+      c.foobar(1) {:baz}
+    end
+    @object.foobar(1).should == :baz
+    proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
+  end
 end
 
 describe Space, "#create_stub_creator" do

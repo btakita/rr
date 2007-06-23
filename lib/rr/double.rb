@@ -1,6 +1,6 @@
 module RR
   class Double
-    attr_reader :space, :object, :method_name, :original_method
+    attr_reader :space, :object, :method_name, :original_method, :scenarios
 
     def initialize(space, object, method_name)
       @space = space

@@ -20,6 +20,11 @@ describe Scenario, "#with" do
     @scenario.should be_exact_match(1)
     @scenario.should_not be_exact_match(2)
   end
+
+  it "sets return value when block passed in" do
+    @scenario.with(1) {:return_value}
+    @object.foobar(1).should == :return_value
+  end
 end
 
 describe Scenario, "#with_any_args" do
@@ -30,6 +35,11 @@ describe Scenario, "#with_any_args" do
     @scenario.should_not be_exact_match(1)
     @scenario.should be_wildcard_match(1)
   end
+
+  it "sets return value when block passed in" do
+    @scenario.with_any_args {:return_value}
+    @object.foobar(:anything).should == :return_value
+  end
 end
 
 describe Scenario, "#once" do
@@ -39,6 +49,11 @@ describe Scenario, "#once" do
     @scenario.once.should === @scenario
     @scenario.call
     proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
+  end
+
+  it "sets return value when block passed in" do
+    @scenario.with_any_args.once {:return_value}
+    @object.foobar.should == :return_value
   end
 end
 
@@ -51,6 +66,11 @@ describe Scenario, "#twice" do
     @scenario.call
     proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
   end
+
+  it "sets return value when block passed in" do
+    @scenario.with_any_args.twice {:return_value}
+    @object.foobar.should == :return_value
+  end
 end
 
 describe Scenario, "#times" do
@@ -62,6 +82,11 @@ describe Scenario, "#times" do
     @scenario.call
     @scenario.call
     proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
+  end
+
+  it "sets return value when block passed in" do
+    @scenario.with_any_args.times(3) {:return_value}
+    @object.foobar.should == :return_value
   end
 end
 
@@ -143,6 +168,13 @@ describe Scenario, "#wildcard_match?" do
     @method_name = :foobar
     @double = @space.create_double(@object, @method_name)
     @scenario = @space.create_scenario(@double)
+  end
+
+  it "returns false when no expectation set" do
+    @scenario.should_not be_wildcard_match()
+    @scenario.should_not be_wildcard_match(nil)
+    @scenario.should_not be_wildcard_match(Object.new)
+    @scenario.should_not be_wildcard_match(1, 2, 3)
   end
 
   it "returns true when arguments are an exact match" do

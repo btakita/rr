@@ -9,28 +9,33 @@ module RR
       @times_called = 0
     end
 
-    def with(*args)
+    def with(*args, &returns)
       @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
+      returns(&returns) if returns
       self
     end
 
-    def with_any_args
+    def with_any_args(&returns)
       @argument_expectation = Expectations::AnyArgumentExpectation.new
+      returns(&returns) if returns
       self
     end
 
-    def once
+    def once(&returns)
       @times_called_expectation = Expectations::TimesCalledExpectation.new(1)
+      returns(&returns) if returns
       self
     end
 
-    def twice
+    def twice(&returns)
       @times_called_expectation = Expectations::TimesCalledExpectation.new(2)
+      returns(&returns) if returns
       self
     end
 
-    def times(number)
+    def times(number, &returns)
       @times_called_expectation = Expectations::TimesCalledExpectation.new(number)
+      returns(&returns) if returns
       self
     end
 
@@ -54,6 +59,7 @@ module RR
     end
 
     def wildcard_match?(*arguments)
+      return false unless @argument_expectation
       @argument_expectation.wildcard_match?(*arguments)
     end
 

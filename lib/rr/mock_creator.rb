@@ -5,6 +5,7 @@ module RR
     def initialize(space, subject)
       @space = space
       @subject = subject
+      yield(self) if block_given?
     end
 
     protected
