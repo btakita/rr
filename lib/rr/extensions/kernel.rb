@@ -1,13 +1,13 @@
 module Kernel
-  def mock(*args)
-    RR::Space.instance.create_mock_creator(*args)
+  def mock(subject, &definition)
+    RR::Space.instance.create_mock_creator(subject)
   end
 
-  def stub(*args)
-    RR::Space.instance.create_stub_creator(*args)
+  def stub(subject)
+    RR::Space.instance.create_stub_creator(subject)
   end
 
-  def probe(*args)
-    RR::Space.instance.create_probe_creator(*args)
+  def probe(subject)
+    RR::Space.instance.create_probe_creator(subject)
   end
 end

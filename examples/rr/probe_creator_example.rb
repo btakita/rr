@@ -8,18 +8,6 @@ describe ProbeCreator, :shared => true do
   end
 end
 
-describe ProbeCreator, ".new with nothing passed in" do
-  it_should_behave_like "RR::ProbeCreator"
-
-  it "initializes creator with Object" do
-    creator = ProbeCreator.new(@space)
-    class << creator
-      attr_reader :subject
-    end
-    creator.subject.class.should == Object
-  end
-end
-
 describe ProbeCreator, ".new with one thing passed in" do
   it_should_behave_like "RR::ProbeCreator"
 
@@ -30,14 +18,6 @@ describe ProbeCreator, ".new with one thing passed in" do
       attr_reader :subject
     end
     creator.subject.should === subject
-  end
-end
-
-describe ProbeCreator, ".new with two things passed in" do
-  it_should_behave_like "RR::ProbeCreator"
-  
-  it "raises Argument error" do
-    proc {ProbeCreator.new(@space, nil, nil)}.should raise_error(ArgumentError, "wrong number of arguments (2 for 1)")
   end
 end
 

@@ -17,16 +17,16 @@ module RR
       @doubles = Hash.new {|hash, subject_object| hash[subject_object] = Hash.new}
     end
 
-    def create_mock_creator(*args)
-      MockCreator.new(self, *args)
+    def create_mock_creator(subject)
+      MockCreator.new(self, subject)
     end
 
-    def create_stub_creator(*args)
-      StubCreator.new(self, *args)
+    def create_stub_creator(subject)
+      StubCreator.new(self, subject)
     end
 
-    def create_probe_creator(*args)
-      ProbeCreator.new(self, *args)
+    def create_probe_creator(subject)
+      ProbeCreator.new(self, subject)
     end
 
     def create_scenario(double)

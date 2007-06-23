@@ -4,12 +4,8 @@ require "#{dir}/../../example_helper"
 describe Kernel, "#mock" do
   it "sets up the RR mock call chain" do
     Object.new.instance_eval do
-      creator = mock
-      class << creator
-        attr_reader :subject
-      end
-      subject = creator.subject
-      subject.class.should == Object
+      subject = Object.new
+      creator = mock(subject)
 
       class << subject
         def foobar(*args)
@@ -30,12 +26,8 @@ end
 describe Kernel, "#stub" do
   it "sets up the RR stub call chain" do
     Object.new.instance_eval do
-      creator = stub
-      class << creator
-        attr_reader :subject
-      end
-      subject = creator.subject
-      subject.class.should == Object
+      subject = Object.new
+      creator = stub(subject)
 
       class << subject
         def foobar(*args)
@@ -54,12 +46,8 @@ end
 describe Kernel, "#probe" do
   it "sets up the RR probe call chain" do
     Object.new.instance_eval do
-      creator = probe
-      class << creator
-        attr_reader :subject
-      end
-      subject = creator.subject
-      subject.class.should == Object
+      subject = Object.new
+      creator = probe(subject)
 
       class << subject
         def foobar(*args)

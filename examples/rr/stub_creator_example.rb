@@ -8,18 +8,6 @@ describe StubCreator, :shared => true do
   end
 end
 
-describe StubCreator, ".new with nothing passed in" do
-  it_should_behave_like "RR::StubCreator"
-
-  it "initializes creator with Object" do
-    creator = StubCreator.new(@space)
-    class << creator
-      attr_reader :subject
-    end
-    creator.subject.class.should == Object
-  end
-end
-
 describe StubCreator, ".new with one thing passed in" do
   it_should_behave_like "RR::StubCreator"
 
@@ -30,14 +18,6 @@ describe StubCreator, ".new with one thing passed in" do
       attr_reader :subject
     end
     creator.subject.should === subject
-  end
-end
-
-describe StubCreator, ".new with two things passed in" do
-  it_should_behave_like "RR::StubCreator"
-  
-  it "raises Argument error" do
-    proc {StubCreator.new(@space, nil, nil)}.should raise_error(ArgumentError, "wrong number of arguments (2 for 1)")
   end
 end
 

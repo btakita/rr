@@ -2,11 +2,9 @@ module RR
   class StubCreator
     instance_methods.each { |m| undef_method m unless m =~ /^__/ }
     
-    def initialize(space, *args)
+    def initialize(space, subject)
       @space = space
-      arg_length = args.length
-      raise ArgumentError, "wrong number of arguments (#{arg_length} for 1)" if arg_length > 1
-      @subject = args.first || Object.new
+      @subject = subject
     end
 
     protected
