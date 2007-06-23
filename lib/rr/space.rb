@@ -25,8 +25,8 @@ module RR
       StubCreator.new(self, subject)
     end
 
-    def create_probe_creator(subject)
-      ProbeCreator.new(self, subject)
+    def create_probe_creator(subject, &definition)
+      ProbeCreator.new(self, subject, &definition)
     end
 
     def create_scenario(double)

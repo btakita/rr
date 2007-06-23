@@ -93,6 +93,14 @@ describe Space, "#create_probe_creator" do
     @object.foobar(1).should == :original_foobar
     proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
   end
+
+  it "uses block definition when passed a block" do
+    creator = @space.create_probe_creator(@object) do |c|
+      c.foobar(1)
+    end
+    @object.foobar(1).should == :original_foobar
+    proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
+  end
 end
 
 describe Space, "#create_scenario" do

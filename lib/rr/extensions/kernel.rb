@@ -7,7 +7,7 @@ module Kernel
     RR::Space.instance.create_stub_creator(subject)
   end
 
-  def probe(subject)
-    RR::Space.instance.create_probe_creator(subject)
+  def probe(subject, &definition)
+    RR::Space.instance.create_probe_creator(subject, &definition)
   end
 end

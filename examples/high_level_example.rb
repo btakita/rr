@@ -98,14 +98,28 @@ describe "RR existing object blocks interactions" do
     @obj.to_sym.should == :crazy
   end
 
-  it "probes" #do
-#    probe @obj do |d|
-#      d.to_s
-#      d.to_sym
-#    end
-#    @obj.to_s.should == "foobar"
-#    @obj.to_sym.should == :foobar
-#  end
+  it "probes" do
+    def @obj.foobar_1(*args)
+      :original_value_1
+    end
+
+    def @obj.foobar_2
+      :original_value_2
+    end
+
+    obj = @obj
+    Object.new.instance_eval do
+      probe obj do |c|
+        c.foobar_1(1)
+        c.foobar_2
+      end
+    end
+    @obj.foobar_1(1).should == :original_value_1
+    proc {@obj.foobar_1(:blah)}.should raise_error
+
+    @obj.foobar_2.should == :original_value_2
+    proc {@obj.foobar_2(:blah)}.should raise_error
+  end
 
   it "stubs" #do
 #    stub @obj do |d|
