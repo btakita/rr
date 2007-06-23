@@ -8,7 +8,7 @@ describe StubCreator, :shared => true do
   end
 end
 
-describe StubCreator, ".new with one thing passed in" do
+describe StubCreator, ".new" do
   it_should_behave_like "RR::StubCreator"
 
   it "initializes creator with passed in object" do

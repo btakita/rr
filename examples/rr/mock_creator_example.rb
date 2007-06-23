@@ -8,7 +8,7 @@ describe MockCreator, :shared => true do
   end
 end
 
-describe MockCreator, ".new with one thing passed in" do
+describe MockCreator, ".new" do
   it_should_behave_like "RR::MockCreator"
 
   it "initializes creator with passed in object" do

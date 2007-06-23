@@ -8,7 +8,7 @@ describe ProbeCreator, :shared => true do
   end
 end
 
-describe ProbeCreator, ".new with one thing passed in" do
+describe ProbeCreator, ".new" do
   it_should_behave_like "RR::ProbeCreator"
 
   it "initializes creator with passed in object" do
