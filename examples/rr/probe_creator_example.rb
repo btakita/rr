@@ -7,6 +7,13 @@ describe ProbeCreator, :shared => true do
     @space = Space.new
     @subject = Object.new
   end
+
+  it "initializes creator with passed in object" do
+    class << @creator
+      attr_reader :subject
+    end
+    @creator.subject.should === @subject
+  end
 end
 
 describe ProbeCreator, ".new without block" do
@@ -14,13 +21,6 @@ describe ProbeCreator, ".new without block" do
 
   before do
     @creator = ProbeCreator.new(@space, @subject)
-  end
-
-  it "initializes creator with passed in object" do
-    class << @creator
-      attr_reader :subject
-    end
-    @creator.subject.should === @subject
   end
 end
 

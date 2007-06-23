@@ -73,6 +73,17 @@ describe Space, "#create_stub_creator" do
     @object.foobar.should == :baz
     @object.foobar.should == :baz
   end
+
+  it "uses block definition when passed a block" do
+    creator = @space.create_stub_creator(@object) do |c|
+      c.foobar(1) {:return_value}
+      c.foobar.with_any_args {:default}
+      c.baz(1) {:baz_value}
+    end
+    @object.foobar(1).should == :return_value
+    @object.foobar.should == :default
+    proc {@object.baz.should == :return_value}.should raise_error
+  end
 end
 
 describe Space, "#create_probe_creator" do

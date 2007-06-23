@@ -121,12 +121,15 @@ describe "RR existing object blocks interactions" do
     proc {@obj.foobar_2(:blah)}.should raise_error
   end
 
-  it "stubs" #do
-#    stub @obj do |d|
-#      d.to_s {"a value"}
-#      d.to_sym {:crazy}
-#    end
-#    @obj.to_s.should == "a value"
-#    @obj.to_sym.should == :crazy
-#  end
+  it "stubs" do
+    obj = @obj
+    Object.new.instance_eval do
+      stub obj do |d|
+        d.to_s {"a value"}
+        d.to_sym {:crazy}
+      end
+    end
+    @obj.to_s.should == "a value"
+    @obj.to_sym.should == :crazy
+  end
 end

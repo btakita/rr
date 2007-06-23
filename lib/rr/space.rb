@@ -21,8 +21,8 @@ module RR
       MockCreator.new(self, subject, &definition)
     end
 
-    def create_stub_creator(subject)
-      StubCreator.new(self, subject)
+    def create_stub_creator(subject, &definition)
+      StubCreator.new(self, subject, &definition)
     end
 
     def create_probe_creator(subject, &definition)

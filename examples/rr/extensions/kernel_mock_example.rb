@@ -37,7 +37,7 @@ describe Kernel, "#stub" do
       
       scenario = creator.foobar(1, 2) {:baz}
       scenario.times_called_expectation.should == nil
-      scenario.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
       subject.foobar(1, 2).should == :baz
     end
   end

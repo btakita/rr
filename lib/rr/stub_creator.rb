@@ -5,6 +5,7 @@ module RR
     def initialize(space, subject)
       @space = space
       @subject = subject
+      yield(self) if block_given?
     end
 
     protected
@@ -12,7 +13,11 @@ module RR
       double = @space.create_double(@subject, method_name)
       scenario = @space.create_scenario(double)
       scenario.returns(&returns)
-      scenario.with_any_args
+      if args.empty?
+        scenario.with_any_args
+      else
+        scenario.with(*args)
+      end
     end
   end
 end
