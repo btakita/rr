@@ -1,10 +1,7 @@
 dir = File.dirname(__FILE__)
 require "#{dir}/example_helper"
 
-# mock
-# - probe
-# - stub
-describe "RR existing object inline interactions" do
+describe "RR", :shared => true do
   before(:each) do
     @obj = Object.new
   end
@@ -12,8 +9,12 @@ describe "RR existing object inline interactions" do
   after(:each) do
     RR::Space.instance.reset_doubles
   end
+end
 
-  it "mocks" do
+describe "RR mock:" do
+  it_should_behave_like "RR"
+
+  it "mocks via inline call" do
     obj = @obj
 
     # TODO: BT - Remove this block when rspec support is added to RR.
@@ -38,7 +39,23 @@ describe "RR existing object inline interactions" do
     proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
   end
 
-  it "probes" do
+  it "mocks via block" do
+    obj = @obj
+    Object.new.instance_eval do
+      mock obj do |c|
+        c.to_s {"a value"}
+        c.to_sym {:crazy}
+      end
+    end
+    @obj.to_s.should == "a value"
+    @obj.to_sym.should == :crazy
+  end
+end
+
+describe "RR probe:" do
+  it_should_behave_like "RR"
+
+  it "probes via inline call" do
     expected_to_s_value = @obj.to_s
     probe(@obj).to_s
     @obj.to_s.should == expected_to_s_value
@@ -55,50 +72,7 @@ describe "RR existing object inline interactions" do
     proc {@obj.to_s}.should raise_error
   end
 
-  it "stubs" do
-    obj = @obj
-    Object.new.instance_eval do
-      stub(obj).to_s {"a value"}
-    end
-    @obj.to_s.should == "a value"
-  end
-
-  it "re-stubs" do
-    obj = @obj
-    Object.new.instance_eval do
-      stub(obj).to_s {"a value"}
-    end
-
-    Object.new.instance_eval do
-      stub(obj).to_s {"a value"}
-    end
-    
-    @obj.to_s.should == "a value"
-  end
-end
-
-describe "RR existing object blocks interactions" do
-  before(:each) do
-    @obj = Object.new
-  end
-
-  after(:each) do
-    RR::Space.instance.reset_doubles
-  end
-
-  it "mocks" do
-    obj = @obj
-    Object.new.instance_eval do
-      mock obj do |c|
-        c.to_s {"a value"}
-        c.to_sym {:crazy}
-      end
-    end
-    @obj.to_s.should == "a value"
-    @obj.to_sym.should == :crazy
-  end
-
-  it "probes" do
+  it "probes via block" do
     def @obj.foobar_1(*args)
       :original_value_1
     end
@@ -120,8 +94,33 @@ describe "RR existing object blocks interactions" do
     @obj.foobar_2.should == :original_value_2
     proc {@obj.foobar_2(:blah)}.should raise_error
   end
+end
 
-  it "stubs" do
+describe "RR stub:" do
+  it_should_behave_like "RR"
+
+  it "stubs via inline call" do
+    obj = @obj
+    Object.new.instance_eval do
+      stub(obj).to_s {"a value"}
+    end
+    @obj.to_s.should == "a value"
+  end
+
+  it "re-stubs" do
+    obj = @obj
+    Object.new.instance_eval do
+      stub(obj).to_s {"a value"}
+    end
+
+    Object.new.instance_eval do
+      stub(obj).to_s {"a value"}
+    end
+    
+    @obj.to_s.should == "a value"
+  end
+
+  it "stubs via block" do
     obj = @obj
     Object.new.instance_eval do
       stub obj do |d|
