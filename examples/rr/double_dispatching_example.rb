@@ -48,11 +48,16 @@ describe Double, " method dispatching where there are scenarios with duplicate A
     scenario1_with_exact_match.with(:exact_match).returns {:return_1}
 
     @object.foobar(:exact_match).should == :return_1
+  end
+
+  it "dispatches to the first Scenario that has an exact match" do
+    scenario1_with_exact_match = @space.create_scenario(@double)
+    scenario1_with_exact_match.with(:exact_match).returns {:return_1}
 
     scenario2_with_exact_match = @space.create_scenario(@double)
     scenario2_with_exact_match.with(:exact_match).returns {:return_2}
 
-    @object.foobar(:exact_match).should == :return_2
+    @object.foobar(:exact_match).should == :return_1
   end
 
   it "dispatches to Scenario that has a wildcard match" do
@@ -60,11 +65,16 @@ describe Double, " method dispatching where there are scenarios with duplicate A
     scenario_1.with_any_args.returns {:return_1}
 
     @object.foobar(:anything).should == :return_1
+  end
+
+  it "dispatches to the first Scenario that has a wildcard match" do
+    scenario_1 = @space.create_scenario(@double)
+    scenario_1.with_any_args.returns {:return_1}
 
     scenario_2 = @space.create_scenario(@double)
     scenario_2.with_any_args.returns {:return_2}
 
-    @object.foobar(:anything).should == :return_2
+    @object.foobar(:anything).should == :return_1
   end
   
   it "raises ScenarioNotFoundError error when arguments do not match a scenario" do

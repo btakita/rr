@@ -26,18 +26,19 @@ describe "RR mock:" do
     proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
   end
 
-  it "re-mocks" do
-    obj = @obj
-    Object.new.instance_eval do
-      mock(obj).to_s {"a value"}
-    end
-    Object.new.instance_eval do
-      mock(obj).to_s {"a value"}.twice
-    end
-    @obj.to_s.should == "a value"
-    @obj.to_s.should == "a value"
-    proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
-  end
+  it "allows ordering" #do
+#    obj = @obj
+#    Object.new.instance_eval do
+#      mock(obj).to_s {"value 1"}.ordered
+#    end
+#    Object.new.instance_eval do
+#      mock(obj).to_s {"value 2"}.twice.ordered
+#    end
+#    @obj.to_s.should == "value 1"
+#    @obj.to_s.should == "value 2"
+#    @obj.to_s.should == "value 2"
+#    proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
+#  end
 
   it "mocks via block" do
     obj = @obj
@@ -62,15 +63,16 @@ describe "RR probe:" do
     proc {@obj.to_s}.should raise_error
   end
 
-  it "re-probes" do
-    expected_to_s_value = @obj.to_s
-    probe(@obj).to_s
-
-    probe(@obj).to_s.twice
-    @obj.to_s.should == expected_to_s_value
-    @obj.to_s.should == expected_to_s_value
-    proc {@obj.to_s}.should raise_error
-  end
+  it "allows ordering" #do
+#    expected_to_s_value = @obj.to_s
+#    probe(@obj).to_s(:foo).ordered
+#    probe(@obj).to_s(:bar).twice.ordered
+#
+#    @obj.to_s(:foo).should == expected_to_s_value
+#    @obj.to_s(:bar).should == expected_to_s_value
+#    @obj.to_s(:bar).should == expected_to_s_value
+#    proc {@obj.to_s(:bar)}.should raise_error
+#  end
 
   it "probes via block" do
     def @obj.foobar_1(*args)
@@ -107,18 +109,19 @@ describe "RR stub:" do
     @obj.to_s.should == "a value"
   end
 
-  it "re-stubs" do
-    obj = @obj
-    Object.new.instance_eval do
-      stub(obj).to_s {"a value"}
-    end
-
-    Object.new.instance_eval do
-      stub(obj).to_s {"a value"}
-    end
-    
-    @obj.to_s.should == "a value"
-  end
+  it "allows ordering" #do
+#    obj = @obj
+#    Object.new.instance_eval do
+#      stub(obj).to_s {"value 1"}.ordered
+#    end
+#
+#    Object.new.instance_eval do
+#      stub(obj).to_s {"value 2"}.ordered
+#    end
+#    
+#    @obj.to_s.should == "value 1"
+#    @obj.to_s.should == "value 2"
+#  end
 
   it "stubs via block" do
     obj = @obj
