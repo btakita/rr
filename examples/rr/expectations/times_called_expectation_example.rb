@@ -18,6 +18,49 @@ describe TimesCalledExpectation, :shared => true do
   end
 end
 
+describe TimesCalledExpectation, ".new" do
+  it "doesn't accept both an argument and a block" do
+    proc do
+      TimesCalledExpectation.new(2) {|value| value == 2}
+    end.should raise_error(ArgumentError, "Cannot pass in both an argument and a block")
+  end
+end
+
+describe TimesCalledExpectation, "#verify" do
+  it_should_behave_like "RR::Expectations::TimesCalledExpectation"
+
+  it "returns true when times called exactly matches an integer" do
+    @expectation = TimesCalledExpectation.new(2)
+    @expectation.verify.should == false
+    @expectation.verify_input
+    @expectation.verify.should == false
+    @expectation.verify_input
+    @expectation.verify.should == true
+  end
+
+  it "returns true when times called falls within a range" do
+    @expectation = TimesCalledExpectation.new(1..2)
+
+    @expectation.verify.should == false
+    @expectation.verify_input
+    @expectation.verify.should == true
+    @expectation.verify_input
+    @expectation.verify.should == true
+  end
+
+  it "matches a block" do
+    @expectation = TimesCalledExpectation.new {|value| value == 2}
+
+    @expectation.verify.should == false
+    @expectation.verify_input
+    @expectation.verify.should == false
+    @expectation.verify_input
+    @expectation.verify.should == true
+    @expectation.verify_input
+    @expectation.verify.should == false
+  end
+end
+
 describe TimesCalledExpectation, "#verify!" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
@@ -59,12 +102,6 @@ describe TimesCalledExpectation, "#verify!" do
 
     @expectation.verify_input
     raises_expectation_error {@expectation.verify!}
-  end
-
-  it "doesn't accept both an argument and a block" do
-    proc do
-      TimesCalledExpectation.new(2) {|value| value == 2}
-    end.should raise_error(ArgumentError, "Cannot pass in both an argument and a block")
   end
 end
 

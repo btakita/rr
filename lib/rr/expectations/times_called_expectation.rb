@@ -19,11 +19,15 @@ module RR
         return
       end
 
+      def verify
+        return true if @times.is_a?(Integer) && @times == @times_called
+        return true if @times.is_a?(Proc) && @times.call(@times_called)
+        return true if @times.is_a?(Range) && @times.include?(@times_called)
+        return false
+      end
+
       def verify!
-        return if @times.is_a?(Integer) && @times == @times_called
-        return if @times.is_a?(Proc) && @times.call(@times_called)
-        return if @times.is_a?(Range) && @times.include?(@times_called)
-        raise TimesCalledExpectationError
+        raise TimesCalledExpectationError unless verify
       end
 
       protected
