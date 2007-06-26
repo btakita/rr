@@ -19,7 +19,7 @@ module RR
         return
       end
 
-      def verify
+      def verify!
         return if @times.is_a?(Integer) && @times == @times_called
         return if @times.is_a?(Proc) && @times.call(@times_called)
         return if @times.is_a?(Range) && @times.include?(@times_called)

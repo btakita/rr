@@ -100,14 +100,8 @@ describe Scenario, "#returns" do
 end
 
 describe Scenario, "#call" do
-  before do
-    @space = Space.new
-    @object = Object.new
-    @method_name = :foobar
-    @double = @space.create_double(@object, @method_name)
-    @scenario = @space.create_scenario(@double)
-  end
-
+  it_should_behave_like "RR::Scenario"
+  
   it "calls the return proc when scheduled to call a proc" do
     @scenario.returns {|arg| "returning #{arg}"}
     @scenario.call(:foobar).should == "returning foobar"
@@ -132,13 +126,7 @@ describe Scenario, "#call" do
 end
 
 describe Scenario, "#exact_match?" do
-  before do
-    @space = Space.new
-    @object = Object.new
-    @method_name = :foobar
-    @double = @space.create_double(@object, @method_name)
-    @scenario = @space.create_scenario(@double)
-  end
+  it_should_behave_like "RR::Scenario"
 
   it "returns false when no expectation set" do
     @scenario.should_not be_exact_match()
@@ -162,13 +150,7 @@ describe Scenario, "#exact_match?" do
 end
 
 describe Scenario, "#wildcard_match?" do
-  before do
-    @space = Space.new
-    @object = Object.new
-    @method_name = :foobar
-    @double = @space.create_double(@object, @method_name)
-    @scenario = @space.create_scenario(@double)
-  end
+  it_should_behave_like "RR::Scenario"
 
   it "returns false when no expectation set" do
     @scenario.should_not be_wildcard_match()
@@ -197,14 +179,25 @@ describe Scenario, "#wildcard_match?" do
   end
 end
 
+describe Scenario, "#times_called_fulfilled?" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns false when times called does not match expectation" #do
+#    @scenario.with(1, 2, 3).twice
+#    @object.foobar(1, 2, 3)
+#    @scenario.should_not be_times_called_fulfilled
+#  end
+
+  it "returns true when times called matches expectation" #do
+#    @scenario.with(1, 2, 3).twice
+#    @object.foobar(1, 2, 3)
+#    @object.foobar(1, 2, 3)
+#    @scenario.should be_times_called_fulfilled
+#  end
+end
+
 describe Scenario, "#verify" do
-  before do
-    @space = Space.new
-    @object = Object.new
-    @method_name = :foobar
-    @double = @space.create_double(@object, @method_name)
-    @scenario = @space.create_scenario(@double)
-  end
+  it_should_behave_like "RR::Scenario"
 
   it "verifies that times called expectation was met" do
     @scenario.twice.returns {:return_value}

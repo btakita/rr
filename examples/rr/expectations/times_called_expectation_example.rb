@@ -18,7 +18,7 @@ describe TimesCalledExpectation, :shared => true do
   end
 end
 
-describe TimesCalledExpectation, "#verify" do
+describe TimesCalledExpectation, "#verify!" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
   it "matches an integer" do
@@ -27,22 +27,22 @@ describe TimesCalledExpectation, "#verify" do
     @expectation.verify_input
     @expectation.verify_input
     @expectation.verify_input
-    raises_expectation_error {@expectation.verify}
+    raises_expectation_error {@expectation.verify!}
     @expectation.verify_input
     @expectation.verify_input
-    proc {@expectation.verify}.should_not raise_error
+    proc {@expectation.verify!}.should_not raise_error
 
     raises_expectation_error {@expectation.verify_input}
   end
 
   it "matches a range" do
     @expectation = TimesCalledExpectation.new(1..2)
-    raises_expectation_error {@expectation.verify}
+    raises_expectation_error {@expectation.verify!}
 
     @expectation.verify_input
-    @expectation.verify
+    @expectation.verify!
     @expectation.verify_input
-    @expectation.verify
+    @expectation.verify!
 
     raises_expectation_error {@expectation.verify_input}
   end
@@ -50,15 +50,15 @@ describe TimesCalledExpectation, "#verify" do
   it "matches a block" do
     @expectation = TimesCalledExpectation.new {|value| value == 2}
 
-    raises_expectation_error {@expectation.verify}
+    raises_expectation_error {@expectation.verify!}
     @expectation.verify_input
-    raises_expectation_error {@expectation.verify}
+    raises_expectation_error {@expectation.verify!}
     @expectation.verify_input
 
-    proc {@expectation.verify}.should_not raise_error
+    proc {@expectation.verify!}.should_not raise_error
 
     @expectation.verify_input
-    raises_expectation_error {@expectation.verify}
+    raises_expectation_error {@expectation.verify!}
   end
 
   it "doesn't accept both an argument and a block" do
