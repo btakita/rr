@@ -63,9 +63,9 @@ module RR
       @argument_expectation.wildcard_match?(*arguments)
     end
 
-#    def times_called_fulfilled?
-#      @times_called_expectation.matches
-#    end
+    def times_called_verified?
+      @times_called_expectation.verify
+    end
 
     def verify
       return true unless @times_called_expectation

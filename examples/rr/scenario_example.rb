@@ -179,21 +179,21 @@ describe Scenario, "#wildcard_match?" do
   end
 end
 
-describe Scenario, "#times_called_fulfilled?" do
+describe Scenario, "#times_called_verified?" do
   it_should_behave_like "RR::Scenario"
 
-  it "returns false when times called does not match expectation" #do
-#    @scenario.with(1, 2, 3).twice
-#    @object.foobar(1, 2, 3)
-#    @scenario.should_not be_times_called_fulfilled
-#  end
+  it "returns false when times called does not match expectation" do
+    @scenario.with(1, 2, 3).twice
+    @object.foobar(1, 2, 3)
+    @scenario.should_not be_times_called_verified
+  end
 
-  it "returns true when times called matches expectation" #do
-#    @scenario.with(1, 2, 3).twice
-#    @object.foobar(1, 2, 3)
-#    @object.foobar(1, 2, 3)
-#    @scenario.should be_times_called_fulfilled
-#  end
+  it "returns true when times called matches expectation" do
+    @scenario.with(1, 2, 3).twice
+    @object.foobar(1, 2, 3)
+    @object.foobar(1, 2, 3)
+    @scenario.should be_times_called_verified
+  end
 end
 
 describe Scenario, "#verify" do
