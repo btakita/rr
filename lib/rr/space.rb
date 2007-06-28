@@ -12,7 +12,7 @@ module RR
       end
     end
 
-    attr_reader :doubles
+    attr_reader :doubles, :ordered_scenarios
     def initialize
       @doubles = Hash.new {|hash, subject_object| hash[subject_object] = Hash.new}
     end
