@@ -11,7 +11,7 @@ describe Double, " method dispatching where there are no scenarios with duplicat
     @double = @space.create_double(@object, @method_name)
   end
 
-  it "dispatches to Scenario that has an exact match" do
+  it "dispatches to Scenario that have an exact match" do
     scenario1_with_exact_match = @space.create_scenario(@double)
     scenario1_with_exact_match.with(:exact_match_1).returns {:return_1}
     scenario_with_no_match = @space.create_scenario(@double)
@@ -23,7 +23,7 @@ describe Double, " method dispatching where there are no scenarios with duplicat
     @object.foobar(:exact_match_2).should == :return_2
   end
 
-  it "dispatches to Scenario that has a wildcard match" do
+  it "dispatches to Scenario that have a wildcard match" do
     scenario_with_wildcard_match = @space.create_scenario(@double)
     scenario_with_wildcard_match.with_any_args.returns {:wild_card_value}
     scenario_with_no_match = @space.create_scenario(@double)
@@ -43,14 +43,14 @@ describe Double, " method dispatching where there are scenarios with duplicate A
     @double = @space.create_double(@object, @method_name)
   end
 
-  it "dispatches to Scenario that has an exact match" do
+  it "dispatches to Scenario that have an exact match" do
     scenario1_with_exact_match = @space.create_scenario(@double)
     scenario1_with_exact_match.with(:exact_match).returns {:return_1}
 
     @object.foobar(:exact_match).should == :return_1
   end
 
-  it "dispatches to the first Scenario that has an exact match" do
+  it "dispatches to the first Scenario that have an exact match" do
     scenario1_with_exact_match = @space.create_scenario(@double)
     scenario1_with_exact_match.with(:exact_match).returns {:return_1}
 
@@ -60,7 +60,7 @@ describe Double, " method dispatching where there are scenarios with duplicate A
     @object.foobar(:exact_match).should == :return_1
   end
 
-  it "dispatches to Scenario that has a wildcard match" do
+  it "dispatches to Scenario that have a wildcard match" do
     scenario_1 = @space.create_scenario(@double)
     scenario_1.with_any_args.returns {:return_1}
 
