@@ -2,7 +2,7 @@ dir = File.dirname(__FILE__)
 require "#{dir}/../example_helper"
 
 module RR
-describe Double, " method dispatching where there are no scenarios with duplicate ArgumentExpectations" do
+describe Double, "method dispatching", :shared => true do
   before do
     @space = Space.new
     @object = Object.new
@@ -10,6 +10,10 @@ describe Double, " method dispatching where there are no scenarios with duplicat
     @object.methods.should_not include(@method_name.to_s)
     @double = @space.create_double(@object, @method_name)
   end
+end
+
+describe Double, " method dispatching where there are no scenarios with duplicate ArgumentExpectations" do
+  it_should_behave_like "RR::Double method dispatching"
 
   it "dispatches to Scenario that have an exact match" do
     scenario1_with_exact_match = @space.create_scenario(@double)
@@ -35,13 +39,7 @@ describe Double, " method dispatching where there are no scenarios with duplicat
 end
 
 describe Double, " method dispatching where there are scenarios with duplicate ArgumentExpectations" do
-  before do
-    @space = Space.new
-    @object = Object.new
-    @method_name = :foobar
-    @object.methods.should_not include(@method_name.to_s)
-    @double = @space.create_double(@object, @method_name)
-  end
+  it_should_behave_like "RR::Double method dispatching"
 
   it "dispatches to Scenario that have an exact match" do
     scenario1_with_exact_match = @space.create_scenario(@double)
