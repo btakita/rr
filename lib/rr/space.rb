@@ -15,6 +15,7 @@ module RR
     attr_reader :doubles, :ordered_scenarios
     def initialize
       @doubles = Hash.new {|hash, subject_object| hash[subject_object] = Hash.new}
+      @ordered_scenarios = []
     end
 
     def create_mock_creator(subject, &definition)
@@ -43,6 +44,10 @@ module RR
       @doubles[object][method_name.to_sym] = double
       double.bind
       double
+    end
+
+    def register_ordered_scenario(scenario)
+      @ordered_scenarios << scenario
     end
 
     def verify_doubles
