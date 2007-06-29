@@ -90,4 +90,57 @@ describe Space, "#verify_double" do
     @object.methods.should_not include("__rr__#{@method_name}__rr__")
   end
 end
+
+describe Space, "#verify_ordered_scenario", :shared => true do
+  it_should_behave_like "RR::Space"
+
+  before do
+    @space = Space.new
+    @object = Object.new
+    @method_name = :foobar
+    @double = @space.create_double(@object, @method_name)
+  end
+end
+
+describe Space, "#verify_ordered_scenario where the passed in scenario is at the front of the queue" do
+  it_should_behave_like "RR::Space#verify_ordered_scenario"
+
+  it "keeps the scenario when times called is not verified" do
+    scenario = @space.create_scenario(@double)
+    @space.register_ordered_scenario(scenario)
+
+    scenario.twice
+    scenario.should_not be_times_called_verified
+
+    @space.verify_ordered_scenario(scenario)
+    @space.ordered_scenarios.should include(scenario)
+  end
+  
+  it "removes the scenario when times called in verified" do
+    scenario = @space.create_scenario(@double)
+    @space.register_ordered_scenario(scenario)
+
+    scenario.with(1).once
+    @object.foobar(1)
+    scenario.should be_times_called_verified
+
+    @space.verify_ordered_scenario(scenario)
+    @space.ordered_scenarios.should_not include(scenario)
+  end
+end
+
+describe Space, "#verify_ordered_scenario where the passed in scenario is not at the front of the queue" do
+  it_should_behave_like "RR::Space#verify_ordered_scenario"
+  
+  it "raises error" do
+    first_scenario = @space.create_scenario(@double)
+    @space.register_ordered_scenario(first_scenario)
+    second_scenario = @space.create_scenario(@double)
+    @space.register_ordered_scenario(second_scenario)
+
+    proc do
+      @space.verify_ordered_scenario(second_scenario)
+    end.should raise_error(RR::ScenarioOrderError)
+  end
+end
 end

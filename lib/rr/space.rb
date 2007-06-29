@@ -49,6 +49,12 @@ module RR
     def register_ordered_scenario(scenario)
       @ordered_scenarios << scenario
     end
+    
+    def verify_ordered_scenario(scenario)
+      raise ::RR::ScenarioOrderError unless @ordered_scenarios.first == scenario
+      @ordered_scenarios.shift if scenario.times_called_verified?
+      scenario
+    end
 
     def verify_doubles
       @doubles.each do |object, method_double_map|
