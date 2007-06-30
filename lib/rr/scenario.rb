@@ -2,7 +2,8 @@ module RR
   class Scenario
     attr_reader :times_called, :argument_expectation, :times_called_expectation
 
-    def initialize
+    def initialize(space)
+      @space = space
       @implementation = nil
       @argument_expectation = nil
       @times_called_expectation = nil

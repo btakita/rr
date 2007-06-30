@@ -31,7 +31,7 @@ module RR
     end
 
     def create_scenario(double)
-      scenario = Scenario.new
+      scenario = Scenario.new(self)
       double.register_scenario scenario
       scenario
     end
