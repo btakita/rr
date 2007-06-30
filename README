@@ -1,0 +1,29 @@
+== RR
+
+RR (Double Ruby) is a double framework that features a rich
+selection of double techniques and a terse syntax.
+http://xunitpatterns.com/Test%20Double.html
+
+== Mocking
+  view = controller.template
+  mock(view).render(:partial => "user_info") {"Information"}
+
+== Stubbing
+  jane = User.new
+  stub(User).find('42') {jane}
+  mock(jane).valid? {true}
+
+== Probing
+  Verify your a method was called while actually calling it.
+
+  view = controller.template
+  probe(view).render(:partial => "user_info")
+  
+== Block Syntax
+  script = MyScript.new
+  mock(script) do |m|
+    m.system("cd #{RAILS_ENV}") {true}
+    m.system("rake foo:bar") {true}
+    m.system("rake baz") {true}
+  end
+
