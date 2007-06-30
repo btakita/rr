@@ -90,6 +90,21 @@ describe Scenario, "#times" do
   end
 end
 
+describe Scenario, "#in_order" do
+  it_should_behave_like "RR::Scenario"
+
+  it "adds itself to the ordered scenarios list" do
+    @scenario.in_order
+    @space.ordered_scenarios.should include(@scenario)
+  end
+
+  it "does not double add itself" do
+    @scenario.in_order
+    @scenario.in_order
+    @space.ordered_scenarios.should == [@scenario ]
+  end
+end
+
 describe Scenario, "#returns" do
   it_should_behave_like "RR::Scenario"
 

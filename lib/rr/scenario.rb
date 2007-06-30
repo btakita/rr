@@ -40,6 +40,10 @@ module RR
       self
     end
 
+    def in_order
+      @space.ordered_scenarios << self unless @space.ordered_scenarios.include?(self)
+    end
+
     def returns(&implementation)
       @implementation = implementation
       self
