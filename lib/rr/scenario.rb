@@ -40,7 +40,7 @@ module RR
       self
     end
 
-    def in_order
+    def ordered
       @space.ordered_scenarios << self unless @space.ordered_scenarios.include?(self)
     end
 
