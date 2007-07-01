@@ -75,6 +75,7 @@ module RR
     end
 
     def times_called_verified?
+      return false unless @times_called_expectation
       @times_called_expectation.verify
     end
 

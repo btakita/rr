@@ -26,19 +26,19 @@ describe "RR mock:" do
     proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
   end
 
-  it "allows ordering" #do
-#    obj = @obj
-#    Object.new.instance_eval do
-#      mock(obj).to_s {"value 1"}.ordered
-#    end
-#    Object.new.instance_eval do
-#      mock(obj).to_s {"value 2"}.twice.ordered
-#    end
-#    @obj.to_s.should == "value 1"
-#    @obj.to_s.should == "value 2"
-#    @obj.to_s.should == "value 2"
-#    proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
-#  end
+  it "allows ordering" do
+    obj = @obj
+    Object.new.instance_eval do
+      mock(obj).to_s {"value 1"}.ordered
+    end
+    Object.new.instance_eval do
+      mock(obj).to_s {"value 2"}.twice.ordered
+    end
+    @obj.to_s.should == "value 1"
+    @obj.to_s.should == "value 2"
+    @obj.to_s.should == "value 2"
+    proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
+  end
 
   it "mocks via block" do
     obj = @obj

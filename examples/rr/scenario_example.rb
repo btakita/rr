@@ -251,6 +251,15 @@ describe Scenario, "#times_called_verified?" do
     @object.foobar(1, 2, 3)
     @scenario.should be_times_called_verified
   end
+
+  it "returns false when there is no Times Called expectation" do
+    @scenario.with(1, 2, 3)
+    @scenario.times_called_expectation.should be_nil
+
+    @scenario.should_not be_times_called_verified
+    @object.foobar(1, 2, 3)
+    @scenario.should_not be_times_called_verified
+  end
 end
 
 describe Scenario, "#verify" do

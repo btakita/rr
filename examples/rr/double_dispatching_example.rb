@@ -38,7 +38,24 @@ describe Double, " method dispatching where there are no scenarios with duplicat
   end
 end
 
-describe Double, " method dispatching where there are scenarios with duplicate ArgumentExpectations" do
+describe Double, " method dispatching where there are scenarios" do
+  it_should_behave_like "RR::Double method dispatching"
+
+  it "raises ScenarioNotFoundError error when arguments do not match a scenario" do
+    scenario_1 = @space.create_scenario(@double)
+    scenario_1.with(1, 2)
+
+    scenario_2 = @space.create_scenario(@double)
+    scenario_2.with(3)
+
+    proc {@object.foobar(:no_matching_args)}.should raise_error(
+      ScenarioNotFoundError,
+      "No scenario for arguments [:no_matching_args]"
+    )
+  end
+end
+
+describe Double, " method dispatching where there are scenarios with duplicate Exact Match ArgumentExpectations" do
   it_should_behave_like "RR::Double method dispatching"
 
   it "dispatches to Scenario that have an exact match" do
@@ -58,6 +75,36 @@ describe Double, " method dispatching where there are scenarios with duplicate A
     @object.foobar(:exact_match).should == :return_1
   end
 
+  it "dispatches the second Scenario with an exact match
+      when the first scenario's Times Called expectation is satisfied" do
+    scenario1_with_exact_match = @space.create_scenario(@double)
+    scenario1_with_exact_match.with(:exact_match).returns {:return_1}.once
+
+    scenario2_with_exact_match = @space.create_scenario(@double)
+    scenario2_with_exact_match.with(:exact_match).returns {:return_2}.once
+
+    @object.foobar(:exact_match)
+    @object.foobar(:exact_match).should == :return_2
+  end
+
+  it "raises TimesCalledExpectationError when all of the scenarios Times Called expectation is satisfied" do
+    scenario1_with_exact_match = @space.create_scenario(@double)
+    scenario1_with_exact_match.with(:exact_match).returns {:return_1}.once
+
+    scenario2_with_exact_match = @space.create_scenario(@double)
+    scenario2_with_exact_match.with(:exact_match).returns {:return_2}.once
+
+    @object.foobar(:exact_match)
+    @object.foobar(:exact_match)
+    proc do
+      @object.foobar(:exact_match)
+    end.should raise_error(Expectations::TimesCalledExpectationError)
+  end
+end
+
+describe Double, " method dispatching where there are scenarios with duplicate Wildcard Match ArgumentExpectations" do
+  it_should_behave_like "RR::Double method dispatching"
+
   it "dispatches to Scenario that have a wildcard match" do
     scenario_1 = @space.create_scenario(@double)
     scenario_1.with_any_args.returns {:return_1}
@@ -74,18 +121,31 @@ describe Double, " method dispatching where there are scenarios with duplicate A
 
     @object.foobar(:anything).should == :return_1
   end
-  
-  it "raises ScenarioNotFoundError error when arguments do not match a scenario" do
+
+  it "dispatches the second Scenario with a wildcard match
+      when the first scenario's Times Called expectation is satisfied" do
     scenario_1 = @space.create_scenario(@double)
-    scenario_1.with(1, 2)
+    scenario_1.with_any_args.returns {:return_1}.once
 
     scenario_2 = @space.create_scenario(@double)
-    scenario_2.with(3)
+    scenario_2.with_any_args.returns {:return_2}.once
 
-    proc {@object.foobar(:no_matching_args)}.should raise_error(
-      ScenarioNotFoundError,
-      "No scenario for arguments [:no_matching_args]"
-    )
+    @object.foobar(:anything)
+    @object.foobar(:anything).should == :return_2
+  end
+
+  it "raises TimesCalledExpectationError when all of the scenarios Times Called expectation is satisfied" do
+    scenario_1 = @space.create_scenario(@double)
+    scenario_1.with_any_args.returns {:return_1}.once
+
+    scenario_2 = @space.create_scenario(@double)
+    scenario_2.with_any_args.returns {:return_2}.once
+
+    @object.foobar(:anything)
+    @object.foobar(:anything)
+    proc do
+      @object.foobar(:anything)
+    end.should raise_error(Expectations::TimesCalledExpectationError)
   end
 end
 end

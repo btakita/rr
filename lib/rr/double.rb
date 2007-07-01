@@ -53,12 +53,20 @@ module RR
     end
 
     def call_method(*args)
+      matching_scenarios = []
       @scenarios.each do |scenario|
-        return scenario.call(*args) if scenario.exact_match?(*args)
+        if scenario.exact_match?(*args)
+          matching_scenarios << scenario
+          return scenario.call(*args) unless scenario.times_called_verified?
+        end
       end
       @scenarios.each do |scenario|
-        return scenario.call(*args) if scenario.wildcard_match?(*args)
+        if scenario.wildcard_match?(*args)
+          matching_scenarios << scenario
+          return scenario.call(*args) unless scenario.times_called_verified?
+        end
       end
+      matching_scenarios.first.call(*args) unless matching_scenarios.empty?
       raise ScenarioNotFoundError, "No scenario for arguments #{args.inspect}"
     end
     
