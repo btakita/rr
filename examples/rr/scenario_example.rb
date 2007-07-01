@@ -151,6 +151,35 @@ describe Scenario, "#call" do
     @scenario.call(:foobar)
     proc {@scenario.call(:foobar)}.should raise_error(Expectations::TimesCalledExpectationError)
   end
+
+  it "does not verify ordered if the Scenario is not ordered" do
+    verify_ordered_scenario_called = false
+    passed_in_scenario = nil
+    (class << @space; self; end).class_eval do
+      define_method :verify_ordered_scenario do |scenario|
+        passed_in_scenario = scenario
+        verify_ordered_scenario_called = true
+      end
+    end
+
+    @scenario.returns {:value}.ordered
+    @scenario.call(:foobar)
+    verify_ordered_scenario_called.should be_true
+    passed_in_scenario.should === @scenario
+  end
+
+  it "does not verify ordered if the Scenario is not ordered" do
+    verify_ordered_scenario_called = false
+    (class << @space; self; end).class_eval do
+      define_method :verify_ordered_scenario do |scenario|
+        verify_ordered_scenario_called = true
+      end
+    end
+
+    @scenario.returns {:value}
+    @scenario.call(:foobar)
+    verify_ordered_scenario_called.should be_false
+  end
 end
 
 describe Scenario, "#exact_match?" do

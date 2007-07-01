@@ -56,6 +56,7 @@ module RR
 
     def call(*args)
       @times_called_expectation.verify_input if @times_called_expectation
+      @space.verify_ordered_scenario(self) if ordered?
       if @implementation
         return @implementation.call(*args)
       else
