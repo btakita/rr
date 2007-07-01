@@ -111,19 +111,19 @@ describe "RR stub:" do
     @obj.to_s.should == "a value"
   end
 
-  it "allows ordering" #do
-#    obj = @obj
-#    Object.new.instance_eval do
-#      stub(obj).to_s {"value 1"}.ordered
-#    end
-#
-#    Object.new.instance_eval do
-#      stub(obj).to_s {"value 2"}.ordered
-#    end
-#    
-#    @obj.to_s.should == "value 1"
-#    @obj.to_s.should == "value 2"
-#  end
+  it "allows ordering" do
+    obj = @obj
+    Object.new.instance_eval do
+      stub(obj).to_s {"value 1"}.once.ordered
+    end
+
+    Object.new.instance_eval do
+      stub(obj).to_s {"value 2"}.once.ordered
+    end
+
+    @obj.to_s.should == "value 1"
+    @obj.to_s.should == "value 2"
+  end
 
   it "stubs via block" do
     obj = @obj
