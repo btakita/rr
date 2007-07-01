@@ -103,6 +103,19 @@ describe Scenario, "#ordered" do
     @scenario.ordered
     @space.ordered_scenarios.should == [@scenario ]
   end
+
+  it "sets ordered? to true" do
+    @scenario.ordered
+    @scenario.should be_ordered
+  end
+end
+
+describe Scenario, "#ordered?" do
+  it_should_behave_like "RR::Scenario"
+
+  it "defaults to false" do
+    @scenario.should_not be_ordered
+  end
 end
 
 describe Scenario, "#returns" do

@@ -41,7 +41,12 @@ module RR
     end
 
     def ordered
+      @ordered = true
       @space.ordered_scenarios << self unless @space.ordered_scenarios.include?(self)
+    end
+
+    def ordered?
+      @ordered
     end
 
     def returns(&implementation)
