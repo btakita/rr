@@ -152,9 +152,22 @@ describe Scenario, "#call" do
     proc {@scenario.call(:foobar)}.should raise_error(Expectations::TimesCalledExpectationError)
   end
 
-  it "does not verify ordered if the Scenario is not ordered" do
+  it "raises ScenarioOrderError when ordered and called out of order" do
+    scenario1 = @scenario
+    scenario2 = @space.create_scenario(@double)
+
+    scenario1.with(1).returns {:return_1}.ordered
+    scenario2.with(2).returns {:return_2}.ordered
+
+    proc do
+      @object.foobar(2)
+    end.should raise_error(::RR::ScenarioOrderError)
+  end
+
+  it "dispatches to Space#verify_ordered_scenario when ordered" do
     verify_ordered_scenario_called = false
     passed_in_scenario = nil
+    @space.method(:verify_ordered_scenario).arity.should == 1
     (class << @space; self; end).class_eval do
       define_method :verify_ordered_scenario do |scenario|
         passed_in_scenario = scenario
@@ -168,8 +181,9 @@ describe Scenario, "#call" do
     passed_in_scenario.should === @scenario
   end
 
-  it "does not verify ordered if the Scenario is not ordered" do
+  it "does not dispatche to Space#verify_ordered_scenario when not ordered" do
     verify_ordered_scenario_called = false
+    @space.method(:verify_ordered_scenario).arity.should == 1
     (class << @space; self; end).class_eval do
       define_method :verify_ordered_scenario do |scenario|
         verify_ordered_scenario_called = true
