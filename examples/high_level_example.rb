@@ -63,16 +63,18 @@ describe "RR probe:" do
     proc {@obj.to_s}.should raise_error
   end
 
-  it "allows ordering" #do
-#    expected_to_s_value = @obj.to_s
-#    probe(@obj).to_s(:foo).ordered
-#    probe(@obj).to_s(:bar).twice.ordered
-#
-#    @obj.to_s(:foo).should == expected_to_s_value
-#    @obj.to_s(:bar).should == expected_to_s_value
-#    @obj.to_s(:bar).should == expected_to_s_value
-#    proc {@obj.to_s(:bar)}.should raise_error
-#  end
+  it "allows ordering" do
+    def @obj.to_s(arg)
+      "Original to_s with arg #{arg}"
+    end
+    probe(@obj).to_s(:foo).ordered
+    probe(@obj).to_s(:bar).twice.ordered
+
+    @obj.to_s(:foo).should == "Original to_s with arg foo"
+    @obj.to_s(:bar).should == "Original to_s with arg bar"
+    @obj.to_s(:bar).should == "Original to_s with arg bar"
+    proc {@obj.to_s(:bar)}.should raise_error(RR::Expectations::TimesCalledExpectationError)
+  end
 
   it "probes via block" do
     def @obj.foobar_1(*args)
