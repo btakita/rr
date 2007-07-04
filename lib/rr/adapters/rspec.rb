@@ -1,9 +1,9 @@
 require "spec/mocks"
 require "rr"
 
-module Spec
-  module Plugins
-    module MockFramework
+module RR
+  module Adapters
+    module Rspec
       include RR::Extensions::DoubleMethods
       def setup_mocks_for_rspec
       end

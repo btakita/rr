@@ -7,4 +7,8 @@ require "ruby-debug"
 require "pp"
 require "examples/rr/space_helper"
 
-#require "rr/adapters/rspec"
+require "rr/adapters/rspec"
+Spec::Runner.configure do |config|
+  config.mock_with RR::Adapters::Rspec
+end
+
