@@ -50,8 +50,7 @@ module RR
     end
 
     def returns(&implementation)
-      @implementation = implementation
-      self
+      implemented_by implementation
     end
 
     def implemented_by(implementation)
