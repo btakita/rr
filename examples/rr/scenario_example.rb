@@ -127,6 +127,27 @@ describe Scenario, "#returns" do
   end
 end
 
+describe Scenario, "#implemented_by" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns the scenario object" do
+    @scenario.implemented_by(proc{:baz}).should === @scenario
+  end
+
+  it "sets the implementation to the passed in proc" do
+    @scenario.implemented_by(proc{:baz})
+    @scenario.call.should == :baz
+  end
+
+  it "sets the implementation to the passed in method" do
+    def @object.foobar(a, b)
+      [b, a]
+    end
+    @scenario.implemented_by(@object.method(:foobar))
+    @scenario.call(1, 2).should == [2, 1]
+  end
+end
+
 describe Scenario, "#call" do
   it_should_behave_like "RR::Scenario"
   

@@ -12,6 +12,22 @@ describe Double, "method dispatching", :shared => true do
   end
 end
 
+describe Double, " method dispatching where the scenario takes a block" do
+  it_should_behave_like "RR::Double method dispatching"
+
+  it "executes the block" do
+    method_fixture = Object.new
+     class << method_fixture
+      def method_with_block(a, b)
+        yield(a,b)
+      end
+    end
+    scenario = @space.create_scenario(@double)
+    scenario.with(1, 2).implemented_by(method_fixture.method(:method_with_block))
+    @object.foobar(1, 2) {|a, b| [b, a]}.should == [2, 1]
+  end
+end
+
 describe Double, " method dispatching where there are no scenarios with duplicate ArgumentExpectations" do
   it_should_behave_like "RR::Double method dispatching"
 

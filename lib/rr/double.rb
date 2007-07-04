@@ -1,5 +1,6 @@
 module RR
   class Double
+    MethodArguments = Struct.new(:arguments, :block)
     attr_reader :space, :object, :method_name, :original_method, :scenarios
 
     def initialize(space, object, method_name)
@@ -18,15 +19,11 @@ module RR
       define_implementation_placeholder
       returns_method = <<-METHOD
         def #{@method_name}(*args, &block)
-          if block
-            args << block
-            #{placeholder_name}(*args)
-          else
-            #{placeholder_name}(*args)
-          end
+          arguments = MethodArguments.new(args, block)
+          #{placeholder_name}(arguments)
         end
       METHOD
-      meta.class_eval(returns_method, __FILE__, __LINE__ - 9)
+      meta.class_eval(returns_method, __FILE__, __LINE__ - 5)
     end
 
     def verify
@@ -47,23 +44,23 @@ module RR
     protected
     def define_implementation_placeholder
       me = self
-      meta.send(:define_method, placeholder_name) do |*args|
-        me.send(:call_method, *args)
+      meta.send(:define_method, placeholder_name) do |arguments|
+        me.send(:call_method, arguments.arguments, arguments.block)
       end
     end
 
-    def call_method(*args)
+    def call_method(args, block)
       matching_scenarios = []
       @scenarios.each do |scenario|
         if scenario.exact_match?(*args)
           matching_scenarios << scenario
-          return scenario.call(*args) unless scenario.times_called_verified?
+          return scenario.call(*args, &block) unless scenario.times_called_verified?
         end
       end
       @scenarios.each do |scenario|
         if scenario.wildcard_match?(*args)
           matching_scenarios << scenario
-          return scenario.call(*args) unless scenario.times_called_verified?
+          return scenario.call(*args, &block) unless scenario.times_called_verified?
         end
       end
       matching_scenarios.first.call(*args) unless matching_scenarios.empty?

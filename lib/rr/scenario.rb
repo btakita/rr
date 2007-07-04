@@ -54,11 +54,16 @@ module RR
       self
     end
 
-    def call(*args)
+    def implemented_by(implementation)
+      @implementation = implementation
+      self
+    end
+
+    def call(*args, &block)
       @times_called_expectation.verify_input if @times_called_expectation
       @space.verify_ordered_scenario(self) if ordered?
       if @implementation
-        return @implementation.call(*args)
+        return @implementation.call(*args, &block)
       else
         return nil
       end

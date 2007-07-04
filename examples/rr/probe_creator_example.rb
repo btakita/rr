@@ -46,6 +46,23 @@ describe ProbeCreator, ".new with block" do
   end
 end
 
+describe ProbeCreator, ".new where method takes a block" do
+  it_should_behave_like "RR::ProbeCreator"
+
+  before do
+    def @subject.foobar(*args, &block)
+      yield(*args)
+    end
+    @creator = ProbeCreator.new(@space, @subject)
+  end
+
+  it "calls the block" do
+    @creator.foobar(1, 2)
+    @subject.foobar(1, 2) {|arg1, arg2| [arg2, arg1]}.should == [2, 1]
+  end
+end
+
+
 describe ProbeCreator, "#method_missing" do
   it_should_behave_like "RR::ProbeCreator"
   
