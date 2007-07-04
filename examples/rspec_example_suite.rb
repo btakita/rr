@@ -4,8 +4,6 @@ require "spec"
 class RspecExampleSuite
   def run
     options = ::Spec::Runner::OptionParser.new.parse(ARGV.dup, STDERR, STDOUT, false)
-    options.formatters.clear
-    options.formatters << ::Spec::Runner::Formatter::SpecdocFormatter.new(STDOUT)
     $behaviour_runner = options.create_behaviour_runner
 
     require_specs
@@ -16,7 +14,7 @@ class RspecExampleSuite
 
   def require_specs
     dir = File.dirname(__FILE__)
-    Dir["#{dir}/rspec/**/*_example.rb"].each do |file|
+    Dir["#{dir}/rr/rspec/**/*_example.rb"].each do |file|
       require file
     end
   end
