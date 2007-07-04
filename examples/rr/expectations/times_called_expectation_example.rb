@@ -61,62 +61,90 @@ describe TimesCalledExpectation, "#verify" do
   end
 end
 
-describe TimesCalledExpectation, "#verify! when passed an Integer" do
+describe TimesCalledExpectation, "#verify! when passed an Integer (2)" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
-  it "matches an integer" do
-    @expectation = TimesCalledExpectation.new(5)
+  before do
+    @expectation = TimesCalledExpectation.new(2)
+  end
 
+  it "passes after verify_input called 2 times" do
     @expectation.verify_input
     @expectation.verify_input
-    @expectation.verify_input
-    raises_expectation_error {@expectation.verify!}
-    @expectation.verify_input
-    @expectation.verify_input
-    proc {@expectation.verify!}.should_not raise_error
+    @expectation.verify!
+  end
 
-    raises_expectation_error {@expectation.verify_input}
+  it "fails after verify_input called 1 time" do
+    @expectation.verify_input
+    proc {@expectation.verify!}.should raise_error(TimesCalledExpectationError)
+  end
+
+  it "can't be called when verify_input is called 3 times" do
+    @expectation.verify_input
+    @expectation.verify_input
+    proc do
+      @expectation.verify_input
+    end.should raise_error(TimesCalledExpectationError)
   end
 end
 
-describe TimesCalledExpectation, "#verify! when passed a Range" do
+describe TimesCalledExpectation, "#verify! when passed a Range (1..2)" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
-  it "matches a range" do
+  before do
     @expectation = TimesCalledExpectation.new(1..2)
-    raises_expectation_error {@expectation.verify!}
+  end
 
+  it "passes after verify_input called 1 time" do
     @expectation.verify_input
     @expectation.verify!
+  end
+
+  it "passes after verify_input called 2 times" do
+    @expectation.verify_input
     @expectation.verify_input
     @expectation.verify!
+  end
 
-    raises_expectation_error {@expectation.verify_input}
+  it "can't be called when verify_input is called 3 times" do
+    @expectation.verify_input
+    @expectation.verify_input
+    proc do
+      @expectation.verify_input
+    end.should raise_error(TimesCalledExpectationError)
   end
 end
 
-describe TimesCalledExpectation, "#verify! when passed a block" do
+describe TimesCalledExpectation, "#verify! when passed a block (== 2 times)" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
-  it "matches a block" do
+  before do
     @expectation = TimesCalledExpectation.new {|value| value == 2}
+  end
 
-    raises_expectation_error {@expectation.verify!}
+  it "passes after verify_input called 2 times" do
     @expectation.verify_input
-    raises_expectation_error {@expectation.verify!}
     @expectation.verify_input
+    @expectation.verify!
+  end
 
-    proc {@expectation.verify!}.should_not raise_error
-
+  it "fails after verify_input called 1 time" do
     @expectation.verify_input
-    raises_expectation_error {@expectation.verify!}
+    proc {@expectation.verify!}.should raise_error(TimesCalledExpectationError)
+  end
+
+  it "fails after verify_input called 3 times" do
+    @expectation.verify_input
+    @expectation.verify_input
+    @expectation.verify_input
+    proc {@expectation.verify!}.should raise_error(TimesCalledExpectationError)
   end
 end
 
 describe TimesCalledExpectation, "#verify_input for an integer expectation" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
-  it "does not exceed expectation" do
+  it "raises error when verify_input called more than the expected number of times" do
     @expectation = TimesCalledExpectation.new(1)
     @expectation.verify_input
     raises_expectation_error {@expectation.verify_input}
@@ -126,7 +154,7 @@ end
 describe TimesCalledExpectation, "#verify_input for a range expectation" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
-  it "does not exceed expectation" do
+  it "raises error when verify_input called more than range permits" do
     @expectation = TimesCalledExpectation.new(1..2)
     @expectation.verify_input
     @expectation.verify_input
@@ -137,7 +165,7 @@ end
 describe TimesCalledExpectation, "#verify_input for a proc expectation" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
-  it "does nothing" do
+  it "lets everything pass" do
     @expectation = TimesCalledExpectation.new {|times| times == 1}
     @object.foobar
     @object.foobar
