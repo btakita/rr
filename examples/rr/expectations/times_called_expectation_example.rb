@@ -61,7 +61,7 @@ describe TimesCalledExpectation, "#verify" do
   end
 end
 
-describe TimesCalledExpectation, "#verify!" do
+describe TimesCalledExpectation, "#verify! when passed an Integer" do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
   it "matches an integer" do
@@ -77,6 +77,10 @@ describe TimesCalledExpectation, "#verify!" do
 
     raises_expectation_error {@expectation.verify_input}
   end
+end
+
+describe TimesCalledExpectation, "#verify! when passed a Range" do
+  it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
   it "matches a range" do
     @expectation = TimesCalledExpectation.new(1..2)
@@ -89,6 +93,10 @@ describe TimesCalledExpectation, "#verify!" do
 
     raises_expectation_error {@expectation.verify_input}
   end
+end
+
+describe TimesCalledExpectation, "#verify! when passed a block" do
+  it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
   it "matches a block" do
     @expectation = TimesCalledExpectation.new {|value| value == 2}
