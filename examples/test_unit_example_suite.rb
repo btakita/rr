@@ -1,25 +1,21 @@
 require "rubygems"
 require "spec"
 
-class TestUnitExampleSuite
+class TestUnitTestSuite
   def run
-    options = ::Spec::Runner::OptionParser.new.parse(ARGV.dup, STDERR, STDOUT, false)
-    $behaviour_runner = options.create_behaviour_runner
+    require_tests
 
-    require_specs
-
-    puts "Running Test::Unit Example Suite"
-    $behaviour_runner.run(ARGV, false)
+    puts "Running Test::Unit Test Suite"
   end
 
-  def require_specs
+  def require_tests
     dir = File.dirname(__FILE__)
-    Dir["#{dir}/rr/test_unit/**/*_example.rb"].each do |file|
+    Dir["#{dir}/rr/test_unit/**/*_test.rb"].each do |file|
       require file
     end
   end
 end
 
 if $0 == __FILE__
-  TestUnitExampleSuite.new.run
+  TestUnitTestSuite.new.run
 end
