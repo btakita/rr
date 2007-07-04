@@ -6,6 +6,7 @@ module RR
     module Rspec
       include RR::Extensions::DoubleMethods
       def setup_mocks_for_rspec
+        RR::Space.instance.reset_doubles
       end
       def verify_mocks_for_rspec
         RR::Space.instance.verify_doubles
