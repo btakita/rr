@@ -11,20 +11,26 @@ class ExampleSuite
     puts "Running Example Suite"
     $behaviour_runner.run(ARGV, false)
 
-    run_rspec_specs
+    run_rspec_examples
+    run_test_unit_examples
   end
 
   def require_specs
     exclusions = []
     exclusions << "rspec/"
+    exclusions << "test_unit/"
 
     Dir["#{dir}/**/*_example.rb"].each do |file|
       require file unless exclusions.any? {|match| file.include?(match)}
     end
   end
 
-  def run_rspec_specs
+  def run_rspec_examples
     system("ruby #{dir}/rspec_example_suite.rb") || raise("Rspec suite Failed")
+  end
+
+  def run_test_unit_examples
+    system("ruby #{dir}/test_unit_example_suite.rb") || raise("Test::Unit suite Failed")
   end
 
   def dir
