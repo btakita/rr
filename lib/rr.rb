@@ -14,4 +14,4 @@ require "rr/expectations/argument_equality_expectation"
 require "rr/expectations/any_argument_expectation"
 require "rr/expectations/times_called_expectation"
 
-require "rr/extensions/kernel"
+require "rr/extensions/double_methods"

@@ -4,6 +4,7 @@ require "#{dir}/example_helper"
 describe "RR", :shared => true do
   before(:each) do
     @obj = Object.new
+    extend RR::Extensions::DoubleMethods
   end
 
   after(:each) do
@@ -15,25 +16,14 @@ describe "RR mock:" do
   it_should_behave_like "RR"
 
   it "mocks via inline call" do
-    obj = @obj
-
-    # TODO: BT - Remove this block when rspec support is added to RR.
-    # We do this to avoid a conflict with Rspec's mock method.
-    Object.new.instance_eval do
-      mock(obj).to_s {"a value"}
-    end
+    mock(@obj).to_s {"a value"}
     @obj.to_s.should == "a value"
     proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
   end
 
   it "allows ordering" do
-    obj = @obj
-    Object.new.instance_eval do
-      mock(obj).to_s {"value 1"}.ordered
-    end
-    Object.new.instance_eval do
-      mock(obj).to_s {"value 2"}.twice.ordered
-    end
+    mock(@obj).to_s {"value 1"}.ordered
+    mock(@obj).to_s {"value 2"}.twice.ordered
     @obj.to_s.should == "value 1"
     @obj.to_s.should == "value 2"
     @obj.to_s.should == "value 2"
@@ -41,12 +31,9 @@ describe "RR mock:" do
   end
 
   it "mocks via block" do
-    obj = @obj
-    Object.new.instance_eval do
-      mock obj do |c|
-        c.to_s {"a value"}
-        c.to_sym {:crazy}
-      end
+    mock @obj do |c|
+      c.to_s {"a value"}
+      c.to_sym {:crazy}
     end
     @obj.to_s.should == "a value"
     @obj.to_sym.should == :crazy
@@ -85,12 +72,9 @@ describe "RR probe:" do
       :original_value_2
     end
 
-    obj = @obj
-    Object.new.instance_eval do
-      probe obj do |c|
-        c.foobar_1(1)
-        c.foobar_2
-      end
+    probe @obj do |c|
+      c.foobar_1(1)
+      c.foobar_2
     end
     @obj.foobar_1(1).should == :original_value_1
     proc {@obj.foobar_1(:blah)}.should raise_error
@@ -104,34 +88,23 @@ describe "RR stub:" do
   it_should_behave_like "RR"
 
   it "stubs via inline call" do
-    obj = @obj
-    Object.new.instance_eval do
-      stub(obj).to_s {"a value"}
-    end
+    stub(@obj).to_s {"a value"}
     @obj.to_s.should == "a value"
   end
 
   it "allows ordering" do
-    obj = @obj
-    Object.new.instance_eval do
-      stub(obj).to_s {"value 1"}.once.ordered
-    end
+    stub(@obj).to_s {"value 1"}.once.ordered
 
-    Object.new.instance_eval do
-      stub(obj).to_s {"value 2"}.once.ordered
-    end
+    stub(@obj).to_s {"value 2"}.once.ordered
 
     @obj.to_s.should == "value 1"
     @obj.to_s.should == "value 2"
   end
 
   it "stubs via block" do
-    obj = @obj
-    Object.new.instance_eval do
-      stub obj do |d|
-        d.to_s {"a value"}
-        d.to_sym {:crazy}
-      end
+    stub @obj do |d|
+      d.to_s {"a value"}
+      d.to_sym {:crazy}
     end
     @obj.to_s.should == "a value"
     @obj.to_sym.should == :crazy
