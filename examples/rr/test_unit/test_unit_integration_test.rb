@@ -1,7 +1,7 @@
 dir = File.dirname(__FILE__)
 require "#{dir}/test_helper"
 
-class FakeTestCase < Test::Unit::TestCase
+class TestUnitIntegrationTest < Test::Unit::TestCase
   include RR::Adapters::TestUnit
 
   def setup
