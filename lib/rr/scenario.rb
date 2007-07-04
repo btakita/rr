@@ -61,10 +61,13 @@ module RR
     def call(*args, &block)
       @times_called_expectation.verify_input if @times_called_expectation
       @space.verify_ordered_scenario(self) if ordered?
-      if @implementation
+      return nil unless @implementation
+
+      if @implementation.is_a?(Method)
         return @implementation.call(*args, &block)
       else
-        return nil
+        args << block if block
+        return @implementation.call(*args)
       end
     end
 

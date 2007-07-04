@@ -148,7 +148,7 @@ describe Scenario, "#implemented_by" do
   end
 end
 
-describe Scenario, "#call" do
+describe Scenario, "#call implemented by a proc" do
   it_should_behave_like "RR::Scenario"
   
   it "calls the return proc when scheduled to call a proc" do
@@ -214,6 +214,34 @@ describe Scenario, "#call" do
     @scenario.returns {:value}
     @scenario.call(:foobar)
     verify_ordered_scenario_called.should be_false
+  end
+
+  it "does not add block argument if no block passed in" do
+    @scenario.with(1, 2).returns {|*args| args}
+
+    args = @object.foobar(1, 2)
+    args.should == [1, 2]
+  end
+
+  it "makes the block the last argument" do
+    @scenario.with(1, 2).returns {|a, b, blk| blk}
+
+    block = @object.foobar(1, 2) {|a, b| [b, a]}
+    block.call(3, 4).should == [4, 3]
+  end
+end
+
+describe Scenario, "#call implemented by a method" do
+  it_should_behave_like "RR::Scenario"
+
+  it "sends block to the method" do
+    def @object.foobar(a, b)
+      yield(a, b)
+    end
+
+    @scenario.with(1, 2).implemented_by(@object.method(:foobar))
+
+    @object.foobar(1, 2) {|a, b| [b, a]}.should == [2, 1]
   end
 end
 
