@@ -11,4 +11,3 @@ require "rr/adapters/rspec"
 Spec::Runner.configure do |config|
   config.mock_with RR::Adapters::Rspec
 end
-
