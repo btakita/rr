@@ -7,10 +7,15 @@ describe Space, "#register_ordered_scenario" do
 
   before(:each) do
     @space = Space.new
+    @original_space = Space.instance
     Space.instance = @space
     @object = Object.new
     @method_name = :foobar
     @double = @space.create_double(@object, @method_name)
+  end
+
+  after(:each) do
+    Space.instance = @original_space
   end
 
   it "adds the ordered scenario to the ordered_scenarios collection" do

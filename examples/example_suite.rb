@@ -21,7 +21,9 @@ class ExampleSuite
     exclusions << "test_unit/"
 
     Dir["#{dir}/**/*_example.rb"].each do |file|
-      require file unless exclusions.any? {|match| file.include?(match)}
+      unless exclusions.any? {|match| file.include?(match)}
+        require file
+      end
     end
   end
 
