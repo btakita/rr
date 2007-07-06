@@ -17,5 +17,6 @@ require "rr/expectations/wildcard_matchers/anything"
 require "rr/expectations/wildcard_matchers/is_a"
 require "rr/expectations/wildcard_matchers/numeric"
 require "rr/expectations/wildcard_matchers/boolean"
+require "rr/expectations/wildcard_matchers/duck_type"
 
 require "rr/extensions/double_methods"

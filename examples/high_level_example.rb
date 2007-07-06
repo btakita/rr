@@ -40,12 +40,19 @@ describe "RR mock:" do
   end
   
   it "has wildcard matchers" do
-    mock(@obj).foobar(is_a(String), anything, numeric, boolean) {"value 1"}.twice
+    mock(@obj).foobar(
+      is_a(String),
+      anything,
+      numeric,
+      boolean,
+      duck_type(:to_s)
+    ) {"value 1"}.twice
     @obj.foobar(
       'hello',
       Object.new,
       99,
-      false
+      false,
+      "My String"
     ).should == "value 1"
     proc {@obj.foobar(:failure)}.should raise_error( ScenarioNotFoundError )
   end

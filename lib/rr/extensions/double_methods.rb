@@ -28,6 +28,10 @@ module Extensions
     def boolean
       RR::Expectations::WildcardMatchers::Boolean.new
     end
+
+    def duck_type(*args)
+      RR::Expectations::WildcardMatchers::DuckType.new(*args)
+    end
   end  
 end
 end
