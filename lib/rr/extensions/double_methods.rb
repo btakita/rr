@@ -24,6 +24,10 @@ module Extensions
     def numeric
       RR::Expectations::WildcardMatchers::Numeric.new
     end
+
+    def boolean
+      RR::Expectations::WildcardMatchers::Boolean.new
+    end
   end  
 end
 end
