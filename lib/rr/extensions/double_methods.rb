@@ -20,6 +20,10 @@ module Extensions
     def is_a(klass)
       RR::Expectations::WildcardMatchers::IsA.new(klass)
     end
+
+    def numeric
+      RR::Expectations::WildcardMatchers::Numeric.new
+    end
   end  
 end
 end

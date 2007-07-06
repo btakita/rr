@@ -21,7 +21,7 @@ module RR
           if expected_argument.respond_to?(:wildcard_match?)
             return false unless expected_argument.wildcard_match?(arg)
           else
-            return false if expected_argument != arg
+            return false unless expected_argument == arg
           end
         end
         return true

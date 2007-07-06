@@ -40,9 +40,9 @@ describe "RR mock:" do
   end
   
   it "has wildcard matchers" do
-    mock(@obj).foobar(is_a(Integer)) {"value 1"}.twice
-    @obj.foobar(9).should == "value 1"
-    proc {@obj.foobar("failure")}.should raise_error( ScenarioNotFoundError )
+    mock(@obj).foobar(is_a(String), anything, numeric) {"value 1"}.twice
+    @obj.foobar('hello', Object.new, 99).should == "value 1"
+    proc {@obj.foobar(:failure)}.should raise_error( ScenarioNotFoundError )
   end
 end
 
