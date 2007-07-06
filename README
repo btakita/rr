@@ -27,3 +27,11 @@ http://xunitpatterns.com/Test%20Double.html
     m.system("rake baz") {true}
   end
 
+== Terse Syntax
+  Here is RR compared to other mock frameworks
+
+  flexmock(User).should_receive(:find).with('42').and_return(jane) # Flexmock
+  User.should_receive(:find).with('42').and_return(jane) # Rspec
+  User.expects(:find).with('42').returns {jane} # Mocha
+  mock(User).find('42') {jane} # RR
+  

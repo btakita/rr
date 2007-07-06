@@ -32,6 +32,10 @@ module Extensions
     def duck_type(*args)
       RR::Expectations::WildcardMatchers::DuckType.new(*args)
     end
-  end  
+
+    instance_methods.each do |name|
+      alias_method "rr_#{name}", name
+    end
+  end
 end
 end
