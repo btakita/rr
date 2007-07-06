@@ -3,7 +3,7 @@ require "#{dir}/../../example_helper"
 
 module RR
 module Expectations
-  describe ArgumentEqualityExpectation, "#exact_match? with is_a argument" do
+  describe ArgumentEqualityExpectation, "#exact_match? with duck_type argument" do
     before do
       @expectation = ArgumentEqualityExpectation.new(duck_type(:to_s))
     end

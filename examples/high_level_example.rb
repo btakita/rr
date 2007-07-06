@@ -45,14 +45,16 @@ describe "RR mock:" do
       anything,
       numeric,
       boolean,
-      duck_type(:to_s)
+      duck_type(:to_s),
+      /abc/
     ) {"value 1"}.twice
     @obj.foobar(
       'hello',
       Object.new,
       99,
       false,
-      "My String"
+      "My String",
+      "Tabcola"
     ).should == "value 1"
     proc {@obj.foobar(:failure)}.should raise_error( ScenarioNotFoundError )
   end
