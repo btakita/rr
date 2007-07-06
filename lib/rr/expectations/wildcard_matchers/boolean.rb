@@ -1,18 +1,17 @@
 module RR
   module Expectations
     module WildcardMatchers
-      module BooleanTracer
-      end
-      class ::TrueClass
-        include BooleanTracer
-      end
-      class ::FalseClass
-        include BooleanTracer
-      end
-      
-      class Boolean < IsA
-        def initialize
-          @klass = BooleanTracer
+      class Boolean
+        def wildcard_match?(other)
+          self == other || is_a_boolean?(other)
+        end
+
+        def ==(other)
+          other.is_a?(self.class)
+
+        protected
+        def is_a_boolean?(subject)
+          subject.is_a?(TrueClass) || subject.is_a?(FalseClass)
         end
       end
     end
