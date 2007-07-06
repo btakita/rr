@@ -15,7 +15,16 @@ module RR
       end
 
       def wildcard_match?(*arguments)
-        exact_match?(*arguments)
+        return false unless arguments.length == @expected_arguments.length
+        arguments.each_with_index do |arg, index|
+          expected_argument = @expected_arguments[index]
+          if expected_argument.respond_to?(:wildcard_match?)
+            return false unless expected_argument.wildcard_match?(arg)
+          else
+            return false if expected_argument != arg
+          end
+        end
+        return true
       end
 
       def ==(other)
