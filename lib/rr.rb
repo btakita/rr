@@ -13,6 +13,7 @@ require "rr/scenario_order_error"
 require "rr/expectations/argument_equality_expectation"
 require "rr/expectations/any_argument_expectation"
 require "rr/expectations/times_called_expectation"
+require "rr/expectations/wildcard_matchers/anything"
 require "rr/expectations/wildcard_matchers/is_a"
 
 require "rr/extensions/double_methods"

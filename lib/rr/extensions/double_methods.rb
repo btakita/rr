@@ -13,6 +13,10 @@ module Extensions
       RR::Space.instance.create_probe_creator(subject, &definition)
     end
 
+    def anything
+      RR::Expectations::WildcardMatchers::Anything.new
+    end
+
     def is_a(klass)
       RR::Expectations::WildcardMatchers::IsA.new(klass)
     end

@@ -41,6 +41,11 @@ module Expectations
     it "returns true when an exact match" do
       @expectation.should be_wildcard_match(is_a(String))
     end
+
+    it "returns false when not passed correct number of arguments" do
+      @expectation.should_not be_wildcard_match()
+      @expectation.should_not be_wildcard_match("one", "two")
+    end
   end
 end
 end
