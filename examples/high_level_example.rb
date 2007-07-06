@@ -38,6 +38,12 @@ describe "RR mock:" do
     @obj.to_s.should == "a value"
     @obj.to_sym.should == :crazy
   end
+  
+  it "has wildcard matchers" do
+    mock(@obj).foobar(is_a(Integer)) {"value 1"}.twice
+    @obj.foobar(9).should == "value 1"
+    proc {@obj.foobar("failure")}.should raise_error( ScenarioNotFoundError )
+  end
 end
 
 describe "RR probe:" do
