@@ -8,6 +8,7 @@ module RR
 
         def ==(other)
           other.is_a?(self.class)
+        end
 
         protected
         def is_a_boolean?(subject)
