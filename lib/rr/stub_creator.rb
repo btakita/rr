@@ -1,4 +1,17 @@
 module RR
+  # RR::StubCreator uses RR::StubCreator#method_missing to create
+  # a Scenario that acts like a stub.
+  #
+  # The following example stubs method_name with arg1 and arg2
+  # returning return_value.
+  #
+  #   stub(subject).method_name(arg1, arg2) { return_value }
+  #
+  # The StubCreator also supports a block sytnax.
+  #
+  #    stub(subject) do |m|
+  #      m.method_name(arg1, arg2) { return_value }
+  #    end
   class StubCreator
     instance_methods.each { |m| undef_method m unless m =~ /^__/ }
     
