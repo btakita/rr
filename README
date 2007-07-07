@@ -28,10 +28,11 @@ Verify your a method was called while actually calling it.
   end
 
 == Terse Syntax
-Here is RR compared to other mock frameworks
+One of the goals of RR is to make doubles more scannable.
+This is accomplished by removing words from a double declaration.
+Here is RR compared to other mock frameworks:
 
   flexmock(User).should_receive(:find).with('42').and_return(jane) # Flexmock
   User.should_receive(:find).with('42').and_return(jane) # Rspec
   User.expects(:find).with('42').returns {jane} # Mocha
   mock(User).find('42') {jane} # RR
-  
