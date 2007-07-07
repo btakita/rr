@@ -1,4 +1,7 @@
 module RR
+  # RR::Double is the binding of an object and a method.
+  # A double has 0 to many Scenario objects. Each Scenario
+  # has Argument Expectations and Times called Expectations.
   class Double
     MethodArguments = Struct.new(:arguments, :block)
     attr_reader :space, :object, :method_name, :original_method, :scenarios
@@ -10,11 +13,16 @@ module RR
       @original_method = object.method(method_name) if @object.methods.include?(method_name.to_s)
       @scenarios = []
     end
-    
+
+    # RR::Double#register_scenario adds the passed in Scenario
+    # into this Double's list of Scenario objects.
     def register_scenario(scenario)
       @scenarios << scenario
     end
 
+    # RR::Double#bind injects a method that acts as a dispatcher
+    # that dispatches to the matching Scenario when the method
+    # is called.    
     def bind
       define_implementation_placeholder
       returns_method = <<-METHOD
@@ -26,12 +34,17 @@ module RR
       meta.class_eval(returns_method, __FILE__, __LINE__ - 5)
     end
 
+    # RR::Double#verify verifies each Scenario
+    # TimesCalledExpectation are met.
     def verify
       @scenarios.each do |scenario|
         scenario.verify
       end
     end
 
+    # RR::Double#reset removes the inject dispatcher method.
+    # It binds the original method implementation on the object
+    # if one exists. 
     def reset
       meta.send(:remove_method, placeholder_name)
       if @original_method
