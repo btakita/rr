@@ -13,12 +13,24 @@ module RR
       @times_called = 0
     end
 
+    # Scenario#with creates an ArgumentEqualityExpectation for the
+    # Scenario. it takes a list of expected arguments.
+    #
+    # Passing in a block sets the return value.
+    #
+    #   mock(subject).method_name.with(1, 2) {:return_value}
     def with(*args, &returns)
       @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
       returns(&returns) if returns
       self
     end
 
+    # Scenario#with_any_args creates an AnyArgumentEqualityExpectation
+    # for the Scenario.
+    #
+    # Passing in a block sets the return value.
+    #
+    #   mock(subject).method_name.with_any_args {:return_value}
     def with_any_args(&returns)
       @argument_expectation = Expectations::AnyArgumentExpectation.new
       returns(&returns) if returns
