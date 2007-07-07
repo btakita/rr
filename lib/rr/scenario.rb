@@ -126,11 +126,15 @@ module RR
       end
     end
 
+    # Scenario#exact_match? returns true when the passed in arguments
+    # exactly match the ArgumentEqualityExpectation arguments.
     def exact_match?(*arguments)
       return false unless @argument_expectation 
       @argument_expectation.exact_match?(*arguments)
     end
 
+    # Scenario#wildcard_match? returns true when the passed in arguments
+    # wildcard match the ArgumentEqualityExpectation arguments.
     def wildcard_match?(*arguments)
       return false unless @argument_expectation
       @argument_expectation.wildcard_match?(*arguments)
