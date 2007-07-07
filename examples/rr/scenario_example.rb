@@ -42,6 +42,24 @@ describe Scenario, "#with_any_args" do
   end
 end
 
+describe Scenario, "#never" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns self" do
+    @scenario.never.should === @scenario
+  end
+
+  it "sets up a Times Called Expectation with 0" do
+    @scenario.never
+    proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
+  end
+
+  it "sets return value when block passed in" do
+    @scenario.with_any_args.never
+    proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
+  end
+end
+
 describe Scenario, "#once" do
   it_should_behave_like "RR::Scenario"
 

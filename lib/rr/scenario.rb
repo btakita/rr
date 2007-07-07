@@ -36,6 +36,11 @@ module RR
       returns(&returns) if returns
       self
     end
+    
+    def never
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(0)
+      self
+    end
 
     # Scenario#once creates an TimesCalledExpectation of 1.
     #
