@@ -21,18 +21,22 @@ module RR
       @ordered_scenarios = []
     end
 
+    # Creates a MockCreator.
     def create_mock_creator(subject, &definition)
       MockCreator.new(self, subject, &definition)
     end
 
+    # Creates a StubCreator.
     def create_stub_creator(subject, &definition)
       StubCreator.new(self, subject, &definition)
     end
 
+    # Creates a ProbeCreator.
     def create_probe_creator(subject, &definition)
       ProbeCreator.new(self, subject, &definition)
     end
 
+    # Creates and registers a Scenario to be verified.
     def create_scenario(double)
       scenario = Scenario.new(self)
       double.register_scenario scenario
@@ -49,16 +53,21 @@ module RR
       double
     end
 
+    # Registers the ordered Scenario to be verified.
     def register_ordered_scenario(scenario)
       @ordered_scenarios << scenario
     end
-    
+
+    # Verifies that the passed in ordered Scenario is being called
+    # in the correct position.
     def verify_ordered_scenario(scenario)
       raise ::RR::ScenarioOrderError unless @ordered_scenarios.first == scenario
       @ordered_scenarios.shift if scenario.times_called_verified?
       scenario
     end
 
+    # Verifies all the Double objects have met their
+    # TimesCalledExpectations.
     def verify_doubles
       @doubles.each do |object, method_double_map|
         method_double_map.keys.each do |method_name|
@@ -67,6 +76,7 @@ module RR
       end
     end
 
+    # Resets the registered Doubles for the next test run.
     def reset_doubles
       @doubles.each do |object, method_double_map|
         method_double_map.keys.each do |method_name|
@@ -74,13 +84,15 @@ module RR
         end
       end
     end
-    
+
+    # Verifies the Double for the passed in object and method_name.
     def verify_double(object, method_name)
       @doubles[object][method_name].verify
     ensure
       reset_double object, method_name
     end
 
+    # Resets the Double for the passed in object and method_name.
     def reset_double(object, method_name)
       double = @doubles[object].delete(method_name)
       @doubles.delete(object) if @doubles[object].empty?
