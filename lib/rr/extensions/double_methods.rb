@@ -17,27 +17,50 @@ module Extensions
 
     # Sets up a ProbeCreator that generates a Double Scenario that
     # acts like a probe.
-    #   probe(object).to_s
+    #   probe(controller.template).render(:partial => "my/socks")
     def probe(subject, &definition)
       RR::Space.instance.create_probe_creator(subject, &definition)
     end
 
+    # Sets up an Anything wildcard ArgumentEqualityExpectation
+    # that succeeds when passed any argument.
+    #   mock(object).method_name(anything) {return_value}
+    #   object.method_name("an arbitrary value") # passes
     def anything
       RR::Expectations::WildcardMatchers::Anything.new
     end
 
+    # Sets up an IsA wildcard ArgumentEqualityExpectation
+    # that succeeds when passed an argument of a certain type.
+    #   mock(object).method_name(is_a(String)) {return_value}
+    #   object.method_name("A String") # passes
     def is_a(klass)
       RR::Expectations::WildcardMatchers::IsA.new(klass)
     end
 
+    # Sets up an Numeric wildcard ArgumentEqualityExpectation
+    # that succeeds when passed an argument that is ::Numeric.
+    #   mock(object).method_name(numeric) {return_value}
+    #   object.method_name(99) # passes
     def numeric
       RR::Expectations::WildcardMatchers::Numeric.new
     end
 
+    # Sets up an Boolean wildcard ArgumentEqualityExpectation
+    # that succeeds when passed an argument that is a ::Boolean.
+    #   mock(object).method_name(boolean) {return_value}
+    #   object.method_name(false) # passes
     def boolean
       RR::Expectations::WildcardMatchers::Boolean.new
     end
 
+    # Sets up a DuckType wildcard ArgumentEqualityExpectation
+    # that succeeds when passed the argument implements the methods.
+    #   arg = Object.new
+    #   def arg.foo; end
+    #   def arg.bar; end
+    #   mock(object).method_name(duck_type(:foo, :bar)) {return_value}
+    #   object.method_name(arg) # passes
     def duck_type(*args)
       RR::Expectations::WildcardMatchers::DuckType.new(*args)
     end
