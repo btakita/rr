@@ -108,6 +108,11 @@ describe Scenario, "#ordered" do
     @scenario.ordered
     @scenario.should be_ordered
   end
+
+  it "sets return value when block passed in" do
+    @scenario.with_any_args.ordered {:return_value}
+    @object.foobar.should == :return_value
+  end
 end
 
 describe Scenario, "#ordered?" do

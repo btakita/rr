@@ -77,9 +77,11 @@ module RR
     # Passing in a block sets the return value.
     #
     #   mock(subject).method_name.ordered
-    def ordered
+    def ordered(&returns)
       @ordered = true
       @space.ordered_scenarios << self unless @space.ordered_scenarios.include?(self)
+      returns(&returns) if returns
+      self
     end
 
     def ordered?
