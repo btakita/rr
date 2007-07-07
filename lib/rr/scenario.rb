@@ -71,6 +71,12 @@ module RR
       self
     end
 
+    # Scenario#ordered sets the Scenario to have an ordered
+    # expectation.
+    #
+    # Passing in a block sets the return value.
+    #
+    #   mock(subject).method_name.ordered
     def ordered
       @ordered = true
       @space.ordered_scenarios << self unless @space.ordered_scenarios.include?(self)
