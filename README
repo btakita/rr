@@ -14,7 +14,7 @@ http://xunitpatterns.com/Test%20Double.html
   mock(jane).valid? {true}
 
 == Probing
-  Verify your a method was called while actually calling it.
+Verify your a method was called while actually calling it.
 
   view = controller.template
   probe(view).render(:partial => "user_info")
@@ -28,7 +28,7 @@ http://xunitpatterns.com/Test%20Double.html
   end
 
 == Terse Syntax
-  Here is RR compared to other mock frameworks
+Here is RR compared to other mock frameworks
 
   flexmock(User).should_receive(:find).with('42').and_return(jane) # Flexmock
   User.should_receive(:find).with('42').and_return(jane) # Rspec
