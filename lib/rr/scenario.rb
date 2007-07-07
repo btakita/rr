@@ -37,18 +37,34 @@ module RR
       self
     end
 
+    # Scenario#once creates an TimesCalledExpectation of 1.
+    #
+    # Passing in a block sets the return value.
+    #
+    #   mock(subject).method_name.once {:return_value}
     def once(&returns)
       @times_called_expectation = Expectations::TimesCalledExpectation.new(1)
       returns(&returns) if returns
       self
     end
 
+    # Scenario#twice creates an TimesCalledExpectation of 2.
+    #
+    # Passing in a block sets the return value.
+    #
+    #   mock(subject).method_name.twice {:return_value}
     def twice(&returns)
       @times_called_expectation = Expectations::TimesCalledExpectation.new(2)
       returns(&returns) if returns
       self
     end
 
+    # Scenario#twice creates an TimesCalledExpectation of the passed
+    # in number.
+    #
+    # Passing in a block sets the return value.
+    #
+    #   mock(subject).method_name.times(4) {:return_value}
     def times(number, &returns)
       @times_called_expectation = Expectations::TimesCalledExpectation.new(number)
       returns(&returns) if returns
