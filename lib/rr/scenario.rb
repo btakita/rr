@@ -1,4 +1,7 @@
 module RR
+  # RR::Scenario is the use case for a method call.
+  # It has the ArgumentEqualityExpectation, TimesCalledExpectation,
+  # and the implementation.
   class Scenario
     attr_reader :times_called, :argument_expectation, :times_called_expectation
 
