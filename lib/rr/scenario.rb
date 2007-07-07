@@ -113,6 +113,9 @@ module RR
 
     # Scenario#call calls the Scenario's implementation. The return
     # value of the implementation is returned.
+    #
+    # A TimesCalledExpectationError is raised when the times called
+    # exceeds the expected TimesCalledExpectation.
     def call(*args, &block)
       @times_called_expectation.verify_input if @times_called_expectation
       @space.verify_ordered_scenario(self) if ordered?
@@ -140,6 +143,8 @@ module RR
       @argument_expectation.wildcard_match?(*arguments)
     end
 
+    # Scenario#times_called_verified? returns true when the
+    # TimesCalledExpectation is satisfied.
     def times_called_verified?
       return false unless @times_called_expectation
       @times_called_expectation.verify
