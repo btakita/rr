@@ -100,6 +100,12 @@ module RR
     # Scenario#implemented_by sets the implementation of the Scenario.
     # This method takes a Proc or a Method. Passing in a Method allows
     # the Scenario to accept blocks.
+    #
+    #   obj = Object.new
+    #   def obj.foobar
+    #     yield(1)
+    #   end
+    #   mock(obj).method_name.implemented_by(obj.method(:foobar))
     def implemented_by(implementation)
       @implementation = implementation
       self
