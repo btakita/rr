@@ -150,6 +150,9 @@ module RR
       @times_called_expectation.verify
     end
 
+    # Scenario#verify verifies the the TimesCalledExpectation
+    # is satisfied for this scenario. A TimesCalledExpectationError
+    # is raised if the TimesCalledExpectation is not met.
     def verify
       return true unless @times_called_expectation
       @times_called_expectation.verify!
