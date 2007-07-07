@@ -91,10 +91,15 @@ module RR
       @ordered
     end
 
+    # Scenario#returns causes Scenario to return the return value of
+    # the passed in block.
     def returns(&implementation)
       implemented_by implementation
     end
 
+    # Scenario#implemented_by sets the implementation of the Scenario.
+    # This method takes a Proc or a Method. Passing in a Method allows
+    # the Scenario to accept blocks.
     def implemented_by(implementation)
       @implementation = implementation
       self

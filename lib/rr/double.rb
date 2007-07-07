@@ -42,7 +42,7 @@ module RR
       end
     end
 
-    # RR::Double#reset removes the inject dispatcher method.
+    # RR::Double#reset removes the injected dispatcher method.
     # It binds the original method implementation on the object
     # if one exists. 
     def reset
