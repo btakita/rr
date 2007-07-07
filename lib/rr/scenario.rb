@@ -111,6 +111,8 @@ module RR
       self
     end
 
+    # Scenario#call calls the Scenario's implementation. The return
+    # value of the implementation is returned.
     def call(*args, &block)
       @times_called_expectation.verify_input if @times_called_expectation
       @space.verify_ordered_scenario(self) if ordered?
