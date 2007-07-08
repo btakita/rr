@@ -22,6 +22,9 @@ module Extensions
       RR::Space.instance.create_probe_creator(subject, &definition)
     end
 
+#    def do_not_allow(subject, &definition)
+#    end
+
     # Sets up an Anything wildcard ArgumentEqualityExpectation
     # that succeeds when passed any argument.
     #   mock(object).method_name(anything) {return_value}

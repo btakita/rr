@@ -36,6 +36,11 @@ module RR
       ProbeCreator.new(self, subject, &definition)
     end
 
+    # Creates a DoNotAllowCreator.
+    def create_do_not_allow_creator(subject, &definition)
+      DoNotAllowCreator.new(self, subject, &definition)
+    end
+
     # Creates and registers a Scenario to be verified.
     def create_scenario(double)
       scenario = Scenario.new(self)

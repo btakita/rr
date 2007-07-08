@@ -82,6 +82,28 @@ describe Space, "#create_probe_creator" do
   end
 end
 
+describe Space, "#create_do_not_allow_creator" do
+  it_should_behave_like "RR::Space"
+
+  before do
+    @space = Space.new
+    @object = Object.new
+  end
+
+  it "creates a MockCreator" do
+    creator = @space.create_do_not_allow_creator(@object)
+    creator.foobar(1)
+    proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
+  end
+
+  it "uses block definition when passed a block" do
+    creator = @space.create_do_not_allow_creator(@object) do |c|
+      c.foobar(1)
+    end
+    proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
+  end
+end
+
 describe Space, "#create_scenario" do
   it_should_behave_like "RR::Space"
 
