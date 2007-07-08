@@ -4,7 +4,8 @@ RR (Double Ruby) is a double framework that features a rich
 selection of double techniques and a terse syntax.
 http://xunitpatterns.com/Test%20Double.html
 
-Currently RR implements mocks, stubs, and probes.
+Currently RR implements mocks, stubs, and probes. It is a goal of
+RR to support a wide range of double techniques and patterns.
 
 == Mocking
 http://xunitpatterns.com/Mock%20Object.html
