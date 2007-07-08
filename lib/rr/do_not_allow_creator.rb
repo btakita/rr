@@ -1,16 +1,18 @@
 module RR
   # RR::DoNotAllowCreator uses RR::DoNotAllowCreator#method_missing to create
-  # a Scenario that acts like a mock.
+  # a Scenario that expects never to be called.
   #
   # The following example mocks method_name with arg1 and arg2
   # returning return_value.
   #
-  #   mock(subject).method_name(arg1, arg2) { return_value }
+  #   do_not_allow(subject).method_name(arg1, arg2) { return_value }
   #
   # The DoNotAllowCreator also supports a block sytnax.
   #
-  #    mock(subject) do |m|
-  #      m.method_name(arg1, arg2) { return_value }
+  #    do_not_allow(subject) do |m|
+  #      m.method1 # Do not allow method1 with any arguments
+  #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
+  #      m.method3.with_no_args # Do not allow method3 with no arguments
   #    end
   class DoNotAllowCreator
     instance_methods.each { |m| undef_method m unless m =~ /^__/ }
