@@ -60,21 +60,31 @@ describe DoNotAllowCreator, ".new with block" do
   end
 end
 
-#describe DoNotAllowCreator, "#method_missing" do
-#  it_should_behave_like "RR::DoNotAllowCreator"
-#
-#  before do
-#    @subject = Object.new
-#    @creator = DoNotAllowCreator.new(@space, @subject)
-#  end
-#
-#  it "sets expectations on the subject" do
-#    @creator.foobar(1, 2) {:baz}.twice
-#
-#    @subject.foobar(1, 2).should == :baz
-#    @subject.foobar(1, 2).should == :baz
-#    proc {@subject.foobar(1, 2)}.should raise_error(Expectations::TimesCalledExpectationError)
-#  end
-#end
-#
+describe DoNotAllowCreator, "#method_missing" do
+  it_should_behave_like "RR::DoNotAllowCreator"
+
+  before do
+    @subject = Object.new
+    @creator = DoNotAllowCreator.new(@space, @subject)
+  end
+
+  it "sets expectation for method to never be called with any arguments when on arguments passed in" do
+    @creator.foobar
+    proc {@subject.foobar}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@subject.foobar(1, 2)}.should raise_error(Expectations::TimesCalledExpectationError)
+  end
+
+  it "sets expectation for method to never be called with passed in arguments" do
+    @creator.foobar(1, 2)
+    proc {@subject.foobar}.should raise_error(ScenarioNotFoundError)
+    proc {@subject.foobar(1, 2)}.should raise_error(Expectations::TimesCalledExpectationError)
+  end
+
+  it "sets expectation for method to never be called with no arguments when with_no_args is set" do
+    @creator.foobar.with_no_args
+    proc {@subject.foobar}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@subject.foobar(1, 2)}.should raise_error(ScenarioNotFoundError)
+  end
+end
+
 end
