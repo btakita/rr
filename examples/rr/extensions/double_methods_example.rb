@@ -90,5 +90,33 @@ module Extensions
       @subject.foobar(1, 2).should == :original_value
     end
   end
+
+  describe DoubleMethods, "#do_not_allow" do
+    before do
+      extend RR::Extensions::DoubleMethods
+      @subject = Object.new
+    end
+
+    it "sets up the RR do_not_allow call chain" do
+      should_create_do_not_allow_call_chain do_not_allow(@subject)
+    end
+
+    it "sets up the RR do_not_allow call chain with rr_do_not_allow" do
+      should_create_do_not_allow_call_chain rr_do_not_allow(@subject)
+    end
+
+    def should_create_do_not_allow_call_chain(creator)
+      class << @subject
+        def foobar(*args)
+          :original_value
+        end
+      end
+
+      scenario = creator.foobar(1, 2)
+      scenario.times_called_expectation.times.should == 0
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+      scenario.argument_expectation.expected_arguments.should == [1, 2]
+    end
+  end
 end
 end
