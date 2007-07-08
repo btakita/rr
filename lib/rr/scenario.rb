@@ -48,7 +48,12 @@ module RR
       returns(&returns) if returns
       self
     end
-    
+
+    # Scenario#never creates an TimesCalledExpectation of 0.
+    #
+    # This method does not accept a block because it will never be called.
+    #
+    #   mock(subject).method_name.never
     def never
       @times_called_expectation = Expectations::TimesCalledExpectation.new(0)
       self
