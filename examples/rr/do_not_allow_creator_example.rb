@@ -48,11 +48,11 @@ describe DoNotAllowCreator, ".new with block" do
   end
 
   it "does not raise TimesCalledExpectationError when no_args is called with arguments" do
-    proc {@subject.no_args(1, 2)}.should raise_error(ScenarioNotFoundError)
+    proc {@subject.no_args(1, 2)}.should raise_error(Errors::ScenarioNotFoundError)
   end
 
   it "raises TimesCalledExpectationError when any_args is called with no arguments" do
-    proc {@subject.with_args}.should raise_error(ScenarioNotFoundError)
+    proc {@subject.with_args}.should raise_error(Errors::ScenarioNotFoundError)
   end
 
   it "raises TimesCalledExpectationError when any_args is called with arguments" do
@@ -76,14 +76,14 @@ describe DoNotAllowCreator, "#method_missing" do
 
   it "sets expectation for method to never be called with passed in arguments" do
     @creator.foobar(1, 2)
-    proc {@subject.foobar}.should raise_error(ScenarioNotFoundError)
+    proc {@subject.foobar}.should raise_error(Errors::ScenarioNotFoundError)
     proc {@subject.foobar(1, 2)}.should raise_error(Expectations::TimesCalledExpectationError)
   end
 
   it "sets expectation for method to never be called with no arguments when with_no_args is set" do
     @creator.foobar.with_no_args
     proc {@subject.foobar}.should raise_error(Expectations::TimesCalledExpectationError)
-    proc {@subject.foobar(1, 2)}.should raise_error(ScenarioNotFoundError)
+    proc {@subject.foobar(1, 2)}.should raise_error(Errors::ScenarioNotFoundError)
   end
 end
 

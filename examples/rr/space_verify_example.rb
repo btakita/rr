@@ -140,7 +140,7 @@ describe Space, "#verify_ordered_scenario where the passed in scenario is not at
 
     proc do
       @space.verify_ordered_scenario(second_scenario)
-    end.should raise_error(RR::ScenarioOrderError)
+    end.should raise_error(Errors::ScenarioOrderError)
   end
 end
 end

@@ -10,8 +10,9 @@ require "rr/do_not_allow_creator"
 require "rr/scenario"
 require "rr/space"
 
-require "rr/scenario_not_found_error"
-require "rr/scenario_order_error"
+require "rr/errors/rr_error"
+require "rr/errors/scenario_not_found_error"
+require "rr/errors/scenario_order_error"
 
 require "rr/expectations/argument_equality_expectation"
 require "rr/expectations/any_argument_expectation"

@@ -56,7 +56,9 @@ describe "RR mock:" do
       "My String",
       "Tabcola"
     ).should == "value 1"
-    proc {@obj.foobar(:failure)}.should raise_error( RR::ScenarioNotFoundError )
+    proc do
+      @obj.foobar(:failure)
+    end.should raise_error( RR::Errors::ScenarioNotFoundError )
   end
 end
 

@@ -70,7 +70,7 @@ module RR
     # Verifies that the passed in ordered Scenario is being called
     # in the correct position.
     def verify_ordered_scenario(scenario)
-      raise ::RR::ScenarioOrderError unless @ordered_scenarios.first == scenario
+      raise Errors::ScenarioOrderError unless @ordered_scenarios.first == scenario
       @ordered_scenarios.shift if scenario.times_called_verified?
       scenario
     end
