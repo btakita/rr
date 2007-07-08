@@ -3,9 +3,9 @@ require "#{dir}/../../example_helper"
 
 module RR
 module Expectations
-  describe ArgumentEqualityExpectation, "#exact_match? with is_a argument" do
+  describe ArgumentEqualityError, "#exact_match? with is_a argument" do
     before do
-      @expectation = ArgumentEqualityExpectation.new(boolean)
+      @expectation = ArgumentEqualityError.new(boolean)
     end
     
     it "returns true when passed in an IsA module" do
@@ -22,9 +22,9 @@ module Expectations
     end
   end
 
-  describe ArgumentEqualityExpectation, "#wildcard_match? with is_a Boolean argument" do
+  describe ArgumentEqualityError, "#wildcard_match? with is_a Boolean argument" do
     before do
-      @expectation = ArgumentEqualityExpectation.new(boolean)
+      @expectation = ArgumentEqualityError.new(boolean)
     end
 
     it "returns true when passed a Boolean" do

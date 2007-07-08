@@ -30,7 +30,7 @@ module Extensions
     end
     alias_method :dont_allow, :do_not_allow
 
-    # Sets up an Anything wildcard ArgumentEqualityExpectation
+    # Sets up an Anything wildcard ArgumentEqualityError
     # that succeeds when passed any argument.
     #   mock(object).method_name(anything) {return_value}
     #   object.method_name("an arbitrary value") # passes
@@ -38,7 +38,7 @@ module Extensions
       RR::Expectations::WildcardMatchers::Anything.new
     end
 
-    # Sets up an IsA wildcard ArgumentEqualityExpectation
+    # Sets up an IsA wildcard ArgumentEqualityError
     # that succeeds when passed an argument of a certain type.
     #   mock(object).method_name(is_a(String)) {return_value}
     #   object.method_name("A String") # passes
@@ -46,7 +46,7 @@ module Extensions
       RR::Expectations::WildcardMatchers::IsA.new(klass)
     end
 
-    # Sets up an Numeric wildcard ArgumentEqualityExpectation
+    # Sets up an Numeric wildcard ArgumentEqualityError
     # that succeeds when passed an argument that is ::Numeric.
     #   mock(object).method_name(numeric) {return_value}
     #   object.method_name(99) # passes
@@ -54,7 +54,7 @@ module Extensions
       RR::Expectations::WildcardMatchers::Numeric.new
     end
 
-    # Sets up an Boolean wildcard ArgumentEqualityExpectation
+    # Sets up an Boolean wildcard ArgumentEqualityError
     # that succeeds when passed an argument that is a ::Boolean.
     #   mock(object).method_name(boolean) {return_value}
     #   object.method_name(false) # passes
@@ -62,7 +62,7 @@ module Extensions
       RR::Expectations::WildcardMatchers::Boolean.new
     end
 
-    # Sets up a DuckType wildcard ArgumentEqualityExpectation
+    # Sets up a DuckType wildcard ArgumentEqualityError
     # that succeeds when passed the argument implements the methods.
     #   arg = Object.new
     #   def arg.foo; end

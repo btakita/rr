@@ -3,9 +3,9 @@ require "#{dir}/../../example_helper"
 
 module RR
 module Expectations
-  describe ArgumentEqualityExpectation, "#exact_match? with duck_type argument" do
+  describe ArgumentEqualityError, "#exact_match? with duck_type argument" do
     before do
-      @expectation = ArgumentEqualityExpectation.new(duck_type(:to_s))
+      @expectation = ArgumentEqualityError.new(duck_type(:to_s))
     end
     
     it "returns true when passed in an DuckType matcher with the same argument list" do
@@ -26,7 +26,7 @@ module Expectations
     end
   end
 
-  describe ArgumentEqualityExpectation, "#wildcard_match? with DuckType argument" do
+  describe ArgumentEqualityError, "#wildcard_match? with DuckType argument" do
     before do
       @matching_object = Object.new
       def @matching_object.quack
@@ -40,7 +40,7 @@ module Expectations
 
       @not_match_object = Object.new
 
-      @expectation = ArgumentEqualityExpectation.new(duck_type(:quack, :waddle))
+      @expectation = ArgumentEqualityError.new(duck_type(:quack, :waddle))
     end
 
     it "returns true when object matches all required methods" do

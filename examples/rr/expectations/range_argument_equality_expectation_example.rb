@@ -3,9 +3,9 @@ require "#{dir}/../../example_helper"
 
 module RR
 module Expectations
-  describe ArgumentEqualityExpectation, "#exact_match? with range argument" do
+  describe ArgumentEqualityError, "#exact_match? with range argument" do
     before do
-      @expectation = ArgumentEqualityExpectation.new(2..5)
+      @expectation = ArgumentEqualityError.new(2..5)
     end
     
     it "returns true when passed in an Range matcher with the same argument list" do
@@ -26,9 +26,9 @@ module Expectations
     end
   end
 
-  describe ArgumentEqualityExpectation, "#wildcard_match? with Range argument" do
+  describe ArgumentEqualityError, "#wildcard_match? with Range argument" do
     before do
-      @expectation = ArgumentEqualityExpectation.new(2..6)
+      @expectation = ArgumentEqualityError.new(2..6)
     end
 
     it "returns true when string matches the range" do

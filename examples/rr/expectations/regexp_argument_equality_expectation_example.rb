@@ -3,9 +3,9 @@ require "#{dir}/../../example_helper"
 
 module RR
 module Expectations
-  describe ArgumentEqualityExpectation, "#exact_match? with regexp argument" do
+  describe ArgumentEqualityError, "#exact_match? with regexp argument" do
     before do
-      @expectation = ArgumentEqualityExpectation.new(/abc/)
+      @expectation = ArgumentEqualityError.new(/abc/)
     end
     
     it "returns true when passed in an Regexp matcher with the same argument list" do
@@ -26,7 +26,7 @@ module Expectations
     end
   end
 
-  describe ArgumentEqualityExpectation, "#wildcard_match? with Regexp argument" do
+  describe ArgumentEqualityError, "#wildcard_match? with Regexp argument" do
     before do
       @matching_object = Object.new
       def @matching_object.quack
@@ -40,7 +40,7 @@ module Expectations
 
       @not_match_object = Object.new
 
-      @expectation = ArgumentEqualityExpectation.new(/abc/)
+      @expectation = ArgumentEqualityError.new(/abc/)
     end
 
     it "returns true when string matches the regexp" do

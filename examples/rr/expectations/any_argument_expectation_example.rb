@@ -12,8 +12,8 @@ module Expectations
       @expectation.should == AnyArgumentExpectation.new
     end
 
-    it "returns false when comparing with ArgumentEqualityExpectation" do
-      @expectation.should_not == ArgumentEqualityExpectation.new(1)
+    it "returns false when comparing with ArgumentEqualityError" do
+      @expectation.should_not == ArgumentEqualityError.new(1)
     end
   end
 

@@ -1,6 +1,6 @@
 module RR
   # RR::Scenario is the use case for a method call.
-  # It has the ArgumentEqualityExpectation, TimesCalledExpectation,
+  # It has the ArgumentEqualityError, TimesCalledExpectation,
   # and the implementation.
   class Scenario
     attr_reader :times_called, :argument_expectation, :times_called_expectation
@@ -13,19 +13,19 @@ module RR
       @times_called = 0
     end
 
-    # Scenario#with creates an ArgumentEqualityExpectation for the
+    # Scenario#with creates an ArgumentEqualityError for the
     # Scenario. it takes a list of expected arguments.
     #
     # Passing in a block sets the return value.
     #
     #   mock(subject).method_name.with(1, 2) {:return_value}
     def with(*args, &returns)
-      @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
+      @argument_expectation = Expectations::ArgumentEqualityError.new(*args)
       returns(&returns) if returns
       self
     end
 
-    # Scenario#with_any_args creates an AnyArgumentEqualityExpectation
+    # Scenario#with_any_args creates an AnyArgumentEqualityError
     # for the Scenario.
     #
     # Passing in a block sets the return value.
@@ -37,14 +37,14 @@ module RR
       self
     end
 
-    # Scenario#with_no_args creates an ArgumentEqualityExpectation with
+    # Scenario#with_no_args creates an ArgumentEqualityError with
     # no arguments for the Scenario.
     #
     # Passing in a block sets the return value.
     #
     #   mock(subject).method_name.with_no_args {:return_value}
     def with_no_args(&returns)
-      @argument_expectation = Expectations::ArgumentEqualityExpectation.new()
+      @argument_expectation = Expectations::ArgumentEqualityError.new()
       returns(&returns) if returns
       self
     end
@@ -152,14 +152,14 @@ module RR
     end
 
     # Scenario#exact_match? returns true when the passed in arguments
-    # exactly match the ArgumentEqualityExpectation arguments.
+    # exactly match the ArgumentEqualityError arguments.
     def exact_match?(*arguments)
       return false unless @argument_expectation 
       @argument_expectation.exact_match?(*arguments)
     end
 
     # Scenario#wildcard_match? returns true when the passed in arguments
-    # wildcard match the ArgumentEqualityExpectation arguments.
+    # wildcard match the ArgumentEqualityError arguments.
     def wildcard_match?(*arguments)
       return false unless @argument_expectation
       @argument_expectation.wildcard_match?(*arguments)

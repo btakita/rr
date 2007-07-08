@@ -3,9 +3,9 @@ require "#{dir}/../../example_helper"
 
 module RR
 module Expectations
-  describe ArgumentEqualityExpectation, "#exact_match? with anything argument" do
+  describe ArgumentEqualityError, "#exact_match? with anything argument" do
     before do
-      @expectation = ArgumentEqualityExpectation.new(anything)
+      @expectation = ArgumentEqualityError.new(anything)
     end
     
     it "returns true when passed in an Anything module" do
@@ -21,9 +21,9 @@ module Expectations
     end
   end
 
-  describe ArgumentEqualityExpectation, "#wildcard_match? with is_a String argument" do
+  describe ArgumentEqualityError, "#wildcard_match? with is_a String argument" do
     before do
-      @expectation = ArgumentEqualityExpectation.new(anything)
+      @expectation = ArgumentEqualityError.new(anything)
     end
 
     it "returns true when passed correct number of arguments" do

@@ -15,7 +15,7 @@ end
 describe Scenario, "#with" do
   it_should_behave_like "RR::Scenario"
 
-  it "sets an ArgumentEqualityExpectation" do
+  it "sets an ArgumentEqualityError" do
     @scenario.with(1).should === @scenario
     @scenario.should be_exact_match(1)
     @scenario.should_not be_exact_match(2)
@@ -59,8 +59,8 @@ describe Scenario, "#with_no_args" do
     @scenario.with_no_args.should === @scenario
   end
 
-  it "sets an ArgumentEqualityExpectation with no arguments" do
-    @scenario.argument_expectation.should == Expectations::ArgumentEqualityExpectation.new()
+  it "sets an ArgumentEqualityError with no arguments" do
+    @scenario.argument_expectation.should == Expectations::ArgumentEqualityError.new()
   end
 
   it "sets return value when block passed in" do
