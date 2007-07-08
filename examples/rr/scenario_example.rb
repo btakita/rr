@@ -30,15 +30,41 @@ end
 describe Scenario, "#with_any_args" do
   it_should_behave_like "RR::Scenario"
 
-  it "sets an ArgumentEqualityExpectation::Anything expectation" do
-    @scenario.with_any_args.should === @scenario
+  before do
+    @scenario.with_any_args {:return_value}
+  end
+
+  it "returns self" do
+    @scenario.with_no_args.should === @scenario
+  end
+
+  it "sets an AnyArgumentExpectation" do
     @scenario.should_not be_exact_match(1)
     @scenario.should be_wildcard_match(1)
   end
 
   it "sets return value when block passed in" do
-    @scenario.with_any_args {:return_value}
     @object.foobar(:anything).should == :return_value
+  end
+end
+
+describe Scenario, "#with_no_args" do
+  it_should_behave_like "RR::Scenario"
+
+  before do
+    @scenario.with_no_args {:return_value}
+  end
+
+  it "returns self" do
+    @scenario.with_no_args.should === @scenario
+  end
+
+  it "sets an ArgumentEqualityExpectation with no arguments" do
+    @scenario.argument_expectation.should == Expectations::ArgumentEqualityExpectation.new()
+  end
+
+  it "sets return value when block passed in" do
+    @object.foobar().should == :return_value
   end
 end
 

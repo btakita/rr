@@ -36,6 +36,18 @@ module RR
       returns(&returns) if returns
       self
     end
+
+    # Scenario#with_no_args creates an ArgumentEqualityExpectation with
+    # no arguments for the Scenario.
+    #
+    # Passing in a block sets the return value.
+    #
+    #   mock(subject).method_name.with_no_args {:return_value}
+    def with_no_args(&returns)
+      @argument_expectation = Expectations::ArgumentEqualityExpectation.new()
+      returns(&returns) if returns
+      self
+    end
     
     def never
       @times_called_expectation = Expectations::TimesCalledExpectation.new(0)
