@@ -1,8 +1,5 @@
 module RR
   module Expectations
-    class TimesCalledExpectationError < RuntimeError
-    end
-    
     class TimesCalledExpectation
       attr_reader :times, :times_called
       
@@ -27,12 +24,12 @@ module RR
       end
 
       def verify!
-        raise TimesCalledExpectationError unless verify
+        raise Errors::TimesCalledError unless verify
       end
 
       protected
       def verify_input_error
-        raise TimesCalledExpectationError, "Called #{@times_called.inspect} times. Expected #{@times.inspect}"
+        raise Errors::TimesCalledError, "Called #{@times_called.inspect} times. Expected #{@times.inspect}"
       end
     end
   end

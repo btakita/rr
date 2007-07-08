@@ -103,7 +103,7 @@ describe Double, " method dispatching where there are scenarios with duplicate E
     @object.foobar(:exact_match).should == :return_2
   end
 
-  it "raises TimesCalledExpectationError when all of the scenarios Times Called expectation is satisfied" do
+  it "raises TimesCalledError when all of the scenarios Times Called expectation is satisfied" do
     scenario1_with_exact_match = @space.create_scenario(@double)
     scenario1_with_exact_match.with(:exact_match).returns {:return_1}.once
 
@@ -114,7 +114,7 @@ describe Double, " method dispatching where there are scenarios with duplicate E
     @object.foobar(:exact_match)
     proc do
       @object.foobar(:exact_match)
-    end.should raise_error(Expectations::TimesCalledExpectationError)
+    end.should raise_error(Errors::TimesCalledError)
   end
 end
 
@@ -150,7 +150,7 @@ describe Double, " method dispatching where there are scenarios with duplicate W
     @object.foobar(:anything).should == :return_2
   end
 
-  it "raises TimesCalledExpectationError when all of the scenarios Times Called expectation is satisfied" do
+  it "raises TimesCalledError when all of the scenarios Times Called expectation is satisfied" do
     scenario_1 = @space.create_scenario(@double)
     scenario_1.with_any_args.returns {:return_1}.once
 
@@ -161,7 +161,7 @@ describe Double, " method dispatching where there are scenarios with duplicate W
     @object.foobar(:anything)
     proc do
       @object.foobar(:anything)
-    end.should raise_error(Expectations::TimesCalledExpectationError)
+    end.should raise_error(Errors::TimesCalledError)
   end
 end
 end

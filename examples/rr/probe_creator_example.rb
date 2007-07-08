@@ -76,7 +76,7 @@ describe ProbeCreator, "#method_missing" do
     @creator.foobar(1, 2).twice
     @subject.foobar(1, 2).should == :baz
     @subject.foobar(1, 2).should == :baz
-    proc {@subject.foobar(1, 2)}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
   end
 end
 

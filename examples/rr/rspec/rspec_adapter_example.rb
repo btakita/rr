@@ -38,7 +38,7 @@ module Adapters
 
       proc do
         @fixture.verify_mocks_for_rspec
-      end.should raise_error(::RR::Expectations::TimesCalledExpectationError)
+      end.should raise_error(::RR::Errors::TimesCalledError)
       RR::Space.instance.doubles.should be_empty
     end
   end

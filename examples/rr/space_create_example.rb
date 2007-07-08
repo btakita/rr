@@ -14,7 +14,7 @@ describe Space, "#create_mock_creator" do
     creator = @space.create_mock_creator(@object)
     creator.foobar(1) {:baz}
     @object.foobar(1).should == :baz
-    proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "uses block definition when passed a block" do
@@ -22,7 +22,7 @@ describe Space, "#create_mock_creator" do
       c.foobar(1) {:baz}
     end
     @object.foobar(1).should == :baz
-    proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 end
 
@@ -70,7 +70,7 @@ describe Space, "#create_probe_creator" do
     creator = @space.create_probe_creator(@object)
     creator.foobar(1)
     @object.foobar(1).should == :original_foobar
-    proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "uses block definition when passed a block" do
@@ -78,7 +78,7 @@ describe Space, "#create_probe_creator" do
       c.foobar(1)
     end
     @object.foobar(1).should == :original_foobar
-    proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 end
 
@@ -93,14 +93,14 @@ describe Space, "#create_do_not_allow_creator" do
   it "creates a MockCreator" do
     creator = @space.create_do_not_allow_creator(@object)
     creator.foobar(1)
-    proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "uses block definition when passed a block" do
     creator = @space.create_do_not_allow_creator(@object) do |c|
       c.foobar(1)
     end
-    proc {@object.foobar(1)}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 end
 

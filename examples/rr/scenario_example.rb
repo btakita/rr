@@ -77,12 +77,12 @@ describe Scenario, "#never" do
 
   it "sets up a Times Called Expectation with 0" do
     @scenario.never
-    proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@scenario.call}.should raise_error(Errors::TimesCalledError)
   end
 
   it "sets return value when block passed in" do
     @scenario.with_any_args.never
-    proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@scenario.call}.should raise_error(Errors::TimesCalledError)
   end
 end
 
@@ -92,7 +92,7 @@ describe Scenario, "#once" do
   it "sets up a Times Called Expectation with 1" do
     @scenario.once.should === @scenario
     @scenario.call
-    proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@scenario.call}.should raise_error(Errors::TimesCalledError)
   end
 
   it "sets return value when block passed in" do
@@ -108,7 +108,7 @@ describe Scenario, "#twice" do
     @scenario.twice.should === @scenario
     @scenario.call
     @scenario.call
-    proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@scenario.call}.should raise_error(Errors::TimesCalledError)
   end
 
   it "sets return value when block passed in" do
@@ -125,7 +125,7 @@ describe Scenario, "#times" do
     @scenario.call
     @scenario.call
     @scenario.call
-    proc {@scenario.call}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@scenario.call}.should raise_error(Errors::TimesCalledError)
   end
 
   it "sets return value when block passed in" do
@@ -219,7 +219,7 @@ describe Scenario, "#call implemented by a proc" do
 
     @scenario.call(:foobar)
     @scenario.call(:foobar)
-    proc {@scenario.call(:foobar)}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@scenario.call(:foobar)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "raises ScenarioOrderError when ordered and called out of order" do
@@ -380,9 +380,9 @@ describe Scenario, "#verify" do
   it "verifies that times called expectation was met" do
     @scenario.twice.returns {:return_value}
 
-    proc {@scenario.verify}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@scenario.verify}.should raise_error(Errors::TimesCalledError)
     @scenario.call
-    proc {@scenario.verify}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@scenario.verify}.should raise_error(Errors::TimesCalledError)
     @scenario.call
     
     proc {@scenario.verify}.should_not raise_error

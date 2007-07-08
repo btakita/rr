@@ -16,7 +16,7 @@ describe Double, "#verify" do
     @double.register_scenario scenario
     
     scenario.with(1).once.returns {nil}
-    proc {@double.verify}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@double.verify}.should raise_error(Errors::TimesCalledError)
     @object.foobar(1)
     proc {@double.verify}.should_not raise_error
   end

@@ -14,7 +14,7 @@ describe TimesCalledExpectation, :shared => true do
   end
 
   def raises_expectation_error(&block)
-    proc {block.call}.should raise_error(TimesCalledExpectationError)
+    proc {block.call}.should raise_error(Errors::TimesCalledError)
   end
 end
 
@@ -76,7 +76,7 @@ describe TimesCalledExpectation, "#verify! when passed an Integer (2)" do
 
   it "fails after verify_input called 1 time" do
     @expectation.verify_input
-    proc {@expectation.verify!}.should raise_error(TimesCalledExpectationError)
+    proc {@expectation.verify!}.should raise_error(Errors::TimesCalledError)
   end
 
   it "can't be called when verify_input is called 3 times" do
@@ -84,7 +84,7 @@ describe TimesCalledExpectation, "#verify! when passed an Integer (2)" do
     @expectation.verify_input
     proc do
       @expectation.verify_input
-    end.should raise_error(TimesCalledExpectationError)
+    end.should raise_error(Errors::TimesCalledError)
   end
 end
 
@@ -111,7 +111,7 @@ describe TimesCalledExpectation, "#verify! when passed a Range (1..2)" do
     @expectation.verify_input
     proc do
       @expectation.verify_input
-    end.should raise_error(TimesCalledExpectationError)
+    end.should raise_error(Errors::TimesCalledError)
   end
 end
 
@@ -130,14 +130,14 @@ describe TimesCalledExpectation, "#verify! when passed a block (== 2 times)" do
 
   it "fails after verify_input called 1 time" do
     @expectation.verify_input
-    proc {@expectation.verify!}.should raise_error(TimesCalledExpectationError)
+    proc {@expectation.verify!}.should raise_error(Errors::TimesCalledError)
   end
 
   it "fails after verify_input called 3 times" do
     @expectation.verify_input
     @expectation.verify_input
     @expectation.verify_input
-    proc {@expectation.verify!}.should raise_error(TimesCalledExpectationError)
+    proc {@expectation.verify!}.should raise_error(Errors::TimesCalledError)
   end
 end
 

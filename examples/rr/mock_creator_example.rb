@@ -58,7 +58,7 @@ describe MockCreator, "#method_missing" do
 
     @subject.foobar(1, 2).should == :baz
     @subject.foobar(1, 2).should == :baz
-    proc {@subject.foobar(1, 2)}.should raise_error(Expectations::TimesCalledExpectationError)
+    proc {@subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
   end
 end
 

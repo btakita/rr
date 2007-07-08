@@ -32,7 +32,7 @@ class TestUnitIntegrationTest < Test::Unit::TestCase
 
   def test_times_called_verification
     mock(@subject).foobar(1, 2) {:baz}
-    assert_raise RR::Expectations::TimesCalledExpectationError do
+    assert_raise RR::Errors::TimesCalledError do
       teardown
     end
   end

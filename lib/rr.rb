@@ -14,6 +14,7 @@ require "rr/errors/rr_error"
 require "rr/errors/scenario_not_found_error"
 require "rr/errors/scenario_order_error"
 require "rr/errors/argument_equality_error"
+require "rr/errors/times_called_error"
 
 require "rr/expectations/argument_equality_expectation"
 require "rr/expectations/any_argument_expectation"

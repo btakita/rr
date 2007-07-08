@@ -18,7 +18,7 @@ describe "RR mock:" do
   it "mocks via inline call" do
     mock(@obj).to_s {"a value"}
     @obj.to_s.should == "a value"
-    proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
+    proc {@obj.to_s}.should raise_error(RR::Errors::TimesCalledError)
   end
 
   it "allows ordering" do
@@ -27,7 +27,7 @@ describe "RR mock:" do
     @obj.to_s.should == "value 1"
     @obj.to_s.should == "value 2"
     @obj.to_s.should == "value 2"
-    proc {@obj.to_s}.should raise_error(RR::Expectations::TimesCalledExpectationError)
+    proc {@obj.to_s}.should raise_error(RR::Errors::TimesCalledError)
   end
 
   it "mocks via block" do
@@ -82,7 +82,7 @@ describe "RR probe:" do
     @obj.to_s(:foo).should == "Original to_s with arg foo"
     @obj.to_s(:bar).should == "Original to_s with arg bar"
     @obj.to_s(:bar).should == "Original to_s with arg bar"
-    proc {@obj.to_s(:bar)}.should raise_error(RR::Expectations::TimesCalledExpectationError)
+    proc {@obj.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
   end
 
   it "probes via block" do
