@@ -1,9 +1,12 @@
 dir = File.dirname(__FILE__)
 
 require "rr/double"
+
 require "rr/mock_creator"
 require "rr/stub_creator"
 require "rr/probe_creator"
+require "rr/do_not_allow_creator"
+
 require "rr/scenario"
 require "rr/space"
 
