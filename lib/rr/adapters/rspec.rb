@@ -1,5 +1,5 @@
-require "spec/mocks"
-require "rr"
+patterns = ::Spec::Runner::QuietBacktraceTweaker::IGNORE_PATTERNS
+patterns.push(/rr\/lib\/rr/)
 
 module RR
   module Adapters
