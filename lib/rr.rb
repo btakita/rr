@@ -22,5 +22,6 @@ require "rr/expectations/wildcard_matchers/numeric"
 require "rr/expectations/wildcard_matchers/boolean"
 require "rr/expectations/wildcard_matchers/duck_type"
 require "rr/expectations/wildcard_matchers/regexp"
+require "rr/expectations/wildcard_matchers/range"
 
 require "rr/extensions/double_methods"
