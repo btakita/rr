@@ -43,6 +43,7 @@ spec = Gem::Specification.new do |s|
 
   s.has_rdoc = true
   s.extra_rdoc_files = [ "README", "CHANGES" ]
+  s.rdoc_options = "--main README --inline-source"
 
   s.test_files = Dir.glob('spec/*_spec.rb')
   s.require_path = 'lib'
