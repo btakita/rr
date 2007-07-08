@@ -20,7 +20,7 @@ def run_suite
   system("ruby #{dir}/examples/example_suite.rb") || raise("Example Suite failed")
 end
 
-PKG_NAME = "RR"
+PKG_NAME = "rr"
 PKG_VERSION = "0.1.0"
 PKG_FILES = FileList[
   '[A-Z]*',
