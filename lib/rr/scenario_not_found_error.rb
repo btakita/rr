@@ -1,2 +1,4 @@
-class ScenarioNotFoundError < RuntimeError
+module RR
+  class ScenarioNotFoundError < RuntimeError
+  end  
 end
