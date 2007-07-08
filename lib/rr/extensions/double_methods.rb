@@ -25,6 +25,7 @@ module Extensions
     def do_not_allow(subject, &definition)
       RR::Space.instance.create_do_not_allow_creator(subject, &definition)
     end
+    alias_method :dont_allow, :do_not_allow
 
     # Sets up an Anything wildcard ArgumentEqualityExpectation
     # that succeeds when passed any argument.
