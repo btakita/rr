@@ -114,6 +114,21 @@ module RR
       @ordered
     end
 
+    # Scenario#yields sets the Scenario to invoke a passed in block when
+    # the Scenario is called.
+    # An Expection will be raised if no block is passed in when the
+    # Scenario is called.
+    #
+    # Passing in a block sets the return value.
+    #
+    #   mock(subject).method_name.yields(yield_arg1, yield_arg2) {return_value}
+    #   subject.method_name {|yield_arg1, yield_arg2|}
+    def yields(*args, &returns)
+      @yields = args
+      returns(&returns) if returns
+      self
+    end
+    
     # Scenario#returns accepts an argument value or a block.
     # It will raise an ArgumentError if both are passed in.
     #
@@ -128,21 +143,6 @@ module RR
       else
         implemented_by implementation
       end
-    end
-
-    # Scenario#yields sets the Scenario to invoke a passed in block when
-    # the Scenario is called.
-    # An Expection will be raised if no block is passed in when the
-    # Scenario is called.
-    #
-    # Passing in a block sets the return value.
-    #
-    #   mock(subject).method_name.yields(yield_arg1, yield_arg2) {return_value}
-    #   subject.method_name {|yield_arg1, yield_arg2|}
-    def yields(*args, &returns)
-      @yields = args
-      returns(&returns) if returns
-      self
     end
 
     # Scenario#implemented_by sets the implementation of the Scenario.
