@@ -115,8 +115,13 @@ module RR
 
     # Scenario#returns causes Scenario to return the return value of
     # the passed in block.
-    def returns(&implementation)
-      implemented_by implementation
+    def returns(value=nil, &implementation)
+      raise ArgumentError, "returns cannot accept both an argument and a block" if value && implementation
+      if value
+        implemented_by proc {value}
+      else
+        implemented_by implementation
+      end
     end
 
     # Scenario#implemented_by sets the implementation of the Scenario.

@@ -170,9 +170,25 @@ end
 describe Scenario, "#returns" do
   it_should_behave_like "RR::Scenario"
 
-  it "sets the value of the method" do
+  it "returns self" do
     @scenario.returns {:baz}.should === @scenario
+    @scenario.returns(:baz).should === @scenario
+  end
+
+  it "sets the value of the method when passed a block" do
+    @scenario.returns {:baz}
     @scenario.call.should == :baz
+  end
+
+  it "sets the value of the method when passed an argument" do
+    @scenario.returns(:baz)
+    @scenario.call.should == :baz
+  end
+
+  it "raises an error when both argument and block is passed in" do
+    proc do
+      @scenario.returns(:baz) {:another}
+    end.should raise_error(ArgumentError, "returns cannot accept both an argument and a block")
   end
 end
 
