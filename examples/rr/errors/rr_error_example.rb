@@ -42,6 +42,25 @@ module Errors
 
       backtrace.should include("lib/rr")
     end
+
+    it "returns custom backtrace when backtrace is set" do
+      error = RRError.new
+      custom_backtrace = caller
+      error.backtrace = custom_backtrace
+      error.backtrace.should == custom_backtrace
+    end
+
+    it "returns normal backtrace when backtrace is not set" do
+      error = nil
+      expected_line = __LINE__ + 2
+      begin
+        raise RRError
+      rescue RRError => e
+        error = e
+      end
+      error.backtrace.first.should include(__FILE__)
+      error.backtrace.first.should include(expected_line.to_s)
+    end
   end
 end
 end

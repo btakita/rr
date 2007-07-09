@@ -66,6 +66,7 @@ describe TimesCalledExpectation, "#verify! when passed an Integer (2)" do
 
   before do
     @expectation = TimesCalledExpectation.new(2)
+    @expected_line = __LINE__ - 1
   end
 
   it "passes after verify_input called 2 times" do
@@ -85,6 +86,17 @@ describe TimesCalledExpectation, "#verify! when passed an Integer (2)" do
     proc do
       @expectation.verify_input
     end.should raise_error(Errors::TimesCalledError)
+  end
+
+  it "has a backtrace to where the TimesCalledExpectation was instantiated on failure" do
+    error = nil
+    begin
+      @expectation.verify!
+    rescue Errors::TimesCalledError => e
+      error = e
+    end
+    e.backtrace.first.should include(__FILE__)
+    e.backtrace.first.should include(":#{@expected_line}")
   end
 end
 

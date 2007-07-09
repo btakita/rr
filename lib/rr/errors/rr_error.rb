@@ -3,8 +3,9 @@ module Errors
   BACKTRACE_IDENTIFIER = /lib\/rr/
 
   class RRError < RuntimeError
+    attr_writer :backtrace
     def backtrace
-      original_backtrace = super
+      original_backtrace = (@backtrace) ? @backtrace : super
       return original_backtrace unless RR::Space.trim_backtrace
 
       return original_backtrace unless original_backtrace.respond_to?(:each)

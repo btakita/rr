@@ -7,6 +7,7 @@ module RR
         raise ArgumentError, "Cannot pass in both an argument and a block" if times && time_condition_block
         @times = times || time_condition_block
         @times_called = 0
+        @verify_backtrace = caller[1..-1]
       end
 
       def verify_input
@@ -24,7 +25,15 @@ module RR
       end
 
       def verify!
-        raise Errors::TimesCalledError unless verify
+        unless verify
+          if @verify_backtrace
+            error = Errors::TimesCalledError.new
+            error.backtrace = @verify_backtrace
+            raise error
+          else
+            raise Errors::TimesCalledError
+          end
+        end
       end
 
       protected
