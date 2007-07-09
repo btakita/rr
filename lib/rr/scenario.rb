@@ -130,8 +130,9 @@ module RR
       end
     end
 
-    def yields(*args)
+    def yields(*args, &returns)
       @yields = args
+      returns(&returns) if returns
       self
     end
 

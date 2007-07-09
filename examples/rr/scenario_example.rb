@@ -167,6 +167,34 @@ describe Scenario, "#ordered?" do
   end
 end
 
+describe Scenario, "#yields" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns self" do
+    @scenario.yields(:baz).should === @scenario
+  end
+
+  it "yields the passed in argument to the call block when there is no returns value set" do
+    @scenario.with_any_args.yields(:baz)
+    passed_in_block_arg = nil
+    @object.foobar {|arg| passed_in_block_arg = arg}.should == nil
+    passed_in_block_arg.should == :baz
+  end
+
+  it "yields the passed in argument to the call block when there is a no returns value set" do
+    @scenario.with_any_args.yields(:baz).returns(:return_value)
+
+    passed_in_block_arg = nil
+    @object.foobar {|arg| passed_in_block_arg = arg}.should == :return_value
+    passed_in_block_arg.should == :baz
+  end
+
+  it "sets return value when block passed in" do
+    @scenario.with_any_args.yields {:return_value}
+    @scenario.call {}.should == :return_value
+  end
+end
+
 describe Scenario, "#returns" do
   it_should_behave_like "RR::Scenario"
 
@@ -189,29 +217,6 @@ describe Scenario, "#returns" do
     proc do
       @scenario.returns(:baz) {:another}
     end.should raise_error(ArgumentError, "returns cannot accept both an argument and a block")
-  end
-end
-
-describe Scenario, "#yields" do
-  it_should_behave_like "RR::Scenario"
-
-  it "returns self" do
-    @scenario.yields(:baz).should === @scenario
-  end
-
-  it "yields the passed in argument to the call block when there is no returns value set" do
-    @scenario.yields(:baz)
-    passed_in_block_arg = nil
-    @scenario.call {|arg| passed_in_block_arg = arg}.should == nil
-    passed_in_block_arg.should == :baz
-  end
-
-  it "yields the passed in argument to the call block when there is a no returns value set" do
-    @scenario.yields(:baz).returns(:return_value)
-
-    passed_in_block_arg = nil
-    @scenario.call {|arg| passed_in_block_arg = arg}.should == :return_value
-    passed_in_block_arg.should == :baz
   end
 end
 
