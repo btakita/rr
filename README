@@ -43,3 +43,12 @@ Here is RR compared to other mock frameworks:
   User.should_receive(:find).with('42').and_return(jane) # Rspec
   User.expects(:find).with('42').returns {jane} # Mocha
   mock(User).find('42') {jane} # RR
+
+== Special Thanks To
+* Pivotal Labs for sponsoring RR development
+* Parker Thompson & Felix Morio for pairing with me
+* David Chelimsky for encouragement to make the RR framework, for developing
+  the Rspec mock framework, and syntax ideas
+* Dan North for syntax ideas
+* Jim Weirich for developing Flexmock, the first Terse ruby mock framework
+* James Mead for developing Mocha
