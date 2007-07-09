@@ -1,5 +1,4 @@
-require "spec/mocks"
-require "rr"
+RR::Space.trim_backtrace = true
 
 module RR
   module Adapters

@@ -1,5 +1,5 @@
 patterns = ::Spec::Runner::QuietBacktraceTweaker::IGNORE_PATTERNS
-patterns.push(/lib\/rr/)
+patterns.push(RR::Errors::BACKTRACE_IDENTIFIER)
 
 module RR
   module Adapters

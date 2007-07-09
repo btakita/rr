@@ -16,9 +16,11 @@ module RR
     end
 
     attr_reader :doubles, :ordered_scenarios
+    attr_accessor :trim_backtrace
     def initialize
       @doubles = Hash.new {|hash, subject_object| hash[subject_object] = Hash.new}
       @ordered_scenarios = []
+      @trim_backtrace = false
     end
 
     # Creates a MockCreator.
