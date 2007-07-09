@@ -1,3 +1,5 @@
+- TimesCalledExpectation says how many times were called and how many times called were expected on error
+
 * 0.1.4
 - TimesCalledError prints the backtrace to where the Scenario was defined when being verified
 - Error message includes method name when Scenario is not found

@@ -27,18 +27,23 @@ module RR
       def verify!
         unless verify
           if @verify_backtrace
-            error = Errors::TimesCalledError.new
+            error = Errors::TimesCalledError.new(error_message)
             error.backtrace = @verify_backtrace
             raise error
           else
-            raise Errors::TimesCalledError
+            raise Errors::TimesCalledError, error_message
           end
         end
       end
 
       protected
       def verify_input_error
-        raise Errors::TimesCalledError, "Called #{@times_called.inspect} times. Expected #{@times.inspect}"
+        raise Errors::TimesCalledError, error_message
+      end
+
+      def error_message
+        time_casing = (@times_called == 1) ? "time" : "times"
+        "Called #{@times_called.inspect} #{time_casing}. Expected #{@times.inspect}."
       end
     end
   end

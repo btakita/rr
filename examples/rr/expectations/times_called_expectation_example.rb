@@ -77,7 +77,10 @@ describe TimesCalledExpectation, "#verify! when passed an Integer (2)" do
 
   it "fails after verify_input called 1 time" do
     @expectation.verify_input
-    proc {@expectation.verify!}.should raise_error(Errors::TimesCalledError)
+    proc {@expectation.verify!}.should raise_error(
+      Errors::TimesCalledError,
+      "Called 1 time. Expected 2."
+    )
   end
 
   it "can't be called when verify_input is called 3 times" do
@@ -85,7 +88,7 @@ describe TimesCalledExpectation, "#verify! when passed an Integer (2)" do
     @expectation.verify_input
     proc do
       @expectation.verify_input
-    end.should raise_error(Errors::TimesCalledError)
+    end.should raise_error(Errors::TimesCalledError, "Called 3 times. Expected 2.")
   end
 
   it "has a backtrace to where the TimesCalledExpectation was instantiated on failure" do
@@ -97,6 +100,12 @@ describe TimesCalledExpectation, "#verify! when passed an Integer (2)" do
     end
     e.backtrace.first.should include(__FILE__)
     e.backtrace.first.should include(":#{@expected_line}")
+  end
+
+  it "has an error message that includes the number of times called and expected number of times" do
+    proc do
+      @expectation.verify!
+    end.should raise_error(Errors::TimesCalledError, "Called 0 times. Expected 2.")
   end
 end
 
@@ -123,7 +132,7 @@ describe TimesCalledExpectation, "#verify! when passed a Range (1..2)" do
     @expectation.verify_input
     proc do
       @expectation.verify_input
-    end.should raise_error(Errors::TimesCalledError)
+    end.should raise_error(Errors::TimesCalledError, "Called 3 times. Expected 1..2.")
   end
 end
 
