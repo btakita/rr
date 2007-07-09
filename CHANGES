@@ -1,4 +1,5 @@
 - Scenario#returns also accepts an argument
+- Implemented Scenario#yields
 
 * 0.1.1
 - Trim the backtrace for Rspec and Test::Unit
