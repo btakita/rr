@@ -113,8 +113,13 @@ module RR
       @ordered
     end
 
-    # Scenario#returns causes Scenario to return the return value of
+    # Scenario#returns accepts an argument value or a block.
+    # It will raise an ArgumentError if both are passed in.
+    #
+    # Passing in a block causes Scenario to return the return value of
     # the passed in block.
+    #
+    # Passing in an argument causes Scenario to return the argument.
     def returns(value=nil, &implementation)
       raise ArgumentError, "returns cannot accept both an argument and a block" if value && implementation
       if value
