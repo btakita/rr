@@ -11,6 +11,7 @@ module RR
       @argument_expectation = nil
       @times_called_expectation = nil
       @times_called = 0
+      @yields = nil
     end
 
     # Scenario#with creates an ArgumentEqualityError for the
@@ -129,6 +130,11 @@ module RR
       end
     end
 
+    def yields(*args)
+      @yields = args
+      self
+    end
+
     # Scenario#implemented_by sets the implementation of the Scenario.
     # This method takes a Proc or a Method. Passing in a Method allows
     # the Scenario to accept blocks.
@@ -151,6 +157,7 @@ module RR
     def call(*args, &block)
       @times_called_expectation.verify_input if @times_called_expectation
       @space.verify_ordered_scenario(self) if ordered?
+      block.call(*@yields) if @yields
       return nil unless @implementation
 
       if @implementation.is_a?(Method)

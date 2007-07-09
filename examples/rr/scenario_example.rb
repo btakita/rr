@@ -192,6 +192,29 @@ describe Scenario, "#returns" do
   end
 end
 
+describe Scenario, "#yields" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns self" do
+    @scenario.yields(:baz).should === @scenario
+  end
+
+  it "yields the passed in argument to the call block when there is no returns value set" do
+    @scenario.yields(:baz)
+    passed_in_block_arg = nil
+    @scenario.call {|arg| passed_in_block_arg = arg}.should == nil
+    passed_in_block_arg.should == :baz
+  end
+
+  it "yields the passed in argument to the call block when there is a no returns value set" do
+    @scenario.yields(:baz).returns(:return_value)
+
+    passed_in_block_arg = nil
+    @scenario.call {|arg| passed_in_block_arg = arg}.should == :return_value
+    passed_in_block_arg.should == :baz
+  end
+end
+
 describe Scenario, "#implemented_by" do
   it_should_behave_like "RR::Scenario"
 
