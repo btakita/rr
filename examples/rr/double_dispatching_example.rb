@@ -96,9 +96,9 @@ describe Double, " method dispatching where there are scenarios" do
     scenario_2 = @space.create_scenario(@double)
     scenario_2.with(3)
 
-    proc {@object.foobar(:no_matching_args)}.should raise_error(
+    proc {@object.foobar(:arg1, :arg2)}.should raise_error(
       Errors::ScenarioNotFoundError,
-      "No scenario for arguments [:no_matching_args]"
+      "No scenario for foobar(:arg1, :arg2)"
     )
   end
 end

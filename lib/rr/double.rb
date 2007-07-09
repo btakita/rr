@@ -77,7 +77,9 @@ module RR
         end
       end
       matching_scenarios.first.call(*args) unless matching_scenarios.empty?
-      raise Errors::ScenarioNotFoundError, "No scenario for arguments #{args.inspect}"
+
+      formatted_errors = args.collect {|arg| arg.inspect}.join(', ')
+      raise Errors::ScenarioNotFoundError, "No scenario for foobar(#{formatted_errors})"
     end
     
     def placeholder_name
