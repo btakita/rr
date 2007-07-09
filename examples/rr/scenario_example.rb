@@ -191,7 +191,7 @@ describe Scenario, "#yields" do
 
   it "sets return value when block passed in" do
     @scenario.with_any_args.yields {:return_value}
-    @scenario.call {}.should == :return_value
+    @object.foobar {}.should == :return_value
   end
 end
 
@@ -321,6 +321,14 @@ describe Scenario, "#call implemented by a proc" do
 
     block = @object.foobar(1, 2) {|a, b| [b, a]}
     block.call(3, 4).should == [4, 3]
+  end
+
+  it "raises ArgumentError when yields was called and no block passed in" do
+    @scenario.with(1, 2).yields(55)
+
+    proc do
+      @object.foobar(1, 2)
+    end.should raise_error(ArgumentError, "A Block must be passed into the method call when using yields")
   end
 end
 

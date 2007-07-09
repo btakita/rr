@@ -158,7 +158,12 @@ module RR
     def call(*args, &block)
       @times_called_expectation.verify_input if @times_called_expectation
       @space.verify_ordered_scenario(self) if ordered?
-      block.call(*@yields) if @yields
+      if @yields
+        unless block
+          raise ArgumentError, "A Block must be passed into the method call when using yields"
+        end
+        block.call(*@yields)
+      end
       return nil unless @implementation
 
       if @implementation.is_a?(Method)
