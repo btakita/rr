@@ -1,3 +1,4 @@
+* 0.1.3
 - Fixed issue where Double#placeholder_name issues when Double method name has a ! or ?
 
 * 0.1.2
