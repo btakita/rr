@@ -56,7 +56,7 @@ describe Space, "#verify_double" do
   it "verifies and deletes the double" do
     double = @space.create_double(@object, @method_name)
     @space.doubles[@object][@method_name].should === double
-    @object.methods.should include("__rr__#{@method_name}__rr__")
+    @object.methods.should include("__rr__#{@method_name}")
 
     verify_calls = 0
     (class << double; self; end).class_eval do
@@ -68,13 +68,13 @@ describe Space, "#verify_double" do
     verify_calls.should == 1
 
     @space.doubles[@object][@method_name].should be_nil
-    @object.methods.should_not include("__rr__#{@method_name}__rr__")
+    @object.methods.should_not include("__rr__#{@method_name}")
   end
 
   it "deletes the double when verifying the double raises an error" do
     double = @space.create_double(@object, @method_name)
     @space.doubles[@object][@method_name].should === double
-    @object.methods.should include("__rr__#{@method_name}__rr__")
+    @object.methods.should include("__rr__#{@method_name}")
 
     verify_called = true
     (class << double; self; end).class_eval do
@@ -87,7 +87,7 @@ describe Space, "#verify_double" do
     verify_called.should be_true
 
     @space.doubles[@object][@method_name].should be_nil
-    @object.methods.should_not include("__rr__#{@method_name}__rr__")
+    @object.methods.should_not include("__rr__#{@method_name}")
   end
 end
 

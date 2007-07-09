@@ -5,10 +5,10 @@ module RR
 describe Double, "#reset", :shared => true do
   it "cleans up by removing the __rr__ method" do
     @double.bind
-    @object.methods.should include("__rr__foobar__rr__")
+    @object.methods.should include("__rr__foobar")
 
     @double.reset
-    @object.methods.should_not include("__rr__foobar__rr__")
+    @object.methods.should_not include("__rr__foobar")
   end
 end
 

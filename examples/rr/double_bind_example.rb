@@ -13,13 +13,13 @@ describe Double, "#bind with an existing method" do
   end
 
   it "overrides the original method with the double's dispatching methods" do
-    @object.respond_to?(:__rr__foobar__rr__).should == false
+    @object.respond_to?(:__rr__foobar).should == false
     @double.bind
-    @object.respond_to?(:__rr__foobar__rr__).should == true
+    @object.respond_to?(:__rr__foobar).should == true
 
     rr_foobar_called = false
     (class << @object; self; end).class_eval do
-      define_method :__rr__foobar__rr__ do
+      define_method :__rr__foobar do
         rr_foobar_called = true
       end
     end

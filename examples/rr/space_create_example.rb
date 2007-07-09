@@ -154,7 +154,7 @@ describe Space, "#create_double when double does not exist" do
 
   it "overrides the method when passing a block" do
     double = @space.create_double(@object, @method_name)
-    @object.methods.should include("__rr__#{@method_name}__rr__")
+    @object.methods.should include("__rr__#{@method_name}")
   end
 end
 

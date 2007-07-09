@@ -81,7 +81,7 @@ module RR
     end
     
     def placeholder_name
-      "__rr__#{@method_name}__rr__"
+      "__rr__#{@method_name}"
     end
     
     def meta

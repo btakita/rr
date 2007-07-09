@@ -14,11 +14,11 @@ describe Space, "#reset_double" do
   it "resets the doubles" do
     double = @space.create_double(@object, @method_name)
     @space.doubles[@object][@method_name].should === double
-    @object.methods.should include("__rr__#{@method_name}__rr__")
+    @object.methods.should include("__rr__#{@method_name}")
 
     @space.reset_double(@object, @method_name)
     @space.doubles[@object][@method_name].should be_nil
-    @object.methods.should_not include("__rr__#{@method_name}__rr__")
+    @object.methods.should_not include("__rr__#{@method_name}")
   end
 
   it "removes the object from the doubles map when it has no doubles" do

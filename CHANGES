@@ -1,3 +1,5 @@
+- Fixed issue where Double#placeholder_name issues when Double method name has a ! or ?
+
 * 0.1.2
 - Scenario#returns also accepts an argument
 - Implemented Scenario#yields

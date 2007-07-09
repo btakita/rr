@@ -12,6 +12,38 @@ describe Double, "method dispatching", :shared => true do
   end
 end
 
+describe Double, " method dispatching where method name has a ! in it" do
+  before do
+    @space = Space.new
+    @object = Object.new
+    @method_name = :foobar!
+    @object.methods.should_not include(@method_name.to_s)
+    @double = @space.create_double(@object, @method_name)
+  end
+
+  it "executes the block" do
+    scenario = @space.create_scenario(@double)
+    scenario.with(1, 2) {:return_value}
+    @object.foobar!(1, 2).should == :return_value
+  end
+end
+
+describe Double, " method dispatching where method name has a ? in it" do
+  before do
+    @space = Space.new
+    @object = Object.new
+    @method_name = :foobar?
+    @object.methods.should_not include(@method_name.to_s)
+    @double = @space.create_double(@object, @method_name)
+  end
+
+  it "executes the block" do
+    scenario = @space.create_scenario(@double)
+    scenario.with(1, 2) {:return_value}
+    @object.foobar?(1, 2).should == :return_value
+  end
+end
+
 describe Double, " method dispatching where the scenario takes a block" do
   it_should_behave_like "RR::Double method dispatching"
 
