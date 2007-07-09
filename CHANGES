@@ -1,1 +1,6 @@
+* 0.1.1
+- Trim the backtrace for Rspec and Test::Unit
+- Rspec and Test::Unit integration fixes
+
 * 0.1.0
+- Initial Release
