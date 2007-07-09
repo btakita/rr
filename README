@@ -45,10 +45,17 @@ Here is RR compared to other mock frameworks:
   mock(User).find('42') {jane} # RR
 
 == Special Thanks To
+With any development effort, there are countless people who have contributed
+to making it possible. We all are standing on the shoulders of giants.
 * Pivotal Labs for sponsoring RR development
-* Parker Thompson & Felix Morio for pairing with me
+* Parker Thompson for pairing with me
+* Felix Morio for pairing with me
 * David Chelimsky for encouragement to make the RR framework, for developing
   the Rspec mock framework, and syntax ideas
+* Gerald Meszaros for his excellent book "xUnit Test Patterns"
 * Dan North for syntax ideas
 * Jim Weirich for developing Flexmock, the first Terse ruby mock framework
 * James Mead for developing Mocha
+* Aslak Hellesoy for Developing Rspec
+* Stephen Baker for Developing Rspec
+* Dave Astels for some BDD inspiration
