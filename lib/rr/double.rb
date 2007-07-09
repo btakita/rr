@@ -79,7 +79,7 @@ module RR
       matching_scenarios.first.call(*args) unless matching_scenarios.empty?
 
       formatted_errors = args.collect {|arg| arg.inspect}.join(', ')
-      raise Errors::ScenarioNotFoundError, "No scenario for foobar(#{formatted_errors})"
+      raise Errors::ScenarioNotFoundError, "No scenario for #{@method_name}(#{formatted_errors})"
     end
     
     def placeholder_name
