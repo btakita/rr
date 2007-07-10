@@ -25,6 +25,13 @@ renders the partial.
 
   view = controller.template
   probe(view).render(:partial => "user_info")
+
+Probes also support after_call callbacks. This is useful for Stubbing out
+a class method and getting its return value. For example, using ActiveRecord:
+
+  probe(User).find('5') do |user|
+    mock(user).valid? {false}
+  end
   
 == Block Syntax
   script = MyScript.new

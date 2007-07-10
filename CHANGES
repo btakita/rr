@@ -1,3 +1,5 @@
+- [#12120] probe allows a the return value to be intercepted
+
 * 0.1.5
 - TimesCalledExpectation says how many times were called and how many times called were expected on error
 

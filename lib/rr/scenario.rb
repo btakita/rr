@@ -11,6 +11,7 @@ module RR
       @argument_expectation = nil
       @times_called_expectation = nil
       @times_called = 0
+      @after_call = nil
       @yields = nil
     end
 
@@ -128,6 +129,22 @@ module RR
       returns(&returns) if returns
       self
     end
+
+    # Scenario#after_call creates a callback that occurs after call
+    # is called. The passed in block receives the return value of
+    # the Scenario being called.
+    # An Expection will be raised if no block is passed in.
+    #
+    #   mock(subject).method_name {return_value}.after_call {|return_value|}
+    #   subject.method_name # return_value
+    #
+    # This feature is built into probes.
+    #   probe(User).find('1') {|user| mock(user).valid? {false}}
+    def after_call(&block)
+      raise ArgumentError, "after_call expects a block" unless block
+      @after_call = block
+      self
+    end
     
     # Scenario#returns accepts an argument value or a block.
     # It will raise an ArgumentError if both are passed in.
@@ -165,6 +182,12 @@ module RR
     # A TimesCalledError is raised when the times called
     # exceeds the expected TimesCalledExpectation.
     def call(*args, &block)
+      return_value = call_implementation(*args, &block)
+      @after_call.call(return_value) if @after_call
+      return_value
+    end
+
+    def call_implementation(*args, &block)
       @times_called_expectation.verify_input if @times_called_expectation
       @space.verify_ordered_scenario(self) if ordered?
       if @yields
@@ -182,6 +205,7 @@ module RR
         return @implementation.call(*args)
       end
     end
+    protected :call_implementation
 
     # Scenario#exact_match? returns true when the passed in arguments
     # exactly match the ArgumentEqualityError arguments.

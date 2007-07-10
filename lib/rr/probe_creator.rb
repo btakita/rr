@@ -3,15 +3,24 @@ module RR
   # a Scenario that acts like a probe.
   #
   # The following example probes method_name with arg1 and arg2
-  # returning return_value.
+  # returning the actual value of the method. The block is an after callback
+  # that intercepts the return value. Mocks or other modifications can
+  # be done to the return value.
   #
-  #   probe(subject).method_name(arg1, arg2) { return_value }
+  #   probe(subject).method_name(arg1, arg2) { |return_value| }
   #
-  # The ProbeCreator also supports a block sytnax.
+  # The ProbeCreator also supports a block sytnax. The block accepts
+  # a after_call callback, instead of a return value as with MockCreator
+  # and StubCreator.
   #
-  #    probe(subject) do |m|
-  #      m.method_name(arg1, arg2) { return_value }
+  #    probe(User) do |m|
+  #      m.find('4') do |user|
+  #        mock(user).valid? {false}
+  #      end
   #    end
+  #
+  #   user = User.find('4')
+  #   user.valid? # false
   class ProbeCreator
     instance_methods.each { |m| undef_method m unless m =~ /^__/ }
     
@@ -22,10 +31,12 @@ module RR
     end
 
     protected
-    def method_missing(method_name, *args, &returns)
+    def method_missing(method_name, *args, &after_call)
       double = @space.create_double(@subject, method_name)
       scenario = @space.create_scenario(double)
       scenario.with(*args).once.implemented_by(double.original_method)
+      scenario.after_call(&after_call) if after_call
+      scenario
     end
   end
 end

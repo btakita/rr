@@ -78,6 +78,18 @@ describe ProbeCreator, "#method_missing" do
     @subject.foobar(1, 2).should == :baz
     proc {@subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
   end
+
+  it "sets after_call on the scenario when passed a block" do
+    real_value = Object.new
+    (class << @subject; self; end).class_eval do
+      define_method(:foobar) {real_value}
+    end
+    @creator.foobar(1, 2) {|value| mock(value).a_method {99}}
+
+    return_value = @subject.foobar(1, 2)
+    return_value.should === return_value
+    return_value.a_method.should == 99
+  end
 end
 
 end

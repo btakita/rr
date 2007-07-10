@@ -195,6 +195,40 @@ describe Scenario, "#yields" do
   end
 end
 
+describe Scenario, "#after_call" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns self" do
+    @scenario.after_call {}.should === @scenario
+  end
+
+  it "receives the return value in the block" do
+    return_value = {}
+    @scenario.returns(return_value).after_call do |value|
+      value[:foo] = :bar
+    end
+
+    actual_value = @scenario.call
+    actual_value.should === return_value
+    actual_value.should == {:foo => :bar}
+  end
+
+  it "allows after_call to mock the return value" do
+    return_value = Object.new
+    @scenario.with_any_args.returns(return_value).after_call do |value|
+      mock(value).inner_method(1) {:baz}
+    end
+
+    @object.foobar.inner_method(1).should == :baz
+  end
+
+  it "raises an error when not passed a block" do
+    proc do
+      @scenario.after_call
+    end.should raise_error(ArgumentError, "after_call expects a block")
+  end
+end
+
 describe Scenario, "#returns" do
   it_should_behave_like "RR::Scenario"
 
