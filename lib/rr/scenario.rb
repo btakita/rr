@@ -85,14 +85,14 @@ module RR
 
     # Scenario#twice allows you to set an expectation that the Scenario
     # will be called at least n times.
-    # It works by creating an AtLeastTimesCalledExpectation with the
-    # passed in number.
+    # It works by creating a TimesCalledExpectation.
     #
     # Passing in a block sets the return value.
     #
     #   mock(subject).method_name.at_least(4) {:return_value}
     def at_least(number, &returns)
-      @times_called_expectation = Expectations::AtLeastTimesCalledExpectation.new(number)
+      matcher = proc {|actual| actual >= number}
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
       returns(&returns) if returns
       self
     end
