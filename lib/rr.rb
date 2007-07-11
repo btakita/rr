@@ -19,6 +19,8 @@ require "rr/errors/times_called_error"
 require "rr/expectations/argument_equality_expectation"
 require "rr/expectations/any_argument_expectation"
 require "rr/expectations/times_called_expectation"
+require "rr/expectations/at_least_times_called_expectation"
+
 require "rr/expectations/wildcard_matchers/anything"
 require "rr/expectations/wildcard_matchers/is_a"
 require "rr/expectations/wildcard_matchers/numeric"

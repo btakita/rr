@@ -117,6 +117,28 @@ describe Scenario, "#twice" do
   end
 end
 
+describe Scenario, "#at_least" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns self" do
+    @scenario.with_any_args.at_least(2).should === @scenario
+  end
+
+  it "sets up a Times Called Expectation with 1" do
+    @scenario.at_least(2)
+    @scenario.should_not be_times_called_verified
+    @scenario.call
+    @scenario.should_not be_times_called_verified
+    @scenario.call
+    @scenario.should be_times_called_verified
+  end
+
+  it "sets return value when block passed in" do
+    @scenario.with_any_args.at_least(2) {:return_value}
+    @object.foobar.should == :return_value
+  end
+end
+
 describe Scenario, "#times" do
   it_should_behave_like "RR::Scenario"
 

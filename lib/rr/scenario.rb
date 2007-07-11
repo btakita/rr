@@ -83,6 +83,12 @@ module RR
       self
     end
 
+    def at_least(number, &returns)
+      @times_called_expectation = Expectations::AtLeastTimesCalledExpectation.new(number)
+      returns(&returns) if returns
+      self
+    end
+
     # Scenario#twice creates an TimesCalledExpectation of the passed
     # in number.
     #
