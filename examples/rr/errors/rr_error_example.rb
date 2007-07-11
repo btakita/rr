@@ -18,7 +18,7 @@ module Errors
       begin
         obj = Object.new
         mock(obj).foobar
-        RR::Space.verify_scenario(obj, :foobar)
+        RR::Space.verify_double(obj, :foobar)
       rescue RRError=> e
         error = e
       end
@@ -34,7 +34,7 @@ module Errors
       begin
         obj = Object.new
         mock(obj).foobar
-        RR::Space.verify_scenario(obj, :foobar)
+        RR::Space.verify_double(obj, :foobar)
       rescue RRError=> e
         error = e
       end

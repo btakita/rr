@@ -2,7 +2,7 @@ dir = File.dirname(__FILE__)
 require "#{dir}/../example_helper"
 
 module RR
-describe Space, "#reset_scenario" do
+describe Space, "#reset_double" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -16,7 +16,7 @@ describe Space, "#reset_scenario" do
     @space.doubles[@object][@method_name].should === double
     @object.methods.should include("__rr__#{@method_name}")
 
-    @space.reset_scenario(@object, @method_name)
+    @space.reset_double(@object, @method_name)
     @space.doubles[@object][@method_name].should be_nil
     @object.methods.should_not include("__rr__#{@method_name}")
   end
@@ -29,17 +29,21 @@ describe Space, "#reset_scenario" do
     @space.doubles[@object][:foobar1].should_not be_nil
     @space.doubles[@object][:foobar2].should_not be_nil
 
-    @space.reset_scenario(@object, :foobar1)
+    @space.reset_double(@object, :foobar1)
     @space.doubles.include?(@object).should == true
     @space.doubles[@object][:foobar1].should be_nil
     @space.doubles[@object][:foobar2].should_not be_nil
 
-    @space.reset_scenario(@object, :foobar2)
+    @space.reset_double(@object, :foobar2)
     @space.doubles.include?(@object).should == false
+  end
+
+  it "removes the ordered scenarios" do
+    
   end
 end
 
-describe Space, "#reset_scenarios" do
+describe Space, "#reset_doubles" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -65,7 +69,7 @@ describe Space, "#reset_scenarios" do
       end
     end
 
-    @space.reset_scenarios
+    @space.reset_doubles
     double1_reset_calls.should == 1
     double1_reset_calls.should == 1
   end

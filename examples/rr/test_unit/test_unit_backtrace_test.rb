@@ -27,6 +27,6 @@ class TestUnitBacktraceTest < Test::Unit::TestCase
 
   def backtrace_tweaking
     mock(@subject).foobar
-    RR::Space::instance.verify_scenario(@subject, :foobar)
+    RR::Space::instance.verify_double(@subject, :foobar)
   end
 end

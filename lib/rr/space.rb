@@ -79,32 +79,32 @@ module RR
 
     # Verifies all the Double objects have met their
     # TimesCalledExpectations.
-    def verify_scenarios
+    def verify_doubles
       @doubles.each do |object, method_double_map|
         method_double_map.keys.each do |method_name|
-          verify_scenario(object, method_name)
+          verify_double(object, method_name)
         end
       end
     end
 
     # Resets the registered Doubles for the next test run.
-    def reset_scenarios
+    def reset_doubles
       @doubles.each do |object, method_double_map|
         method_double_map.keys.each do |method_name|
-          reset_scenario(object, method_name)
+          reset_double(object, method_name)
         end
       end
     end
 
     # Verifies the Double for the passed in object and method_name.
-    def verify_scenario(object, method_name)
+    def verify_double(object, method_name)
       @doubles[object][method_name].verify
     ensure
-      reset_scenario object, method_name
+      reset_double object, method_name
     end
 
     # Resets the Double for the passed in object and method_name.
-    def reset_scenario(object, method_name)
+    def reset_double(object, method_name)
       double = @doubles[object].delete(method_name)
       @doubles.delete(object) if @doubles[object].empty?
       double.reset
