@@ -1,3 +1,7 @@
+- Fixed [#12194] Double#reset_doubles are not clearing Ordered Scenarios bug
+- Added Space#reset
+- Space#reset_doubles and Space#reset_ordered_scenarios is now protected
+
 * 0.1.6
 - [#12120] probe allows a the return value to be intercepted
 
