@@ -12,7 +12,7 @@ describe RR, " backtrace tweaking" do
     subject = @subject
     behaviour.it("hides RR framework in backtrace") do
       mock(subject).foobar()
-      RR::Space::instance.verify_double(subject, :foobar)
+      RR::Space::instance.verify_scenario(subject, :foobar)
     end
 
     reporter.add_behaviour(behaviour)

@@ -8,7 +8,7 @@ describe "RR", :shared => true do
   end
 
   after(:each) do
-    RR::Space.instance.reset_doubles
+    RR::Space.instance.reset_scenarios
   end
 end
 
