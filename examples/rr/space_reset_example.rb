@@ -2,6 +2,54 @@ dir = File.dirname(__FILE__)
 require "#{dir}/../example_helper"
 
 module RR
+describe Space, "#reset" do
+  it_should_behave_like "RR::Space"
+
+  before do
+    @space = Space.new
+    @object1 = Object.new
+    @object2 = Object.new
+    @method_name = :foobar
+  end
+
+  it "removes the ordered scenarios" do
+    double1 = @space.create_double(@object1, :foobar1)
+    double2 = @space.create_double(@object1, :foobar2)
+
+    scenario1 = @space.create_scenario(double1)
+    scenario2 = @space.create_scenario(double2)
+
+    scenario1.ordered
+    scenario2.ordered
+
+    @space.ordered_scenarios.should_not be_empty
+
+    @space.reset
+    @space.ordered_scenarios.should be_empty
+  end
+
+  it "resets all doubles" do
+    double1 = @space.create_double(@object1, @method_name)
+    double1_reset_calls = 0
+    (class << double1; self; end).class_eval do
+      define_method(:reset) do ||
+        double1_reset_calls += 1
+      end
+    end
+    double2 = @space.create_double(@object2, @method_name)
+    double2_reset_calls = 0
+    (class << double2; self; end).class_eval do
+      define_method(:reset) do ||
+        double2_reset_calls += 1
+      end
+    end
+
+    @space.reset
+    double1_reset_calls.should == 1
+    double2_reset_calls.should == 1
+  end
+end
+
 describe Space, "#reset_double" do
   it_should_behave_like "RR::Space"
 
@@ -37,10 +85,6 @@ describe Space, "#reset_double" do
     @space.reset_double(@object, :foobar2)
     @space.doubles.include?(@object).should == false
   end
-
-  it "removes the ordered scenarios" do
-    
-  end
 end
 
 describe Space, "#reset_doubles" do
@@ -69,9 +113,9 @@ describe Space, "#reset_doubles" do
       end
     end
 
-    @space.reset_doubles
+    @space.send(:reset_doubles)
     double1_reset_calls.should == 1
-    double1_reset_calls.should == 1
+    double2_reset_calls.should == 1
   end
 end
 end

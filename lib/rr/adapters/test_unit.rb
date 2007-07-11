@@ -9,7 +9,7 @@ module RR
           alias_method :setup_without_rr, :setup
           def setup_with_rr
             setup_without_rr
-            RR::Space.instance.reset_doubles
+            RR::Space.instance.reset
           end
           alias_method :setup, :setup_with_rr
 

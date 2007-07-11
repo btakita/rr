@@ -87,13 +87,10 @@ module RR
       end
     end
 
-    # Resets the registered Doubles for the next test run.
-    def reset_doubles
-      @doubles.each do |object, method_double_map|
-        method_double_map.keys.each do |method_name|
-          reset_double(object, method_name)
-        end
-      end
+    # Resets the registered Doubles and ordered Scenarios
+    def reset
+      reset_ordered_scenarios
+      reset_doubles
     end
 
     # Verifies the Double for the passed in object and method_name.
@@ -109,5 +106,20 @@ module RR
       @doubles.delete(object) if @doubles[object].empty?
       double.reset
     end
+
+    protected
+    # Removes the ordered Scenarios from the list
+    def reset_ordered_scenarios
+      @ordered_scenarios.clear
+    end
+
+    # Resets the registered Doubles for the next test run.
+    def reset_doubles
+      @doubles.each do |object, method_double_map|
+        method_double_map.keys.each do |method_name|
+          reset_double(object, method_name)
+        end
+      end
+    end    
   end
 end
