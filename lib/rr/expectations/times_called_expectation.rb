@@ -10,6 +10,8 @@ module RR
           @matcher = TimesCalledMatchers::IntegerMatcher.new(@matcher)
         elsif @matcher.is_a?(Range)
           @matcher = TimesCalledMatchers::RangeMatcher.new(@matcher)
+        elsif @matcher.is_a?(Proc)
+          @matcher = TimesCalledMatchers::ProcMatcher.new(@matcher)
         end
         @times_called = 0
         @verify_backtrace = caller[1..-1]
@@ -27,9 +29,8 @@ module RR
       end
 
       def verify
-        return @matcher.matches?(@times_called) if @matcher.is_a?(TimesCalledMatchers::TimesCalledMatcher)
-        return true if @matcher.is_a?(Proc) && @matcher.call(@times_called)
-        return false
+        return false unless @matcher.is_a?(TimesCalledMatchers::TimesCalledMatcher)
+        return @matcher.matches?(@times_called)
       end
 
       def verify!
@@ -50,12 +51,7 @@ module RR
       end
 
       def error_message
-        if @matcher.is_a?(TimesCalledMatchers::TimesCalledMatcher)
-          @matcher.error_message(@times_called)
-        else
-          time_casing = (@times_called == 1) ? "time" : "times"
-          "Called #{@times_called.inspect} #{time_casing}. Expected #{@matcher.inspect}."
-        end
+        @matcher.error_message(@times_called)
       end
     end
   end
