@@ -23,14 +23,12 @@ module RR
         )
           verify_input_error
         end
-        verify_input_error if @matcher.is_a?(Range) && @times_called > @matcher.end
         return
       end
 
       def verify
         return @matcher.matches?(@times_called) if @matcher.is_a?(TimesCalledMatchers::TimesCalledMatcher)
         return true if @matcher.is_a?(Proc) && @matcher.call(@times_called)
-        return true if @matcher.is_a?(Range) && @matcher.include?(@times_called)
         return false
       end
 
