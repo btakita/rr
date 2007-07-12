@@ -33,6 +33,25 @@ module TimesCalledMatchers
     end
   end
 
+  describe AtLeastMatcher, "#attempt?" do
+    before do
+      @times = 3
+      @matcher = AtLeastMatcher.new(@times)
+    end
+
+    it "returns true when less than expected times" do
+      @matcher.should be_attempt(2)
+    end
+
+    it "returns false when == expected times" do
+      @matcher.should_not be_attempt(3)
+    end
+
+    it "returns false when > expected times" do
+      @matcher.should_not be_attempt(4)
+    end
+  end  
+
   describe AtLeastMatcher, "#error_message" do
     before do
       @times = 3
@@ -40,8 +59,8 @@ module TimesCalledMatchers
     end
 
     it "has an error message" do
-      @matcher.error_message(5).should == (
-        "Called 5 times. Expected at least 3 times."
+      @matcher.error_message(2).should == (
+        "Called 2 times. Expected at least 3 times."
       )
     end
   end

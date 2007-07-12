@@ -10,6 +10,10 @@ module TimesCalledMatchers
       times_called >= @times
     end
 
+    def attempt?(times_called)
+      times_called < @times
+    end
+
     protected
     def expected_message_part
       "Expected at least #{@times.inspect} times."

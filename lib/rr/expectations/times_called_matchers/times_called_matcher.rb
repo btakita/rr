@@ -6,10 +6,10 @@ module TimesCalledMatchers
       @times = times
     end
 
-    def possible_match?(times_called)
+    def matches?(times_called)
     end
 
-    def matches?(times_called)
+    def attempt?(times_called)
     end
 
     def error_message(times_called)
