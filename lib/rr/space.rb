@@ -73,7 +73,7 @@ module RR
     # in the correct position.
     def verify_ordered_scenario(scenario)
       raise Errors::ScenarioOrderError unless @ordered_scenarios.first == scenario
-      @ordered_scenarios.shift if scenario.times_called_verified?
+      @ordered_scenarios.shift if scenario.attempt?
       scenario
     end
 

@@ -97,7 +97,19 @@ module RR
       self
     end
 
-#    `end
+#    # Scenario#at_most allows you to set an expectation that the Scenario
+#    # will be called at most n times.
+#    # It works by creating a TimesCalledExpectation.
+#    #
+#    # Passing in a block sets the return value.
+#    #
+#    #   mock(subject).method_name.at_most(4) {:return_value}
+#    def at_most(number, &returns)
+#      matcher = RR::TimesCalledMatchers::AtMostMatcher.new(number)
+#      @times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
+#      returns(&returns) if returns
+#      self
+#    end
 
     # Scenario#times creates an TimesCalledExpectation of the passed
     # in number.
@@ -237,9 +249,9 @@ module RR
       @argument_expectation.wildcard_match?(*arguments)
     end
 
-    # Scenario#times_called_verified? returns true when the
+    # Scenario#attempt? returns true when the
     # TimesCalledExpectation is satisfied.
-    def times_called_verified?
+    def attempt?
       return false unless @times_called_expectation
       @times_called_expectation.verify
     end

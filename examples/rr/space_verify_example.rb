@@ -109,7 +109,7 @@ describe Space, "#verify_ordered_scenario where the passed in scenario is at the
     @space.register_ordered_scenario(scenario)
 
     scenario.twice
-    scenario.should_not be_times_called_verified
+    scenario.should_not be_attempt
 
     @space.verify_ordered_scenario(scenario)
     @space.ordered_scenarios.should include(scenario)
@@ -121,7 +121,7 @@ describe Space, "#verify_ordered_scenario where the passed in scenario is at the
 
     scenario.with(1).once
     @object.foobar(1)
-    scenario.should be_times_called_verified
+    scenario.should be_attempt
 
     @space.verify_ordered_scenario(scenario)
     @space.ordered_scenarios.should_not include(scenario)
