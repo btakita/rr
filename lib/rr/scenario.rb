@@ -83,7 +83,7 @@ module RR
       self
     end
 
-    # Scenario#twice allows you to set an expectation that the Scenario
+    # Scenario#at_least allows you to set an expectation that the Scenario
     # will be called at least n times.
     # It works by creating a TimesCalledExpectation.
     #
@@ -97,7 +97,7 @@ module RR
       self
     end
 
-    # Scenario#twice creates an TimesCalledExpectation of the passed
+    # Scenario#times creates an TimesCalledExpectation of the passed
     # in number.
     #
     # Passing in a block sets the return value.
