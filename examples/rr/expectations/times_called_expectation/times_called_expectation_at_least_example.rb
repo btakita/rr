@@ -13,12 +13,12 @@ module Expectations
   describe TimesCalledExpectation, "#verify! with AtLeastMatcher" do
     it_should_behave_like "RR::Expectations::TimesCalledExpectation with AtLeastMatcher"
 
-    it "returns true when times called more than times" do
+    it "passes when times called > times" do
       4.times {@expectation.attempt!}
       @expectation.verify!
     end
 
-    it "returns true when times called == times" do
+    it "passes when times called == times" do
       3.times {@expectation.attempt!}
       @expectation.verify!
     end
