@@ -39,7 +39,7 @@ module Expectations
       @expectation.attempt!
       proc do
         @expectation.attempt!
-      end.should raise_error(Errors::TimesCalledError, "Called 3 times. Expected 1..2.")
+      end.should raise_error(Errors::TimesCalledError, "Called 3 times. Expected 1..2 times.")
     end
   end
 
