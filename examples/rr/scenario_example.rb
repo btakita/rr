@@ -138,6 +138,31 @@ describe Scenario, "#at_least" do
   end
 end
 
+describe Scenario, "#at_most" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns self" #do
+#    @scenario.with_any_args.at_most(2).should === @scenario
+#  end
+
+  it "sets up a Times Called Expectation with 1" #do
+#    @scenario.at_most(2)
+#    @scenario.call
+#    @scenario.call
+#    proc do
+#      @scenario.call
+#    end.should raise_error(
+#      Errors::TimesCalledError,
+#      "Called 3 times. Expected at most 2 times."
+#    )
+#  end
+
+  it "sets return value when block passed in" #do
+#    @scenario.with_any_args.at_most(2) {:return_value}
+#    @object.foobar.should == :return_value
+#  end
+end
+
 describe Scenario, "#times" do
   it_should_behave_like "RR::Scenario"
 

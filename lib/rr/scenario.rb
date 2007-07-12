@@ -97,6 +97,8 @@ module RR
       self
     end
 
+#    `end
+
     # Scenario#times creates an TimesCalledExpectation of the passed
     # in number.
     #
