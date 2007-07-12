@@ -1,5 +1,4 @@
-dir = File.dirname(__FILE__)
-require "#{dir}/../example_helper"
+require "examples/example_helper"
 
 module RR
 describe Space, "#create_mock_creator" do

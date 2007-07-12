@@ -1,5 +1,4 @@
-dir = File.dirname(__FILE__)
-require "#{dir}/../../example_helper"
+require "examples/example_helper"
 
 describe RR, " backtrace tweaking" do
   it "hides rr library from the backtrace by default" do

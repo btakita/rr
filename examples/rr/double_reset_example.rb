@@ -1,5 +1,4 @@
-dir = File.dirname(__FILE__)
-require "#{dir}/../example_helper"
+require "examples/example_helper"
 
 module RR
 describe Double, "#reset", :shared => true do

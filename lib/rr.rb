@@ -28,4 +28,7 @@ require "rr/expectations/wildcard_matchers/duck_type"
 require "rr/expectations/wildcard_matchers/regexp"
 require "rr/expectations/wildcard_matchers/range"
 
+require "rr/expectations/times_called_matchers/times_called_matcher"
+require "rr/expectations/times_called_matchers/at_least_matcher"
+
 require "rr/extensions/double_methods"
