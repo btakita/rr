@@ -10,7 +10,7 @@ module RR
         @verify_backtrace = caller[1..-1]
       end
 
-      def verify_input
+      def attempt!
         @times_called += 1
         if(
           @times.is_a?(TimesCalledMatchers::TimesCalledMatcher) &&

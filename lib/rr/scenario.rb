@@ -204,7 +204,7 @@ module RR
     end
 
     def call_implementation(*args, &block)
-      @times_called_expectation.verify_input if @times_called_expectation
+      @times_called_expectation.attempt! if @times_called_expectation
       @space.verify_ordered_scenario(self) if ordered?
       if @yields
         unless block

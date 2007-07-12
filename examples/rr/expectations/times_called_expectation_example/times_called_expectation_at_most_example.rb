@@ -14,32 +14,32 @@ module Expectations
     it_should_behave_like "RR::Expectations::TimesCalledExpectation with AtMostMatcher"
 
     it "returns true when times called == times" do
-      3.times {@expectation.verify_input}
+      3.times {@expectation.attempt!}
       @expectation.verify!
     end
 
     it "raises error when times called < times" do
-      2.times {@expectation.verify_input}
+      2.times {@expectation.attempt!}
       @expectation.verify!
     end
   end
 
-  describe TimesCalledExpectation, "#verify_input with AtMostMatcher" do
+  describe TimesCalledExpectation, "#attempt! with AtMostMatcher" do
     it_should_behave_like "RR::Expectations::TimesCalledExpectation with AtMostMatcher"
 
     it "fails when times called more than times" do
-      3.times {@expectation.verify_input}
+      3.times {@expectation.attempt!}
       proc do
-        @expectation.verify_input
+        @expectation.attempt!
       end.should raise_error(Errors::TimesCalledError, "Called 4 times. Expected at most 3 times.")
     end
 
     it "passes when times called == times" do
-      3.times {@expectation.verify_input}
+      3.times {@expectation.attempt!}
     end
 
     it "passes when times called < times" do
-      @expectation.verify_input
+      @expectation.attempt!
     end
   end
 end
