@@ -12,6 +12,12 @@ module RR
 
       def verify_input
         @times_called += 1
+        if(
+          @times.is_a?(TimesCalledMatchers::TimesCalledMatcher) &&
+          !@times.possible_match?(@times_called)
+        )
+          verify_input_error
+        end
         verify_input_error if @times.is_a?(Integer) && @times_called > @times
         verify_input_error if @times.is_a?(Range) && @times_called > @times.end
         return
