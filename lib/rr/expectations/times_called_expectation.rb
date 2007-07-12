@@ -1,11 +1,14 @@
 module RR
   module Expectations
     class TimesCalledExpectation
-      attr_reader :times, :times_called
+      attr_reader :matcher, :times_called
       
-      def initialize(times=nil, &time_condition_block)
-        raise ArgumentError, "Cannot pass in both an argument and a block" if times && time_condition_block
-        @times = times || time_condition_block
+      def initialize(matcher=nil, &time_condition_block)
+        raise ArgumentError, "Cannot pass in both an argument and a block" if matcher && time_condition_block
+        @matcher = matcher || time_condition_block
+        if @matcher.is_a?(Integer)
+          @matcher = TimesCalledMatchers::IntegerMatcher.new(@matcher)
+        end
         @times_called = 0
         @verify_backtrace = caller[1..-1]
       end
@@ -13,21 +16,19 @@ module RR
       def attempt!
         @times_called += 1
         if(
-          @times.is_a?(TimesCalledMatchers::TimesCalledMatcher) &&
-          !@times.possible_match?(@times_called)
+          @matcher.is_a?(TimesCalledMatchers::TimesCalledMatcher) &&
+          !@matcher.possible_match?(@times_called)
         )
           verify_input_error
         end
-        verify_input_error if @times.is_a?(Integer) && @times_called > @times
-        verify_input_error if @times.is_a?(Range) && @times_called > @times.end
+        verify_input_error if @matcher.is_a?(Range) && @times_called > @matcher.end
         return
       end
 
       def verify
-        return @times.matches?(@times_called) if @times.is_a?(TimesCalledMatchers::TimesCalledMatcher)
-        return true if @times.is_a?(Integer) && @times == @times_called
-        return true if @times.is_a?(Proc) && @times.call(@times_called)
-        return true if @times.is_a?(Range) && @times.include?(@times_called)
+        return @matcher.matches?(@times_called) if @matcher.is_a?(TimesCalledMatchers::TimesCalledMatcher)
+        return true if @matcher.is_a?(Proc) && @matcher.call(@times_called)
+        return true if @matcher.is_a?(Range) && @matcher.include?(@times_called)
         return false
       end
 
@@ -49,11 +50,11 @@ module RR
       end
 
       def error_message
-        if @times.is_a?(TimesCalledMatchers::TimesCalledMatcher)
-          @times.error_message(@times_called)
+        if @matcher.is_a?(TimesCalledMatchers::TimesCalledMatcher)
+          @matcher.error_message(@times_called)
         else
           time_casing = (@times_called == 1) ? "time" : "times"
-          "Called #{@times_called.inspect} #{time_casing}. Expected #{@times.inspect}."
+          "Called #{@times_called.inspect} #{time_casing}. Expected #{@matcher.inspect}."
         end
       end
     end

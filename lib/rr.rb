@@ -29,6 +29,7 @@ require "rr/expectations/wildcard_matchers/regexp"
 require "rr/expectations/wildcard_matchers/range"
 
 require "rr/expectations/times_called_matchers/times_called_matcher"
+require "rr/expectations/times_called_matchers/integer_matcher"
 require "rr/expectations/times_called_matchers/at_least_matcher"
 require "rr/expectations/times_called_matchers/at_most_matcher"
 
