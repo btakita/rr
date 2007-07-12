@@ -11,14 +11,13 @@ module RR
         @verify_backtrace = caller[1..-1]
       end
 
+      def attempt?
+        @matcher.attempt?(@times_called)
+      end
+
       def attempt!
         @times_called += 1
-        if(
-          @matcher.is_a?(TimesCalledMatchers::TimesCalledMatcher) &&
-          !@matcher.possible_match?(@times_called)
-        )
-          verify_input_error
-        end
+        verify_input_error unless @matcher.possible_match?(@times_called)
         return
       end
 

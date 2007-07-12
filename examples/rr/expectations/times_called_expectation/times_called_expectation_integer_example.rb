@@ -2,11 +2,19 @@ require "examples/example_helper"
 
 module RR
 module Expectations
-  describe TimesCalledExpectation, "#verify" do
+  describe TimesCalledExpectation, " with IntegerMatcher", :shared => true do
     it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
-    it "returns true when times called exactly matches an integer" do
+    before do
       @expectation = TimesCalledExpectation.new(2)
+      @expected_line = __LINE__ - 1
+    end
+  end
+
+  describe TimesCalledExpectation, "#verify" do
+    it_should_behave_like "RR::Expectations::TimesCalledExpectation with IntegerMatcher"
+
+    it "returns true when times called exactly matches an integer" do
       @expectation.verify.should == false
       @expectation.attempt!
       @expectation.verify.should == false
@@ -16,12 +24,7 @@ module Expectations
   end
   
   describe TimesCalledExpectation, "#verify! when passed an Integer (2)" do
-    it_should_behave_like "RR::Expectations::TimesCalledExpectation"
-
-    before do
-      @expectation = TimesCalledExpectation.new(2)
-      @expected_line = __LINE__ - 1
-    end
+    it_should_behave_like "RR::Expectations::TimesCalledExpectation with IntegerMatcher"
 
     it "passes after attempt! called 2 times" do
       @expectation.attempt!
@@ -63,13 +66,36 @@ module Expectations
     end
   end
 
-  describe TimesCalledExpectation, "#attempt! for an integer expectation" do
-    it_should_behave_like "RR::Expectations::TimesCalledExpectation"
+  describe TimesCalledExpectation, "#attempt? with IntegerMatcher" do
+    it_should_behave_like "RR::Expectations::TimesCalledExpectation with IntegerMatcher"
+
+    it "returns true when attempted less than expected times" do
+      1.times {@expectation.attempt!}
+      @expectation.should be_attempt
+    end
+
+    it "returns false when attempted expected times" do
+      2.times {@expectation.attempt!}
+      @expectation.should_not be_attempt
+    end
+
+    it "raises error before attempted more than expected times" do
+      2.times {@expectation.attempt!}
+      proc {@expectation.attempt!}.should raise_error(
+        Errors::TimesCalledError
+      )
+    end
+  end
+
+  describe TimesCalledExpectation, "#attempt! for an IntegerMatcher" do
+    it_should_behave_like "RR::Expectations::TimesCalledExpectation with IntegerMatcher"
 
     it "raises error when attempt! called more than the expected number of times" do
-      @expectation = TimesCalledExpectation.new(1)
       @expectation.attempt!
-      raises_expectation_error {@expectation.attempt!}
+      @expectation.attempt!
+      proc do
+        @expectation.attempt!
+      end.should raise_error(Errors::TimesCalledError)
     end
   end  
 end

@@ -2,12 +2,19 @@ require "examples/example_helper"
 
 module RR
 module Expectations
-  describe TimesCalledExpectation, "#verify" do
+  describe TimesCalledExpectation, " with RangeMatcher", :shared => true do
     it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
-    it "returns true when times called falls within a range" do
+    before do
       @expectation = TimesCalledExpectation.new(1..2)
+      @expected_line = __LINE__ - 1
+    end
+  end
 
+  describe TimesCalledExpectation, "#verify" do
+    it_should_behave_like "RR::Expectations::TimesCalledExpectation with RangeMatcher"
+
+    it "returns true when times called falls within a range" do
       @expectation.verify.should == false
       @expectation.attempt!
       @expectation.verify.should == true
@@ -17,11 +24,7 @@ module Expectations
   end
   
   describe TimesCalledExpectation, "#verify! when passed a Range (1..2)" do
-    it_should_behave_like "RR::Expectations::TimesCalledExpectation"
-
-    before do
-      @expectation = TimesCalledExpectation.new(1..2)
-    end
+    it_should_behave_like "RR::Expectations::TimesCalledExpectation with RangeMatcher"
 
     it "passes after attempt! called 1 time" do
       @expectation.attempt!
@@ -43,11 +46,32 @@ module Expectations
     end
   end
 
+  describe TimesCalledExpectation, "#attempt? with RangeMatcher" do
+    it_should_behave_like "RR::Expectations::TimesCalledExpectation with RangeMatcher"
+
+    it "returns true when attempted less than low end of range" do
+      @expectation.should be_attempt
+    end
+
+    it "returns false when attempted in range" do
+      @expectation.attempt!
+      @expectation.should be_attempt
+      @expectation.attempt!
+      @expectation.should be_attempt
+    end
+
+    it "raises error before attempted more than expected times" do
+      2.times {@expectation.attempt!}
+      proc {@expectation.attempt!}.should raise_error(
+        Errors::TimesCalledError
+      )
+    end
+  end
+
   describe TimesCalledExpectation, "#attempt! for a range expectation" do
-    it_should_behave_like "RR::Expectations::TimesCalledExpectation"
+    it_should_behave_like "RR::Expectations::TimesCalledExpectation with RangeMatcher"
 
     it "raises error when attempt! called more than range permits" do
-      @expectation = TimesCalledExpectation.new(1..2)
       @expectation.attempt!
       @expectation.attempt!
       raises_expectation_error {@expectation.attempt!}
