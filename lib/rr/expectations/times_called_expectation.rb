@@ -5,14 +5,8 @@ module RR
       
       def initialize(matcher=nil, &time_condition_block)
         raise ArgumentError, "Cannot pass in both an argument and a block" if matcher && time_condition_block
-        @matcher = matcher || time_condition_block
-        if @matcher.is_a?(Integer)
-          @matcher = TimesCalledMatchers::IntegerMatcher.new(@matcher)
-        elsif @matcher.is_a?(Range)
-          @matcher = TimesCalledMatchers::RangeMatcher.new(@matcher)
-        elsif @matcher.is_a?(Proc)
-          @matcher = TimesCalledMatchers::ProcMatcher.new(@matcher)
-        end
+        matcher_value = matcher || time_condition_block
+        @matcher = TimesCalledMatchers::TimesCalledMatcher.create(matcher_value)
         @times_called = 0
         @verify_backtrace = caller[1..-1]
       end

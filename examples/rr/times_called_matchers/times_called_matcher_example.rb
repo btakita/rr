@@ -2,6 +2,22 @@ require "examples/example_helper"
 
 module RR
 module TimesCalledMatchers
+  describe TimesCalledMatcher, ".create when passed a TimesCalledMatcher" do
+    it "returns the passed in argument" do
+      matcher = TimesCalledMatcher.new(5)
+      TimesCalledMatcher.create(matcher).should === matcher
+    end
+  end
+
+  describe TimesCalledMatcher, ".create when passed an unsupported type" do
+    it "raises an ArgumentError" do
+      matcher = Object.new
+      proc do
+        TimesCalledMatcher.create(matcher)
+      end.should raise_error(ArgumentError, "There is no TimesCalledMatcher for #{matcher.inspect}.")
+    end
+  end
+
   describe TimesCalledMatcher, "#error_message" do
     before do
       @times = 3

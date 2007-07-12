@@ -2,6 +2,19 @@ require "examples/example_helper"
 
 module RR
 module TimesCalledMatchers
+  describe TimesCalledMatcher, ".create when passed a IntegerMatcher" do
+    it "returns the passed in argument" do
+      matcher = RangeMatcher.new(2..4)
+      TimesCalledMatcher.create(matcher).should === matcher
+    end
+  end
+
+  describe TimesCalledMatcher, ".create when passed a Integer" do
+    it "returns RangeMatcher" do
+      TimesCalledMatcher.create(2..4).should == RangeMatcher.new(2..4)
+    end
+  end
+
   describe RangeMatcher, "#possible_match?" do
     before do
       @times = 2..4

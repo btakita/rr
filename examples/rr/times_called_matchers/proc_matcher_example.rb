@@ -2,6 +2,20 @@ require "examples/example_helper"
 
 module RR
 module TimesCalledMatchers
+  describe TimesCalledMatcher, ".create when passed a ProcMatcher" do
+    it "returns the passed in argument" do
+      matcher = ProcMatcher.new(proc {|other| other == 5})
+      TimesCalledMatcher.create(matcher).should === matcher
+    end
+  end
+
+  describe TimesCalledMatcher, ".create when passed a Integer" do
+    it "returns ProcMatcher" do
+      value = proc {|other| other == 5}
+      TimesCalledMatcher.create(value).should == ProcMatcher.new(value)
+    end
+  end
+
   describe ProcMatcher, "#possible_match?" do
     before do
       @times = proc {|other| other == 3}

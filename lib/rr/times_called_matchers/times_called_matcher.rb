@@ -1,6 +1,16 @@
 module RR
 module TimesCalledMatchers
   class TimesCalledMatcher
+    class << self
+      def create(value)
+        return value if value.is_a?(TimesCalledMatcher)
+        return IntegerMatcher.new(value) if value.is_a?(Integer)
+        return RangeMatcher.new(value) if value.is_a?(Range )
+        return ProcMatcher.new(value) if value.is_a?(Proc)
+        raise ArgumentError, "There is no TimesCalledMatcher for #{value.inspect}."
+      end
+    end
+
     attr_reader :times
     
     def initialize(times)

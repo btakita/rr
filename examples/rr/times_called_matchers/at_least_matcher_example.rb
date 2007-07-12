@@ -2,6 +2,13 @@ require "examples/example_helper"
 
 module RR
 module TimesCalledMatchers
+  describe TimesCalledMatcher, ".create when passed a AtLeastMatcher" do
+    it "returns the passed in argument" do
+      matcher = AtLeastMatcher.new(5)
+      TimesCalledMatcher.create(matcher).should === matcher
+    end
+  end
+
   describe AtLeastMatcher, "#possible_match?" do
     before do
       @times = 3
