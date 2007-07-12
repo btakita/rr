@@ -18,6 +18,7 @@ module RR
       end
 
       def verify
+        return @times.matches?(@times_called) if @times.is_a?(TimesCalledMatchers::TimesCalledMatcher)
         return true if @times.is_a?(Integer) && @times == @times_called
         return true if @times.is_a?(Proc) && @times.call(@times_called)
         return true if @times.is_a?(Range) && @times.include?(@times_called)
@@ -42,8 +43,12 @@ module RR
       end
 
       def error_message
-        time_casing = (@times_called == 1) ? "time" : "times"
-        "Called #{@times_called.inspect} #{time_casing}. Expected #{@times.inspect}."
+        if @times.is_a?(TimesCalledMatchers::TimesCalledMatcher)
+          @times.error_message(@times_called)
+        else
+          time_casing = (@times_called == 1) ? "time" : "times"
+          "Called #{@times_called.inspect} #{time_casing}. Expected #{@times.inspect}."
+        end
       end
     end
   end
