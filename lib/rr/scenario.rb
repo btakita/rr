@@ -91,7 +91,7 @@ module RR
     #
     #   mock(subject).method_name.at_least(4) {:return_value}
     def at_least(number, &returns)
-      matcher = RR::Expectations::TimesCalledMatchers::AtLeastMatcher.new(number)
+      matcher = RR::TimesCalledMatchers::AtLeastMatcher.new(number)
       @times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
       returns(&returns) if returns
       self

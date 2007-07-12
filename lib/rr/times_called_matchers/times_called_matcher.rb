@@ -1,5 +1,4 @@
 module RR
-module Expectations
 module TimesCalledMatchers
   class TimesCalledMatcher
     attr_reader :times
@@ -31,6 +30,5 @@ module TimesCalledMatchers
       (times_called == 1) ? "time" : "times"
     end
   end
-end
 end
 end

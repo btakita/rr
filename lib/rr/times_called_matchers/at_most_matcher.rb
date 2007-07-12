@@ -1,13 +1,12 @@
 module RR
-module Expectations
 module TimesCalledMatchers
-  class AtLeastMatcher < TimesCalledMatcher
+  class AtMostMatcher < TimesCalledMatcher
     def possible_match?(times_called)
-      true
+      times_called <= @times
     end
 
     def matches?(times_called)
-      times_called >= @times
+      times_called <= @times
     end
 
     def attempt?(times_called)
@@ -16,9 +15,8 @@ module TimesCalledMatchers
 
     protected
     def expected_message_part
-      "Expected at least #{@times.inspect} times."
+      "Expected at most #{@times.inspect} times."
     end
   end
-end
 end
 end

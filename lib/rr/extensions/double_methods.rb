@@ -35,7 +35,7 @@ module Extensions
     #   mock(object).method_name(anything) {return_value}
     #   object.method_name("an arbitrary value") # passes
     def anything
-      RR::Expectations::WildcardMatchers::Anything.new
+      RR::WildcardMatchers::Anything.new
     end
 
     # Sets up an IsA wildcard ArgumentEqualityError
@@ -43,7 +43,7 @@ module Extensions
     #   mock(object).method_name(is_a(String)) {return_value}
     #   object.method_name("A String") # passes
     def is_a(klass)
-      RR::Expectations::WildcardMatchers::IsA.new(klass)
+      RR::WildcardMatchers::IsA.new(klass)
     end
 
     # Sets up an Numeric wildcard ArgumentEqualityError
@@ -51,7 +51,7 @@ module Extensions
     #   mock(object).method_name(numeric) {return_value}
     #   object.method_name(99) # passes
     def numeric
-      RR::Expectations::WildcardMatchers::Numeric.new
+      RR::WildcardMatchers::Numeric.new
     end
 
     # Sets up an Boolean wildcard ArgumentEqualityError
@@ -59,7 +59,7 @@ module Extensions
     #   mock(object).method_name(boolean) {return_value}
     #   object.method_name(false) # passes
     def boolean
-      RR::Expectations::WildcardMatchers::Boolean.new
+      RR::WildcardMatchers::Boolean.new
     end
 
     # Sets up a DuckType wildcard ArgumentEqualityError
@@ -70,7 +70,7 @@ module Extensions
     #   mock(object).method_name(duck_type(:foo, :bar)) {return_value}
     #   object.method_name(arg) # passes
     def duck_type(*args)
-      RR::Expectations::WildcardMatchers::DuckType.new(*args)
+      RR::WildcardMatchers::DuckType.new(*args)
     end
 
     instance_methods.each do |name|

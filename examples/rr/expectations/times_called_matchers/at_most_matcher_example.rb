@@ -1,7 +1,6 @@
 require "examples/example_helper"
 
 module RR
-module Expectations
 module TimesCalledMatchers
   describe AtMostMatcher, "#possible_match?" do
     before do
@@ -72,6 +71,5 @@ module TimesCalledMatchers
       )
     end
   end
-end
 end
 end

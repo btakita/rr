@@ -1,7 +1,6 @@
 require "examples/example_helper"
 
 module RR
-module Expectations
 module TimesCalledMatchers
   describe TimesCalledMatcher, "#error_message" do
     before do
@@ -34,6 +33,5 @@ module TimesCalledMatchers
       @matcher.should_not == TimesCalledMatcher.new(1)
     end
   end
-end
 end
 end
