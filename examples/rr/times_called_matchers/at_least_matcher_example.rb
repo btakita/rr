@@ -45,16 +45,9 @@ module TimesCalledMatchers
       @matcher = AtLeastMatcher.new(@times)
     end
 
-    it "returns true when less than expected times" do
-      @matcher.should be_attempt(2)
-    end
-
-    it "returns false when == expected times" do
-      @matcher.should_not be_attempt(3)
-    end
-
-    it "returns false when > expected times" do
-      @matcher.should_not be_attempt(4)
+    it "always returns true" do
+      @matcher.should be_attempt(1)
+      @matcher.should be_attempt(100000)
     end
   end  
 

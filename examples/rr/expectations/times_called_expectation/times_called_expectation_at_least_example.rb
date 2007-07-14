@@ -39,19 +39,10 @@ module Expectations
   describe TimesCalledExpectation, "#attempt? with AtLeastMatcher" do
     it_should_behave_like "RR::Expectations::TimesCalledExpectation with AtLeastMatcher"
 
-    it "returns true when attempted less than expected times" do
-      2.times {@expectation.attempt!}
+    it "always returns true" do
       @expectation.should be_attempt
-    end
-
-    it "returns false when attempted expected times" do
-      3.times {@expectation.attempt!}
-      @expectation.should_not be_attempt
-    end
-
-    it "returns false when attempted more than expected times" do
-      4.times {@expectation.attempt!}
-      @expectation.should_not be_attempt
+      10.times {@expectation.attempt!}
+      @expectation.should be_attempt
     end
   end
 

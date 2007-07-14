@@ -10,7 +10,7 @@ module TimesCalledMatchers
     end
 
     def attempt?(times_called)
-      times_called < @times
+      true
     end
 
     protected

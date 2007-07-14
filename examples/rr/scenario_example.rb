@@ -125,11 +125,7 @@ describe Scenario, "#at_least" do
 
   it "sets up a Times Called Expectation with 1" do
     @scenario.at_least(2)
-    @scenario.should be_attempt
-    @scenario.call
-    @scenario.should be_attempt
-    @scenario.call
-    @scenario.should_not be_attempt
+    @scenario.times_matcher.should == TimesCalledMatchers::AtLeastMatcher.new(2)
   end
 
   it "sets return value when block passed in" do
