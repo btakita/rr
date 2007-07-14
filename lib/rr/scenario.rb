@@ -281,10 +281,12 @@ module RR
       true
     end
 
+    # The method name that this Scenario is attatched to
     def method_name
       double.method_name
     end
 
+    # The Argumentns that this Scenario expects
     def expected_arguments
       return [] unless argument_expectation
       argument_expectation.expected_arguments

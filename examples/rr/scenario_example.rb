@@ -533,4 +533,27 @@ describe Scenario, "#verify" do
     proc {@scenario.verify}.should_not raise_error
   end
 end
+
+describe Scenario, "#method_name" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns the Double's method_name" do
+    @double.method_name.should == :foobar
+    @scenario.method_name.should == :foobar
+  end
+end
+
+describe Scenario, "#expected_arguments" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns argument expectation's expected_arguments when there is a argument expectation" do
+    @scenario.with(1, 2)
+    @scenario.expected_arguments.should == [1, 2]
+  end
+
+  it "returns an empty array when there is no argument expectation" do
+    @scenario.argument_expectation.should be_nil
+    @scenario.expected_arguments.should == []
+  end
+end
 end
