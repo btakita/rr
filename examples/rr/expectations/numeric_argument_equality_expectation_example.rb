@@ -2,7 +2,7 @@ require "examples/example_helper"
 
 module RR
 module Expectations
-  describe ArgumentEqualityExpectation, "#exact_match? with is_a argument" do
+  describe ArgumentEqualityExpectation, "#exact_match? with numeric argument" do
     before do
       @expectation = ArgumentEqualityExpectation.new(numeric)
     end
@@ -20,7 +20,7 @@ module Expectations
     end
   end
 
-  describe ArgumentEqualityExpectation, "#wildcard_match? with is_a Numeric argument" do
+  describe ArgumentEqualityExpectation, "#wildcard_match? with Numeric argument" do
     before do
       @expectation = ArgumentEqualityExpectation.new(numeric)
     end
