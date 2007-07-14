@@ -30,6 +30,14 @@ module Extensions
     end
     alias_method :dont_allow, :do_not_allow
 
+    # Returns a AnyTimesMatcher. This is meant to be passed in as an argument
+    # to Scenario#times.
+    #
+    #   mock(object).method_name(anything).times(any_times) {return_value}
+    def any_times
+      TimesCalledMatchers::AnyTimesMatcher.new
+    end
+
     # Sets up an Anything wildcard ArgumentEqualityExpectation
     # that succeeds when passed any argument.
     #   mock(object).method_name(anything) {return_value}

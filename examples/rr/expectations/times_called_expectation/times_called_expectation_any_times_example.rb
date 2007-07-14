@@ -6,8 +6,7 @@ module Expectations
     it_should_behave_like "RR::Expectations::TimesCalledExpectation"
     
     before do
-      @times = 3
-      @at_least = TimesCalledMatchers::AnyTimesMatcher.new(@times)
+      @at_least = TimesCalledMatchers::AnyTimesMatcher.new
       @expectation = TimesCalledExpectation.new(@at_least)
     end
   end

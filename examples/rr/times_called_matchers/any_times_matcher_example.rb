@@ -4,15 +4,14 @@ module RR
 module TimesCalledMatchers
   describe TimesCalledMatcher, ".create when passed a AnyTimesMatcher" do
     it "returns the passed in argument" do
-      matcher = AnyTimesMatcher.new(5)
+      matcher = AnyTimesMatcher.new
       TimesCalledMatcher.create(matcher).should === matcher
     end
   end
 
   describe AnyTimesMatcher, "#possible_match?" do
     before do
-      @times = 3
-      @matcher = AnyTimesMatcher.new(@times)
+      @matcher = AnyTimesMatcher.new
     end
 
     it "always returns true" do
@@ -23,8 +22,7 @@ module TimesCalledMatchers
 
   describe AnyTimesMatcher, "#matches?" do
     before do
-      @times = 3
-      @matcher = AnyTimesMatcher.new(@times)
+      @matcher = AnyTimesMatcher.new
     end
 
     it "always returns true" do
@@ -35,8 +33,7 @@ module TimesCalledMatchers
 
   describe AnyTimesMatcher, "#attempt?" do
     before do
-      @times = 3
-      @matcher = AnyTimesMatcher.new(@times)
+      @matcher = AnyTimesMatcher.new
     end
 
     it "always returns true" do
@@ -47,8 +44,7 @@ module TimesCalledMatchers
 
   describe AnyTimesMatcher, "#error_message" do
     before do
-      @times = 3
-      @matcher = AnyTimesMatcher.new(@times)
+      @matcher = AnyTimesMatcher.new
     end
 
     it "has an error message" do

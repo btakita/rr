@@ -1,6 +1,9 @@
 module RR
 module TimesCalledMatchers
   class AnyTimesMatcher < TimesCalledMatcher
+    def initialize
+    end
+
     def possible_match?(times_called)
       true
     end
