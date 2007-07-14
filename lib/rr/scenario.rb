@@ -65,7 +65,8 @@ module RR
       self
     end
 
-    # Scenario#never creates an TimesCalledExpectation of 0.
+    # Scenario#never sets an expectation that the Scenario will never be
+    # called.
     #
     # This method does not accept a block because it will never be called.
     #
@@ -75,7 +76,8 @@ module RR
       self
     end
 
-    # Scenario#once creates an TimesCalledExpectation of 1.
+    # Scenario#once sets an expectation that the Scenario will be called
+    # 1 time.
     #
     # Passing in a block sets the return value.
     #
@@ -86,7 +88,8 @@ module RR
       self
     end
 
-    # Scenario#twice creates an TimesCalledExpectation of 2.
+    # Scenario#twice sets an expectation that the Scenario will be called
+    # 2 times.
     #
     # Passing in a block sets the return value.
     #
@@ -97,7 +100,7 @@ module RR
       self
     end
 
-    # Scenario#at_least allows you to set an expectation that the Scenario
+    # Scenario#at_least sets an expectation that the Scenario
     # will be called at least n times.
     # It works by creating a TimesCalledExpectation.
     #
@@ -111,7 +114,7 @@ module RR
       self
     end
 
-    # Scenario#at_most allows you to set an expectation that the Scenario
+    # Scenario#at_most allows sets an expectation that the Scenario
     # will be called at most n times.
     # It works by creating a TimesCalledExpectation.
     #
@@ -121,6 +124,19 @@ module RR
     def at_most(number, &returns)
       matcher = RR::TimesCalledMatchers::AtMostMatcher.new(number)
       @times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
+      returns(&returns) if returns
+      self
+    end
+
+    # Scenario#any_number_of_times sets an that the Scenario will be called
+    # any number of times. This effectively removes the times called expectation
+    # from the Scenarion
+    #
+    # Passing in a block sets the return value.
+    #
+    #   mock(subject).method_name.any_number_of_times
+    def any_number_of_times(&returns)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(TimesCalledMatchers::AnyTimesMatcher.new)
       returns(&returns) if returns
       self
     end
@@ -286,10 +302,15 @@ module RR
       double.method_name
     end
 
-    # The Argumentns that this Scenario expects
+    # The Arguments that this Scenario expects
     def expected_arguments
       return [] unless argument_expectation
       argument_expectation.expected_arguments
+    end
+
+    # The TimesCalledMatcher for the TimesCalledExpectation
+    def times_matcher
+      times_called_expectation.matcher
     end
   end
 end

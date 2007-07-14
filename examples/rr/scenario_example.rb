@@ -180,6 +180,24 @@ describe Scenario, "#times" do
   end
 end
 
+describe Scenario, "#any_number_of_times" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns self" do
+    @scenario.any_number_of_times.should === @scenario
+  end
+
+  it "sets up a Times Called Expectation with AnyTimes matcher" do
+    @scenario.any_number_of_times
+    @scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+  end
+
+  it "sets return value when block passed in" do
+    @scenario.with_any_args.any_number_of_times {:return_value}
+    @object.foobar.should == :return_value
+  end
+end
+
 describe Scenario, "#ordered" do
   it_should_behave_like "RR::Scenario"
 
