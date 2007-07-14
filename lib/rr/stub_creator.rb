@@ -25,7 +25,7 @@ module RR
     def method_missing(method_name, *args, &returns)
       double = @space.create_double(@subject, method_name)
       scenario = @space.create_scenario(double)
-      scenario.returns(&returns)
+      scenario.returns(&returns).any_number_of_times
       if args.empty?
         scenario.with_any_args
       else
