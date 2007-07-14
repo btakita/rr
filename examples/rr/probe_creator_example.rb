@@ -21,6 +21,17 @@ describe ProbeCreator, ".new without block" do
   before do
     @creator = ProbeCreator.new(@space, @subject)
   end
+
+  it "clears out all methods from creator" do
+    creator_subclass = Class.new(ProbeCreator) do
+      def i_should_be_a_scenario
+      end
+    end
+    creator_subclass.instance_methods.should include('i_should_be_a_scenario')
+
+    creator = creator_subclass.new(@space, @subject)
+    creator.i_should_be_a_scenario.should be_instance_of(Scenario)
+  end
 end
 
 describe ProbeCreator, ".new with block" do
@@ -42,6 +53,18 @@ describe ProbeCreator, ".new with block" do
     @subject.foobar(1).should == :original_foobar
     @subject.foobar(:something).should == :original_foobar
     proc {@subject.foobar(:nasty)}.should raise_error
+  end
+
+  it "clears out all methods from creator" do
+    creator_subclass = Class.new(ProbeCreator) do
+      def i_should_be_a_scenario
+      end
+    end
+    creator_subclass.instance_methods.should include('i_should_be_a_scenario')
+
+    creator_subclass.new(@space, @subject) do |m|
+      m.i_should_be_a_scenario.should be_instance_of(Scenario)
+    end
   end
 end
 

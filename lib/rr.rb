@@ -2,6 +2,7 @@ dir = File.dirname(__FILE__)
 
 require "rr/double"
 
+require "rr/creator"
 require "rr/mock_creator"
 require "rr/stub_creator"
 require "rr/probe_creator"

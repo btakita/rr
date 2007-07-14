@@ -21,22 +21,16 @@ module RR
   #
   #   user = User.find('4')
   #   user.valid? # false
-  class ProbeCreator
-    instance_methods.each { |m| undef_method m unless m =~ /^__/ }
-    
-    def initialize(space, subject)
-      @space = space
-      @subject = subject
-      yield(self) if block_given?
-    end
-
-    protected
-    def method_missing(method_name, *args, &after_call)
-      double = @space.create_double(@subject, method_name)
-      scenario = @space.create_scenario(double)
-      scenario.with(*args).once.implemented_by(double.original_method)
-      scenario.after_call(&after_call) if after_call
-      scenario
+  class ProbeCreator < Creator
+    module InstanceMethods
+      protected
+      def method_missing(method_name, *args, &after_call)
+        double = @space.create_double(@subject, method_name)
+        scenario = @space.create_scenario(double)
+        scenario.with(*args).once.implemented_by(double.original_method)
+        scenario.after_call(&after_call) if after_call
+        scenario
+      end      
     end
   end
 end

@@ -21,6 +21,17 @@ describe DoNotAllowCreator, ".new" do
   before do
     @creator = DoNotAllowCreator.new(@space, @subject)
   end
+
+  it "clears out all methods from creator" do
+    creator_subclass = Class.new(DoNotAllowCreator) do
+      def i_should_be_a_scenario
+      end
+    end
+    creator_subclass.instance_methods.should include('i_should_be_a_scenario')
+
+    creator = creator_subclass.new(@space, @subject)
+    creator.i_should_be_a_scenario.should be_instance_of(Scenario)
+  end
 end
 
 describe DoNotAllowCreator, ".new with block" do
@@ -56,6 +67,17 @@ describe DoNotAllowCreator, ".new with block" do
 
   it "raises TimesCalledError when any_args is called with arguments" do
     proc {@subject.any_args(1, 2)}.should raise_error(Errors::TimesCalledError)
+  end
+
+  it "clears out all methods from creator" do
+    creator_subclass = Class.new(DoNotAllowCreator) do
+      def i_should_be_a_scenario
+      end
+    end
+    creator_subclass.instance_methods.should include('i_should_be_a_scenario')
+
+    creator = creator_subclass.new(@space, @subject)
+    creator.i_should_be_a_scenario.should be_instance_of(Scenario)
   end
 end
 

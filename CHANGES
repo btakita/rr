@@ -1,3 +1,6 @@
+- Fixed bug where Creators methods are not removed when methods are defined on Object
+- Fixed [#12289] Creators methods are not removed in Rails environment
+
 * 0.1.11
 - Fixed [#12287] AtLeastMatcher does not cause Scenario to be called
 

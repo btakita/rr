@@ -21,6 +21,17 @@ describe StubCreator, ".new without block" do
   before do
     @creator = StubCreator.new(@space, @subject)
   end
+
+  it "clears out all methods from creator" do
+    creator_subclass = Class.new(StubCreator) do
+      def i_should_be_a_scenario
+      end
+    end
+    creator_subclass.instance_methods.should include('i_should_be_a_scenario')
+
+    creator = creator_subclass.new(@space, @subject)
+    creator.i_should_be_a_scenario.should be_instance_of(Scenario)
+  end
 end
 
 describe StubCreator, ".new with block" do
@@ -44,6 +55,18 @@ describe StubCreator, ".new with block" do
     @subject.foobar(:something).should == :default
     @subject.baz.should == :baz_result
     @subject.baz.should == :baz_result
+  end
+
+  it "clears out all methods from creator" do
+    creator_subclass = Class.new(StubCreator) do
+      def i_should_be_a_scenario
+      end
+    end
+    creator_subclass.instance_methods.should include('i_should_be_a_scenario')
+
+    creator_subclass.new(@space, @subject) do |m|
+      m.i_should_be_a_scenario.should be_instance_of(Scenario)
+    end
   end
 end
 

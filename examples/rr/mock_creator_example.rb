@@ -21,6 +21,17 @@ describe MockCreator, ".new without block" do
   before do
     @creator = MockCreator.new(@space, @subject)
   end
+
+  it "clears out all methods from creator" do
+    creator_subclass = Class.new(MockCreator) do
+      def i_should_be_a_scenario
+      end
+    end
+    creator_subclass.instance_methods.should include('i_should_be_a_scenario')
+
+    creator = creator_subclass.new(@space, @subject)
+    creator.i_should_be_a_scenario.should be_instance_of(Scenario)
+  end
 end
 
 describe MockCreator, ".new with block" do
@@ -40,6 +51,18 @@ describe MockCreator, ".new with block" do
     @subject.foobar(1).should == :one
     @subject.foobar(:something).should == :default
     @subject.baz.should == :baz_result
+  end
+
+  it "clears out all methods from creator" do
+    creator_subclass = Class.new(MockCreator) do
+      def i_should_be_a_scenario
+      end
+    end
+    creator_subclass.instance_methods.should include('i_should_be_a_scenario')
+
+    creator_subclass.new(@space, @subject) do |m|
+      m.i_should_be_a_scenario.should be_instance_of(Scenario)
+    end
   end
 end
 
