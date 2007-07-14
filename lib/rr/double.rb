@@ -77,9 +77,27 @@ module RR
         end
       end
       matching_scenarios.first.call(*args) unless matching_scenarios.empty?
+      scenario_not_found_error(*args)
+    end
 
+    protected
+    def scenario_not_found_error(*args)
+      message = "No scenario for #{scenario_name(*args)}\n"
+      message << scenario_list_message_part
+      raise Errors::ScenarioNotFoundError, message
+    end
+
+    def scenario_list_message_part
+      msg = "in\n"
+      msg << @scenarios.collect do |scenario|
+        scenario_name(*scenario.argument_expectation.expected_arguments)
+      end.join("\n")
+      msg
+    end
+
+    def scenario_name(*args)
       formatted_errors = args.collect {|arg| arg.inspect}.join(', ')
-      raise Errors::ScenarioNotFoundError, "No scenario for #{@method_name}(#{formatted_errors})"
+      "#{@method_name}(#{formatted_errors})"
     end
     
     def placeholder_name
