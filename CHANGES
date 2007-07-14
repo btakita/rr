@@ -1,3 +1,4 @@
+* 0.1.8
 - TimesCalledError Message Formatted to be on multiple lines
 - ScenarioNotFoundError Message includes all Scenarios for the Double
 - ScenarioOrderError shows list of remaining ordered scenarios
