@@ -29,8 +29,8 @@ module RR
       @yields = nil
     end
 
-    # Scenario#with creates an ArgumentEqualityExpectation for the
-    # Scenario. it takes a list of expected arguments.
+    # Scenario#with sets the expectation that the Scenario will receive
+    # the passed in arguments.
     #
     # Passing in a block sets the return value.
     #
@@ -41,8 +41,8 @@ module RR
       self
     end
 
-    # Scenario#with_any_args creates an AnyArgumentEqualityExpectation
-    # for the Scenario.
+    # Scenario#with_any_args sets the expectation that the Scenario can receive
+    # any arguments.
     #
     # Passing in a block sets the return value.
     #
@@ -53,8 +53,8 @@ module RR
       self
     end
 
-    # Scenario#with_no_args creates an ArgumentEqualityExpectation with
-    # no arguments for the Scenario.
+    # Scenario#with_no_args sets the expectation that the Scenario will receive
+    # no arguments.
     #
     # Passing in a block sets the return value.
     #
@@ -65,7 +65,7 @@ module RR
       self
     end
 
-    # Scenario#never sets an expectation that the Scenario will never be
+    # Scenario#never sets the expectation that the Scenario will never be
     # called.
     #
     # This method does not accept a block because it will never be called.
@@ -76,7 +76,7 @@ module RR
       self
     end
 
-    # Scenario#once sets an expectation that the Scenario will be called
+    # Scenario#once sets the expectation that the Scenario will be called
     # 1 time.
     #
     # Passing in a block sets the return value.
@@ -88,7 +88,7 @@ module RR
       self
     end
 
-    # Scenario#twice sets an expectation that the Scenario will be called
+    # Scenario#twice sets the expectation that the Scenario will be called
     # 2 times.
     #
     # Passing in a block sets the return value.
@@ -100,7 +100,7 @@ module RR
       self
     end
 
-    # Scenario#at_least sets an expectation that the Scenario
+    # Scenario#at_least sets the expectation that the Scenario
     # will be called at least n times.
     # It works by creating a TimesCalledExpectation.
     #
@@ -114,7 +114,7 @@ module RR
       self
     end
 
-    # Scenario#at_most allows sets an expectation that the Scenario
+    # Scenario#at_most allows sets the expectation that the Scenario
     # will be called at most n times.
     # It works by creating a TimesCalledExpectation.
     #
