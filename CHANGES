@@ -1,3 +1,4 @@
+* 0.1.9
 - Added DoubleMethods#any_times
 - Added Scenario#any_number_of_times
 
