@@ -2,6 +2,16 @@ require "examples/example_helper"
 
 module RR
 module Expectations
+  describe ArgumentEqualityExpectation, "expected_arguments" do
+    before do
+      @expectation = ArgumentEqualityExpectation.new(1, 2, 3)
+    end
+
+    it "returns the passed in expected_arguments" do
+      @expectation.expected_arguments.should == [1, 2, 3]
+    end
+  end
+
   describe ArgumentEqualityExpectation, "==" do
     before do
       @expectation = ArgumentEqualityExpectation.new(1, 2, 3)

@@ -1,3 +1,5 @@
+- Fixed [#12286] AnyArgumentExpectation#expected_arguments not implemented
+
 * 0.1.9
 - Added DoubleMethods#any_times
 - Added Scenario#any_number_of_times

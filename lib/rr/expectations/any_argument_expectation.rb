@@ -1,6 +1,10 @@
 module RR
   module Expectations
-    class AnyArgumentExpectation
+    class AnyArgumentExpectation < ArgumentEqualityExpectation
+      def initialize
+        super
+      end
+
       def exact_match?(*arguments)
         false
       end
@@ -10,7 +14,7 @@ module RR
       end
 
       def ==(other)
-        self.class == other.class
+        other.is_a?(self.class)
       end
     end
   end

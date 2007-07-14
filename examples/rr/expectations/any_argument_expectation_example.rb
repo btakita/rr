@@ -2,6 +2,16 @@ require "examples/example_helper"
 
 module RR
 module Expectations
+  describe ArgumentEqualityExpectation, "expected_arguments" do
+    before do
+      @expectation = AnyArgumentExpectation.new
+    end
+
+    it "returns an empty array" do
+      @expectation.expected_arguments.should == []
+    end
+  end  
+
   describe AnyArgumentExpectation, "==" do
     before do
       @expectation = AnyArgumentExpectation.new
