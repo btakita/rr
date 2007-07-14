@@ -1,3 +1,4 @@
+* 0.1.10
 - Fixed [#12286] AnyArgumentExpectation#expected_arguments not implemented
 
 * 0.1.9
