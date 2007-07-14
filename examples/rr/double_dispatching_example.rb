@@ -99,8 +99,8 @@ describe Double, " method dispatching where there are scenarios" do
       Errors::ScenarioNotFoundError,
       "No scenario for foobar(:arg1, :arg2)\n" <<
       "in\n" <<
-      "foobar(1, 2)\n" <<
-      "foobar(3)"
+      "- foobar(1, 2)\n" <<
+      "- foobar(3)"
     )
   end
 end

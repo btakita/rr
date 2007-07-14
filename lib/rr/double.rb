@@ -90,7 +90,7 @@ module RR
     def scenario_list_message_part
       msg = "in\n"
       msg << @scenarios.collect do |scenario|
-        scenario_name(*scenario.argument_expectation.expected_arguments)
+        "- #{scenario_name(*scenario.argument_expectation.expected_arguments)}"
       end.join("\n")
       msg
     end
