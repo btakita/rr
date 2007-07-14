@@ -3,8 +3,9 @@ require "examples/example_helper"
 module RR
 module Extensions
   describe DoubleMethods, "#mock" do
+    it_should_behave_like "RR::Extensions::DoubleMethods"
+
     before do
-      extend RR::Extensions::DoubleMethods
       @subject = Object.new
     end
 
@@ -33,8 +34,9 @@ module Extensions
   end
 
   describe DoubleMethods, "#stub" do
+    it_should_behave_like "RR::Extensions::DoubleMethods"
+
     before do
-      extend RR::Extensions::DoubleMethods
       @subject = Object.new
     end
 
@@ -61,17 +63,18 @@ module Extensions
   end
 
   describe DoubleMethods, "#probe" do
+    it_should_behave_like "RR::Extensions::DoubleMethods"
+
     before do
-      extend RR::Extensions::DoubleMethods
       @subject = Object.new
     end
 
     it "sets up the RR probe call chain" do
-      creator = probe(@subject)
+      should_create_probe_call_chain probe(@subject)
     end
 
     it "sets up the RR probe call chain with rr_probe" do
-      creator = rr_probe(@subject)
+      should_create_probe_call_chain rr_probe(@subject)
     end
 
     def should_create_probe_call_chain(creator)
@@ -82,7 +85,7 @@ module Extensions
       end
 
       scenario = creator.foobar(1, 2)
-      scenario.times_called_expectation.times.should == 1
+      scenario.times_called_expectation.matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
       scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
       scenario.argument_expectation.expected_arguments.should == [1, 2]
 
@@ -91,8 +94,9 @@ module Extensions
   end
 
   describe DoubleMethods, "#do_not_allow" do
+    it_should_behave_like "RR::Extensions::DoubleMethods"
+    
     before do
-      extend RR::Extensions::DoubleMethods
       @subject = Object.new
     end
 
