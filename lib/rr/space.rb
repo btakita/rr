@@ -45,7 +45,7 @@ module RR
 
     # Creates and registers a Scenario to be verified.
     def create_scenario(double)
-      scenario = Scenario.new(self)
+      scenario = Scenario.new(self, double)
       double.register_scenario scenario
       scenario
     end
@@ -72,7 +72,12 @@ module RR
     # Verifies that the passed in ordered Scenario is being called
     # in the correct position.
     def verify_ordered_scenario(scenario)
-      raise Errors::ScenarioOrderError unless @ordered_scenarios.first == scenario
+      unless @ordered_scenarios.first == scenario
+        message = Scenario.formatted_name(scenario.method_name, scenario.expected_arguments)
+        message << "\ncalled out of order in list\n"
+        message << Scenario.list_message_part(@ordered_scenarios)
+        raise Errors::ScenarioOrderError, message
+      end
       @ordered_scenarios.shift unless scenario.attempt?
       scenario
     end

@@ -1,5 +1,6 @@
 - TimesCalledError Message Formatted to be on multiple lines
-- ScenarioNotFoundError Message includes all Scenarios for the Double.
+- ScenarioNotFoundError Message includes all Scenarios for the Double
+- ScenarioOrderError shows list of remaining ordered scenarios
 
 * 0.1.7
 - Fixed [#12194] Double#reset_doubles are not clearing Ordered Scenarios bug

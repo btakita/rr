@@ -3,15 +3,29 @@ module RR
   # It has the ArgumentEqualityExpectation, TimesCalledExpectation,
   # and the implementation.
   class Scenario
-    attr_reader :times_called, :argument_expectation, :times_called_expectation
+    class << self
+      def formatted_name(method_name, args)
+        formatted_errors = args.collect {|arg| arg.inspect}.join(', ')
+        "#{method_name}(#{formatted_errors})"
+      end
 
-    def initialize(space)
+      def list_message_part(scenarios)
+        scenarios.collect do |scenario|
+          "- #{formatted_name(scenario.method_name, scenario.expected_arguments)}"
+        end.join("\n")
+      end
+    end
+
+    attr_reader :times_called, :argument_expectation, :times_called_expectation, :double
+
+    def initialize(space, double)
       @space = space
       @implementation = nil
       @argument_expectation = nil
       @times_called_expectation = nil
       @times_called = 0
       @after_call = nil
+      @double = double
       @yields = nil
     end
 
@@ -182,7 +196,9 @@ module RR
     #
     # Passing in an argument causes Scenario to return the argument.
     def returns(value=nil, &implementation)
-      raise ArgumentError, "returns cannot accept both an argument and a block" if value && implementation
+      if value && implementation
+        raise ArgumentError, "returns cannot accept both an argument and a block"
+      end
       if value
         implemented_by proc {value}
       else
@@ -263,6 +279,15 @@ module RR
       return true unless @times_called_expectation
       @times_called_expectation.verify!
       true
+    end
+
+    def method_name
+      double.method_name
+    end
+
+    def expected_arguments
+      return [] unless argument_expectation
+      argument_expectation.expected_arguments
     end
   end
 end
