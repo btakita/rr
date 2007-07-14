@@ -25,7 +25,7 @@ module Extensions
 
       scenario = creator.foobar(1, 2) {:baz}
       scenario.times_called_expectation.matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityError
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
       scenario.argument_expectation.expected_arguments.should == [1, 2]
 
       @subject.foobar(1, 2).should == :baz
@@ -55,7 +55,7 @@ module Extensions
 
       scenario = creator.foobar(1, 2) {:baz}
       scenario.times_called_expectation.should == nil
-      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityError
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
       @subject.foobar(1, 2).should == :baz
     end
   end
@@ -83,7 +83,7 @@ module Extensions
 
       scenario = creator.foobar(1, 2)
       scenario.times_called_expectation.times.should == 1
-      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityError
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
       scenario.argument_expectation.expected_arguments.should == [1, 2]
 
       @subject.foobar(1, 2).should == :original_value
@@ -121,7 +121,7 @@ module Extensions
 
       scenario = creator.foobar(1, 2)
       scenario.times_called_expectation.matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
-      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityError
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
       scenario.argument_expectation.expected_arguments.should == [1, 2]
     end
   end

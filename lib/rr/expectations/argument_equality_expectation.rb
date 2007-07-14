@@ -1,6 +1,6 @@
 module RR
   module Expectations
-    class ArgumentEqualityError
+    class ArgumentEqualityExpectation
       attr_reader :expected_arguments
 
       def initialize(*expected_arguments)

@@ -2,9 +2,9 @@ require "examples/example_helper"
 
 module RR
 module Expectations
-  describe ArgumentEqualityError, "#exact_match? with is_a argument" do
+  describe ArgumentEqualityExpectation, "#exact_match? with is_a argument" do
     before do
-      @expectation = ArgumentEqualityError.new(is_a(String))
+      @expectation = ArgumentEqualityExpectation.new(is_a(String))
     end
     
     it "returns true when passed in an IsA module" do
@@ -24,9 +24,9 @@ module Expectations
     end
   end
 
-  describe ArgumentEqualityError, "#wildcard_match? with is_a String argument" do
+  describe ArgumentEqualityExpectation, "#wildcard_match? with is_a String argument" do
     before do
-      @expectation = ArgumentEqualityError.new(is_a(String))
+      @expectation = ArgumentEqualityExpectation.new(is_a(String))
     end
 
     it "returns true when passed a String" do
