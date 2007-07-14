@@ -307,6 +307,11 @@ describe Scenario, "#returns" do
     @scenario.call.should == :baz
   end
 
+  it "returns false when passed false" do
+    @scenario.returns(false)
+    @scenario.call.should == false
+  end
+
   it "raises an error when both argument and block is passed in" do
     proc do
       @scenario.returns(:baz) {:another}

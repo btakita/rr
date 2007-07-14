@@ -1,3 +1,5 @@
+- Fixed [#12290] Scenario#returns with false causes a return value of nil
+
 * 0.1.12
 - Fixed bug where Creators methods are not removed when methods are defined on Object
 - Fixed [#12289] Creators methods are not removed in Rails environment

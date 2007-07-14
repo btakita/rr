@@ -215,10 +215,10 @@ module RR
       if value && implementation
         raise ArgumentError, "returns cannot accept both an argument and a block"
       end
-      if value
-        implemented_by proc {value}
-      else
+      if value.nil?
         implemented_by implementation
+      else
+        implemented_by proc {value}
       end
     end
 
