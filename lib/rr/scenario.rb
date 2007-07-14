@@ -252,8 +252,8 @@ module RR
     # Scenario#attempt? returns true when the
     # TimesCalledExpectation is satisfied.
     def attempt?
-      return false unless @times_called_expectation
-      @times_called_expectation.verify
+      return true unless @times_called_expectation
+      @times_called_expectation.attempt?
     end
 
     # Scenario#verify verifies the the TimesCalledExpectation

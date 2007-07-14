@@ -109,19 +109,19 @@ describe Space, "#verify_ordered_scenario where the passed in scenario is at the
     @space.register_ordered_scenario(scenario)
 
     scenario.twice
-    scenario.should_not be_attempt
+    scenario.should be_attempt
 
     @space.verify_ordered_scenario(scenario)
     @space.ordered_scenarios.should include(scenario)
   end
   
-  it "removes the scenario when times called in verified" do
+  it "removes the scenario when times called expectation should no longer be attempted" do
     scenario = @space.create_scenario(@double)
     @space.register_ordered_scenario(scenario)
 
     scenario.with(1).once
     @object.foobar(1)
-    scenario.should be_attempt
+    scenario.should_not be_attempt
 
     @space.verify_ordered_scenario(scenario)
     @space.ordered_scenarios.should_not include(scenario)

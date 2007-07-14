@@ -67,13 +67,13 @@ module RR
       @scenarios.each do |scenario|
         if scenario.exact_match?(*args)
           matching_scenarios << scenario
-          return scenario.call(*args, &block) unless scenario.attempt?
+          return scenario.call(*args, &block) if scenario.attempt?
         end
       end
       @scenarios.each do |scenario|
         if scenario.wildcard_match?(*args)
           matching_scenarios << scenario
-          return scenario.call(*args, &block) unless scenario.attempt?
+          return scenario.call(*args, &block) if scenario.attempt?
         end
       end
       matching_scenarios.first.call(*args) unless matching_scenarios.empty?

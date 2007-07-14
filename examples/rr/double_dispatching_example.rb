@@ -23,7 +23,7 @@ describe Double, " method dispatching where method name has a ! in it" do
   it "executes the block" do
     scenario = @space.create_scenario(@double)
     scenario.with(1, 2) {:return_value}
-    @object.foobar!(1, 2).should == :return_value
+     @object.foobar!(1, 2).should == :return_value
   end
 end
 

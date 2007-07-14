@@ -125,11 +125,11 @@ describe Scenario, "#at_least" do
 
   it "sets up a Times Called Expectation with 1" do
     @scenario.at_least(2)
-    @scenario.should_not be_attempt
-    @scenario.call
-    @scenario.should_not be_attempt
+    @scenario.should be_attempt
     @scenario.call
     @scenario.should be_attempt
+    @scenario.call
+    @scenario.should_not be_attempt
   end
 
   it "sets return value when block passed in" do
@@ -483,26 +483,25 @@ end
 describe Scenario, "#attempt?" do
   it_should_behave_like "RR::Scenario"
 
-  it "returns false when times called does not match expectation" do
+  it "returns true when TimesCalledExpectation#attempt? is true" do
     @scenario.with(1, 2, 3).twice
-    @object.foobar(1, 2, 3)
-    @scenario.should_not be_attempt
-  end
-
-  it "returns true when times called matches expectation" do
-    @scenario.with(1, 2, 3).twice
-    @object.foobar(1, 2, 3)
-    @object.foobar(1, 2, 3)
+    @scenario.call(1, 2, 3)
+    @scenario.times_called_expectation.should be_attempt
     @scenario.should be_attempt
   end
 
-  it "returns false when there is no Times Called expectation" do
+  it "returns false when TimesCalledExpectation#attempt? is true" do
+    @scenario.with(1, 2, 3).twice
+    @scenario.call(1, 2, 3)
+    @scenario.call(1, 2, 3)
+    @scenario.times_called_expectation.should_not be_attempt
+    @scenario.should_not be_attempt
+  end
+
+  it "returns true when there is no Times Called expectation" do
     @scenario.with(1, 2, 3)
     @scenario.times_called_expectation.should be_nil
-
-    @scenario.should_not be_attempt
-    @object.foobar(1, 2, 3)
-    @scenario.should_not be_attempt
+    @scenario.should be_attempt
   end
 end
 

@@ -116,7 +116,6 @@ describe "RR stub:" do
 
   it "allows ordering" do
     stub(@obj).to_s {"value 1"}.once.ordered
-
     stub(@obj).to_s {"value 2"}.once.ordered
 
     @obj.to_s.should == "value 1"
