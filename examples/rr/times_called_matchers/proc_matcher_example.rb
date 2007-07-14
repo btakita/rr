@@ -67,7 +67,7 @@ module TimesCalledMatchers
 
     it "has an error message" do
       @matcher.error_message(1).should =~
-        /Called 1 time. Expected #<Proc.*> times./
+        /Called 1 time.\nExpected #<Proc.*> times./
     end
   end
 end

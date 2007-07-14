@@ -31,7 +31,7 @@ module Expectations
         @expectation.verify!
       end.should raise_error(
         RR::Errors::TimesCalledError,
-        "Called 1 time. Expected at least 3 times."
+        "Called 1 time.\nExpected at least 3 times."
       )
     end
   end

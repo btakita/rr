@@ -24,7 +24,7 @@ module TimesCalledMatchers
     end
 
     def error_message(times_called)
-      "Called #{times_called.inspect} #{pluralized_time(times_called)}. #{expected_message_part}"
+      "Called #{times_called.inspect} #{pluralized_time(times_called)}.\n#{expected_message_part}"
     end
 
     def ==(other)

@@ -29,6 +29,7 @@ require "rr/wildcard_matchers/regexp"
 require "rr/wildcard_matchers/range"
 
 require "rr/times_called_matchers/times_called_matcher"
+require "rr/times_called_matchers/any_times_matcher"
 require "rr/times_called_matchers/integer_matcher"
 require "rr/times_called_matchers/range_matcher"
 require "rr/times_called_matchers/proc_matcher"

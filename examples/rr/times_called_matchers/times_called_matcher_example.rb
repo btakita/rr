@@ -26,7 +26,7 @@ module TimesCalledMatchers
 
     it "has an error message" do
       @matcher.error_message(5).should == (
-        "Called 5 times. Expected 3 times."
+        "Called 5 times.\nExpected 3 times."
       )
     end
   end

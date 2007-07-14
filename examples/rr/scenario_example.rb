@@ -153,7 +153,7 @@ describe Scenario, "#at_most" do
       @scenario.call
     end.should raise_error(
       Errors::TimesCalledError,
-      "Called 3 times. Expected at most 2 times."
+      "Called 3 times.\nExpected at most 2 times."
     )
   end
 

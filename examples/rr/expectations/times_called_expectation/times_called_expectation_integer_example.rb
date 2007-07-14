@@ -36,7 +36,7 @@ module Expectations
       @expectation.attempt!
       proc {@expectation.verify!}.should raise_error(
         Errors::TimesCalledError,
-        "Called 1 time. Expected 2 times."
+        "Called 1 time.\nExpected 2 times."
       )
     end
 
@@ -45,7 +45,7 @@ module Expectations
       @expectation.attempt!
       proc do
         @expectation.attempt!
-      end.should raise_error(Errors::TimesCalledError, "Called 3 times. Expected 2 times.")
+      end.should raise_error(Errors::TimesCalledError, "Called 3 times.\nExpected 2 times.")
     end
 
     it "has a backtrace to where the TimesCalledExpectation was instantiated on failure" do
@@ -62,7 +62,7 @@ module Expectations
     it "has an error message that includes the number of times called and expected number of times" do
       proc do
         @expectation.verify!
-      end.should raise_error(Errors::TimesCalledError, "Called 0 times. Expected 2 times.")
+      end.should raise_error(Errors::TimesCalledError, "Called 0 times.\nExpected 2 times.")
     end
   end
 
