@@ -65,11 +65,13 @@ module RR
     def call_method(args, block)
       matching_scenarios = []
 
-      exact_match_scenario = find_exact_match_scenario(matching_scenarios, args)
-      return exact_match_scenario.call(*args, &block) if exact_match_scenario
+      if exact_match_scenario = find_exact_match_scenario(matching_scenarios, args)
+        return exact_match_scenario.call(*args, &block)
+      end
 
-      wildcard_match_scenario = find_wildcard_match_scenario(matching_scenarios, args)
-      return wildcard_match_scenario.call(*args, &block) if wildcard_match_scenario
+      if wildcard_match_scenario = find_wildcard_match_scenario(matching_scenarios, args)
+        return wildcard_match_scenario.call(*args, &block)
+      end
 
       unless matching_scenarios.empty?
         # This will raise a TimesCalledError
