@@ -64,23 +64,41 @@ module RR
 
     def call_method(args, block)
       matching_scenarios = []
-      @scenarios.each do |scenario|
-        if scenario.exact_match?(*args)
-          matching_scenarios << scenario
-          return scenario.call(*args, &block) if scenario.attempt?
-        end
+
+      exact_match_scenario = find_exact_match_scenario(matching_scenarios, args)
+      return exact_match_scenario.call(*args, &block) if exact_match_scenario
+
+      wildcard_match_scenario = find_wildcard_match_scenario(matching_scenarios, args)
+      return wildcard_match_scenario.call(*args, &block) if wildcard_match_scenario
+
+      unless matching_scenarios.empty?
+        # This will raise a TimesCalledError
+        matching_scenarios.first.call(*args)
       end
-      @scenarios.each do |scenario|
-        if scenario.wildcard_match?(*args)
-          matching_scenarios << scenario
-          return scenario.call(*args, &block) if scenario.attempt?
-        end
-      end
-      matching_scenarios.first.call(*args) unless matching_scenarios.empty?
       scenario_not_found_error(*args)
     end
 
     protected
+    def find_exact_match_scenario(matching_scenarios, args)
+      @scenarios.each do |scenario|
+        if scenario.exact_match?(*args)
+          matching_scenarios << scenario
+          return scenario if scenario.attempt?
+        end
+      end
+      return nil
+    end
+
+    def find_wildcard_match_scenario(matching_scenarios, args)
+      @scenarios.each do |scenario|
+        if scenario.wildcard_match?(*args)
+          matching_scenarios << scenario
+          return scenario if scenario.attempt?
+        end
+      end
+      return nil
+    end
+
     def scenario_not_found_error(*args)
       message = "No scenario for #{Scenario.formatted_name(@method_name, args)}\n"
       message << "in\n"
