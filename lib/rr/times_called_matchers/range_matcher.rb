@@ -1,6 +1,8 @@
 module RR
 module TimesCalledMatchers
   class RangeMatcher < TimesCalledMatcher
+    include Deterministic
+
     def possible_match?(times_called)
       return true if times_called < @times.begin
       return true if @times.include?(times_called)

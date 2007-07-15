@@ -2,6 +2,13 @@ require "examples/example_helper"
 
 module RR
 module TimesCalledMatchers
+  describe RangeMatcher, :shared => true do
+    before do
+      @times = 2..4
+      @matcher = RangeMatcher.new(@times)
+    end
+  end
+
   describe TimesCalledMatcher, ".create when passed a IntegerMatcher" do
     it "returns the passed in argument" do
       matcher = RangeMatcher.new(2..4)
@@ -16,10 +23,7 @@ module TimesCalledMatchers
   end
 
   describe RangeMatcher, "#possible_match?" do
-    before do
-      @times = 2..4
-      @matcher = RangeMatcher.new(@times)
-    end
+    it_should_behave_like "RR::TimesCalledMatchers::RangeMatcher"
 
     it "returns true when times called < start of range" do
       @matcher.should be_possible_match(1)
@@ -37,10 +41,7 @@ module TimesCalledMatchers
   end
 
   describe RangeMatcher, "#matches?" do
-    before do
-      @times = 2..4
-      @matcher = RangeMatcher.new(@times)
-    end
+    it_should_behave_like "RR::TimesCalledMatchers::RangeMatcher"
 
     it "returns false when times_called less than start of range" do
       @matcher.should_not be_matches(1)
@@ -58,10 +59,7 @@ module TimesCalledMatchers
   end
 
   describe RangeMatcher, "#attempt?" do
-    before do
-      @times = 2..4
-      @matcher = RangeMatcher.new(@times)
-    end
+    it_should_behave_like "RR::TimesCalledMatchers::RangeMatcher"
 
     it "returns true when less than start of range" do
       @matcher.should be_attempt(1)
@@ -78,11 +76,16 @@ module TimesCalledMatchers
     end
   end
 
-  describe RangeMatcher, "#error_message" do
-    before do
-      @times = 2..4
-      @matcher = RangeMatcher.new(@times)
+  describe RangeMatcher, "#deterministic?" do
+    it_should_behave_like "RR::TimesCalledMatchers::RangeMatcher"
+
+    it "returns true" do
+      @matcher.should be_deterministic
     end
+  end
+
+  describe RangeMatcher, "#error_message" do
+    it_should_behave_like "RR::TimesCalledMatchers::RangeMatcher"
 
     it "has an error message" do
       @matcher.error_message(1).should == (

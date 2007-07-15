@@ -1,16 +1,10 @@
 module RR
 module TimesCalledMatchers
   class AtLeastMatcher < TimesCalledMatcher
-    def possible_match?(times_called)
-      true
-    end
-
+    include NonDeterministic
+    
     def matches?(times_called)
       times_called >= @times
-    end
-
-    def attempt?(times_called)
-      true
     end
 
     protected

@@ -2,6 +2,13 @@ require "examples/example_helper"
 
 module RR
 module TimesCalledMatchers
+  describe ProcMatcher, :shared => true do
+    before do
+      @times = proc {|other| other == 3}
+      @matcher = ProcMatcher.new(@times)
+    end
+  end
+
   describe TimesCalledMatcher, ".create when passed a ProcMatcher" do
     it "returns the passed in argument" do
       matcher = ProcMatcher.new(proc {|other| other == 5})
@@ -17,10 +24,7 @@ module TimesCalledMatchers
   end
 
   describe ProcMatcher, "#possible_match?" do
-    before do
-      @times = proc {|other| other == 3}
-      @matcher = ProcMatcher.new(@times)
-    end
+    it_should_behave_like "RR::TimesCalledMatchers::ProcMatcher"
 
     it "always returns true" do
       @matcher.should be_possible_match(2)
@@ -30,10 +34,7 @@ module TimesCalledMatchers
   end
 
   describe ProcMatcher, "#matches?" do
-    before do
-      @times = proc {|other| other == 3}
-      @matcher = ProcMatcher.new(@times)
-    end
+    it_should_behave_like "RR::TimesCalledMatchers::ProcMatcher"
 
     it "returns false when proc returns false" do
       @times.call(2).should be_false
@@ -47,10 +48,7 @@ module TimesCalledMatchers
   end
 
   describe ProcMatcher, "#attempt?" do
-    before do
-      @times = proc {|other| other == 3}
-      @matcher = ProcMatcher.new(@times)
-    end
+    it_should_behave_like "RR::TimesCalledMatchers::ProcMatcher"
 
     it "always returns true" do
       @matcher.should be_attempt(2)
@@ -59,11 +57,16 @@ module TimesCalledMatchers
     end
   end
 
-  describe ProcMatcher, "#error_message" do
-    before do
-      @times = proc {|other| other == 3}
-      @matcher = ProcMatcher.new(@times)
+  describe ProcMatcher, "#deterministic?" do
+    it_should_behave_like "RR::TimesCalledMatchers::ProcMatcher"
+
+    it "returns false" do
+      @matcher.should_not be_deterministic
     end
+  end
+
+  describe ProcMatcher, "#error_message" do
+    it_should_behave_like "RR::TimesCalledMatchers::ProcMatcher"
 
     it "has an error message" do
       @matcher.error_message(1).should =~

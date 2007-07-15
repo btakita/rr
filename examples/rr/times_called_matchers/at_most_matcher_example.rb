@@ -2,6 +2,13 @@ require "examples/example_helper"
 
 module RR
 module TimesCalledMatchers
+  describe AtMostMatcher, :shared => true do
+    before do
+      @times = 3
+      @matcher = AtMostMatcher.new(@times)
+    end
+  end
+
   describe TimesCalledMatcher, ".create when passed a AtMostMatcher" do
     it "returns the passed in argument" do
       matcher = AtMostMatcher.new(5)
@@ -10,10 +17,7 @@ module TimesCalledMatchers
   end
 
   describe AtMostMatcher, "#possible_match?" do
-    before do
-      @times = 3
-      @matcher = AtMostMatcher.new(@times)
-    end
+    it_should_behave_like "RR::TimesCalledMatchers::AtMostMatcher"
 
     it "returns true when times called < times" do
       @matcher.should be_possible_match(2)
@@ -29,10 +33,7 @@ module TimesCalledMatchers
   end
 
   describe AtMostMatcher, "#matches?" do
-    before do
-      @times = 3
-      @matcher = AtMostMatcher.new(@times)
-    end
+    it_should_behave_like "RR::TimesCalledMatchers::AtMostMatcher"
 
     it "returns true when times_called less than times" do
       @matcher.should be_matches(2)
@@ -48,10 +49,7 @@ module TimesCalledMatchers
   end
 
   describe AtMostMatcher, "#attempt?" do
-    before do
-      @times = 3
-      @matcher = AtMostMatcher.new(@times)
-    end
+    it_should_behave_like "RR::TimesCalledMatchers::AtMostMatcher"
 
     it "returns true when less than expected times" do
       @matcher.should be_attempt(2)
@@ -66,11 +64,16 @@ module TimesCalledMatchers
     end
   end  
 
-  describe AtMostMatcher, "#error_message" do
-    before do
-      @times = 3
-      @matcher = AtMostMatcher.new(@times)
+  describe AnyTimesMatcher, "#deterministic?" do
+    it_should_behave_like "RR::TimesCalledMatchers::AtMostMatcher"
+
+    it "returns true" do
+      @matcher.should be_deterministic
     end
+  end
+  
+  describe AtMostMatcher, "#error_message" do
+    it_should_behave_like "RR::TimesCalledMatchers::AtMostMatcher"
 
     it "has an error message" do
       @matcher.error_message(5).should == (

@@ -29,6 +29,8 @@ require "rr/wildcard_matchers/duck_type"
 require "rr/wildcard_matchers/regexp"
 require "rr/wildcard_matchers/range"
 
+require "rr/times_called_matchers/deterministic"
+require "rr/times_called_matchers/non_deterministic"
 require "rr/times_called_matchers/times_called_matcher"
 require "rr/times_called_matchers/any_times_matcher"
 require "rr/times_called_matchers/integer_matcher"
