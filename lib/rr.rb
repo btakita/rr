@@ -1,5 +1,3 @@
-dir = File.dirname(__FILE__)
-
 require "rr/double"
 
 require "rr/creator"
