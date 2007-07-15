@@ -97,8 +97,7 @@ describe Double, " method dispatching where there are scenarios" do
 
     proc {@object.foobar(:arg1, :arg2)}.should raise_error(
       Errors::ScenarioNotFoundError,
-      "No scenario for foobar(:arg1, :arg2)\n" <<
-      "in\n" <<
+      "No scenario for foobar(:arg1, :arg2) in\n" <<
       "- foobar(1, 2)\n" <<
       "- foobar(3)"
     )

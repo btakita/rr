@@ -376,8 +376,7 @@ describe Scenario, "#call implemented by a proc" do
       @object.foobar(2)
     end.should raise_error(
       Errors::ScenarioOrderError,
-      "foobar(2)\n" <<
-      "called out of order in list\n" <<
+      "foobar(2) called out of order in list\n" <<
       "- foobar(1)\n" <<
       "- foobar(2)"
     )

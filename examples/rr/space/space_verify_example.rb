@@ -141,8 +141,7 @@ describe Space, "#verify_ordered_scenario where the passed in scenario is not at
       @space.verify_ordered_scenario(second_scenario)
     end.should raise_error(
       Errors::ScenarioOrderError,
-      "foobar()\n" <<
-      "called out of order in list\n" <<
+      "foobar() called out of order in list\n" <<
       "- foobar()\n" <<
       "- foobar()"
     )

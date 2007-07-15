@@ -74,7 +74,7 @@ module RR
     def verify_ordered_scenario(scenario)
       unless @ordered_scenarios.first == scenario
         message = Scenario.formatted_name(scenario.method_name, scenario.expected_arguments)
-        message << "\ncalled out of order in list\n"
+        message << " called out of order in list\n"
         message << Scenario.list_message_part(@ordered_scenarios)
         raise Errors::ScenarioOrderError, message
       end
