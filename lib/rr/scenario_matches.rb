@@ -19,24 +19,33 @@ class ScenarioMatches
       if scenario.exact_match?(*args)
         matching_scenarios << scenario
         if scenario.attempt?
-          if scenario.terminal?
-            exact_terminal_scenarios_to_attempt << scenario
-          else
-            exact_non_terminal_scenarios_to_attempt << scenario
-          end
+          exact_scenario_is_terminal_or_non_terminal scenario
         end
       elsif scenario.wildcard_match?(*args)
         matching_scenarios << scenario
         if scenario.attempt?
-          if scenario.terminal?
-            wildcard_terminal_scenarios_to_attempt << scenario
-          else
-            wildcard_non_terminal_scenarios_to_attempt << scenario
-          end
+          wildcard_scenario_is_terminal_or_non_terminal scenario
         end
       end
     end
     self
+  end
+
+  protected
+  def exact_scenario_is_terminal_or_non_terminal(scenario)
+    if scenario.terminal?
+      exact_terminal_scenarios_to_attempt << scenario
+    else
+      exact_non_terminal_scenarios_to_attempt << scenario
+    end
+  end
+
+  def wildcard_scenario_is_terminal_or_non_terminal(scenario)
+    if scenario.terminal?
+      wildcard_terminal_scenarios_to_attempt << scenario
+    else
+      wildcard_non_terminal_scenarios_to_attempt << scenario
+    end
   end
 end
 end
