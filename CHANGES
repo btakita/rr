@@ -3,7 +3,7 @@
 - Doubles that can be called many times can be replaced
 - Terminal Scenarios are called before NonTerminal Scenarios
 - Error message tweaking
-- Raise error when making a Scenarios with NonDeterministic TimesMatcher Ordered
+- Raise error when making a Scenarios with NonTerminal TimesMatcher Ordered
 
 * 0.1.13
 - Fixed [#12290] Scenario#returns with false causes a return value of nil
