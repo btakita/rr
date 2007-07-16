@@ -1,7 +1,7 @@
 module RR
 module TimesCalledMatchers
   class ProcMatcher < TimesCalledMatcher
-    include NonDeterministic
+    include NonTerminal
     
     def matches?(times_called)
       @times.call(times_called)

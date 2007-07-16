@@ -57,11 +57,11 @@ module TimesCalledMatchers
     end
   end
 
-  describe ProcMatcher, "#deterministic?" do
+  describe ProcMatcher, "#terminal?" do
     it_should_behave_like "RR::TimesCalledMatchers::ProcMatcher"
 
     it "returns false" do
-      @matcher.should_not be_deterministic
+      @matcher.should_not be_terminal
     end
   end
 

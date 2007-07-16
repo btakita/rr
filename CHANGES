@@ -1,5 +1,5 @@
 - Error message tweaking
-- Introduced concept of Deterministic and NonDeterministic TimesCalledMatchers
+- Introduced concept of Terminal and NonTerminal TimesCalledMatchers
 
 * 0.1.13
 - Fixed [#12290] Scenario#returns with false causes a return value of nil

@@ -70,11 +70,11 @@ module TimesCalledMatchers
     end
   end
 
-  describe AnyTimesMatcher, "#deterministic?" do
+  describe AnyTimesMatcher, "#terminal?" do
     it_should_behave_like "RR::TimesCalledMatchers::IntegerMatcher"
 
     it "returns true" do
-      @matcher.should be_deterministic
+      @matcher.should be_terminal
     end
   end
 

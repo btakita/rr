@@ -1,7 +1,7 @@
 module RR
 module TimesCalledMatchers
   class AnyTimesMatcher < TimesCalledMatcher
-    include NonDeterministic
+    include NonTerminal
     
     def initialize
     end

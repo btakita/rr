@@ -1,7 +1,7 @@
 module RR
 module TimesCalledMatchers
   class AtLeastMatcher < TimesCalledMatcher
-    include NonDeterministic
+    include NonTerminal
     
     def matches?(times_called)
       times_called >= @times

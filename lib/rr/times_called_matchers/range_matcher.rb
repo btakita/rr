@@ -1,7 +1,7 @@
 module RR
 module TimesCalledMatchers
   class RangeMatcher < TimesCalledMatcher
-    include Deterministic
+    include Terminal
 
     def possible_match?(times_called)
       return true if times_called < @times.begin

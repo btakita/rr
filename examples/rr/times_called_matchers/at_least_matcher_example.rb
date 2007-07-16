@@ -49,11 +49,11 @@ module TimesCalledMatchers
     end
   end  
 
-  describe AnyTimesMatcher, "#deterministic?" do
+  describe AnyTimesMatcher, "#terminal?" do
     it_should_behave_like "RR::TimesCalledMatchers::AtLeastMatcher"
 
     it "returns false" do
-      @matcher.should_not be_deterministic
+      @matcher.should_not be_terminal
     end
   end
   

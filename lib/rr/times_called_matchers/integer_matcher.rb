@@ -1,7 +1,7 @@
 module RR
 module TimesCalledMatchers
   class IntegerMatcher < TimesCalledMatcher
-    include Deterministic
+    include Terminal
     
     def possible_match?(times_called)
       times_called <= @times

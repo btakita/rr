@@ -76,11 +76,11 @@ module TimesCalledMatchers
     end
   end
 
-  describe RangeMatcher, "#deterministic?" do
+  describe RangeMatcher, "#terminal?" do
     it_should_behave_like "RR::TimesCalledMatchers::RangeMatcher"
 
     it "returns true" do
-      @matcher.should be_deterministic
+      @matcher.should be_terminal
     end
   end
 
