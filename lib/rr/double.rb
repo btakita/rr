@@ -71,7 +71,7 @@ module RR
 
     protected
     def find_scenario_to_attempt(args)
-      matches = ScenarioMatches.new(@scenarios).match(args)
+      matches = ScenarioMatches.new(@scenarios).find_all_matches!(args)
 
       unless matches.exact_terminal_scenarios_to_attempt.empty?
         return matches.exact_terminal_scenarios_to_attempt.first

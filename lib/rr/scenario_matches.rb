@@ -14,7 +14,7 @@ class ScenarioMatches
     @wildcard_non_terminal_scenarios_to_attempt = []
   end
 
-  def match(args)
+  def find_all_matches!(args)
     @scenarios.each do |scenario|
       if scenario.exact_match?(*args)
         matching_scenarios << scenario
