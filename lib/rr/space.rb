@@ -72,6 +72,10 @@ module RR
     # Verifies that the passed in ordered Scenario is being called
     # in the correct position.
     def verify_ordered_scenario(scenario)
+      unless scenario.terminal?
+        raise Errors::ScenarioOrderError,
+              "Ordered Scenarios cannot have a NonTerminal TimesCalledExpectation"
+      end
       unless @ordered_scenarios.first == scenario
         message = Scenario.formatted_name(scenario.method_name, scenario.expected_arguments)
         message << " called out of order in list\n"

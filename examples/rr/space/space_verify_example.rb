@@ -99,6 +99,21 @@ describe Space, "#verify_ordered_scenario", :shared => true do
     @method_name = :foobar
     @double = @space.create_double(@object, @method_name)
   end
+
+  it "raises an error when Scenario is NonTerminal" do
+    scenario = @space.create_scenario(@double)
+    @space.register_ordered_scenario(scenario)
+
+    scenario.any_number_of_times
+    scenario.should_not be_terminal
+
+    proc do
+      @space.verify_ordered_scenario(scenario)
+    end.should raise_error(
+      Errors::ScenarioOrderError,
+      "Ordered Scenarios cannot have a NonTerminal TimesCalledExpectation"
+    )
+  end
 end
 
 describe Space, "#verify_ordered_scenario where the passed in scenario is at the front of the queue" do
@@ -132,10 +147,8 @@ describe Space, "#verify_ordered_scenario where the passed in scenario is not at
   it_should_behave_like "RR::Space#verify_ordered_scenario"
   
   it "raises error" do
-    first_scenario = @space.create_scenario(@double)
-    @space.register_ordered_scenario(first_scenario)
-    second_scenario = @space.create_scenario(@double)
-    @space.register_ordered_scenario(second_scenario)
+    first_scenario = create_scenario
+    second_scenario = create_scenario
 
     proc do
       @space.verify_ordered_scenario(second_scenario)
@@ -145,6 +158,12 @@ describe Space, "#verify_ordered_scenario where the passed in scenario is not at
       "- foobar()\n" <<
       "- foobar()"
     )
+  end
+
+  def create_scenario
+    scenario = @space.create_scenario(@double).once
+    @space.register_ordered_scenario(scenario)
+    scenario
   end
 end
 end

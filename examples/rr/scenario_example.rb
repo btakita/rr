@@ -214,7 +214,7 @@ describe Scenario, "#ordered" do
   end
 
   it "sets return value when block passed in" do
-    @scenario.with_any_args.ordered {:return_value}
+    @scenario.with_any_args.once.ordered {:return_value}
     @object.foobar.should == :return_value
   end
 end
@@ -369,8 +369,8 @@ describe Scenario, "#call implemented by a proc" do
     scenario1 = @scenario
     scenario2 = @space.create_scenario(@double)
 
-    scenario1.with(1).returns {:return_1}.ordered
-    scenario2.with(2).returns {:return_2}.ordered
+    scenario1.with(1).returns {:return_1}.ordered.once
+    scenario2.with(2).returns {:return_2}.ordered.once
 
     proc do
       @object.foobar(2)
