@@ -552,6 +552,27 @@ describe Scenario, "#verify" do
   end
 end
 
+describe Scenario, "#terminal?" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns true when times_called_expectation's terminal? is true" do
+    @scenario.once
+    @scenario.times_called_expectation.should be_terminal
+    @scenario.should be_terminal
+  end
+
+  it "returns false when times_called_expectation's terminal? is false" do
+    @scenario.any_number_of_times
+    @scenario.times_called_expectation.should_not be_terminal
+    @scenario.should_not be_terminal
+  end
+
+  it "returns false when there is not times_called_expectation" do
+    @scenario.times_called_expectation.should be_nil
+    @scenario.should_not be_terminal
+  end
+end
+
 describe Scenario, "#method_name" do
   it_should_behave_like "RR::Scenario"
 

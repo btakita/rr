@@ -76,6 +76,14 @@ module Expectations
       @expectation.attempt!
       raises_expectation_error {@expectation.attempt!}
     end
-  end  
+  end
+
+  describe TimesCalledExpectation, "#terminal? with RangeMatcher" do
+    it_should_behave_like "RR::Expectations::TimesCalledExpectation with RangeMatcher"
+
+    it "returns true" do
+      @expectation.should be_terminal
+    end
+  end
 end
 end

@@ -104,6 +104,30 @@ describe Double, " method dispatching where there are scenarios" do
   end
 end
 
+describe Double, " method dispatching where there are Scenarios with NonTerminal TimesCalledMatchers" do
+  it_should_behave_like "RR::Double method dispatching"
+
+  it "dispatches to Scenario with exact match" do
+    scenario = create_scenario(1, 2) {:return_value}
+    @object.foobar(1, 2).should == :return_value
+  end
+
+  it "matches to the last Scenario that was registered with an exact match"
+
+  it "dispatches to Scenario with wildcard match"
+
+  it "matches to the last Scenario that was registered with a wildcard match"
+
+  it "matches to Scenario with exact match Scenario even when a Scenario with wildcard match was registered later"
+
+  def create_scenario(*arguments, &return_value)
+    scenario = @space.create_scenario(@double)
+    scenario.with(1, 2).any_number_of_times.returns(&return_value)
+    scenario.should_not be_terminal
+    scenario
+  end
+end
+
 describe Double, " method dispatching where there are scenarios with duplicate Exact Match ArgumentExpectations" do
   it_should_behave_like "RR::Double method dispatching"
 

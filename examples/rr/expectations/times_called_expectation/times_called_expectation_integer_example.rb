@@ -97,6 +97,14 @@ module Expectations
         @expectation.attempt!
       end.should raise_error(Errors::TimesCalledError)
     end
-  end  
+  end
+
+  describe TimesCalledExpectation, "#terminal? with IntegerMatcher" do
+    it_should_behave_like "RR::Expectations::TimesCalledExpectation with IntegerMatcher"
+
+    it "returns true" do
+      @expectation.should be_terminal
+    end
+  end
 end
 end

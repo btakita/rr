@@ -38,6 +38,10 @@ module RR
         end
       end
 
+      def terminal?
+        @matcher.terminal?
+      end
+
       protected
       def verify_input_error
         raise Errors::TimesCalledError, error_message

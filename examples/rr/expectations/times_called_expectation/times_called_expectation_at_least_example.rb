@@ -61,5 +61,13 @@ module Expectations
       @expectation.attempt!
     end
   end
+
+  describe TimesCalledExpectation, "#terminal? with AtLeastMatcher" do
+    it_should_behave_like "RR::Expectations::TimesCalledExpectation with AtLeastMatcher"
+
+    it "returns false" do
+      @expectation.should_not be_terminal
+    end
+  end
 end
 end

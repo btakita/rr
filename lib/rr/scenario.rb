@@ -297,6 +297,11 @@ module RR
       true
     end
 
+    def terminal?
+      return false unless @times_called_expectation
+      @times_called_expectation.terminal?
+    end
+
     # The method name that this Scenario is attatched to
     def method_name
       double.method_name

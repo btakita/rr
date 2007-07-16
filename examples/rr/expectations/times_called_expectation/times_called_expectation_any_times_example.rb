@@ -38,5 +38,13 @@ module Expectations
       10.times {@expectation.attempt!}
     end
   end
+
+  describe TimesCalledExpectation, "#terminal? with AnyTimesMatcher" do
+    it_should_behave_like "RR::Expectations::TimesCalledExpectation with AnyTimesMatcher"
+
+    it "returns false" do
+      @expectation.should_not be_terminal
+    end
+  end
 end
 end
