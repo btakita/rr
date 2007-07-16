@@ -1,5 +1,7 @@
-- Error message tweaking
 - Introduced concept of Terminal and NonTerminal TimesCalledMatchers
+- Doubles that can be called many times can be replaced
+- Terminal Scenarios are called before NonTerminal Scenarios
+- Error message tweaking
 
 * 0.1.13
 - Fixed [#12290] Scenario#returns with false causes a return value of nil

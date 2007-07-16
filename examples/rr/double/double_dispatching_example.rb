@@ -112,60 +112,68 @@ describe Double, " method dispatching where there are Scenarios with NonTerminal
     @object.foobar(1, 2).should == :return_value
   end
 
-  it "matches to the last Scenario that was registered with an exact match"
+  it "matches to the last Scenario that was registered with an exact match" do
+    scenario_1 = create_scenario(1, 2) {:value_1}
+    scenario_2 = create_scenario(1, 2) {:value_2}
 
-  it "dispatches to Scenario with wildcard match"
+    @object.foobar(1, 2).should == :value_2
+  end
 
-  it "matches to the last Scenario that was registered with a wildcard match"
+  it "dispatches to Scenario with wildcard match" do
+    scenario = create_scenario(anything) {:return_value}
+    @object.foobar(:dont_care).should == :return_value
+  end
 
-  it "matches to Scenario with exact match Scenario even when a Scenario with wildcard match was registered later"
+  it "matches to the last Scenario that was registered with a wildcard match" do
+    scenario_1 = create_scenario(anything) {:value_1}
+    scenario_2 = create_scenario(anything) {:value_2}
+
+    @object.foobar(:dont_care).should == :value_2
+  end
+
+  it "matches to Scenario with exact match Scenario even when a Scenario with wildcard match was registered later" do
+    exact_scenario_registered_first = create_scenario(1, 2) {:exact_first}
+    wildcard_scenario_registered_last = create_scenario(anything, anything) {:wildcard_last}
+
+    @object.foobar(1, 2).should == :exact_first
+  end
 
   def create_scenario(*arguments, &return_value)
     scenario = @space.create_scenario(@double)
-    scenario.with(1, 2).any_number_of_times.returns(&return_value)
+    scenario.with(*arguments).any_number_of_times.returns(&return_value)
     scenario.should_not be_terminal
     scenario
   end
 end
 
-describe Double, " method dispatching where there are scenarios with duplicate Exact Match ArgumentExpectations" do
+describe Double, " method dispatching where there are Terminal Scenarios with duplicate Exact Match ArgumentExpectations" do
   it_should_behave_like "RR::Double method dispatching"
 
   it "dispatches to Scenario that have an exact match" do
-    scenario1_with_exact_match = @space.create_scenario(@double)
-    scenario1_with_exact_match.with(:exact_match).returns {:return_1}
+    scenario1_with_exact_match = create_scenario(:exact_match) {:return_1}
 
     @object.foobar(:exact_match).should == :return_1
   end
 
   it "dispatches to the first Scenario that have an exact match" do
-    scenario1_with_exact_match = @space.create_scenario(@double)
-    scenario1_with_exact_match.with(:exact_match).returns {:return_1}
-
-    scenario2_with_exact_match = @space.create_scenario(@double)
-    scenario2_with_exact_match.with(:exact_match).returns {:return_2}
+    scenario1_with_exact_match = create_scenario(:exact_match) {:return_1}
+    scenario2_with_exact_match = create_scenario(:exact_match) {:return_2}
 
     @object.foobar(:exact_match).should == :return_1
   end
 
   it "dispatches the second Scenario with an exact match
       when the first scenario's Times Called expectation is satisfied" do
-    scenario1_with_exact_match = @space.create_scenario(@double)
-    scenario1_with_exact_match.with(:exact_match).returns {:return_1}.once
-
-    scenario2_with_exact_match = @space.create_scenario(@double)
-    scenario2_with_exact_match.with(:exact_match).returns {:return_2}.once
+    scenario1_with_exact_match = create_scenario(:exact_match) {:return_1}
+    scenario2_with_exact_match = create_scenario(:exact_match) {:return_2}
 
     @object.foobar(:exact_match)
     @object.foobar(:exact_match).should == :return_2
   end
 
   it "raises TimesCalledError when all of the scenarios Times Called expectation is satisfied" do
-    scenario1_with_exact_match = @space.create_scenario(@double)
-    scenario1_with_exact_match.with(:exact_match).returns {:return_1}.once
-
-    scenario2_with_exact_match = @space.create_scenario(@double)
-    scenario2_with_exact_match.with(:exact_match).returns {:return_2}.once
+    scenario1_with_exact_match = create_scenario(:exact_match) {:return_1}
+    scenario2_with_exact_match = create_scenario(:exact_match) {:return_2}
 
     @object.foobar(:exact_match)
     @object.foobar(:exact_match)
@@ -173,52 +181,56 @@ describe Double, " method dispatching where there are scenarios with duplicate E
       @object.foobar(:exact_match)
     end.should raise_error(Errors::TimesCalledError)
   end
+
+  def create_scenario(*arguments, &return_value)
+    scenario = @space.create_scenario(@double)
+    scenario.with(*arguments).once.returns(&return_value)
+    scenario.should be_terminal
+    scenario
+  end
 end
 
 describe Double, " method dispatching where there are scenarios with duplicate Wildcard Match ArgumentExpectations" do
   it_should_behave_like "RR::Double method dispatching"
 
   it "dispatches to Scenario that have a wildcard match" do
-    scenario_1 = @space.create_scenario(@double)
-    scenario_1.with_any_args.returns {:return_1}
+    scenario_1 = create_scenario {:return_1}
 
     @object.foobar(:anything).should == :return_1
   end
 
   it "dispatches to the first Scenario that has a wildcard match" do
-    scenario_1 = @space.create_scenario(@double)
-    scenario_1.with_any_args.returns {:return_1}
-
-    scenario_2 = @space.create_scenario(@double)
-    scenario_2.with_any_args.returns {:return_2}
+    scenario_1 = create_scenario {:return_1}
+    scenario_2 = create_scenario {:return_2}
 
     @object.foobar(:anything).should == :return_1
   end
 
   it "dispatches the second Scenario with a wildcard match
       when the first scenario's Times Called expectation is satisfied" do
-    scenario_1 = @space.create_scenario(@double)
-    scenario_1.with_any_args.returns {:return_1}.once
-
-    scenario_2 = @space.create_scenario(@double)
-    scenario_2.with_any_args.returns {:return_2}.once
+    scenario_1 = create_scenario {:return_1}
+    scenario_2 = create_scenario {:return_2}
 
     @object.foobar(:anything)
     @object.foobar(:anything).should == :return_2
   end
 
   it "raises TimesCalledError when all of the scenarios Times Called expectation is satisfied" do
-    scenario_1 = @space.create_scenario(@double)
-    scenario_1.with_any_args.returns {:return_1}.once
-
-    scenario_2 = @space.create_scenario(@double)
-    scenario_2.with_any_args.returns {:return_2}.once
+    scenario_1 = create_scenario {:return_1}
+    scenario_2 = create_scenario {:return_2}
 
     @object.foobar(:anything)
     @object.foobar(:anything)
     proc do
       @object.foobar(:anything)
     end.should raise_error(Errors::TimesCalledError)
+  end
+
+  def create_scenario(&return_value)
+    scenario = @space.create_scenario(@double)
+    scenario.with_any_args.once.returns(&return_value)
+    scenario.should be_terminal
+    scenario
   end
 end
 end

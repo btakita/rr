@@ -63,41 +63,37 @@ module RR
     end
 
     def call_method(args, block)
-      matching_scenarios = []
-
-      if exact_match_scenario = find_exact_match_scenario(matching_scenarios, args)
-        return exact_match_scenario.call(*args, &block)
-      end
-
-      if wildcard_match_scenario = find_wildcard_match_scenario(matching_scenarios, args)
-        return wildcard_match_scenario.call(*args, &block)
-      end
-
-      unless matching_scenarios.empty?
-        # This will raise a TimesCalledError
-        matching_scenarios.first.call(*args)
+      if scenario = find_scenario_to_attempt(args)
+        return scenario.call(*args, &block)
       end
       scenario_not_found_error(*args)
     end
 
     protected
-    def find_exact_match_scenario(matching_scenarios, args)
-      @scenarios.each do |scenario|
-        if scenario.exact_match?(*args)
-          matching_scenarios << scenario
-          return scenario if scenario.attempt?
-        end
-      end
-      return nil
-    end
+    def find_scenario_to_attempt(args)
+      matches = ScenarioMatches.new(@scenarios).match(args)
 
-    def find_wildcard_match_scenario(matching_scenarios, args)
-      @scenarios.each do |scenario|
-        if scenario.wildcard_match?(*args)
-          matching_scenarios << scenario
-          return scenario if scenario.attempt?
-        end
+      unless matches.exact_terminal_scenarios_to_attempt.empty?
+        return matches.exact_terminal_scenarios_to_attempt.first
       end
+
+      unless matches.exact_non_terminal_scenarios_to_attempt.empty?
+        return matches.exact_non_terminal_scenarios_to_attempt.last
+      end
+
+      unless matches.wildcard_terminal_scenarios_to_attempt.empty?
+        return matches.wildcard_terminal_scenarios_to_attempt.first
+      end
+
+      unless matches.wildcard_non_terminal_scenarios_to_attempt.empty?
+        return matches.wildcard_non_terminal_scenarios_to_attempt.last
+      end
+
+      unless matches.matching_scenarios.empty?
+        # This will raise a TimesCalledError
+        return matches.matching_scenarios.first
+      end
+
       return nil
     end
 

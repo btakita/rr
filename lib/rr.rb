@@ -1,3 +1,4 @@
+require "rr/space"
 require "rr/double"
 
 require "rr/creator"
@@ -7,7 +8,7 @@ require "rr/probe_creator"
 require "rr/do_not_allow_creator"
 
 require "rr/scenario"
-require "rr/space"
+require "rr/scenario_matches"
 
 require "rr/errors/rr_error"
 require "rr/errors/scenario_not_found_error"
