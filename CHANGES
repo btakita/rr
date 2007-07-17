@@ -1,3 +1,4 @@
+* 0.1.15
 - Fixed [#12333] Rebinding original_methods causes blocks not to work
 
 * 0.1.14
