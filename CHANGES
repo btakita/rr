@@ -1,3 +1,5 @@
+- Fixed [#12333] Rebinding original_methods causes blocks not to work
+
 * 0.1.14
 - Introduced concept of Terminal and NonTerminal TimesCalledMatchers
 - Doubles that can be called many times can be replaced
