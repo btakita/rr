@@ -55,14 +55,6 @@ describe Double, "#reset when method exists" do
     @object.methods.should include(@method_name.to_s)
     @object.foobar.should == :original_foobar
   end
-
-  it "cleans up by removing the __rr__original_method" do
-    @double.bind
-    @object.methods.should include("__rr__foobar")
-
-    @double.reset
-    @object.methods.should_not include("__rr__foobar")
-  end
 end
 
 describe Double, "#reset when method with block exists" do
