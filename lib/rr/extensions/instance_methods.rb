@@ -30,7 +30,25 @@ module Extensions
     #     "My new return value"
     #   end
     def mock_probe(subject, &definition)
-      RR::Space.instance.create_probe_creator(subject, &definition)
+      RR::Space.instance.create_mock_probe_creator(subject, &definition)
+    end
+
+    # Sets up a StubProbeCreator that generates a Double Scenario that
+    # acts like mock verifications while calling the actual method.
+    #
+    #   mock_probe(User).new {|user| my_user}
+    #
+    # Passing a block allows you to intercept the return value.
+    # The return value can be modified, validated, and/or overridden by
+    # passing in a block. The return value of the block will replace
+    # the actual return value.
+    #
+    #   mock_probe(controller.template).render(:partial => "my/socks") do |html|
+    #     html.should include("My socks are wet")
+    #     "My new return value"
+    #   end
+    def stub_probe(subject, &definition)
+      RR::Space.instance.create_stub_probe_creator(subject, &definition)
     end
 
     # Same as mock_probe

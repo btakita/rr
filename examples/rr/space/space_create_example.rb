@@ -53,7 +53,7 @@ describe Space, "#create_stub_creator" do
   end
 end
 
-describe Space, "#create_probe_creator" do
+describe Space, "#create_mock_probe_creator" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -66,18 +66,46 @@ describe Space, "#create_probe_creator" do
   end
 
   it "creates a MockProbeCreator" do
-    creator = @space.create_probe_creator(@object)
+    creator = @space.create_mock_probe_creator(@object)
     creator.foobar(1)
     @object.foobar(1).should == :original_foobar
     proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "uses block definition when passed a block" do
-    creator = @space.create_probe_creator(@object) do |c|
+    creator = @space.create_mock_probe_creator(@object) do |c|
       c.foobar(1)
     end
     @object.foobar(1).should == :original_foobar
     proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
+  end
+end
+
+describe Space, "#create_stub_probe_creator" do
+  it_should_behave_like "RR::Space"
+
+  before do
+    @space = Space.new
+    @object = Object.new
+    @method_name = :foobar
+    def @object.foobar(*args)
+      :original_foobar
+    end
+  end
+
+  it "creates a StubProbeCreator" do
+    creator = @space.create_stub_probe_creator(@object)
+    creator.foobar
+    @object.foobar(1).should == :original_foobar
+    @object.foobar(1).should == :original_foobar
+  end
+
+  it "uses block definition when passed a block" do
+    creator = @space.create_stub_probe_creator(@object) do |c|
+      c.foobar(1)
+    end
+    @object.foobar(1).should == :original_foobar
+    @object.foobar(1).should == :original_foobar
   end
 end
 
