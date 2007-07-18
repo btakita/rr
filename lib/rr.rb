@@ -5,6 +5,7 @@ require "rr/creator"
 require "rr/mock_creator"
 require "rr/stub_creator"
 require "rr/probe_mock_creator"
+require "rr/probe_stub_creator"
 require "rr/do_not_allow_creator"
 
 require "rr/scenario"
