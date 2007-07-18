@@ -65,7 +65,7 @@ describe Space, "#create_probe_creator" do
     end
   end
 
-  it "creates a ProbeMockCreator" do
+  it "creates a MockProbeCreator" do
     creator = @space.create_probe_creator(@object)
     creator.foobar(1)
     @object.foobar(1).should == :original_foobar

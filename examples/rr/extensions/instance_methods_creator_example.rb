@@ -62,7 +62,7 @@ module Extensions
     end
   end
 
-  describe InstanceMethods, "#probe and #probe_mock" do
+  describe InstanceMethods, "#probe and #mock_probe" do
     it_should_behave_like "RR::Extensions::InstanceMethods"
 
     before do
@@ -74,11 +74,11 @@ module Extensions
     end
 
     it "sets up the RR probe call chain" do
-      should_create_probe_call_chain probe_mock(@subject)
+      should_create_probe_call_chain mock_probe(@subject)
     end
 
     it "sets up the RR probe call chain with rr_probe" do
-      should_create_probe_call_chain rr_probe_mock(@subject)
+      should_create_probe_call_chain rr_mock_probe(@subject)
     end
 
     def should_create_probe_call_chain(creator)

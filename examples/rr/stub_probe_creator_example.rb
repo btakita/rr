@@ -1,7 +1,7 @@
 require "examples/example_helper"
 
 module RR
-describe ProbeStubCreator, :shared => true do
+describe StubProbeCreator, :shared => true do
   before(:each) do
     @space = Space.new
     @subject = Object.new
@@ -15,15 +15,15 @@ describe ProbeStubCreator, :shared => true do
   end
 end
 
-describe ProbeStubCreator, ".new without block" do
-  it_should_behave_like "RR::ProbeStubCreator"
+describe StubProbeCreator, ".new without block" do
+  it_should_behave_like "RR::StubProbeCreator"
 
   before do
-    @creator = ProbeStubCreator.new(@space, @subject)
+    @creator = StubProbeCreator.new(@space, @subject)
   end
 
   it "clears out all methods from creator" do
-    creator_subclass = Class.new(ProbeStubCreator) do
+    creator_subclass = Class.new(StubProbeCreator) do
       def i_should_be_a_scenario
       end
     end
@@ -34,14 +34,14 @@ describe ProbeStubCreator, ".new without block" do
   end
 end
 
-describe ProbeStubCreator, ".new with block" do
-  it_should_behave_like "RR::ProbeStubCreator"
+describe StubProbeCreator, ".new with block" do
+  it_should_behave_like "RR::StubProbeCreator"
 
   before do
     def @subject.foobar(*args)
       :original_foobar
     end
-    @creator = ProbeStubCreator.new(@space, @subject) do |c|
+    @creator = StubProbeCreator.new(@space, @subject) do |c|
       c.foobar
     end
   end
@@ -56,7 +56,7 @@ describe ProbeStubCreator, ".new with block" do
   end
 
   it "clears out all methods from creator" do
-    creator_subclass = Class.new(ProbeStubCreator) do
+    creator_subclass = Class.new(StubProbeCreator) do
       def i_should_be_a_scenario
       end
     end
@@ -68,14 +68,14 @@ describe ProbeStubCreator, ".new with block" do
   end
 end
 
-describe ProbeStubCreator, ".new where method takes a block" do
-  it_should_behave_like "RR::ProbeStubCreator"
+describe StubProbeCreator, ".new where method takes a block" do
+  it_should_behave_like "RR::StubProbeCreator"
 
   before do
     def @subject.foobar(*args, &block)
       yield(*args)
     end
-    @creator = ProbeStubCreator.new(@space, @subject)
+    @creator = StubProbeCreator.new(@space, @subject)
   end
 
   it "calls the block" do
@@ -84,12 +84,12 @@ describe ProbeStubCreator, ".new where method takes a block" do
   end
 end
 
-describe ProbeStubCreator, "#method_missing" do
-  it_should_behave_like "RR::ProbeStubCreator"
+describe StubProbeCreator, "#method_missing" do
+  it_should_behave_like "RR::StubProbeCreator"
   
   before do
     @subject = Object.new
-    @creator = ProbeStubCreator.new(@space, @subject)
+    @creator = StubProbeCreator.new(@space, @subject)
   end
   
   it "sets up a scenario with passed in arguments" do
