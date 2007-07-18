@@ -1,3 +1,6 @@
+- Fixed "singleton method bound for a different object"
+- Doing Method aliasing again to store original method
+
 * 0.2.1
 - Added mock_probe
 - Added stub_probe
