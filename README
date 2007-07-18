@@ -18,21 +18,37 @@ http://xunitpatterns.com/Test%20Stub.html
   stub(User).find('42') {jane}
   mock(jane).valid? {true}
 
-== Probing
+== Mock Probing
 Add verifications that a method was called while actually calling it.
 The following example verifies render partial will be called and
 renders the partial.
 
   view = controller.template
   probe(view).render(:partial => "user_info")
+  # or mock_probe.render(:partial => "user_info")
 
 Probes also support after_call callbacks. This is useful for Stubbing out
-a class method and getting its return value. For example, using ActiveRecord:
+a class method and getting its return value. You can also change the return value.
+This technique is also useful for verifying that you are mocking exists and
+functions proberly, thereby testing you interface.
+For example, using ActiveRecord:
 
   probe(User).find('5') do |user|
     mock(user).valid? {false}
+    user
   end
-  
+
+== Mock Stubbing
+Intercept the return value of a method call.
+The following example verifies render partial will be called and
+renders the partial.
+
+  view = controller.template
+  stub_probe(view).render(:partial => "user_info") do |html|
+    html.should include("Joe Smith")
+    html
+  end
+
 == Block Syntax
   script = MyScript.new
   mock(script) do |m|
