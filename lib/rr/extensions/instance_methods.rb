@@ -1,6 +1,6 @@
 module RR
 module Extensions
-  module DoubleMethods
+  module InstanceMethods
     # Sets up a MockCreator that generates a Double Scenario that
     # acts like a mock.
     #   mock(object).method_name(arg1, arg2) {return_value}

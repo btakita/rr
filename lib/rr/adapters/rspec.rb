@@ -4,7 +4,7 @@ patterns.push(RR::Errors::BACKTRACE_IDENTIFIER)
 module RR
   module Adapters
     module Rspec
-      include RR::Extensions::DoubleMethods
+      include RR::Extensions::InstanceMethods
       def setup_mocks_for_rspec
         RR::Space.instance.reset
       end

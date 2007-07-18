@@ -2,8 +2,8 @@ require "examples/example_helper"
 
 module RR
 module Extensions
-  describe DoubleMethods, "#anything" do
-    it_should_behave_like "RR::Extensions::DoubleMethods"
+  describe InstanceMethods, "#anything" do
+    it_should_behave_like "RR::Extensions::InstanceMethods"
     
     it "returns an Anything matcher" do
       anything.should == WildcardMatchers::Anything.new
@@ -14,8 +14,8 @@ module Extensions
     end
   end
 
-  describe DoubleMethods, "#is_a" do
-    it_should_behave_like "RR::Extensions::DoubleMethods"
+  describe InstanceMethods, "#is_a" do
+    it_should_behave_like "RR::Extensions::InstanceMethods"
 
     it "returns an IsA matcher" do
       is_a(Integer).should == WildcardMatchers::IsA.new(Integer)
@@ -26,8 +26,8 @@ module Extensions
     end
   end
 
-  describe DoubleMethods, "#numeric" do
-    it_should_behave_like "RR::Extensions::DoubleMethods"
+  describe InstanceMethods, "#numeric" do
+    it_should_behave_like "RR::Extensions::InstanceMethods"
 
     it "returns an Numeric matcher" do
       numeric.should == WildcardMatchers::Numeric.new
@@ -38,8 +38,8 @@ module Extensions
     end
   end
 
-  describe DoubleMethods, "#boolean" do
-    it_should_behave_like "RR::Extensions::DoubleMethods"
+  describe InstanceMethods, "#boolean" do
+    it_should_behave_like "RR::Extensions::InstanceMethods"
 
     it "returns an Boolean matcher" do
       boolean.should == WildcardMatchers::Boolean.new
@@ -50,8 +50,8 @@ module Extensions
     end
   end
 
-  describe DoubleMethods, "#duck_type" do
-    it_should_behave_like "RR::Extensions::DoubleMethods"
+  describe InstanceMethods, "#duck_type" do
+    it_should_behave_like "RR::Extensions::InstanceMethods"
 
     it "returns a DuckType matcher" do
       duck_type(:one, :two).should == WildcardMatchers::DuckType.new(:one, :two)

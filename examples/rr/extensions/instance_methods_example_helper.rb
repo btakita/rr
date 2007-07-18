@@ -2,9 +2,9 @@ require "examples/example_helper"
 
 module RR
 module Extensions
-  describe DoubleMethods, :shared => true do
+  describe InstanceMethods, :shared => true do
     before do
-      extend RR::Extensions::DoubleMethods
+      extend RR::Extensions::InstanceMethods
     end
   end
 end

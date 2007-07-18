@@ -38,4 +38,4 @@ require "rr/times_called_matchers/proc_matcher"
 require "rr/times_called_matchers/at_least_matcher"
 require "rr/times_called_matchers/at_most_matcher"
 
-require "rr/extensions/double_methods"
+require "rr/extensions/instance_methods"

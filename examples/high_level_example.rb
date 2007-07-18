@@ -4,7 +4,7 @@ require "#{dir}/example_helper"
 describe "RR", :shared => true do
   before(:each) do
     @obj = Object.new
-    extend RR::Extensions::DoubleMethods
+    extend RR::Extensions::InstanceMethods
   end
 
   after(:each) do

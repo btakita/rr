@@ -3,7 +3,7 @@ RR::Space.trim_backtrace = true
 module RR
   module Adapters
     module TestUnit
-      include RR::Extensions::DoubleMethods
+      include RR::Extensions::InstanceMethods
       def self.included(mod)
         mod.class_eval do
           alias_method :setup_without_rr, :setup

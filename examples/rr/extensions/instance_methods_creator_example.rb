@@ -2,8 +2,8 @@ require "examples/example_helper"
 
 module RR
 module Extensions
-  describe DoubleMethods, "#mock" do
-    it_should_behave_like "RR::Extensions::DoubleMethods"
+  describe InstanceMethods, "#mock" do
+    it_should_behave_like "RR::Extensions::InstanceMethods"
 
     before do
       @subject = Object.new
@@ -33,8 +33,8 @@ module Extensions
     end
   end
 
-  describe DoubleMethods, "#stub" do
-    it_should_behave_like "RR::Extensions::DoubleMethods"
+  describe InstanceMethods, "#stub" do
+    it_should_behave_like "RR::Extensions::InstanceMethods"
 
     before do
       @subject = Object.new
@@ -62,8 +62,8 @@ module Extensions
     end
   end
 
-  describe DoubleMethods, "#probe and #probe_mock" do
-    it_should_behave_like "RR::Extensions::DoubleMethods"
+  describe InstanceMethods, "#probe and #probe_mock" do
+    it_should_behave_like "RR::Extensions::InstanceMethods"
 
     before do
       @subject = Object.new
@@ -97,8 +97,8 @@ module Extensions
     end
   end
 
-  describe DoubleMethods, "#do_not_allow" do
-    it_should_behave_like "RR::Extensions::DoubleMethods"
+  describe InstanceMethods, "#do_not_allow" do
+    it_should_behave_like "RR::Extensions::InstanceMethods"
     
     before do
       @subject = Object.new
