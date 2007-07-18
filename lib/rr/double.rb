@@ -4,13 +4,15 @@ module RR
   # has Argument Expectations and Times called Expectations.
   class Double
     MethodArguments = Struct.new(:arguments, :block)
-    attr_reader :space, :object, :method_name, :original_method, :scenarios
+    attr_reader :space, :object, :method_name, :scenarios
 
     def initialize(space, object, method_name)
       @space = space
       @object = object
       @method_name = method_name.to_sym
-      @original_method = object.method(method_name) if @object.methods.include?(method_name.to_s)
+      if @object.respond_to?(method_name)
+        meta.send(:alias_method, original_method_name, method_name)
+      end
       @scenarios = []
     end
 
@@ -22,7 +24,7 @@ module RR
 
     # RR::Double#bind injects a method that acts as a dispatcher
     # that dispatches to the matching Scenario when the method
-    # is called.    
+    # is called.
     def bind
       define_implementation_placeholder
       returns_method = <<-METHOD
@@ -44,14 +46,22 @@ module RR
 
     # RR::Double#reset removes the injected dispatcher method.
     # It binds the original method implementation on the object
-    # if one exists. 
+    # if one exists.
     def reset
       meta.send(:remove_method, placeholder_name)
-      if @original_method
-        meta.send(:define_method, @method_name, @original_method)
+      if original_method
+        meta.send(:alias_method, @method_name, original_method_name)
+        meta.send(:remove_method, original_method_name)
       else
         meta.send(:remove_method, @method_name)
       end
+    end
+
+    # The original method of the object. It returns nil if the object
+    # does not have an original method.
+    def original_method
+      return nil unless @object.respond_to?(original_method_name)
+      return @object.method(original_method_name)
     end
 
     protected
@@ -69,7 +79,6 @@ module RR
       scenario_not_found_error(*args)
     end
 
-    protected
     def find_scenario_to_attempt(args)
       matches = ScenarioMatches.new(@scenarios).find_all_matches!(args)
 
@@ -106,7 +115,11 @@ module RR
     def placeholder_name
       "__rr__#{@method_name}"
     end
-    
+
+    def original_method_name
+      "__rr__original_#{@method_name}"
+    end
+
     def meta
       (class << @object; self; end)
     end

@@ -28,6 +28,12 @@ describe Double, "#bind with an existing method" do
     @object.foobar
     rr_foobar_called.should == true
   end
+
+  it "stores original method in __rr__original_method_name" do
+    @double.bind
+    @object.respond_to?(:__rr__original_foobar).should == true
+    @object.method(:__rr__original_foobar).should == @original_method
+  end
 end
 
 describe Double, "#bind without an existing method" do
@@ -54,6 +60,11 @@ describe Double, "#bind without an existing method" do
     rr_foobar_called.should == false
     @object.foobar
     rr_foobar_called.should == true
+  end
+
+  it "stores original method in __rr__original_method_name" do
+    @double.bind
+    @object.respond_to?(:__rr__original_foobar).should == false
   end
 end
 end
