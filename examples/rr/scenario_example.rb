@@ -262,10 +262,11 @@ describe Scenario, "#after_call" do
     @scenario.after_call {}.should === @scenario
   end
 
-  it "receives the return value in the block" do
+  it "sends return value of Scenario implementation to after_call" do
     return_value = {}
     @scenario.returns(return_value).after_call do |value|
       value[:foo] = :bar
+      value
     end
 
     actual_value = @scenario.call
@@ -273,10 +274,21 @@ describe Scenario, "#after_call" do
     actual_value.should == {:foo => :bar}
   end
 
+  it "receives the return value in the after_call callback" do
+    return_value = :returns_value
+    @scenario.returns(return_value).after_call do |value|
+      :after_call_value
+    end
+
+    actual_value = @scenario.call
+    actual_value.should == :after_call_value
+  end
+
   it "allows after_call to mock the return value" do
     return_value = Object.new
     @scenario.with_any_args.returns(return_value).after_call do |value|
       mock(value).inner_method(1) {:baz}
+      value
     end
 
     @object.foobar.inner_method(1).should == :baz
@@ -343,9 +355,16 @@ end
 describe Scenario, "#call implemented by a proc" do
   it_should_behave_like "RR::Scenario"
   
-  it "calls the return proc when scheduled to call a proc" do
+  it "calls the return proc when implemented by a proc" do
     @scenario.returns {|arg| "returning #{arg}"}
     @scenario.call(:foobar).should == "returning foobar"
+  end
+
+  it "calls and returns the after_call when after_call is set" do
+    @scenario.returns {|arg| "returning #{arg}"}.after_call do |value|
+      "#{value} after call"
+    end
+    @scenario.call(:foobar).should == "returning foobar after call"
   end
 
   it "returns nil when to returns is not set" do

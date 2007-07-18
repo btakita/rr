@@ -243,8 +243,8 @@ module RR
     # exceeds the expected TimesCalledExpectation.
     def call(*args, &block)
       return_value = call_implementation(*args, &block)
-      @after_call.call(return_value) if @after_call
-      return_value
+      return return_value unless @after_call
+      @after_call.call(return_value)
     end
 
     def call_implementation(*args, &block)
