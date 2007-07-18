@@ -6,13 +6,13 @@ module RR
     module Rspec
       include RR::Extensions::InstanceMethods
       def setup_mocks_for_rspec
-        RR::Space.instance.reset
+        rr_reset
       end
       def verify_mocks_for_rspec
-        RR::Space.instance.verify_doubles
+        rr_verify
       end
       def teardown_mocks_for_rspec
-        RR::Space.instance.reset
+        rr_reset
       end
     end
   end

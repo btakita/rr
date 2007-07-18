@@ -1,6 +1,17 @@
 module RR
 module Extensions
   module InstanceMethods
+    # Verifies all the Double objects have met their
+    # TimesCalledExpectations.
+    def verify
+      RR::Space.instance.verify_doubles
+    end
+
+    # Resets the registered Doubles and ordered Scenarios
+    def reset
+      RR::Space.instance.reset
+    end
+
     # Sets up a MockCreator that generates a Double Scenario that
     # acts like a mock.
     #   mock(object).method_name(arg1, arg2) {return_value}
