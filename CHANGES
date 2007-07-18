@@ -1,3 +1,4 @@
+* 0.2.2
 - Fixed "singleton method bound for a different object"
 - Doing Method aliasing again to store original method
 
