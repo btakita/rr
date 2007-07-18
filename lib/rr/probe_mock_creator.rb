@@ -1,5 +1,5 @@
 module RR
-  # RR::ProbeCreator uses RR::ProbeCreator#method_missing to create
+  # RR::ProbeMockCreator uses RR::ProbeMockCreator#method_missing to create
   # a Scenario that acts like a probe.
   #
   # The following example probes method_name with arg1 and arg2
@@ -9,7 +9,7 @@ module RR
   #
   #   probe(subject).method_name(arg1, arg2) { |return_value| }
   #
-  # The ProbeCreator also supports a block sytnax. The block accepts
+  # The ProbeMockCreator also supports a block sytnax. The block accepts
   # a after_call callback, instead of a return value as with MockCreator
   # and StubCreator.
   #
@@ -21,7 +21,7 @@ module RR
   #
   #   user = User.find('4')
   #   user.valid? # false
-  class ProbeCreator < Creator
+  class ProbeMockCreator < Creator
     module InstanceMethods
       protected
       def method_missing(method_name, *args, &after_call)

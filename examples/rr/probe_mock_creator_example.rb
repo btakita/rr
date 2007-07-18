@@ -1,7 +1,7 @@
 require "examples/example_helper"
 
 module RR
-describe ProbeCreator, :shared => true do
+describe ProbeMockCreator, :shared => true do
   before(:each) do
     @space = Space.new
     @subject = Object.new
@@ -15,15 +15,15 @@ describe ProbeCreator, :shared => true do
   end
 end
 
-describe ProbeCreator, ".new without block" do
-  it_should_behave_like "RR::ProbeCreator"
+describe ProbeMockCreator, ".new without block" do
+  it_should_behave_like "RR::ProbeMockCreator"
 
   before do
-    @creator = ProbeCreator.new(@space, @subject)
+    @creator = ProbeMockCreator.new(@space, @subject)
   end
 
   it "clears out all methods from creator" do
-    creator_subclass = Class.new(ProbeCreator) do
+    creator_subclass = Class.new(ProbeMockCreator) do
       def i_should_be_a_scenario
       end
     end
@@ -34,14 +34,14 @@ describe ProbeCreator, ".new without block" do
   end
 end
 
-describe ProbeCreator, ".new with block" do
-  it_should_behave_like "RR::ProbeCreator"
+describe ProbeMockCreator, ".new with block" do
+  it_should_behave_like "RR::ProbeMockCreator"
 
   before do
     def @subject.foobar(*args)
       :original_foobar
     end
-    @creator = ProbeCreator.new(@space, @subject) do |c|
+    @creator = ProbeMockCreator.new(@space, @subject) do |c|
       c.foobar(1, 2)
       c.foobar(1)
       c.foobar.with_any_args
@@ -56,7 +56,7 @@ describe ProbeCreator, ".new with block" do
   end
 
   it "clears out all methods from creator" do
-    creator_subclass = Class.new(ProbeCreator) do
+    creator_subclass = Class.new(ProbeMockCreator) do
       def i_should_be_a_scenario
       end
     end
@@ -68,14 +68,14 @@ describe ProbeCreator, ".new with block" do
   end
 end
 
-describe ProbeCreator, ".new where method takes a block" do
-  it_should_behave_like "RR::ProbeCreator"
+describe ProbeMockCreator, ".new where method takes a block" do
+  it_should_behave_like "RR::ProbeMockCreator"
 
   before do
     def @subject.foobar(*args, &block)
       yield(*args)
     end
-    @creator = ProbeCreator.new(@space, @subject)
+    @creator = ProbeMockCreator.new(@space, @subject)
   end
 
   it "calls the block" do
@@ -85,12 +85,12 @@ describe ProbeCreator, ".new where method takes a block" do
 end
 
 
-describe ProbeCreator, "#method_missing" do
-  it_should_behave_like "RR::ProbeCreator"
+describe ProbeMockCreator, "#method_missing" do
+  it_should_behave_like "RR::ProbeMockCreator"
   
   before do
     @subject = Object.new
-    @creator = ProbeCreator.new(@space, @subject)
+    @creator = ProbeMockCreator.new(@space, @subject)
   end
 
   it "sets expectations on the subject while calling the original method" do

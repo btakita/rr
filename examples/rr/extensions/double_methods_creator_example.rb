@@ -62,7 +62,7 @@ module Extensions
     end
   end
 
-  describe DoubleMethods, "#probe" do
+  describe DoubleMethods, "#probe and #probe_mock" do
     it_should_behave_like "RR::Extensions::DoubleMethods"
 
     before do
@@ -73,8 +73,12 @@ module Extensions
       should_create_probe_call_chain probe(@subject)
     end
 
+    it "sets up the RR probe call chain" do
+      should_create_probe_call_chain probe_mock(@subject)
+    end
+
     it "sets up the RR probe call chain with rr_probe" do
-      should_create_probe_call_chain rr_probe(@subject)
+      should_create_probe_call_chain rr_probe_mock(@subject)
     end
 
     def should_create_probe_call_chain(creator)

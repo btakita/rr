@@ -15,12 +15,26 @@ module Extensions
       RR::Space.instance.create_stub_creator(subject, &definition)
     end
 
-    # Sets up a ProbeCreator that generates a Double Scenario that
-    # acts like a probe.
-    #   probe(controller.template).render(:partial => "my/socks")
-    def probe(subject, &definition)
+    # Sets up a ProbeMockCreator that generates a Double Scenario that
+    # acts like mock verifications while calling the actual method.
+    #
+    #   probe_mock(controller.template).render(:partial => "my/socks")
+    #
+    # Passing a block allows you to intercept the return value.
+    # The return value can be modified, validated, and/or overridden by
+    # passing in a block. The return value of the block will replace
+    # the actual return value.
+    #
+    #   probe_mock(controller.template).render(:partial => "my/socks") do |html|
+    #     html.should include("My socks are wet")
+    #     "My new return value"
+    #   end
+    def probe_mock(subject, &definition)
       RR::Space.instance.create_probe_creator(subject, &definition)
     end
+
+    # Same as probe_mock
+    alias_method :probe, :probe_mock
 
     # Sets up a DoNotAllowCreator that generates a Double Scenario that
     # expects never to be called.

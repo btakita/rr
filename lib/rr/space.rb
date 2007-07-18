@@ -33,9 +33,9 @@ module RR
       StubCreator.new(self, subject, &definition)
     end
 
-    # Creates a ProbeCreator.
+    # Creates a ProbeMockCreator.
     def create_probe_creator(subject, &definition)
-      ProbeCreator.new(self, subject, &definition)
+      ProbeMockCreator.new(self, subject, &definition)
     end
 
     # Creates a DoNotAllowCreator.
