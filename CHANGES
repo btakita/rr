@@ -1,3 +1,4 @@
+* 0.2.4
 - Space#doubles key is now the object id
 - Fixed [#12402] Stubbing return value of probes fails after calling the stubbed method two times
 
