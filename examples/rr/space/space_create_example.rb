@@ -151,6 +151,26 @@ describe Space, "#create_scenario" do
   end
 end
 
+describe Space, "#create_double" do
+  it_should_behave_like "RR::Space"
+
+  before do
+    @space = Space.new
+  end
+
+  it "creates a new double when existing object == but not === with the same method name" do
+    object1 = []
+    object2 = []
+    (object1 === object2).should be_true
+    object1.__id__.should_not == object2.__id__
+
+    double1 = @space.create_double(object1, :foobar)
+    double2 = @space.create_double(object2, :foobar)
+    
+    double1.should_not == double2
+  end
+end
+
 describe Space, "#create_double when double does not exist" do
   it_should_behave_like "RR::Space"
 

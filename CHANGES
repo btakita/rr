@@ -1,3 +1,6 @@
+- Space#doubles key is now the object id
+- Fixed [#12402] Stubbing return value of probes fails after calling the stubbed method two times
+
 * 0.2.3
 - Added InstanceMethods#rr_verify and InstanceMethods#rr_reset
 

@@ -1,5 +1,6 @@
 require "rr/space"
 require "rr/double"
+require "rr/hash_with_object_id_key"
 
 require "rr/creator"
 require "rr/mock_creator"
