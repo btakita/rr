@@ -22,9 +22,12 @@ module Extensions
       RR::Space.instance.mock_creator(object, method_name, &definition)
     end
 
-    # Sets up a StubCreator that generates a Double Scenario that
-    # acts like a stub.
+    # When passed the object, this method returns a StubCreator
+    # that generates a Double Scenario that acts like a stub.
     #   stub(object).method_name {return_value}
+    #
+    # When passed the object and the method_name, this method returns
+    # a stub Scenario with the method already set.
     def stub(subject, method_name=nil, &definition)
       RR::Space.instance.stub_creator(subject, method_name, &definition)
     end
