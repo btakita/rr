@@ -20,7 +20,7 @@ module Extensions
     # When passed the object and the method_name, this method returns
     # a mock Scenario with the method already set.
     #
-    # mock also takes a block to define definitions.
+    # mock also takes a block for definitions.
     #   mock(object) do
     #     method_name_1 {return_value_1}
     #     method_name_2(arg_1, arg_2) {return_value_2}
@@ -37,7 +37,7 @@ module Extensions
     # When passed the object and the method_name, this method returns
     # a stub Scenario with the method already set.
     #
-    # stub also takes a block to define definitions.
+    # stub also takes a block for definitions.
     #   stub(object) do
     #     method_name_1 {return_value_1}
     #     method_name_2(arg_1, arg_2) {return_value_2}
@@ -51,7 +51,38 @@ module Extensions
     #
     #   mock_probe(controller.template).render(:partial => "my/socks")
     #
-    # Passing a block allows you to intercept the return value.
+    #   mock_probe(controller.template).render(:partial => "my/socks") do |html|
+    #     html.should include("My socks are wet")
+    #     html
+    #   end
+    #
+    #   mock_probe(controller.template).render(:partial => "my/socks") do |html|
+    #     html.should include("My socks are wet")
+    #     "My new return value"
+    #   end
+    #
+    # mock_probe also takes a block for definitions.
+    #   mock_probe(object) do
+    #     render(:partial => "my/socks")
+    #
+    #     render(:partial => "my/socks") do |html|
+    #       html.should include("My socks are wet")
+    #       html
+    #     end
+    #
+    #     render(:partial => "my/socks") do |html|
+    #       html.should include("My socks are wet")
+    #       html
+    #     end
+    #
+    #     render(:partial => "my/socks") do |html|
+    #       html.should include("My socks are wet")
+    #       "My new return value"
+    #     end
+    #   end
+    #
+    # Passing a block to the Scenario (after the method name and arguments)
+    # allows you to intercept the return value.
     # The return value can be modified, validated, and/or overridden by
     # passing in a block. The return value of the block will replace
     # the actual return value.
