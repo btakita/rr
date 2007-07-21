@@ -27,22 +27,12 @@ module RR
 
     # Creates a MockCreator.
     def mock_creator(subject, method_name=nil, &definition)
-      if method_name && definition
-        raise ArgumentError, "Cannot pass in a method name and a block"
-      end
-      creator = MockCreator.new(self, subject, &definition)
-      return creator unless method_name
-      creator.__send__(method_name)
+      setup_creator MockCreator, subject, method_name, definition
     end
 
     # Creates a StubCreator.
     def stub_creator(subject, method_name=nil, &definition)
-      if method_name && definition
-        raise ArgumentError, "Cannot pass in a method name and a block"
-      end
-      creator = StubCreator.new(self, subject, &definition)
-      return creator unless method_name
-      creator.__send__(method_name)
+      setup_creator StubCreator, subject, method_name, definition
     end
 
     # Creates a MockProbeCreator.
@@ -134,6 +124,15 @@ module RR
     end
 
     protected
+    def setup_creator(klass, subject, method_name, definition)
+      if method_name && definition
+        raise ArgumentError, "Cannot pass in a method name and a block"
+      end
+      creator = klass.new(self, subject, &definition)
+      return creator unless method_name
+      creator.__send__(method_name)
+    end
+    
     # Removes the ordered Scenarios from the list
     def reset_ordered_scenarios
       @ordered_scenarios.clear
