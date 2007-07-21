@@ -163,22 +163,22 @@ module Extensions
     end
 
     it "sets up the RR do_not_allow call chain" do
-      should_create_do_not_allow_call_chain do_not_allow(@subject)
+      should create_do_not_allow_call_chain(do_not_allow(@subject))
     end
 
     it "sets up the RR do_not_allow call chain with rr_do_not_allow" do
-      should_create_do_not_allow_call_chain rr_do_not_allow(@subject)
+      should create_do_not_allow_call_chain(rr_do_not_allow(@subject))
     end
 
     it "sets up the RR do_not_allow call chain" do
-      should_create_do_not_allow_call_chain dont_allow(@subject)
+      should create_do_not_allow_call_chain(dont_allow(@subject))
     end
 
     it "sets up the RR do_not_allow call chain with rr_do_not_allow" do
-      should_create_do_not_allow_call_chain rr_dont_allow(@subject)
+      should create_do_not_allow_call_chain(rr_dont_allow(@subject))
     end
 
-    def should_create_do_not_allow_call_chain(creator)
+    def create_do_not_allow_call_chain(creator)
       class << @subject
         def foobar(*args)
           :original_value
