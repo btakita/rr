@@ -117,7 +117,7 @@ describe Space, "#mock_probe_creator" do
   end
 end
 
-describe Space, "#create_stub_probe_creator" do
+describe Space, "#stub_probe_creator" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -130,14 +130,26 @@ describe Space, "#create_stub_probe_creator" do
   end
 
   it "creates a StubProbeCreator" do
-    creator = @space.create_stub_probe_creator(@object)
+    creator = @space.stub_probe_creator(@object)
     creator.foobar
     @object.foobar(1).should == :original_foobar
     @object.foobar(1).should == :original_foobar
   end
 
+  it "creates a stub probe Scenario for method when passed a second argument" do
+    creator = @space.stub_probe_creator(@object, :foobar)
+    @object.foobar(1).should == :original_foobar
+    @object.foobar(1).should == :original_foobar
+  end
+
+  it "raises error if passed a method name and a block" do
+    proc do
+      @space.stub_probe_creator(@object, :foobar) {}
+    end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
+  end
+
   it "uses block definition when passed a block" do
-    creator = @space.create_stub_probe_creator(@object) do |c|
+    creator = @space.stub_probe_creator(@object) do |c|
       c.foobar(1)
     end
     @object.foobar(1).should == :original_foobar

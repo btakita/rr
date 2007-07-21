@@ -41,8 +41,8 @@ module RR
     end
 
     # Creates a StubProbeCreator.
-    def create_stub_probe_creator(subject, &definition)
-      StubProbeCreator.new(self, subject, &definition)
+    def stub_probe_creator(subject, method_name=nil, &definition)
+      setup_creator StubProbeCreator, subject, method_name, definition
     end
 
     # Creates a DoNotAllowCreator.

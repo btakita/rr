@@ -28,8 +28,8 @@ module Extensions
     #
     # When passed the object and the method_name, this method returns
     # a stub Scenario with the method already set.
-    def stub(subject, method_name=nil, &definition)
-      RR::Space.instance.stub_creator(subject, method_name, &definition)
+    def stub(object, method_name=nil, &definition)
+      RR::Space.instance.stub_creator(object, method_name, &definition)
     end
 
     # Sets up a MockProbeCreator that generates a Double Scenario that
@@ -46,8 +46,8 @@ module Extensions
     #     html.should include("My socks are wet")
     #     "My new return value"
     #   end
-    def mock_probe(subject, method_name=nil, &definition)
-      RR::Space.instance.mock_probe_creator(subject, method_name, &definition)
+    def mock_probe(object, method_name=nil, &definition)
+      RR::Space.instance.mock_probe_creator(object, method_name, &definition)
     end
 
     # Sets up a StubProbeCreator that generates a Double Scenario that
@@ -64,8 +64,8 @@ module Extensions
     #     html.should include("My socks are wet")
     #     "My new return value"
     #   end
-    def stub_probe(subject, &definition)
-      RR::Space.instance.create_stub_probe_creator(subject, &definition)
+    def stub_probe(object, method_name=nil, &definition)
+      RR::Space.instance.stub_probe_creator(object, method_name, &definition)
     end
 
     # Same as mock_probe

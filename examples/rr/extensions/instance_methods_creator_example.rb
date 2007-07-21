@@ -181,6 +181,11 @@ module Extensions
 
     before do
       @subject = Object.new
+      class << @subject
+        def foobar(*args)
+          :original_value
+        end
+      end
     end
 
     it "sets up the RR probe call chain" do
@@ -191,13 +196,29 @@ module Extensions
       should create_stub_probe_call_chain(rr_stub_probe(@subject))
     end
 
-    def create_stub_probe_call_chain(creator)
-      class << @subject
-        def foobar(*args)
-          :original_value
-        end
-      end
+    it "#stub_probe creates a stub Scenario for method when passed a second argument" do
+      should create_scenario_with_method_name(stub_probe(@subject, :foobar))
+    end
 
+    it "#rr_stub_probe creates a stub Scenario for method when passed a second argument with rr_stub" do
+      should create_scenario_with_method_name(rr_stub_probe(@subject, :foobar))
+    end
+
+    it "raises error if passed a method name and a block" do
+      proc do
+        stub_probe(@object, :foobar) {}
+      end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
+    end
+
+    def create_scenario_with_method_name(scenario)
+      method_name = scenario.method_name
+      scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+      scenario.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
+
+      @subject.foobar(:something).should == :original_value
+    end
+
+    def create_stub_probe_call_chain(creator)
       scenario = creator.foobar
       scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
       scenario.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
