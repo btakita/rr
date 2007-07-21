@@ -1,3 +1,4 @@
+* 0.2.5
 - mock takes method_name argument
 - stub takes method_name argument
 - mock_probe takes method_name argument
