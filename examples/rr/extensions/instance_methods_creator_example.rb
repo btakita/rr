@@ -93,19 +93,23 @@ module Extensions
       @subject = Object.new
     end
 
-    it "sets up the RR probe call chain" do
-      should_create_mock_probe_call_chain probe(@subject)
+    it "#probe sets up the RR probe call chain" do
+      should create_mock_probe_call_chain(probe(@subject))
     end
 
-    it "sets up the RR probe call chain" do
-      should_create_mock_probe_call_chain mock_probe(@subject)
+    it "#rr_probe sets up the RR probe call chain" do
+      should create_mock_probe_call_chain(rr_probe(@subject))
     end
 
-    it "sets up the RR probe call chain with rr_probe" do
-      should_create_mock_probe_call_chain rr_mock_probe(@subject)
+    it "#mock_probe sets up the RR probe call chain" do
+      should create_mock_probe_call_chain(mock_probe(@subject))
     end
 
-    def should_create_mock_probe_call_chain(creator)
+    it "#rr_mock_probe sets up the RR probe call chain with rr_probe" do
+      should create_mock_probe_call_chain(rr_mock_probe(@subject))
+    end
+
+    def create_mock_probe_call_chain(creator)
       class << @subject
         def foobar(*args)
           :original_value
