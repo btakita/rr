@@ -15,8 +15,8 @@ module Extensions
     # Sets up a MockCreator that generates a Double Scenario that
     # acts like a mock.
     #   mock(object).method_name(arg1, arg2) {return_value}
-    def mock(subject, &definition)
-      RR::Space.instance.create_mock_creator(subject, &definition)
+    def mock(subject, method_name=nil, &definition)
+      RR::Space.instance.mock_creator(subject, method_name, &definition)
     end
 
     # Sets up a StubCreator that generates a Double Scenario that

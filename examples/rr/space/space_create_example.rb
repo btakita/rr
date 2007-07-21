@@ -1,7 +1,7 @@
 require "examples/example_helper"
 
 module RR
-describe Space, "#create_mock_creator" do
+describe Space, "#mock_creator" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -10,14 +10,26 @@ describe Space, "#create_mock_creator" do
   end
 
   it "creates a MockCreator" do
-    creator = @space.create_mock_creator(@object)
+    creator = @space.mock_creator(@object)
     creator.foobar(1) {:baz}
     @object.foobar(1).should == :baz
     proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 
+  it "creates a mock Scenario for method when passed a second argument" do
+    creator = @space.mock_creator(@object, :foobar).with(1) {:baz}
+    @object.foobar(1).should == :baz
+    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
+  end
+
+  it "raises error if passed a method name and a block" do
+    proc do
+      @space.mock_creator(@object, :foobar) {}
+    end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
+  end
+
   it "uses block definition when passed a block" do
-    creator = @space.create_mock_creator(@object) do |c|
+    creator = @space.mock_creator(@object) do |c|
       c.foobar(1) {:baz}
     end
     @object.foobar(1).should == :baz

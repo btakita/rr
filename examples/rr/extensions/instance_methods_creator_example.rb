@@ -17,6 +17,30 @@ module Extensions
       should_create_mock_call_chain rr_mock(@subject)
     end
 
+    it "creates a mock Scenario for method when passed a second argument" do
+      should create_scenario_with_method_defined(mock(@subject, :foobar))
+    end
+
+    it "creates a mock Scenario for method when passed a second argument with rr_mock" do
+      should create_scenario_with_method_defined(rr_mock(@subject, :foobar))
+    end
+
+    it "raises error if passed a method name and a block" do
+      proc do
+        mock(@object, :foobar) {}
+      end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
+    end
+    
+    def create_scenario_with_method_defined(scenario)
+      method_name = scenario.method_name
+      scenario.with(1, 2) {:baz}
+      scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+      scenario.argument_expectation.expected_arguments.should == [1, 2]
+
+      @subject.__send__(method_name, 1, 2).should == :baz
+    end
+
     def should_create_mock_call_chain(creator)
       class << @subject
         def foobar(*args)

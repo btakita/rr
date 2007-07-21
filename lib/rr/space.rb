@@ -26,8 +26,13 @@ module RR
     end
 
     # Creates a MockCreator.
-    def create_mock_creator(subject, &definition)
-      MockCreator.new(self, subject, &definition)
+    def mock_creator(subject, method_name=nil, &definition)
+      if method_name && definition
+        raise ArgumentError, "Cannot pass in a method name and a block"
+      end
+      creator = MockCreator.new(self, subject, &definition)
+      return creator unless method_name
+      creator.__send__(method_name)
     end
 
     # Creates a StubCreator.
