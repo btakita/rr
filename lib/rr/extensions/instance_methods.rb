@@ -95,17 +95,46 @@ module Extensions
       RR::Space.instance.mock_probe_creator(object, method_name, &definition)
     end
 
-    # Sets up a StubProbeCreator that generates a Double Scenario that
-    # acts like mock verifications while calling the actual method.
+    # When passed the object, this method returns a StubProbeCreator
+    # that generates a Double Scenario that acts like a stub probe.
     #
-    #   mock_probe(User).new {|user| my_user}
+    #   stub_probe(User).new {|user| user}
+    #
+    #   stub_probe(User).new do |user|
+    #     mock(user).valid? {false}
+    #     user
+    #   end
+    #
+    #   stub_probe(User).new do |user|
+    #     mock_probe(user).friends {|friends| friends[0..3]}
+    #     user
+    #   end
     #
     # Passing a block allows you to intercept the return value.
     # The return value can be modified, validated, and/or overridden by
     # passing in a block. The return value of the block will replace
     # the actual return value.
     #
-    #   mock_probe(controller.template).render(:partial => "my/socks") do |html|
+    #   mock_probe(User) do
+    #     new {|user| user}
+    #
+    #     new do |user|
+    #       mock(user).valid? {false}
+    #     end
+    #
+    #     new do |user|
+    #       mock_probe(user).friends {|friends| friends[0..3]}
+    #       user
+    #     end
+    #   end
+    #
+    # Passing a block to the Scenario (after the method name and arguments)
+    # allows you to intercept the return value.
+    # The return value can be modified, validated, and/or overridden by
+    # passing in a block. The return value of the block will replace
+    # the actual return value.
+    #
+    #   stub_probe(controller.template).render(:partial => "my/socks") do |html|
     #     html.should include("My socks are wet")
     #     "My new return value"
     #   end
