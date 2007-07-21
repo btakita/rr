@@ -232,6 +232,11 @@ module Extensions
     
     before do
       @subject = Object.new
+      class << @subject
+        def foobar(*args)
+          :original_value
+        end
+      end
     end
 
     it "sets up the RR do_not_allow call chain" do
@@ -250,17 +255,53 @@ module Extensions
       should create_do_not_allow_call_chain(rr_dont_allow(@subject))
     end
 
-    def create_do_not_allow_call_chain(creator)
-      class << @subject
-        def foobar(*args)
-          :original_value
-        end
-      end
+    it "#do_not_allow creates a mock Scenario for method when passed a second argument" do
+      should create_scenario_with_method_name(do_not_allow(@subject, :foobar))
+    end
 
+    it "#rr_do_not_allow creates a mock Scenario for method when passed a second argument with rr_mock" do
+      should create_scenario_with_method_name(rr_do_not_allow(@subject, :foobar))
+    end
+
+    it "#dont_allow creates a mock Scenario for method when passed a second argument" do
+      should create_scenario_with_method_name(dont_allow(@subject, :foobar))
+    end
+
+    it "#rr_dont_allow creates a mock Scenario for method when passed a second argument with rr_mock" do
+      should create_scenario_with_method_name(rr_dont_allow(@subject, :foobar))
+    end
+
+    it "raises error if passed a method name and a block" do
+      proc do
+        do_not_allow(@object, :foobar) {}
+      end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
+    end
+
+    def create_scenario_with_method_name(scenario)
+      method_name = scenario.method_name
+      scenario.with(1, 2)
+      scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+      scenario.argument_expectation.expected_arguments.should == [1, 2]
+
+      proc do
+        @subject.__send__(method_name, 1, 2)
+      end.should raise_error(Errors::TimesCalledError)
+      reset
+      nil
+    end
+
+    def create_do_not_allow_call_chain(creator)
       scenario = creator.foobar(1, 2)
       scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
       scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
       scenario.argument_expectation.expected_arguments.should == [1, 2]
+
+      proc do
+        @subject.foobar(1, 2)
+      end.should raise_error(Errors::TimesCalledError)
+      reset
+      nil
     end
   end
 end

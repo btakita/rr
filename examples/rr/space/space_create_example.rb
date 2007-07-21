@@ -157,7 +157,7 @@ describe Space, "#stub_probe_creator" do
   end
 end
 
-describe Space, "#create_do_not_allow_creator" do
+describe Space, "#do_not_allow_creator" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -166,13 +166,24 @@ describe Space, "#create_do_not_allow_creator" do
   end
 
   it "creates a MockCreator" do
-    creator = @space.create_do_not_allow_creator(@object)
+    creator = @space.do_not_allow_creator(@object)
     creator.foobar(1)
     proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 
+  it "creates a do not allow Scenario for method when passed a second argument" do
+    creator = @space.do_not_allow_creator(@object, :foobar).with(1)
+    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
+  end
+
+  it "raises error if passed a method name and a block" do
+    proc do
+      @space.do_not_allow_creator(@object, :foobar) {}
+    end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
+  end
+
   it "uses block definition when passed a block" do
-    creator = @space.create_do_not_allow_creator(@object) do |c|
+    creator = @space.do_not_allow_creator(@object) do |c|
       c.foobar(1)
     end
     proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)

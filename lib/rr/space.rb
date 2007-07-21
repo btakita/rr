@@ -46,8 +46,8 @@ module RR
     end
 
     # Creates a DoNotAllowCreator.
-    def create_do_not_allow_creator(subject, &definition)
-      DoNotAllowCreator.new(self, subject, &definition)
+    def do_not_allow_creator(subject, method_name=nil, &definition)
+      setup_creator DoNotAllowCreator, subject, method_name, definition
     end
 
     # Creates and registers a Scenario to be verified.

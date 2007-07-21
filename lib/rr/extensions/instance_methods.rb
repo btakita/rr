@@ -148,8 +148,8 @@ module Extensions
     # Sets up a DoNotAllowCreator that generates a Double Scenario that
     # expects never to be called.
     #   do_not_allow(object).method_name
-    def do_not_allow(subject, &definition)
-      RR::Space.instance.create_do_not_allow_creator(subject, &definition)
+    def do_not_allow(subject, method_name=nil, &definition)
+      RR::Space.instance.do_not_allow_creator(subject, method_name, &definition)
     end
     alias_method :dont_allow, :do_not_allow
 
