@@ -46,8 +46,8 @@ module Extensions
     #     html.should include("My socks are wet")
     #     "My new return value"
     #   end
-    def mock_probe(subject, &definition)
-      RR::Space.instance.create_mock_probe_creator(subject, &definition)
+    def mock_probe(subject, method_name=nil, &definition)
+      RR::Space.instance.mock_probe_creator(subject, method_name, &definition)
     end
 
     # Sets up a StubProbeCreator that generates a Double Scenario that

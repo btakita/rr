@@ -36,8 +36,8 @@ module RR
     end
 
     # Creates a MockProbeCreator.
-    def create_mock_probe_creator(subject, &definition)
-      MockProbeCreator.new(self, subject, &definition)
+    def mock_probe_creator(subject, method_name=nil, &definition)
+      setup_creator MockProbeCreator, subject, method_name, definition
     end
 
     # Creates a StubProbeCreator.
