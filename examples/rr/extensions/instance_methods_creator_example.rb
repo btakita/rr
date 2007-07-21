@@ -10,11 +10,11 @@ module Extensions
     end
 
     it "sets up the RR mock call chain" do
-      should_create_mock_call_chain mock(@subject)
+      should create_mock_call_chain(mock(@subject))
     end
 
     it "sets up the RR mock call chain with rr_mock" do
-      should_create_mock_call_chain rr_mock(@subject)
+      should create_mock_call_chain(rr_mock(@subject))
     end
 
     it "creates a mock Scenario for method when passed a second argument" do
@@ -41,7 +41,7 @@ module Extensions
       @subject.__send__(method_name, 1, 2).should == :baz
     end
 
-    def should_create_mock_call_chain(creator)
+    def create_mock_call_chain(creator)
       class << @subject
         def foobar(*args)
           :original_value
