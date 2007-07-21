@@ -133,14 +133,14 @@ module Extensions
     end
 
     it "sets up the RR probe call chain" do
-      should_create_stub_probe_call_chain stub_probe(@subject)
+      should create_stub_probe_call_chain(stub_probe(@subject))
     end
 
     it "sets up the RR probe call chain" do
-      should_create_stub_probe_call_chain rr_stub_probe(@subject)
+      should create_stub_probe_call_chain(rr_stub_probe(@subject))
     end
 
-    def should_create_stub_probe_call_chain(creator)
+    def create_stub_probe_call_chain(creator)
       class << @subject
         def foobar(*args)
           :original_value
