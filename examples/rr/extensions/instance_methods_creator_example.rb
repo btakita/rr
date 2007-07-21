@@ -65,14 +65,14 @@ module Extensions
     end
 
     it "sets up the RR stub call chain" do
-      should_create_stub_call_chain stub(@subject)
+      should create_stub_call_chain(stub(@subject))
     end
 
     it "sets up the RR stub call chain with rr_stub" do
-      should_create_stub_call_chain rr_stub(@subject)
+      should create_stub_call_chain(rr_stub(@subject))
     end
 
-    def should_create_stub_call_chain(creator)
+    def create_stub_call_chain(creator)
       class << @subject
         def foobar(*args)
           :original_value
