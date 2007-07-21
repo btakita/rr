@@ -12,11 +12,14 @@ module Extensions
       RR::Space.instance.reset
     end
 
-    # Sets up a MockCreator that generates a Double Scenario that
-    # acts like a mock.
+    # When passed the object, this method returns a MockCreator
+    # that generates a Double Scenario that acts like a mock.
     #   mock(object).method_name(arg1, arg2) {return_value}
-    def mock(subject, method_name=nil, &definition)
-      RR::Space.instance.mock_creator(subject, method_name, &definition)
+    #
+    # When passed the object and the method_name, this method returns
+    # a mock Scenario with the method already set.
+    def mock(object, method_name=nil, &definition)
+      RR::Space.instance.mock_creator(object, method_name, &definition)
     end
 
     # Sets up a StubCreator that generates a Double Scenario that
