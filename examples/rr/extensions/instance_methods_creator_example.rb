@@ -13,7 +13,7 @@ module Extensions
       should create_mock_call_chain(mock(@subject))
     end
 
-    it "sets up the RR mock call chain with rr_mock" do
+    it "#rr_mock sets up the RR mock call chain" do
       should create_mock_call_chain(rr_mock(@subject))
     end
 
@@ -68,8 +68,24 @@ module Extensions
       should create_stub_call_chain(stub(@subject))
     end
 
-    it "sets up the RR stub call chain with rr_stub" do
+    it "#rr_stub sets up the RR stub call chain" do
       should create_stub_call_chain(rr_stub(@subject))
+    end
+
+    it "creates a stub Scenario for method when passed a second argument" do
+      should create_scenario_with_method_name(stub(@subject, :foobar))
+    end
+
+    it "#rr_stub creates a stub Scenario for method when passed a second argument" do
+      should create_scenario_with_method_name(rr_stub(@subject, :foobar))
+    end
+
+    def create_scenario_with_method_name(scenario)
+      method_name = scenario.method_name
+      scenario.with(1, 2) {:baz}
+      scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+      @subject.__send__(method_name, 1, 2).should == :baz
     end
 
     def create_stub_call_chain(creator)

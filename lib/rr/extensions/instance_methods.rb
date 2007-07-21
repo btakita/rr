@@ -25,8 +25,8 @@ module Extensions
     # Sets up a StubCreator that generates a Double Scenario that
     # acts like a stub.
     #   stub(object).method_name {return_value}
-    def stub(subject, &definition)
-      RR::Space.instance.create_stub_creator(subject, &definition)
+    def stub(subject, method_name=nil, &definition)
+      RR::Space.instance.stub_creator(subject, method_name, &definition)
     end
 
     # Sets up a MockProbeCreator that generates a Double Scenario that

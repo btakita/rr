@@ -37,7 +37,7 @@ describe Space, "#mock_creator" do
   end
 end
 
-describe Space, "#create_stub_creator" do
+describe Space, "#stub_creator" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -47,14 +47,26 @@ describe Space, "#create_stub_creator" do
   end
 
   it "creates a StubCreator" do
-    creator = @space.create_stub_creator(@object)
+    creator = @space.stub_creator(@object)
     creator.foobar {:baz}
     @object.foobar.should == :baz
     @object.foobar.should == :baz
   end
 
+  it "creates a stub Scenario for method when passed a second argument" do
+    creator = @space.stub_creator(@object, :foobar).with(1) {:baz}
+    @object.foobar(1).should == :baz
+    @object.foobar(1).should == :baz
+  end
+
+  it "raises error if passed a method name and a block" do
+    proc do
+      @space.stub_creator(@object, :foobar) {}
+    end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
+  end
+
   it "uses block definition when passed a block" do
-    creator = @space.create_stub_creator(@object) do |c|
+    creator = @space.stub_creator(@object) do |c|
       c.foobar(1) {:return_value}
       c.foobar.with_any_args {:default}
       c.baz(1) {:baz_value}
