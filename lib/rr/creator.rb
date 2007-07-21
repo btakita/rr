@@ -1,7 +1,7 @@
 module RR
   # RR::Creator is the superclass for all creators.
   class Creator
-    def initialize(space, subject)
+    def initialize(space, subject, &block)
       @space = space
       @subject = subject
       class << self
