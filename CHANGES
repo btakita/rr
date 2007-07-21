@@ -1,3 +1,11 @@
+- mock takes method_name argument
+- stub takes method_name argument
+- mock_probe takes method_name argument
+- stub_probe takes method_name argument
+- probe takes method_name argument
+- dont_allow takes method_name argument
+- do_not_allow takes method_name argument
+
 * 0.2.4
 - Space#doubles key is now the object id
 - Fixed [#12402] Stubbing return value of probes fails after calling the stubbed method two times
