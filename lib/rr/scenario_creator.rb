@@ -45,21 +45,21 @@ module RR
         @scenario.with(*@args).once.returns(&@handler)
       when :stub
         @scenario.returns(&@handler).any_number_of_times
-        permissive_argument_strategy
+        permissive_argument_transform!
       when :mock_probe
         @scenario.with(*@args).once
-        probe_strategy
+        probe_transform!
       when :stub_probe
         @scenario.any_number_of_times
-        permissive_argument_strategy
-        probe_strategy
+        permissive_argument_transform!
+        probe_transform!
       when :do_not_call
-        permissive_argument_strategy
+        permissive_argument_transform!
         @scenario.never.returns(&@handler)
       end
     end
 
-    def permissive_argument_strategy
+    def permissive_argument_transform!
       if @args.empty?
         @scenario.with_any_args
       else
@@ -67,7 +67,7 @@ module RR
       end
     end
     
-    def probe_strategy
+    def probe_transform!
       @scenario.implemented_by_original_method
       @scenario.after_call(&@handler) if @handler
     end
