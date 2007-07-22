@@ -101,7 +101,7 @@ describe Space, "#verify_ordered_scenario", :shared => true do
   end
 
   it "raises an error when Scenario is NonTerminal" do
-    scenario = @space.create_scenario(@double)
+    scenario = @space.scenario(@double)
     @space.register_ordered_scenario(scenario)
 
     scenario.any_number_of_times
@@ -120,7 +120,7 @@ describe Space, "#verify_ordered_scenario where the passed in scenario is at the
   it_should_behave_like "RR::Space#verify_ordered_scenario"
 
   it "keeps the scenario when times called is not verified" do
-    scenario = @space.create_scenario(@double)
+    scenario = @space.scenario(@double)
     @space.register_ordered_scenario(scenario)
 
     scenario.twice
@@ -131,7 +131,7 @@ describe Space, "#verify_ordered_scenario where the passed in scenario is at the
   end
   
   it "removes the scenario when times called expectation should no longer be attempted" do
-    scenario = @space.create_scenario(@double)
+    scenario = @space.scenario(@double)
     @space.register_ordered_scenario(scenario)
 
     scenario.with(1).once
@@ -147,8 +147,8 @@ describe Space, "#verify_ordered_scenario where the passed in scenario is not at
   it_should_behave_like "RR::Space#verify_ordered_scenario"
   
   it "raises error" do
-    first_scenario = create_scenario
-    second_scenario = create_scenario
+    first_scenario = scenario
+    second_scenario = scenario
 
     proc do
       @space.verify_ordered_scenario(second_scenario)
@@ -160,8 +160,8 @@ describe Space, "#verify_ordered_scenario where the passed in scenario is not at
     )
   end
 
-  def create_scenario
-    scenario = @space.create_scenario(@double).once
+  def scenario
+    scenario = @space.scenario(@double).once
     @space.register_ordered_scenario(scenario)
     scenario
   end

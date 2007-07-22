@@ -17,7 +17,7 @@ module RR
   class DoNotAllowCreator < ScenarioCreator
     def create(method_name, *args, &returns)
       double = @space.create_double(@subject, method_name)
-      scenario = @space.create_scenario(double)
+      scenario = @space.scenario(double)
       if args.empty?
         scenario.with_any_args
       else

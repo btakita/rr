@@ -7,7 +7,7 @@ describe Scenario, :shared => true do
     @object = Object.new
     @method_name = :foobar
     @double = @space.create_double(@object, @method_name)
-    @scenario = @space.create_scenario(@double)
+    @scenario = @space.scenario(@double)
   end
 end
 
@@ -386,7 +386,7 @@ describe Scenario, "#call implemented by a proc" do
 
   it "raises ScenarioOrderError when ordered and called out of order" do
     scenario1 = @scenario
-    scenario2 = @space.create_scenario(@double)
+    scenario2 = @space.scenario(@double)
 
     scenario1.with(1).returns {:return_1}.ordered.once
     scenario2.with(2).returns {:return_2}.ordered.once

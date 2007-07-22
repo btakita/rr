@@ -231,7 +231,7 @@ describe Space, "#do_not_allow_creator" do
   end
 end
 
-describe Space, "#create_scenario" do
+describe Space, "#scenario" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -246,7 +246,7 @@ describe Space, "#create_scenario" do
       @scenarios
     end
 
-    scenario = @space.create_scenario(double)
+    scenario = @space.scenario(double)
     double.scenarios.should include(scenario)
   end
 end

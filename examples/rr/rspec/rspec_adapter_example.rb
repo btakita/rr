@@ -31,7 +31,7 @@ module Adapters
 
     it "verifies the doubles" do
       double = RR::Space.instance.create_double(@subject, @method_name)
-      scenario = RR::Space.instance.create_scenario(double)
+      scenario = RR::Space.instance.scenario(double)
 
       scenario.once
 

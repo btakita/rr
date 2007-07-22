@@ -18,13 +18,13 @@ describe Space, "#register_ordered_scenario" do
   end
 
   it "adds the ordered scenario to the ordered_scenarios collection" do
-    scenario1 = @space.create_scenario(@double)
+    scenario1 = @space.scenario(@double)
 
     @space.ordered_scenarios.should == []
     @space.register_ordered_scenario scenario1
     @space.ordered_scenarios.should == [scenario1]
 
-    scenario2 = @space.create_scenario(@double)
+    scenario2 = @space.scenario(@double)
     @space.register_ordered_scenario scenario2
     @space.ordered_scenarios.should == [scenario1, scenario2]
   end

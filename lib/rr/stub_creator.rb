@@ -15,7 +15,7 @@ module RR
   class StubCreator < ScenarioCreator
     def create(method_name, *args, &returns)
       double = @space.create_double(@subject, method_name)
-      scenario = @space.create_scenario(double)
+      scenario = @space.scenario(double)
       scenario.returns(&returns).any_number_of_times
       if args.empty?
         scenario.with_any_args

@@ -15,8 +15,8 @@ describe Space, "#reset" do
     double1 = @space.create_double(@object1, :foobar1)
     double2 = @space.create_double(@object1, :foobar2)
 
-    scenario1 = @space.create_scenario(double1)
-    scenario2 = @space.create_scenario(double2)
+    scenario1 = @space.scenario(double1)
+    scenario2 = @space.scenario(double2)
 
     scenario1.ordered
     scenario2.ordered

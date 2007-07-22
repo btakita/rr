@@ -6,7 +6,7 @@ module Expectations
       @object = Object.new
       @method_name = :foobar
       @double = @space.create_double(@object, @method_name)
-      @scenario = @space.create_scenario(@double)
+      @scenario = @space.scenario(@double)
       @scenario.with_any_args
     end
 
