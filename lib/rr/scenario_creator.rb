@@ -29,16 +29,12 @@ module RR
           "This Scenario is already has a do_not_call expectation."
         )
       end
-      if @strategy == :stub
-        strategy_error!
-      end
+      strategy_error! if @strategy
       @strategy = :mock
     end
 
     def stub
-      if @strategy == :mock
-        strategy_error!
-      end
+      strategy_error! if @strategy
       @strategy = :stub
     end
 
