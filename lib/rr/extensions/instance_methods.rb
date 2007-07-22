@@ -172,9 +172,10 @@ module Extensions
     #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
     #      m.method3.with_no_args # Do not allow method3 with no arguments
     #    end
-    def do_not_allow(object, method_name=nil, &definition)
+    def do_not_allow(object=NO_SCENARIO_ARG, method_name=nil, &definition)
       creator = RR::Space.scenario_creator
       creator.do_not_call
+      return creator if object === NO_SCENARIO_ARG
       RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
     end
     alias_method :dont_allow, :do_not_allow

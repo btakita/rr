@@ -247,6 +247,10 @@ module Extensions
       end
     end
 
+    it "returns a ScenarioCreator when passed no arguments" do
+      do_not_allow.should be_instance_of(ScenarioCreator)
+    end
+
     it "sets up the RR do_not_allow call chain" do
       should create_do_not_allow_call_chain(do_not_allow(@subject))
     end
