@@ -5,6 +5,7 @@ describe ScenarioCreator, :shared => true do
   before(:each) do
     @space = Space.new
     @subject = Object.new
+    @creator = ScenarioCreator.new(@space, @subject)
   end
 
   it "initializes creator with passed in object" do
@@ -16,8 +17,6 @@ describe ScenarioCreator, "#create! using mock strategy" do
   it_should_behave_like "RR::ScenarioCreator"
   
   before do
-    @subject = Object.new
-    @creator = ScenarioCreator.new(@space, @subject)
     @creator.mock
   end
 
@@ -34,8 +33,6 @@ describe ScenarioCreator, "#create! using stub strategy" do
   it_should_behave_like "RR::ScenarioCreator"
 
   before do
-    @subject = Object.new
-    @creator = ScenarioCreator.new(@space, @subject)
     @creator.stub
   end
 
@@ -58,8 +55,6 @@ describe ScenarioCreator, "#create! using do_not_call strategy" do
   it_should_behave_like "RR::ScenarioCreator"
 
   before do
-    @subject = Object.new
-    @creator = ScenarioCreator.new(@space, @subject)
     @creator.do_not_call
   end
 
@@ -86,8 +81,6 @@ describe ScenarioCreator, "#create! using mock_probe strategy" do
   it_should_behave_like "RR::ScenarioCreator"
 
   before do
-    @subject = Object.new
-    @creator = ScenarioCreator.new(@space, @subject)
     @creator.mock_probe
   end
 
@@ -119,8 +112,6 @@ describe ScenarioCreator, "#create! using stub_probe strategy" do
   it_should_behave_like "RR::ScenarioCreator"
 
   before do
-    @subject = Object.new
-    @creator = ScenarioCreator.new(@space, @subject)
     @creator.stub_probe
   end
 
