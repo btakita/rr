@@ -216,28 +216,45 @@ describe ScenarioCreator, "#probe" do
     )
   end
 
-  it "sets up the RR stub call chain" do
-    should create_probe_call_chain(@creator.stub.probe(@subject))
-  end
-
-  it "creates a probe Scenario for method when passed a second argument" do
-    should create_scenario_with_method_name(@creator.stub.probe(@subject, :foobar))
-  end
-
-  def create_scenario_with_method_name(scenario)
-    method_name = scenario.method_name
-    scenario.with(1, 2) {:baz}
-    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-    @subject.__send__(method_name, 1, 2).should == :baz
-  end
-
-  def create_probe_call_chain(creator)
-    scenario = creator.foobar(1, 2) {:baz}
+  it "sets up the RR probe call chain" do
+    scenario = @creator.stub.probe(@subject).foobar(1, 2) {:baz}
     scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
     scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
     @subject.foobar(1, 2).should == :baz
   end
+
+  it "creates a probe Scenario for method when passed a second argument" do
+    scenario = @creator.stub.probe(@subject, :foobar)
+    scenario.with(1, 2) {:baz}
+    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    @subject.foobar(1, 2).should == :baz
+  end
+end
+
+describe ScenarioCreator, "#instance_of" do
+  it_should_behave_like "RR::ScenarioCreator"
+
+  it "raises an error when not passed a class" #do
+#    proc do
+#      @creator.instance_of(Object.new)
+#    end.should raise_error(ArgumentError, "instance_of only accepts class objects")
+#  end
+
+  it "sets up the RR probe call chain" #do
+#    scenario = @creator.stub.instance_of(Class).foobar(1, 2) {:baz}
+#    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+#    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+#    Class.new.foobar(1, 2).should == :baz
+#  end
+
+  it "creates a probe Scenario for method when passed a second argument" #do
+#    scenario = @creator.stub.instance_of(Class, :foobar)
+#    scenario.with(1, 2) {:baz}
+#    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+#    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+#    Class.new.foobar(1, 2).should == :baz
+#  end
 end
 
 describe ScenarioCreator, "#create! using no strategy" do

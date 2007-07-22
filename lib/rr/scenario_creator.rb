@@ -16,6 +16,7 @@ module RR
       @space = space
       @strategy = nil
       @probe = false
+      @instance_of = nil
     end
     
     def create!(subject, method_name, *args, &handler)
@@ -28,6 +29,13 @@ module RR
       transform!
       @scenario
     end
+
+#    def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
+#      return self if subject === NO_SUBJECT_ARG
+#      raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
+#      @instance_of = true
+#      RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
+#    end
 
     # This method sets the Scenario to have a mock strategy. A mock strategy
     # sets the default state of the Scenario to expect the method call
