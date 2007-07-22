@@ -7,44 +7,54 @@ http://xunitpatterns.com/Test%20Double.html
 Currently RR implements mocks, stubs, and probes. It is a goal of
 RR to support a wide range of double techniques and patterns.
 
-== Mocking
+== Mocks
 http://xunitpatterns.com/Mock%20Object.html
   view = controller.template
   mock(view).render(:partial => "user_info") {"Information"}
 
-== Stubbing
+  # or
+  mock(view) do
+    render(:partial => "user_info") {"Information"}
+  end
+
+== Stubs
 http://xunitpatterns.com/Test%20Stub.html
   jane = User.new
   stub(User).find('42') {jane}
-  mock(jane).valid? {true}
 
-== Mock Probing
+== Mock Probes
 Add verifications that a method was called while actually calling it.
 The following example verifies render partial will be called and
 renders the partial.
 
   view = controller.template
-  probe(view).render(:partial => "user_info")
-  # or mock_probe.render(:partial => "user_info")
+  mock.probe(view).render(:partial => "right_navigation")
+  mock.probe(view).render(:partial => "user_info") do |html|
+    html.should include("John Doe")
+    "Different html"
+  end
 
-Probes also support after_call callbacks. This is useful for Stubbing out
+Probes support after_call callbacks. This is useful for Stubbing out
 a class method and getting its return value. You can also change the return value.
 This technique is also useful for verifying that you are mocking exists and
 functions proberly, thereby testing you interface.
 For example, using ActiveRecord:
 
   probe(User).find('5') do |user|
+    mock.probe(user).projects do |projects|
+      projects[0..3]
+    end
     mock(user).valid? {false}
     user
   end
 
-== Mock Stubbing
+== Stub Probes
 Intercept the return value of a method call.
 The following example verifies render partial will be called and
 renders the partial.
 
   view = controller.template
-  stub_probe(view).render(:partial => "user_info") do |html|
+  stub.probe(view).render(:partial => "user_info") do |html|
     html.should include("Joe Smith")
     html
   end
@@ -65,6 +75,7 @@ Here is RR compared to other mock frameworks:
   flexmock(User).should_receive(:find).with('42').and_return(jane) # Flexmock
   User.should_receive(:find).with('42').and_return(jane) # Rspec
   User.expects(:find).with('42').returns {jane} # Mocha
+  User.should_receive(:find).with('42') {jane} # Rspec using return value blocks
   mock(User).find('42') {jane} # RR
 
 == Special Thanks To
