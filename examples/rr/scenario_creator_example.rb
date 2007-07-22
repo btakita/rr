@@ -13,13 +13,23 @@ describe ScenarioCreator, :shared => true do
   end
 end
 
-describe ScenarioCreator, "#mock" do
+describe ScenarioCreator, " strategy definition", :shared => true do
   it_should_behave_like "RR::ScenarioCreator"
+
+  it "raises error when using mock strategy" do
+    @creator.mock
+    proc do
+      @creator.__send__(@method_name)
+    end.should raise_error(
+      Errors::ScenarioDefinitionError,
+      "This Scenario already has a mock strategy"
+    )
+  end
 
   it "raises error when using stub strategy" do
     @creator.stub
     proc do
-      @creator.mock
+      @creator.__send__(@method_name)
     end.should raise_error(
       Errors::ScenarioDefinitionError,
       "This Scenario already has a stub strategy"
@@ -29,7 +39,7 @@ describe ScenarioCreator, "#mock" do
   it "raises error when using do_not_call strategy" do
     @creator.do_not_call
     proc do
-      @creator.mock
+      @creator.__send__(@method_name)
     end.should raise_error(
       Errors::ScenarioDefinitionError,
       "This Scenario already has a do_not_call strategy"
@@ -37,17 +47,27 @@ describe ScenarioCreator, "#mock" do
   end
 end
 
-describe ScenarioCreator, "#stub" do
-  it_should_behave_like "RR::ScenarioCreator"
+describe ScenarioCreator, "#mock" do
+  it_should_behave_like "RR::ScenarioCreator strategy definition"
 
-  it "raises error when using mock strategy" do
-    @creator.mock
-    proc do
-      @creator.stub
-    end.should raise_error(
-      Errors::ScenarioDefinitionError,
-      "This Scenario already has a mock strategy"
-    )
+  before do
+    @method_name = :mock
+  end
+end
+
+describe ScenarioCreator, "#stub" do
+  it_should_behave_like "RR::ScenarioCreator strategy definition"
+
+  before do
+    @method_name = :stub
+  end
+end
+
+describe ScenarioCreator, "#do_not_call" do
+  it_should_behave_like "RR::ScenarioCreator strategy definition"
+
+  before do
+    @method_name = :do_not_call
   end
 end
 
@@ -61,30 +81,6 @@ describe ScenarioCreator, "#probe" do
     end.should raise_error(
       Errors::ScenarioDefinitionError,
       "Scenarios cannot be probed when using do_not_call strategy"
-    )
-  end
-end
-
-describe ScenarioCreator, "#do_not_call" do
-  it_should_behave_like "RR::ScenarioCreator"
-
-  it "raises error when using mock strategy" do
-    @creator.mock
-    proc do
-      @creator.do_not_call
-    end.should raise_error(
-      Errors::ScenarioDefinitionError,
-      "This Scenario already has a mock strategy"
-    )
-  end
-
-  it "raises error when using stub strategy" do
-    @creator.stub
-    proc do
-      @creator.do_not_call
-    end.should raise_error(
-      Errors::ScenarioDefinitionError,
-      "This Scenario already has a stub strategy"
     )
   end
 end
