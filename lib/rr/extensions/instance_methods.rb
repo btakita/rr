@@ -47,9 +47,10 @@ module Extensions
     #     method_name_1 {return_value_1}
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
-    def stub(object, method_name=nil, &definition)
+    def stub(object=NO_SCENARIO_ARG, method_name=nil, &definition)
       creator = RR::Space.scenario_creator
       creator.stub
+      return creator if object === NO_SCENARIO_ARG
       RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
     end
 

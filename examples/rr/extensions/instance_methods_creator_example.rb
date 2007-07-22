@@ -72,6 +72,10 @@ module Extensions
       end
     end
 
+    it "returns a ScenarioCreator when passed no arguments" do
+      stub.should be_instance_of(ScenarioCreator)
+    end
+
     it "sets up the RR stub call chain" do
       should create_stub_call_chain(stub(@subject))
     end
