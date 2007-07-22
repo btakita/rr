@@ -15,6 +15,7 @@ module RR
         end.join("\n")
       end
     end
+    ORIGINAL_METHOD = Object.new
 
     attr_reader :times_called, :argument_expectation, :times_called_expectation, :double
 
@@ -247,7 +248,7 @@ module RR
     #   mock(obj).method_name.implemented_by_original_method
     #   obj.foobar {|arg| puts arg} # puts 1
     def implemented_by_original_method
-      implemented_by @double.original_method
+      implemented_by ORIGINAL_METHOD
       self
     end
 
@@ -277,6 +278,10 @@ module RR
 
     def call_implementation(*args, &block)
       return nil unless @implementation
+
+      if @implementation === ORIGINAL_METHOD
+        return @double.original_method.call(*args, &block)
+      end
 
       if @implementation.is_a?(Method)
         return @implementation.call(*args, &block)

@@ -203,8 +203,16 @@ describe ScenarioCreator, "#do_not_call" do
   end
 end
 
-describe ScenarioCreator, "#probe" do
+describe ScenarioCreator, "#probe and #stub" do
   it_should_behave_like "RR::ScenarioCreator"
+
+  before do
+    class << @subject
+      def foobar(*args)
+        :original_foobar
+      end
+    end
+  end
 
   it "raises error when using do_not_call strategy" do
     @creator.do_not_call
