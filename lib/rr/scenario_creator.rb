@@ -51,17 +51,16 @@ module RR
           @scenario.with(*@args)
         end
       when :mock_probe
-        @scenario.with(*@args).once.implemented_by_original_method
-        @scenario.after_call(&@handler) if @handler
+        @scenario.with(*@args).once
+        probe_strategy
       when :stub_probe
-        @scenario.implemented_by_original_method
         @scenario.any_number_of_times
         if @args.empty?
           @scenario.with_any_args
         else
           @scenario.with(*@args)
         end
-        @scenario.after_call(&@handler) if @handler
+        probe_strategy
       when :do_not_call
         if @args.empty?
           @scenario.with_any_args
@@ -70,6 +69,11 @@ module RR
         end
         @scenario.never.returns(&@handler)
       end
+    end
+    
+    def probe_strategy
+      @scenario.implemented_by_original_method
+      @scenario.after_call(&@handler) if @handler
     end
   end
 end
