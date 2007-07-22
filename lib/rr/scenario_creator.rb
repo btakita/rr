@@ -43,9 +43,9 @@ module RR
       case @strategy
       when :mock
         mock_transform!
-        @scenario.returns(&@handler)
+        reimplementation_transform!
       when :stub
-        @scenario.returns(&@handler)
+        reimplementation_transform!
         stub_times_transform!
         permissive_argument_transform!
       when :mock_probe
@@ -57,8 +57,13 @@ module RR
         probe_transform!
       when :do_not_call
         permissive_argument_transform!
-        @scenario.never.returns(&@handler)
+        reimplementation_transform!
+        @scenario.never
       end
+    end
+
+    def reimplementation_transform!
+      @scenario.returns(&@handler)
     end
 
     def mock_transform!
