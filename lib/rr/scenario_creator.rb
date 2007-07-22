@@ -6,6 +6,8 @@ module RR
       @space = space
       @subject = subject
       @strategy = nil
+      @probe = false
+      @do_not_call = false
     end
     
     def create!(method_name, *args, &handler)
@@ -27,35 +29,37 @@ module RR
     end
 
     def mock_probe
-      @strategy = :mock_probe
+      @strategy = :mock
+      @probe = true
     end
 
     def stub_probe
-      @strategy = :stub_probe
+      @strategy = :stub
+      @probe = true
     end
 
     def do_not_call
-      @strategy = :do_not_call
+      @do_not_call = true
     end
 
     protected
     def transform!
-      case @strategy
-      when :mock
-        mock!
-        reimplementation!
-      when :stub
-        stub!
-        reimplementation!
-      when :mock_probe
-        mock!
-        probe!
-      when :stub_probe
-        stub!
-        probe!
-      when :do_not_call
+      if @do_not_call
         @scenario.never
         permissive_argument!
+        reimplementation!
+        return
+      end
+
+      if @strategy == :mock
+        mock!
+      elsif @strategy == :stub
+        stub!
+      end
+      
+      if @probe
+        probe!
+      else
         reimplementation!
       end
     end
