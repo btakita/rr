@@ -23,6 +23,12 @@ module RR
     end
 
     def mock
+      if @do_not_call
+        raise(
+          ScenarioDefinitionError,
+          "This Scenario is already has a do_not_call expectation."
+        )
+      end
       if @strategy == :stub
         raise(
           ScenarioDefinitionError,

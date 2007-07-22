@@ -25,6 +25,16 @@ describe ScenarioCreator, "#mock" do
       "This Scenario is already a stub. It cannot be a mock."
     )
   end
+
+  it "raises error when do_not_call called before" do
+    @creator.do_not_call
+    proc do
+      @creator.mock
+    end.should raise_error(
+      Errors::ScenarioDefinitionError,
+      "This Scenario is already has a do_not_call expectation."
+    )
+  end
 end
 
 describe ScenarioCreator, "#stub" do
