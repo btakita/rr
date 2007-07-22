@@ -1,5 +1,11 @@
 module RR
-  # RR::ScenarioCreator is the superclass for all creators.
+  # RR::ScenarioCreator provides a strategies to create a Scenario.
+  # The strategies are:
+  # * mock
+  # * stub
+  # * do_not_call
+  #
+  # Probing can also be added.
   class ScenarioCreator
     NO_SUBJECT_ARG = Object.new
 
