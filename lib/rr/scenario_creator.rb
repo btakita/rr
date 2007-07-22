@@ -42,38 +42,38 @@ module RR
     def transform!
       case @strategy
       when :mock
-        mock_transform!
-        reimplementation_transform!
+        mock!
+        reimplementation!
       when :stub
-        stub_transform!
-        reimplementation_transform!
+        stub!
+        reimplementation!
       when :mock_probe
-        mock_transform!
-        probe_transform!
+        mock!
+        probe!
       when :stub_probe
-        stub_transform!
-        probe_transform!
+        stub!
+        probe!
       when :do_not_call
         @scenario.never
-        permissive_argument_transform!
-        reimplementation_transform!
+        permissive_argument!
+        reimplementation!
       end
     end
 
-    def reimplementation_transform!
+    def reimplementation!
       @scenario.returns(&@handler)
     end
 
-    def mock_transform!
+    def mock!
       @scenario.with(*@args).once
     end
 
-    def stub_transform!
+    def stub!
       @scenario.any_number_of_times
-      permissive_argument_transform!
+      permissive_argument!
     end
 
-    def permissive_argument_transform!
+    def permissive_argument!
       if @args.empty?
         @scenario.with_any_args
       else
@@ -81,7 +81,7 @@ module RR
       end
     end
     
-    def probe_transform!
+    def probe!
       @scenario.implemented_by_original_method
       @scenario.after_call(&@handler) if @handler
     end
