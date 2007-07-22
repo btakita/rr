@@ -126,12 +126,20 @@ module Extensions
       end      
     end
 
+    it "#probe returns a ScenarioCreator when passed no arguments" do
+      probe.should be_instance_of(ScenarioCreator)
+    end
+
     it "#probe sets up the RR probe call chain" do
       should create_mock_probe_call_chain(probe(@subject))
     end
 
     it "#rr_probe sets up the RR probe call chain" do
       should create_mock_probe_call_chain(rr_probe(@subject))
+    end
+
+    it "#mock_probe returns a ScenarioCreator when passed no arguments" do
+      mock_probe.should be_instance_of(ScenarioCreator)
     end
 
     it "#mock_probe sets up the RR probe call chain" do
@@ -194,6 +202,10 @@ module Extensions
           :original_value
         end
       end
+    end
+
+    it "returns a ScenarioCreator when passed no arguments" do
+      stub_probe.should be_instance_of(ScenarioCreator)
     end
 
     it "sets up the RR probe call chain" do

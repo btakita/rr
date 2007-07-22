@@ -99,9 +99,10 @@ module Extensions
     #     html.should include("My socks are wet")
     #     "My new return value"
     #   end
-    def mock_probe(object, method_name=nil, &definition)
+    def mock_probe(object=NO_SCENARIO_ARG, method_name=nil, &definition)
       creator = RR::Space.scenario_creator
       creator.mock_probe
+      return creator if object === NO_SCENARIO_ARG
       RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
     end
 
@@ -148,9 +149,10 @@ module Extensions
     #     html.should include("My socks are wet")
     #     "My new return value"
     #   end
-    def stub_probe(object, method_name=nil, &definition)
+    def stub_probe(object=NO_SCENARIO_ARG, method_name=nil, &definition)
       creator = RR::Space.scenario_creator
       creator.stub_probe
+      return creator if object === NO_SCENARIO_ARG
       RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
     end
 
