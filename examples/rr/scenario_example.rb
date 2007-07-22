@@ -78,12 +78,12 @@ describe Scenario, "#never" do
 
   it "sets up a Times Called Expectation with 0" do
     @scenario.never
-    proc {@scenario.call}.should raise_error(Errors::TimesCalledError)
+    proc {@scenario.call(@double)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "sets return value when block passed in" do
     @scenario.with_any_args.never
-    proc {@scenario.call}.should raise_error(Errors::TimesCalledError)
+    proc {@scenario.call(@double)}.should raise_error(Errors::TimesCalledError)
   end
 end
 
@@ -92,8 +92,8 @@ describe Scenario, "#once" do
 
   it "sets up a Times Called Expectation with 1" do
     @scenario.once.should === @scenario
-    @scenario.call
-    proc {@scenario.call}.should raise_error(Errors::TimesCalledError)
+    @scenario.call(@double)
+    proc {@scenario.call(@double)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "sets return value when block passed in" do
@@ -107,9 +107,9 @@ describe Scenario, "#twice" do
 
   it "sets up a Times Called Expectation with 2" do
     @scenario.twice.should === @scenario
-    @scenario.call
-    @scenario.call
-    proc {@scenario.call}.should raise_error(Errors::TimesCalledError)
+    @scenario.call(@double)
+    @scenario.call(@double)
+    proc {@scenario.call(@double)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "sets return value when block passed in" do
@@ -145,10 +145,10 @@ describe Scenario, "#at_most" do
 
   it "sets up a Times Called Expectation with 1" do
     @scenario.at_most(2)
-    @scenario.call
-    @scenario.call
+    @scenario.call(@double)
+    @scenario.call(@double)
     proc do
-      @scenario.call
+      @scenario.call(@double)
     end.should raise_error(
       Errors::TimesCalledError,
       "Called 3 times.\nExpected at most 2 times."
@@ -166,10 +166,10 @@ describe Scenario, "#times" do
 
   it "sets up a Times Called Expectation with passed in times" do
     @scenario.times(3).should === @scenario
-    @scenario.call
-    @scenario.call
-    @scenario.call
-    proc {@scenario.call}.should raise_error(Errors::TimesCalledError)
+    @scenario.call(@double)
+    @scenario.call(@double)
+    @scenario.call(@double)
+    proc {@scenario.call(@double)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "sets return value when block passed in" do
@@ -271,7 +271,7 @@ describe Scenario, "#after_call" do
       value
     end
 
-    actual_value = @scenario.call
+    actual_value = @scenario.call(@double)
     actual_value.should === return_value
     actual_value.should == {:foo => :bar}
   end
@@ -282,7 +282,7 @@ describe Scenario, "#after_call" do
       :after_call_value
     end
 
-    actual_value = @scenario.call
+    actual_value = @scenario.call(@double)
     actual_value.should == :after_call_value
   end
 
@@ -313,17 +313,17 @@ describe Scenario, "#returns" do
 
   it "sets the value of the method when passed a block" do
     @scenario.returns {:baz}
-    @scenario.call.should == :baz
+    @scenario.call(@double).should == :baz
   end
 
   it "sets the value of the method when passed an argument" do
     @scenario.returns(:baz)
-    @scenario.call.should == :baz
+    @scenario.call(@double).should == :baz
   end
 
   it "returns false when passed false" do
     @scenario.returns(false)
-    @scenario.call.should == false
+    @scenario.call(@double).should == false
   end
 
   it "raises an error when both argument and block is passed in" do
@@ -342,7 +342,7 @@ describe Scenario, "#implemented_by" do
 
   it "sets the implementation to the passed in proc" do
     @scenario.implemented_by(proc{:baz})
-    @scenario.call.should == :baz
+    @scenario.call(@double).should == :baz
   end
 
   it "sets the implementation to the passed in method" do
@@ -350,7 +350,7 @@ describe Scenario, "#implemented_by" do
       [b, a]
     end
     @scenario.implemented_by(@object.method(:foobar))
-    @scenario.call(1, 2).should == [2, 1]
+    @scenario.call(@double, 1, 2).should == [2, 1]
   end
 end
 
@@ -363,7 +363,7 @@ describe Scenario, "#implemented_by_original_method" do
 
   it "sets the implementation to the original method" do
     @scenario.implemented_by_original_method
-    @scenario.call(1, 2).should == [2, 1]
+    @scenario.call(@double, 1, 2).should == [2, 1]
   end
 
   it "raises error when original_method does not exist" do
@@ -386,31 +386,31 @@ describe Scenario, "#call implemented by a proc" do
   
   it "calls the return proc when implemented by a proc" do
     @scenario.returns {|arg| "returning #{arg}"}
-    @scenario.call(:foobar).should == "returning foobar"
+    @scenario.call(@double, :foobar).should == "returning foobar"
   end
 
   it "calls and returns the after_call when after_call is set" do
     @scenario.returns {|arg| "returning #{arg}"}.after_call do |value|
       "#{value} after call"
     end
-    @scenario.call(:foobar).should == "returning foobar after call"
+    @scenario.call(@double, :foobar).should == "returning foobar after call"
   end
 
   it "returns nil when to returns is not set" do
-    @scenario.call.should be_nil
+    @scenario.call(@double).should be_nil
   end
 
   it "works when times_called is not set" do
     @scenario.returns {:value}
-    @scenario.call
+    @scenario.call(@double)
   end
 
   it "verifes the times_called does not exceed the TimesCalledExpectation" do
     @scenario.times(2).returns {:value}
 
-    @scenario.call(:foobar)
-    @scenario.call(:foobar)
-    proc {@scenario.call(:foobar)}.should raise_error(Errors::TimesCalledError)
+    @scenario.call(@double, :foobar)
+    @scenario.call(@double, :foobar)
+    proc {@scenario.call(@double, :foobar)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "raises ScenarioOrderError when ordered and called out of order" do
@@ -442,7 +442,7 @@ describe Scenario, "#call implemented by a proc" do
     end
 
     @scenario.returns {:value}.ordered
-    @scenario.call(:foobar)
+    @scenario.call(@double, :foobar)
     verify_ordered_scenario_called.should be_true
     passed_in_scenario.should === @scenario
   end
@@ -457,7 +457,7 @@ describe Scenario, "#call implemented by a proc" do
     end
 
     @scenario.returns {:value}
-    @scenario.call(:foobar)
+    @scenario.call(@double, :foobar)
     verify_ordered_scenario_called.should be_false
   end
 
@@ -557,15 +557,15 @@ describe Scenario, "#attempt?" do
 
   it "returns true when TimesCalledExpectation#attempt? is true" do
     @scenario.with(1, 2, 3).twice
-    @scenario.call(1, 2, 3)
+    @scenario.call(@double, 1, 2, 3)
     @scenario.times_called_expectation.should be_attempt
     @scenario.should be_attempt
   end
 
   it "returns false when TimesCalledExpectation#attempt? is true" do
     @scenario.with(1, 2, 3).twice
-    @scenario.call(1, 2, 3)
-    @scenario.call(1, 2, 3)
+    @scenario.call(@double, 1, 2, 3)
+    @scenario.call(@double, 1, 2, 3)
     @scenario.times_called_expectation.should_not be_attempt
     @scenario.should_not be_attempt
   end
@@ -584,18 +584,18 @@ describe Scenario, "#verify" do
     @scenario.twice.returns {:return_value}
 
     proc {@scenario.verify}.should raise_error(Errors::TimesCalledError)
-    @scenario.call
+    @scenario.call(@double)
     proc {@scenario.verify}.should raise_error(Errors::TimesCalledError)
-    @scenario.call
+    @scenario.call(@double)
     
     proc {@scenario.verify}.should_not raise_error
   end
 
   it "does not raise an error when there is no times called expectation" do
     proc {@scenario.verify}.should_not raise_error
-    @scenario.call
+    @scenario.call(@double)
     proc {@scenario.verify}.should_not raise_error
-    @scenario.call
+    @scenario.call(@double)
     proc {@scenario.verify}.should_not raise_error
   end
 end

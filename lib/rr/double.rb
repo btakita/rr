@@ -74,7 +74,7 @@ module RR
 
     def call_method(args, block)
       if scenario = find_scenario_to_attempt(args)
-        return scenario.call(*args, &block)
+        return scenario.call(self, *args, &block)
       end
       scenario_not_found_error(*args)
     end

@@ -257,11 +257,11 @@ module RR
     #
     # A TimesCalledError is raised when the times called
     # exceeds the expected TimesCalledExpectation.
-    def call(*args, &block)
+    def call(double, *args, &block)
       @times_called_expectation.attempt! if @times_called_expectation
       @space.verify_ordered_scenario(self) if ordered?
       yields!(block)
-      return_value = call_implementation(*args, &block)
+      return_value = call_implementation(double, *args, &block)
       return return_value unless @after_call
       @after_call.call(return_value)
     end
@@ -276,15 +276,15 @@ module RR
     end
     protected :yields!
 
-    def call_implementation(*args, &block)
+    def call_implementation(double, *args, &block)
       return nil unless @implementation
 
       if @implementation === ORIGINAL_METHOD
-        if !@double.original_method
+        if !double.original_method
           raise Errors::ScenarioDefinitionError,
                 "implemented_by_original_method (probe) cannot be used when method does not exist on the object"
         end
-        return @double.original_method.call(*args, &block)
+        return double.original_method.call(*args, &block)
       end
 
       if @implementation.is_a?(Method)
