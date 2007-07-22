@@ -22,7 +22,7 @@ describe ScenarioCreator, "#mock" do
       @creator.mock
     end.should raise_error(
       Errors::ScenarioDefinitionError,
-      "This Scenario is already a stub."
+      "This Scenario already has a stub strategy."
     )
   end
 
@@ -32,7 +32,7 @@ describe ScenarioCreator, "#mock" do
       @creator.mock
     end.should raise_error(
       Errors::ScenarioDefinitionError,
-      "This Scenario is already has a do_not_call expectation."
+      "This Scenario already has a do_not_call strategy."
     )
   end
 end
@@ -46,7 +46,7 @@ describe ScenarioCreator, "#stub" do
       @creator.stub
     end.should raise_error(
       Errors::ScenarioDefinitionError,
-      "This Scenario is already a mock."
+      "This Scenario already has a mock strategy."
     )
   end
 end

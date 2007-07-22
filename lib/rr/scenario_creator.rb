@@ -9,7 +9,6 @@ module RR
       @subject = subject
       @strategy = nil
       @probe = false
-      @do_not_call = false
     end
     
     def create!(method_name, *args, &handler)
@@ -23,12 +22,6 @@ module RR
     end
 
     def mock
-      if @do_not_call
-        raise(
-          ScenarioDefinitionError,
-          "This Scenario is already has a do_not_call expectation."
-        )
-      end
       strategy_error! if @strategy
       @strategy = :mock
     end
@@ -53,22 +46,19 @@ module RR
     end
 
     def do_not_call
-      @do_not_call = true
+      @strategy = :do_not_call
     end
 
     protected
     def transform!
-      if @do_not_call
-        @scenario.never
-        permissive_argument!
-        reimplementation!
-        return
-      end
-
       if @strategy == :mock
         mock!
       elsif @strategy == :stub
         stub!
+      elsif @strategy == :do_not_call
+        @scenario.never
+        permissive_argument!
+        reimplementation!
       end
       
       if @probe
@@ -107,7 +97,7 @@ module RR
     def strategy_error!
       raise(
         ScenarioDefinitionError,
-        "This Scenario is already a #{@strategy}."
+        "This Scenario already has a #{@strategy} strategy."
       )
     end
   end
