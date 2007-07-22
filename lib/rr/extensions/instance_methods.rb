@@ -129,17 +129,18 @@ module Extensions
       creator.probe(subject, method_name, &definition)
     end
 
-    # RR::DoNotAllowCreator uses RR::DoNotAllowCreator#method_missing to create
-    # a Scenario that expects never to be called.
+    # This method sets the Scenario to have a do_not_call strategy.
+    # A do_not_call strategy sets the default state of the Scenario
+    # to expect never to be called. The Scenario's expectations can be
+    # changed.
     #
-    # The following example mocks method_name with arg1 and arg2
-    # returning return_value.
+    # The following example sets the expectation that subject.method_name
+    # will never be called with arg1 and arg2.
     #
-    #   do_not_allow(subject).method_name(arg1, arg2) { return_value }
+    #   do_not_allow(subject).method_name(arg1, arg2)
     #
-    # The DoNotAllowCreator also supports a block sytnax.
-    #
-    #    do_not_allow(subject) do |m|
+    # do_not_call also supports a block sytnax.
+    #    do_not_call(subject) do |m|
     #      m.method1 # Do not allow method1 with any arguments
     #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
     #      m.method3.with_no_args # Do not allow method3 with no arguments
