@@ -1,3 +1,4 @@
+* 0.3.1
 - Automatically require Test::Unit and Rspec adapters
 
 * 0.3.0

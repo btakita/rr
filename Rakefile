@@ -21,7 +21,7 @@ def run_suite
 end
 
 PKG_NAME = "rr"
-PKG_VERSION = "0.3.0"
+PKG_VERSION = "0.3.1"
 PKG_FILES = FileList[
   '[A-Z]*',
   '*.rb',
