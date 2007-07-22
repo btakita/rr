@@ -22,7 +22,7 @@ describe ScenarioCreator, "#mock" do
       @creator.mock
     end.should raise_error(
       Errors::ScenarioDefinitionError,
-      "This Scenario is already a stub. It cannot be a mock."
+      "This Scenario is already a stub."
     )
   end
 
@@ -46,7 +46,7 @@ describe ScenarioCreator, "#stub" do
       @creator.stub
     end.should raise_error(
       Errors::ScenarioDefinitionError,
-      "This Scenario is already a mock. It cannot be a stub."
+      "This Scenario is already a mock."
     )
   end
 end
