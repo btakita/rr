@@ -70,7 +70,7 @@ describe StubCreator, ".new with block" do
   end
 end
 
-describe StubCreator, "#method_missing" do
+describe StubCreator, "#create" do
   it_should_behave_like "RR::StubCreator"
   
   before do
@@ -79,14 +79,14 @@ describe StubCreator, "#method_missing" do
   end
 
   it "stubs the subject without any args" do
-    @creator.foobar {:baz}
+    @creator.create(:foobar) {:baz}
     @subject.foobar.should == :baz
   end
 
   it "stubs the subject mapping passed in args with the output" do
-    @creator.foobar(1, 2) {:one_two}
-    @creator.foobar(1) {:one}
-    @creator.foobar() {:nothing}
+    @creator.create(:foobar, 1, 2) {:one_two}
+    @creator.create(:foobar, 1) {:one}
+    @creator.create(:foobar) {:nothing}
     @subject.foobar.should == :nothing
     @subject.foobar(1).should == :one
     @subject.foobar(1, 2).should == :one_two

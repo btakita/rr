@@ -14,8 +14,7 @@ module RR
   #    end
   class StubCreator < ScenarioCreator
     module InstanceMethods
-      protected
-      def method_missing(method_name, *args, &returns)
+      def create(method_name, *args, &returns)
         double = @space.create_double(@subject, method_name)
         scenario = @space.create_scenario(double)
         scenario.returns(&returns).any_number_of_times

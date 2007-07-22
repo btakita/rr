@@ -84,7 +84,7 @@ describe StubProbeCreator, ".new where method takes a block" do
   end
 end
 
-describe StubProbeCreator, "#method_missing" do
+describe StubProbeCreator, "#create" do
   it_should_behave_like "RR::StubProbeCreator"
   
   before do
@@ -94,7 +94,7 @@ describe StubProbeCreator, "#method_missing" do
   
   it "sets up a scenario with passed in arguments" do
     def @subject.foobar(*args); :baz; end
-      @creator.foobar(1, 2)
+    @creator.create(:foobar, 1, 2)
     proc do
       @subject.foobar
     end.should raise_error(Errors::ScenarioNotFoundError)
@@ -102,7 +102,7 @@ describe StubProbeCreator, "#method_missing" do
 
   it "sets expectations on the subject while calling the original method" do
     def @subject.foobar(*args); :baz; end
-    @creator.foobar(1, 2) {:new_value}
+    @creator.create(:foobar, 1, 2) {:new_value}
     10.times do
       @subject.foobar(1, 2).should == :new_value
     end
@@ -113,7 +113,7 @@ describe StubProbeCreator, "#method_missing" do
     (class << @subject; self; end).class_eval do
       define_method(:foobar) {real_value}
     end
-    @creator.foobar(1, 2) do |value|
+    @creator.create(:foobar, 1, 2) do |value|
       mock(value).a_method {99}
       value
     end

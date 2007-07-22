@@ -16,8 +16,7 @@ module RR
   #    end
   class DoNotAllowCreator < ScenarioCreator
     module InstanceMethods
-      protected
-      def method_missing(method_name, *args, &returns)
+      def create(method_name, *args, &returns)
         double = @space.create_double(@subject, method_name)
         scenario = @space.create_scenario(double)
         if args.empty?

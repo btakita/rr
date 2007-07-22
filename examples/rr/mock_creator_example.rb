@@ -67,7 +67,7 @@ describe MockCreator, ".new with block" do
 end
 
 
-describe MockCreator, "#method_missing" do
+describe MockCreator, "#create" do
   it_should_behave_like "RR::MockCreator"
   
   before do
@@ -76,7 +76,7 @@ describe MockCreator, "#method_missing" do
   end
 
   it "sets expectations on the subject" do
-    @creator.foobar(1, 2) {:baz}.twice
+    @creator.create(:foobar, 1, 2) {:baz}.twice
 
     @subject.foobar(1, 2).should == :baz
     @subject.foobar(1, 2).should == :baz

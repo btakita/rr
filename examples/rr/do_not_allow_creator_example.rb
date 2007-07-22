@@ -81,7 +81,7 @@ describe DoNotAllowCreator, ".new with block" do
   end
 end
 
-describe DoNotAllowCreator, "#method_missing" do
+describe DoNotAllowCreator, "#create" do
   it_should_behave_like "RR::DoNotAllowCreator"
 
   before do
@@ -90,19 +90,19 @@ describe DoNotAllowCreator, "#method_missing" do
   end
 
   it "sets expectation for method to never be called with any arguments when on arguments passed in" do
-    @creator.foobar
+    @creator.create(:foobar)
     proc {@subject.foobar}.should raise_error(Errors::TimesCalledError)
     proc {@subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "sets expectation for method to never be called with passed in arguments" do
-    @creator.foobar(1, 2)
+    @creator.create(:foobar, 1, 2)
     proc {@subject.foobar}.should raise_error(Errors::ScenarioNotFoundError)
     proc {@subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "sets expectation for method to never be called with no arguments when with_no_args is set" do
-    @creator.foobar.with_no_args
+    @creator.create(:foobar).with_no_args
     proc {@subject.foobar}.should raise_error(Errors::TimesCalledError)
     proc {@subject.foobar(1, 2)}.should raise_error(Errors::ScenarioNotFoundError)
   end

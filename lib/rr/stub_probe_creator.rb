@@ -23,8 +23,7 @@ module RR
   #   user.valid? # false
   class StubProbeCreator < ScenarioCreator
     module InstanceMethods
-      protected
-      def method_missing(method_name, *args, &after_call)
+      def create(method_name, *args, &after_call)
         double = @space.create_double(@subject, method_name)
         scenario = @space.create_scenario(double)
         scenario.implemented_by(double.original_method)
