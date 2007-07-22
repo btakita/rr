@@ -30,20 +30,14 @@ module RR
         )
       end
       if @strategy == :stub
-        raise(
-          ScenarioDefinitionError,
-          "This Scenario is already a stub."
-        )
+        strategy_error!
       end
       @strategy = :mock
     end
 
     def stub
       if @strategy == :mock
-        raise(
-          ScenarioDefinitionError,
-          "This Scenario is already a mock."
-        )
+        strategy_error!
       end
       @strategy = :stub
     end
@@ -112,6 +106,13 @@ module RR
     def probe!
       @scenario.implemented_by_original_method
       @scenario.after_call(&@handler) if @handler
+    end
+
+    def strategy_error!
+      raise(
+        ScenarioDefinitionError,
+        "This Scenario is already a #{@strategy}."
+      )
     end
   end
 end
