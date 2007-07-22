@@ -22,20 +22,18 @@ module RR
   #   user = User.find('4')
   #   user.valid? # false
   class StubProbeCreator < ScenarioCreator
-    module InstanceMethods
-      def create(method_name, *args, &after_call)
-        double = @space.create_double(@subject, method_name)
-        scenario = @space.create_scenario(double)
-        scenario.implemented_by(double.original_method)
-        scenario.any_number_of_times
-        if args.empty?
-          scenario.with_any_args
-        else
-          scenario.with(*args)
-        end
-        scenario.after_call(&after_call) if after_call
-        scenario
-      end      
+    def create(method_name, *args, &after_call)
+      double = @space.create_double(@subject, method_name)
+      scenario = @space.create_scenario(double)
+      scenario.implemented_by(double.original_method)
+      scenario.any_number_of_times
+      if args.empty?
+        scenario.with_any_args
+      else
+        scenario.with(*args)
+      end
+      scenario.after_call(&after_call) if after_call
+      scenario
     end
   end
 end

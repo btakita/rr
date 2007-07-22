@@ -26,7 +26,8 @@ module Extensions
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
     def mock(object, method_name=nil, &definition)
-      RR::Space.instance.mock_creator(object, method_name, &definition)
+      mock_creator = RR::Space.mock_creator(object)
+      RR::Space.scenario_method_proxy(mock_creator, method_name, &definition)
     end
 
     # When passed the object, this method returns a StubCreator
@@ -43,7 +44,8 @@ module Extensions
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
     def stub(object, method_name=nil, &definition)
-      RR::Space.instance.stub_creator(object, method_name, &definition)
+      stub_creator = RR::Space.stub_creator(object)
+      RR::Space.scenario_method_proxy(stub_creator, method_name, &definition)
     end
 
     # When passed the object, this method returns a MockProbeCreator
@@ -92,7 +94,8 @@ module Extensions
     #     "My new return value"
     #   end
     def mock_probe(object, method_name=nil, &definition)
-      RR::Space.instance.mock_probe_creator(object, method_name, &definition)
+      mock_probe_creator = RR::Space.mock_probe_creator(object)
+      RR::Space.scenario_method_proxy(mock_probe_creator, method_name, &definition)
     end
 
     # When passed the object, this method returns a StubProbeCreator
@@ -139,7 +142,8 @@ module Extensions
     #     "My new return value"
     #   end
     def stub_probe(object, method_name=nil, &definition)
-      RR::Space.instance.stub_probe_creator(object, method_name, &definition)
+      stub_probe_creator = RR::Space.stub_probe_creator(object)
+      RR::Space.scenario_method_proxy(stub_probe_creator, method_name, &definition)
     end
 
     # Same as mock_probe
@@ -148,8 +152,9 @@ module Extensions
     # Sets up a DoNotAllowCreator that generates a Double Scenario that
     # expects never to be called.
     #   do_not_allow(object).method_name
-    def do_not_allow(subject, method_name=nil, &definition)
-      RR::Space.instance.do_not_allow_creator(subject, method_name, &definition)
+    def do_not_allow(object, method_name=nil, &definition)
+      do_not_allow_creator = RR::Space.do_not_allow_creator(object)
+      RR::Space.scenario_method_proxy(do_not_allow_creator, method_name, &definition)
     end
     alias_method :dont_allow, :do_not_allow
 

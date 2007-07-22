@@ -25,29 +25,38 @@ module RR
       @trim_backtrace = false
     end
 
+    def scenario_method_proxy(creator, method_name=nil, &definition)
+      if method_name && definition
+        raise ArgumentError, "Cannot pass in a method name and a block"
+      end
+      proxy = ScenarioMethodProxy.new(self, creator, &definition)
+      return proxy unless method_name
+      proxy.__send__(method_name)
+    end
+
     # Creates a MockCreator.
-    def mock_creator(subject, method_name=nil, &definition)
-      setup_creator MockCreator, subject, method_name, definition
+    def mock_creator(subject)
+      MockCreator.new(self, subject)
     end
 
     # Creates a StubCreator.
-    def stub_creator(subject, method_name=nil, &definition)
-      setup_creator StubCreator, subject, method_name, definition
+    def stub_creator(subject)
+      StubCreator.new(self, subject)
     end
 
     # Creates a MockProbeCreator.
-    def mock_probe_creator(subject, method_name=nil, &definition)
-      setup_creator MockProbeCreator, subject, method_name, definition
+    def mock_probe_creator(subject)
+      MockProbeCreator.new(self, subject)
     end
 
     # Creates a StubProbeCreator.
-    def stub_probe_creator(subject, method_name=nil, &definition)
-      setup_creator StubProbeCreator, subject, method_name, definition
+    def stub_probe_creator(subject)
+      StubProbeCreator.new(self, subject)
     end
 
     # Creates a DoNotAllowCreator.
-    def do_not_allow_creator(subject, method_name=nil, &definition)
-      setup_creator DoNotAllowCreator, subject, method_name, definition
+    def do_not_allow_creator(subject)
+      DoNotAllowCreator.new(self, subject)
     end
 
     # Creates and registers a Scenario to be verified.
@@ -124,15 +133,6 @@ module RR
     end
 
     protected
-    def setup_creator(klass, subject, method_name, definition)
-      if method_name && definition
-        raise ArgumentError, "Cannot pass in a method name and a block"
-      end
-      creator = klass.new(self, subject, &definition)
-      return creator unless method_name
-      creator.__send__(method_name)
-    end
-    
     # Removes the ordered Scenarios from the list
     def reset_ordered_scenarios
       @ordered_scenarios.clear

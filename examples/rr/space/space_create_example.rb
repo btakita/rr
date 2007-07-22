@@ -1,7 +1,7 @@
 require "examples/example_helper"
 
 module RR
-describe Space, "#mock_creator" do
+describe Space, "#scenario_method_proxy", :shared => true do
   it_should_behave_like "RR::Space"
 
   before do
@@ -9,27 +9,49 @@ describe Space, "#mock_creator" do
     @object = Object.new
   end
 
-  it "creates a MockCreator" do
-    creator = @space.mock_creator(@object)
-    creator.foobar(1) {:baz}
-    @object.foobar(1).should == :baz
-    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
+  it "creates a ScenarioMethodProxy" do
+    proxy = @space.scenario_method_proxy(@creator)
+    proxy.should be_instance_of(ScenarioMethodProxy)
   end
 
-  it "creates a mock Scenario for method when passed a second argument" do
-    creator = @space.mock_creator(@object, :foobar).with(1) {:baz}
-    @object.foobar(1).should == :baz
-    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
+  it "sets space to self" do
+    proxy = @space.scenario_method_proxy(@creator)
+    class << proxy
+      attr_reader :space
+    end
+    proxy.space.should === @space
+  end
+
+  it "sets creator to passed in creator" do
+    proxy = @space.scenario_method_proxy(@creator)
+    class << proxy
+      attr_reader :creator
+    end
+    proxy.creator.should === @creator
   end
 
   it "raises error if passed a method name and a block" do
     proc do
-      @space.mock_creator(@object, :foobar) {}
+      @space.scenario_method_proxy(@creator, :foobar) {}
     end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
+  end
+end
+
+describe Space, "#scenario_method_proxy with a MockCreator" do
+  it_should_behave_like "RR::Space#scenario_method_proxy"
+
+  before do
+    @creator = @space.mock_creator(@object)
+  end
+
+  it "creates a mock Scenario for method when passed a second argument" do
+    @space.scenario_method_proxy(@creator, :foobar).with(1) {:baz}
+    @object.foobar(1).should == :baz
+    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "uses block definition when passed a block" do
-    creator = @space.mock_creator(@object) do |c|
+    @space.scenario_method_proxy(@creator) do |c|
       c.foobar(1) {:baz}
     end
     @object.foobar(1).should == :baz
@@ -37,36 +59,21 @@ describe Space, "#mock_creator" do
   end
 end
 
-describe Space, "#stub_creator" do
-  it_should_behave_like "RR::Space"
+describe Space, "#scenario_method_proxy with a StubCreator" do
+  it_should_behave_like "RR::Space#scenario_method_proxy"
 
   before do
-    @space = Space.new
-    @object = Object.new
-    @method_name = :foobar
-  end
-
-  it "creates a StubCreator" do
-    creator = @space.stub_creator(@object)
-    creator.foobar {:baz}
-    @object.foobar.should == :baz
-    @object.foobar.should == :baz
+    @creator = @space.stub_creator(@object)
   end
 
   it "creates a stub Scenario for method when passed a second argument" do
-    creator = @space.stub_creator(@object, :foobar).with(1) {:baz}
+    @space.scenario_method_proxy(@creator, :foobar).with(1) {:baz}
     @object.foobar(1).should == :baz
     @object.foobar(1).should == :baz
-  end
-
-  it "raises error if passed a method name and a block" do
-    proc do
-      @space.stub_creator(@object, :foobar) {}
-    end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
   end
 
   it "uses block definition when passed a block" do
-    creator = @space.stub_creator(@object) do |c|
+    @space.scenario_method_proxy(@creator) do |c|
       c.foobar(1) {:return_value}
       c.foobar.with_any_args {:default}
       c.baz(1) {:baz_value}
@@ -77,116 +84,150 @@ describe Space, "#stub_creator" do
   end
 end
 
-describe Space, "#mock_probe_creator" do
-  it_should_behave_like "RR::Space"
+describe Space, "#scenario_method_proxy with a MockProbeCreator" do
+  it_should_behave_like "RR::Space#scenario_method_proxy"
 
   before do
-    @space = Space.new
-    @object = Object.new
-    @method_name = :foobar
+    @creator = @space.mock_probe_creator(@object)
     def @object.foobar(*args)
       :original_foobar
     end
   end
 
-  it "creates a MockProbeCreator" do
-    creator = @space.mock_probe_creator(@object)
-    creator.foobar(1)
-    @object.foobar(1).should == :original_foobar
-    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
-  end
-
   it "creates a mock probe Scenario for method when passed a second argument" do
-    creator = @space.mock_probe_creator(@object, :foobar).with(1)
+    @space.scenario_method_proxy(@creator, :foobar).with(1)
     @object.foobar(1).should == :original_foobar
     proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
-  end
-
-  it "raises error if passed a method name and a block" do
-    proc do
-      @space.mock_probe_creator(@object, :foobar) {}
-    end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
   end
 
   it "uses block definition when passed a block" do
-    creator = @space.mock_probe_creator(@object) do |c|
+    @space.scenario_method_proxy(@creator) do |c|
       c.foobar(1)
     end
     @object.foobar(1).should == :original_foobar
     proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
+  end
+end
+
+describe Space, "#scenario_method_proxy with a StubProbeCreator" do
+  it_should_behave_like "RR::Space#scenario_method_proxy"
+
+  before do
+    @creator = @space.stub_probe_creator(@creator)
+    def @object.foobar(*args)
+      :original_foobar
+    end
+  end
+
+  it "creates a stub probe Scenario for method when passed a second argument" do
+    @space.scenario_method_proxy(@creator, :foobar)
+    @object.foobar(1).should == :original_foobar
+    @object.foobar(1).should == :original_foobar
+  end
+
+  it "uses block definition when passed a block" do
+    @space.scenario_method_proxy(@creator) do |c|
+      c.foobar(1)
+    end
+    @object.foobar(1).should == :original_foobar
+    @object.foobar(1).should == :original_foobar
+  end
+end
+
+describe Space, "#scenario_method_proxy with a DoNotAllowCreator" do
+  it_should_behave_like "RR::Space#scenario_method_proxy"
+
+  before do
+    @creator = @space.do_not_allow_creator(@object)
+  end
+
+  it "creates a do not allow Scenario for method when passed a second argument" do
+    @space.scenario_method_proxy(@creator, :foobar).with(1)
+    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
+  end
+
+  it "uses block definition when passed a block" do
+    @space.scenario_method_proxy(@creator) do |c|
+      c.foobar(1)
+    end
+    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
+  end
+end
+
+describe Space, " creator method", :shared => true do
+  it_should_behave_like "RR::Space"
+
+  before do
+    @space = Space.new
+    @object = Object.new
+  end
+
+  it "sets the space" do
+    @creator.space.should === @space
+  end
+
+  it "sets the subject" do
+    @creator.subject.should === @object
+  end
+end
+
+describe Space, "#mock_creator" do
+  it_should_behave_like "RR::Space creator method"
+
+  before do
+    @creator = @space.mock_creator(@object)
+  end
+
+  it "creates a MockCreator" do
+    @creator.should be_instance_of(MockCreator)
+  end
+end
+
+describe Space, "#stub_creator" do
+  it_should_behave_like "RR::Space creator method"
+
+  before do
+    @creator = @space.stub_creator(@object)
+  end
+
+  it "creates a StubCreator" do
+    @creator.should be_instance_of(StubCreator)
+  end
+end
+
+describe Space, "#mock_probe_creator" do
+  it_should_behave_like "RR::Space creator method"
+
+  before do
+    @creator = @space.mock_probe_creator(@object)
+  end
+
+  it "creates a MockProbeCreator" do
+    @creator.should be_instance_of(MockProbeCreator)
   end
 end
 
 describe Space, "#stub_probe_creator" do
-  it_should_behave_like "RR::Space"
+  it_should_behave_like "RR::Space creator method"
 
   before do
-    @space = Space.new
-    @object = Object.new
-    @method_name = :foobar
-    def @object.foobar(*args)
-      :original_foobar
-    end
+    @creator = @space.stub_probe_creator(@object)
   end
 
   it "creates a StubProbeCreator" do
-    creator = @space.stub_probe_creator(@object)
-    creator.foobar
-    @object.foobar(1).should == :original_foobar
-    @object.foobar(1).should == :original_foobar
-  end
-
-  it "creates a stub probe Scenario for method when passed a second argument" do
-    creator = @space.stub_probe_creator(@object, :foobar)
-    @object.foobar(1).should == :original_foobar
-    @object.foobar(1).should == :original_foobar
-  end
-
-  it "raises error if passed a method name and a block" do
-    proc do
-      @space.stub_probe_creator(@object, :foobar) {}
-    end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-  end
-
-  it "uses block definition when passed a block" do
-    creator = @space.stub_probe_creator(@object) do |c|
-      c.foobar(1)
-    end
-    @object.foobar(1).should == :original_foobar
-    @object.foobar(1).should == :original_foobar
+    @creator.should be_instance_of(StubProbeCreator)
   end
 end
 
 describe Space, "#do_not_allow_creator" do
-  it_should_behave_like "RR::Space"
+  it_should_behave_like "RR::Space creator method"
 
   before do
-    @space = Space.new
-    @object = Object.new
+    @creator = @space.do_not_allow_creator(@object)
   end
 
-  it "creates a MockCreator" do
-    creator = @space.do_not_allow_creator(@object)
-    creator.foobar(1)
-    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
-  end
-
-  it "creates a do not allow Scenario for method when passed a second argument" do
-    creator = @space.do_not_allow_creator(@object, :foobar).with(1)
-    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
-  end
-
-  it "raises error if passed a method name and a block" do
-    proc do
-      @space.do_not_allow_creator(@object, :foobar) {}
-    end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-  end
-
-  it "uses block definition when passed a block" do
-    creator = @space.do_not_allow_creator(@object) do |c|
-      c.foobar(1)
-    end
-    proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
+  it "creates a DoNotAllowCreator" do
+    @creator.should be_instance_of(DoNotAllowCreator)
   end
 end
 

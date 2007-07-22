@@ -13,13 +13,11 @@ module RR
   #      m.method_name(arg1, arg2) { return_value }
   #    end
   class MockCreator < ScenarioCreator
-    module InstanceMethods
-      def create(method_name, *args, &returns)
-        double = @space.create_double(@subject, method_name)
-        scenario = @space.create_scenario(double)
-        scenario.with(*args).once.returns(&returns)
-        scenario
-      end
+    def create(method_name, *args, &returns)
+      double = @space.create_double(@subject, method_name)
+      scenario = @space.create_scenario(double)
+      scenario.with(*args).once.returns(&returns)
+      scenario
     end
   end
 end

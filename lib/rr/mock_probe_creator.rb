@@ -22,14 +22,12 @@ module RR
   #   user = User.find('4')
   #   user.valid? # false
   class MockProbeCreator < ScenarioCreator
-    module InstanceMethods
-      def create(method_name, *args, &after_call)
-        double = @space.create_double(@subject, method_name)
-        scenario = @space.create_scenario(double)
-        scenario.with(*args).once.implemented_by(double.original_method)
-        scenario.after_call(&after_call) if after_call
-        scenario
-      end      
+    def create(method_name, *args, &after_call)
+      double = @space.create_double(@subject, method_name)
+      scenario = @space.create_scenario(double)
+      scenario.with(*args).once.implemented_by(double.original_method)
+      scenario.after_call(&after_call) if after_call
+      scenario
     end
   end
 end

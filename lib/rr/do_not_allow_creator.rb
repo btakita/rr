@@ -15,18 +15,16 @@ module RR
   #      m.method3.with_no_args # Do not allow method3 with no arguments
   #    end
   class DoNotAllowCreator < ScenarioCreator
-    module InstanceMethods
-      def create(method_name, *args, &returns)
-        double = @space.create_double(@subject, method_name)
-        scenario = @space.create_scenario(double)
-        if args.empty?
-          scenario.with_any_args
-        else
-          scenario.with(*args)
-        end
-        scenario.never.returns(&returns)
-        scenario
+    def create(method_name, *args, &returns)
+      double = @space.create_double(@subject, method_name)
+      scenario = @space.create_scenario(double)
+      if args.empty?
+        scenario.with_any_args
+      else
+        scenario.with(*args)
       end
+      scenario.never.returns(&returns)
+      scenario
     end
   end
 end
