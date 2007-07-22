@@ -21,4 +21,12 @@ describe RR, " backtrace tweaking" do
 
     output.string.should_not include("lib/rr")
   end
+
+  it "does not add backtrace identifier twice" do
+    length = ::Spec::Runner::QuietBacktraceTweaker::IGNORE_PATTERNS.length
+    class << Object.new
+      include ::RR::Adapters::Rspec
+    end
+    ::Spec::Runner::QuietBacktraceTweaker::IGNORE_PATTERNS.length.should == length
+  end
 end
