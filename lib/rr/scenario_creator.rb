@@ -44,19 +44,24 @@ module RR
       when :mock
         @scenario.with(*@args).once.returns(&@handler)
       when :stub
-        @scenario.returns(&@handler).any_number_of_times
+        @scenario.returns(&@handler)
+        stub_times_transform!
         permissive_argument_transform!
       when :mock_probe
         @scenario.with(*@args).once
         probe_transform!
       when :stub_probe
-        @scenario.any_number_of_times
+        stub_times_transform!
         permissive_argument_transform!
         probe_transform!
       when :do_not_call
         permissive_argument_transform!
         @scenario.never.returns(&@handler)
       end
+    end
+
+    def stub_times_transform!
+      @scenario.any_number_of_times
     end
 
     def permissive_argument_transform!
