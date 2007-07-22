@@ -42,13 +42,14 @@ module RR
     def transform!
       case @strategy
       when :mock
-        @scenario.with(*@args).once.returns(&@handler)
+        mock_transform!
+        @scenario.returns(&@handler)
       when :stub
         @scenario.returns(&@handler)
         stub_times_transform!
         permissive_argument_transform!
       when :mock_probe
-        @scenario.with(*@args).once
+        mock_transform!
         probe_transform!
       when :stub_probe
         stub_times_transform!
@@ -58,6 +59,10 @@ module RR
         permissive_argument_transform!
         @scenario.never.returns(&@handler)
       end
+    end
+
+    def mock_transform!
+      @scenario.with(*@args).once
     end
 
     def stub_times_transform!
