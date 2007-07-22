@@ -64,10 +64,6 @@ module RR
       end
     end
 
-    def reimplementation!
-      @scenario.returns(&@handler)
-    end
-
     def mock!
       @scenario.with(*@args).once
     end
@@ -83,6 +79,10 @@ module RR
       else
         @scenario.with(*@args)
       end
+    end
+
+    def reimplementation!
+      @scenario.returns(&@handler)
     end
     
     def probe!
