@@ -46,14 +46,12 @@ module RR
         reimplementation_transform!
       when :stub
         reimplementation_transform!
-        stub_times_transform!
-        permissive_argument_transform!
+        stub_transform!
       when :mock_probe
         mock_transform!
         probe_transform!
       when :stub_probe
-        stub_times_transform!
-        permissive_argument_transform!
+        stub_transform!
         probe_transform!
       when :do_not_call
         permissive_argument_transform!
@@ -70,8 +68,9 @@ module RR
       @scenario.with(*@args).once
     end
 
-    def stub_times_transform!
+    def stub_transform!
       @scenario.any_number_of_times
+      permissive_argument_transform!
     end
 
     def permissive_argument_transform!
