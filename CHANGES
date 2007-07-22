@@ -1,3 +1,7 @@
+- ScenarioCreator strategy method chaining
+- Removed mock_probe
+- Removed stub_probe
+
 * 0.2.5
 - mock takes method_name argument
 - stub takes method_name argument
