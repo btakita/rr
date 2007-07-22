@@ -21,7 +21,7 @@ module RR
   #
   #   user = User.find('4')
   #   user.valid? # false
-  class StubProbeCreator < Creator
+  class StubProbeCreator < ScenarioCreator
     module InstanceMethods
       protected
       def method_missing(method_name, *args, &after_call)

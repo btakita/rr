@@ -14,7 +14,7 @@ module RR
   #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
   #      m.method3.with_no_args # Do not allow method3 with no arguments
   #    end
-  class DoNotAllowCreator < Creator
+  class DoNotAllowCreator < ScenarioCreator
     module InstanceMethods
       protected
       def method_missing(method_name, *args, &returns)

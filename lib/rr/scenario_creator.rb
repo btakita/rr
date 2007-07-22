@@ -1,6 +1,6 @@
 module RR
-  # RR::Creator is the superclass for all creators.
-  class Creator
+  # RR::ScenarioCreator is the superclass for all creators.
+  class ScenarioCreator
     def initialize(space, subject, &block)
       @space = space
       @subject = subject

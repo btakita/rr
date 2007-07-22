@@ -12,7 +12,7 @@ module RR
   #    stub(subject) do |m|
   #      m.method_name(arg1, arg2) { return_value }
   #    end
-  class StubCreator < Creator
+  class StubCreator < ScenarioCreator
     module InstanceMethods
       protected
       def method_missing(method_name, *args, &returns)

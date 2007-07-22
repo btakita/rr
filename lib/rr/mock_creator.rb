@@ -12,7 +12,7 @@ module RR
   #    mock(subject) do |m|
   #      m.method_name(arg1, arg2) { return_value }
   #    end
-  class MockCreator < Creator
+  class MockCreator < ScenarioCreator
     module InstanceMethods
       protected
       def method_missing(method_name, *args, &returns)
