@@ -2,6 +2,8 @@ require "rr/space"
 require "rr/double"
 require "rr/hash_with_object_id_key"
 
+require "rr/double_builder"
+
 require "rr/scenario_creator"
 require "rr/mock_creator"
 require "rr/stub_creator"
