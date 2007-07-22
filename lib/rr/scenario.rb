@@ -257,20 +257,25 @@ module RR
     # A TimesCalledError is raised when the times called
     # exceeds the expected TimesCalledExpectation.
     def call(*args, &block)
+      @times_called_expectation.attempt! if @times_called_expectation
+      @space.verify_ordered_scenario(self) if ordered?
+      yields!(block)
       return_value = call_implementation(*args, &block)
       return return_value unless @after_call
       @after_call.call(return_value)
     end
 
-    def call_implementation(*args, &block)
-      @times_called_expectation.attempt! if @times_called_expectation
-      @space.verify_ordered_scenario(self) if ordered?
+    def yields!(block)
       if @yields
         unless block
           raise ArgumentError, "A Block must be passed into the method call when using yields"
         end
         block.call(*@yields)
       end
+    end
+    protected :yields!
+
+    def call_implementation(*args, &block)
       return nil unless @implementation
 
       if @implementation.is_a?(Method)
