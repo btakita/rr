@@ -67,7 +67,7 @@ describe "RR probe:" do
 
   it "probes via inline call" do
     expected_to_s_value = @obj.to_s
-    probe(@obj).to_s
+    mock.probe(@obj).to_s
     @obj.to_s.should == expected_to_s_value
     proc {@obj.to_s}.should raise_error
   end
@@ -76,8 +76,8 @@ describe "RR probe:" do
     def @obj.to_s(arg)
       "Original to_s with arg #{arg}"
     end
-    probe(@obj).to_s(:foo).ordered
-    probe(@obj).to_s(:bar).twice.ordered
+    mock.probe(@obj).to_s(:foo).ordered
+    mock.probe(@obj).to_s(:bar).twice.ordered
 
     @obj.to_s(:foo).should == "Original to_s with arg foo"
     @obj.to_s(:bar).should == "Original to_s with arg bar"
@@ -94,7 +94,7 @@ describe "RR probe:" do
       :original_value_2
     end
 
-    probe @obj do |c|
+    mock.probe @obj do |c|
       c.foobar_1(1)
       c.foobar_2
     end

@@ -21,12 +21,21 @@ class TestUnitIntegrationTest < Test::Unit::TestCase
     assert_equal :baz, @subject.foobar("any", "thing")
   end
 
-  def test_using_a_probe
+  def test_using_a_mock_probe
     def @subject.foobar
       :baz
     end
 
-    probe(@subject).foobar
+    mock.probe(@subject).foobar
+    assert_equal :baz, @subject.foobar
+  end
+
+  def test_using_a_stub_probe
+    def @subject.foobar
+      :baz
+    end
+
+    stub.probe(@subject).foobar
     assert_equal :baz, @subject.foobar
   end
 

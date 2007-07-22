@@ -91,7 +91,7 @@ describe Space, "#scenario_method_proxy with a Mock Probe strategy" do
 
   before do
     @creator = @space.scenario_creator
-    @creator.mock_probe
+    @creator.mock.probe
     def @object.foobar(*args)
       :original_foobar
     end
@@ -117,7 +117,7 @@ describe Space, "#scenario_method_proxy with a Stub Probe strategy" do
 
   before do
     @creator = @space.scenario_creator
-    @creator.stub_probe
+    @creator.stub.probe
     def @object.foobar(*args)
       :original_foobar
     end

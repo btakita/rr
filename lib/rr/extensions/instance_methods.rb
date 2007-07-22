@@ -1,8 +1,6 @@
 module RR
 module Extensions
   module InstanceMethods
-    NO_SCENARIO_ARG = Object.new
-
     # Verifies all the Double objects have met their
     # TimesCalledExpectations.
     def verify
@@ -27,11 +25,9 @@ module Extensions
     #     method_name_1 {return_value_1}
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
-    def mock(object=NO_SCENARIO_ARG, method_name=nil, &definition)
+    def mock(object=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
       creator = RR::Space.scenario_creator
-      creator.mock
-      return creator if object === NO_SCENARIO_ARG
-      RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
+      creator.mock(object, method_name, &definition)
     end
 
     # When passed the object, this method returns a StubCreator
@@ -47,30 +43,28 @@ module Extensions
     #     method_name_1 {return_value_1}
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
-    def stub(object=NO_SCENARIO_ARG, method_name=nil, &definition)
+    def stub(object=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
       creator = RR::Space.scenario_creator
-      creator.stub
-      return creator if object === NO_SCENARIO_ARG
-      RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
+      creator.stub(object, method_name, &definition)
     end
 
-    # When passed the object, this method returns a MockProbeCreator
-    # that generates a Double Scenario that acts like a mock probe.
+    # This method add probe capabilities to the Scenario. probe can be called
+    # with mock or stub.
     #
-    #   mock_probe(controller.template).render(:partial => "my/socks")
+    #   mock.probe(controller.template).render(:partial => "my/socks")
     #
-    #   mock_probe(controller.template).render(:partial => "my/socks") do |html|
+    #   stub.probe(controller.template).render(:partial => "my/socks") do |html|
     #     html.should include("My socks are wet")
     #     html
     #   end
     #
-    #   mock_probe(controller.template).render(:partial => "my/socks") do |html|
+    #   mock.probe(controller.template).render(:partial => "my/socks") do |html|
     #     html.should include("My socks are wet")
     #     "My new return value"
     #   end
     #
-    # mock_probe also takes a block for definitions.
-    #   mock_probe(object) do
+    # mock.probe also takes a block for definitions.
+    #   mock.probe(object) do
     #     render(:partial => "my/socks")
     #
     #     render(:partial => "my/socks") do |html|
@@ -95,69 +89,14 @@ module Extensions
     # passing in a block. The return value of the block will replace
     # the actual return value.
     #
-    #   mock_probe(controller.template).render(:partial => "my/socks") do |html|
+    #   mock.probe(controller.template).render(:partial => "my/socks") do |html|
     #     html.should include("My socks are wet")
     #     "My new return value"
     #   end
-    def mock_probe(object=NO_SCENARIO_ARG, method_name=nil, &definition)
+    def probe(object=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
       creator = RR::Space.scenario_creator
-      creator.mock_probe
-      return creator if object === NO_SCENARIO_ARG
-      RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
+      creator.probe(object, method_name, &definition)
     end
-
-    # When passed the object, this method returns a StubProbeCreator
-    # that generates a Double Scenario that acts like a stub probe.
-    #
-    #   stub_probe(User).new {|user| user}
-    #
-    #   stub_probe(User).new do |user|
-    #     mock(user).valid? {false}
-    #     user
-    #   end
-    #
-    #   stub_probe(User).new do |user|
-    #     mock_probe(user).friends {|friends| friends[0..3]}
-    #     user
-    #   end
-    #
-    # Passing a block allows you to intercept the return value.
-    # The return value can be modified, validated, and/or overridden by
-    # passing in a block. The return value of the block will replace
-    # the actual return value.
-    #
-    #   mock_probe(User) do
-    #     new {|user| user}
-    #
-    #     new do |user|
-    #       mock(user).valid? {false}
-    #     end
-    #
-    #     new do |user|
-    #       mock_probe(user).friends {|friends| friends[0..3]}
-    #       user
-    #     end
-    #   end
-    #
-    # Passing a block to the Scenario (after the method name and arguments)
-    # allows you to intercept the return value.
-    # The return value can be modified, validated, and/or overridden by
-    # passing in a block. The return value of the block will replace
-    # the actual return value.
-    #
-    #   stub_probe(controller.template).render(:partial => "my/socks") do |html|
-    #     html.should include("My socks are wet")
-    #     "My new return value"
-    #   end
-    def stub_probe(object=NO_SCENARIO_ARG, method_name=nil, &definition)
-      creator = RR::Space.scenario_creator
-      creator.stub_probe
-      return creator if object === NO_SCENARIO_ARG
-      RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
-    end
-
-    # Same as mock_probe
-    alias_method :probe, :mock_probe
 
     # RR::DoNotAllowCreator uses RR::DoNotAllowCreator#method_missing to create
     # a Scenario that expects never to be called.
@@ -174,11 +113,9 @@ module Extensions
     #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
     #      m.method3.with_no_args # Do not allow method3 with no arguments
     #    end
-    def do_not_allow(object=NO_SCENARIO_ARG, method_name=nil, &definition)
+    def do_not_allow(object=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
       creator = RR::Space.scenario_creator
-      creator.do_not_call
-      return creator if object === NO_SCENARIO_ARG
-      RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
+      creator.do_not_call(object, method_name, &definition)
     end
     alias_method :dont_allow, :do_not_allow
 

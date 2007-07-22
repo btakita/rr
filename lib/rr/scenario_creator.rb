@@ -1,6 +1,8 @@
 module RR
   # RR::ScenarioCreator is the superclass for all creators.
   class ScenarioCreator
+    NO_SUBJECT_ARG = Object.new
+
     attr_reader :space, :subject
     include Errors
 
@@ -21,37 +23,35 @@ module RR
       @scenario
     end
 
-    def mock
+    def mock(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       strategy_error! if @strategy
       @strategy = :mock
+      return self if subject === NO_SUBJECT_ARG
+      RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
 
-    def stub
+    def stub(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       strategy_error! if @strategy
       @strategy = :stub
+      return self if subject === NO_SUBJECT_ARG
+      RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
 
-    def do_not_call
+    def do_not_call(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       strategy_error! if @strategy
       probe_when_do_not_call_error! if @probe
       @strategy = :do_not_call
+      return self if subject === NO_SUBJECT_ARG
+      RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
 
-    def probe
+    def probe(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       probe_when_do_not_call_error! if @strategy == :do_not_call
       @probe = true
+      return self if subject === NO_SUBJECT_ARG
+      RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
-
-    def mock_probe
-      mock
-      probe
-    end
-
-    def stub_probe
-      stub
-      probe
-    end
-
+    
     protected
     def transform!
       case @strategy

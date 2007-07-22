@@ -22,7 +22,7 @@ describe RR, "#stub" do
   end
 end
 
-describe RR, "#probe" do
+describe RR, "#mock and #probe" do
   before do
     @subject = Object.new
     def @subject.foobar
@@ -31,7 +31,21 @@ describe RR, "#probe" do
   end
 
   it "creates a probe Double Scenario" do
-    probe(@subject).foobar
+    mock.probe(@subject).foobar
+    @subject.foobar.should == :baz
+  end
+end
+
+describe RR, "#stub and #probe" do
+  before do
+    @subject = Object.new
+    def @subject.foobar
+      :baz
+    end
+  end
+
+  it "creates a probe Double Scenario" do
+    stub.probe(@subject).foobar
     @subject.foobar.should == :baz
   end
 end

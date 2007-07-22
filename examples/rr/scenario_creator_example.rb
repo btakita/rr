@@ -12,6 +12,21 @@ end
 describe ScenarioCreator, " strategy definition", :shared => true do
   it_should_behave_like "RR::ScenarioCreator"
 
+  it "returns self when passing no args" do
+    @creator.__send__(@method_name).should === @creator
+  end
+
+  it "returns a ScenarioMethodProxy when passed a subject" do
+    scenario = @creator.__send__(@method_name, @subject).foobar
+    scenario.should be_instance_of(Scenario)
+  end
+
+  it "raises error if passed a method name and a block" do
+    proc do
+      @creator.__send__(@method_name, @subject, :foobar) {}
+    end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
+  end
+
   it "raises error when using mock strategy" do
     @creator.mock
     proc do
@@ -49,6 +64,35 @@ describe ScenarioCreator, "#mock" do
   before do
     @method_name = :mock
   end
+
+  it "sets up the RR mock call chain" do
+    should create_mock_call_chain(@creator.mock(@subject))
+  end
+
+  it "creates a mock Scenario for method when passed a second argument with rr_mock" do
+    should create_scenario_with_method_name(
+      @creator.mock(@subject, :foobar)
+    )
+  end
+
+  def create_scenario_with_method_name(scenario)
+    method_name = scenario.method_name
+    scenario.with(1, 2) {:baz}
+    scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    scenario.argument_expectation.expected_arguments.should == [1, 2]
+
+    @subject.__send__(method_name, 1, 2).should == :baz
+  end
+
+  def create_mock_call_chain(creator)
+    scenario = creator.foobar(1, 2) {:baz}
+    scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    scenario.argument_expectation.expected_arguments.should == [1, 2]
+
+    @subject.foobar(1, 2).should == :baz
+  end
 end
 
 describe ScenarioCreator, "#stub" do
@@ -56,6 +100,29 @@ describe ScenarioCreator, "#stub" do
 
   before do
     @method_name = :stub
+  end
+
+  it "sets up the RR stub call chain" do
+    should create_stub_call_chain(@creator.stub(@subject))
+  end
+
+  it "creates a stub Scenario for method when passed a second argument" do
+    should create_scenario_with_method_name(@creator.stub(@subject, :foobar))
+  end
+
+  def create_scenario_with_method_name(scenario)
+    method_name = scenario.method_name
+    scenario.with(1, 2) {:baz}
+    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    @subject.__send__(method_name, 1, 2).should == :baz
+  end
+
+  def create_stub_call_chain(creator)
+    scenario = creator.foobar(1, 2) {:baz}
+    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    @subject.foobar(1, 2).should == :baz
   end
 end
 
@@ -75,6 +142,41 @@ describe ScenarioCreator, "#do_not_call" do
       "Scenarios cannot be probed when using do_not_call strategy"
     )
   end
+
+  it "sets up the RR do_not_call call chain" do
+    should create_do_not_call_call_chain(@creator.do_not_call(@subject))
+  end
+
+  it "#do_not_allow creates a mock Scenario for method when passed a second argument" do
+    should create_scenario_with_method_name(@creator.do_not_call(@subject, :foobar))
+  end
+
+  def create_scenario_with_method_name(scenario)
+    method_name = scenario.method_name
+    scenario.with(1, 2)
+    scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    scenario.argument_expectation.expected_arguments.should == [1, 2]
+
+    proc do
+      @subject.__send__(method_name, 1, 2)
+    end.should raise_error(Errors::TimesCalledError)
+    reset
+    nil
+  end
+
+  def create_do_not_call_call_chain(creator)
+    scenario = creator.foobar(1, 2)
+    scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    scenario.argument_expectation.expected_arguments.should == [1, 2]
+
+    proc do
+      @subject.foobar(1, 2)
+    end.should raise_error(Errors::TimesCalledError)
+    reset
+    nil
+  end
 end
 
 describe ScenarioCreator, "#probe" do
@@ -88,6 +190,29 @@ describe ScenarioCreator, "#probe" do
       Errors::ScenarioDefinitionError,
       "Scenarios cannot be probed when using do_not_call strategy"
     )
+  end
+
+  it "sets up the RR stub call chain" do
+    should create_probe_call_chain(@creator.stub.probe(@subject))
+  end
+
+  it "creates a probe Scenario for method when passed a second argument" do
+    should create_scenario_with_method_name(@creator.stub.probe(@subject, :foobar))
+  end
+
+  def create_scenario_with_method_name(scenario)
+    method_name = scenario.method_name
+    scenario.with(1, 2) {:baz}
+    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    @subject.__send__(method_name, 1, 2).should == :baz
+  end
+
+  def create_probe_call_chain(creator)
+    scenario = creator.foobar(1, 2) {:baz}
+    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    @subject.foobar(1, 2).should == :baz
   end
 end
 
@@ -177,11 +302,12 @@ describe ScenarioCreator, "#create! using do_not_call strategy" do
   end
 end
 
-describe ScenarioCreator, "#create! using mock_probe strategy" do
+describe ScenarioCreator, "#create! using mock strategy with probe" do
   it_should_behave_like "RR::ScenarioCreator#create!"
 
   before do
-    @creator.mock_probe
+    @creator.mock
+    @creator.probe
   end
 
   it "sets expectations on the subject while calling the original method" do
@@ -208,11 +334,12 @@ describe ScenarioCreator, "#create! using mock_probe strategy" do
   end
 end
 
-describe ScenarioCreator, "#create! using stub_probe strategy" do
+describe ScenarioCreator, "#create! using stub strategy with probe" do
   it_should_behave_like "RR::ScenarioCreator#create!"
 
   before do
-    @creator.stub_probe
+    @creator.stub
+    @creator.probe
   end
 
   it "sets up a scenario with passed in arguments" do

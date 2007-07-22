@@ -114,7 +114,7 @@ module Extensions
     end
   end
 
-  describe InstanceMethods, "#probe and #mock_probe" do
+  describe InstanceMethods, "#probe and #mock" do
     it_should_behave_like "RR::Extensions::InstanceMethods"
 
     before do
@@ -131,44 +131,40 @@ module Extensions
     end
 
     it "#probe sets up the RR probe call chain" do
-      should create_mock_probe_call_chain(probe(@subject))
+      should create_mock_probe_call_chain(mock.probe(@subject))
     end
 
     it "#rr_probe sets up the RR probe call chain" do
-      should create_mock_probe_call_chain(rr_probe(@subject))
-    end
-
-    it "#mock_probe returns a ScenarioCreator when passed no arguments" do
-      mock_probe.should be_instance_of(ScenarioCreator)
+      should create_mock_probe_call_chain(rr_mock.probe(@subject))
     end
 
     it "#mock_probe sets up the RR probe call chain" do
-      should create_mock_probe_call_chain(mock_probe(@subject))
+      should create_mock_probe_call_chain(mock.probe(@subject))
     end
 
     it "#rr_mock_probe sets up the RR probe call chain with rr_probe" do
-      should create_mock_probe_call_chain(rr_mock_probe(@subject))
+      should create_mock_probe_call_chain(rr_mock.probe(@subject))
     end
 
     it "#probe creates a mock Scenario for method when passed a second argument" do
-      should create_scenario_with_method_name(probe(@subject, :foobar))
+      should create_scenario_with_method_name(mock.probe(@subject, :foobar))
     end
 
     it "#rr_probe creates a mock Scenario for method when passed a second argument with rr_mock" do
-      should create_scenario_with_method_name(rr_probe(@subject, :foobar))
+      should create_scenario_with_method_name(rr_probe.mock(@subject, :foobar))
     end
 
     it "#mock_probe creates a mock Scenario for method when passed a second argument" do
-      should create_scenario_with_method_name(mock_probe(@subject, :foobar))
+      should create_scenario_with_method_name(mock.probe(@subject, :foobar))
     end
 
     it "#rr_mock_probe creates a mock Scenario for method when passed a second argument with rr_mock" do
-      should create_scenario_with_method_name(rr_mock_probe(@subject, :foobar))
+      should create_scenario_with_method_name(rr_mock.probe(@subject, :foobar))
     end
 
     it "raises error if passed a method name and a block" do
       proc do
-        mock_probe(@object, :foobar) {}
+        mock.probe(@object, :foobar) {}
       end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
     end
 
@@ -192,7 +188,7 @@ module Extensions
     end
   end
 
-  describe InstanceMethods, "#stub_probe" do
+  describe InstanceMethods, "#stub and #probe" do
     it_should_behave_like "RR::Extensions::InstanceMethods"
 
     before do
@@ -205,28 +201,28 @@ module Extensions
     end
 
     it "returns a ScenarioCreator when passed no arguments" do
-      stub_probe.should be_instance_of(ScenarioCreator)
+      stub.probe.should be_instance_of(ScenarioCreator)
     end
 
     it "sets up the RR probe call chain" do
-      should create_stub_probe_call_chain(stub_probe(@subject))
+      should create_stub_probe_call_chain(stub.probe(@subject))
     end
 
     it "sets up the RR probe call chain" do
-      should create_stub_probe_call_chain(rr_stub_probe(@subject))
+      should create_stub_probe_call_chain(rr_stub.probe(@subject))
     end
 
     it "#stub_probe creates a stub Scenario for method when passed a second argument" do
-      should create_scenario_with_method_name(stub_probe(@subject, :foobar))
+      should create_scenario_with_method_name(stub.probe(@subject, :foobar))
     end
 
     it "#rr_stub_probe creates a stub Scenario for method when passed a second argument with rr_stub" do
-      should create_scenario_with_method_name(rr_stub_probe(@subject, :foobar))
+      should create_scenario_with_method_name(rr_stub.probe(@subject, :foobar))
     end
 
     it "raises error if passed a method name and a block" do
       proc do
-        stub_probe(@object, :foobar) {}
+        stub.probe(@object, :foobar) {}
       end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
     end
 
@@ -243,7 +239,7 @@ module Extensions
       scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
       scenario.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
 
-      @subject.foobar(:something).should == :original_value
+      @subject.foobar(1, 2).should == :original_value
     end
   end
 
