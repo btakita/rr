@@ -280,6 +280,10 @@ module RR
       return nil unless @implementation
 
       if @implementation === ORIGINAL_METHOD
+        if !@double.original_method
+          raise Errors::ScenarioDefinitionError,
+                "implemented_by_original_method (probe) cannot be used when method does not exist on the object"
+        end
         return @double.original_method.call(*args, &block)
       end
 

@@ -365,6 +365,20 @@ describe Scenario, "#implemented_by_original_method" do
     @scenario.implemented_by_original_method
     @scenario.call(1, 2).should == [2, 1]
   end
+
+  it "raises error when original_method does not exist" do
+    double = @space.double(@object, :does_not_exist)
+    scenario = @space.scenario(double)
+    scenario.with_any_args
+    scenario.implemented_by_original_method
+
+    proc do
+      @object.does_not_exist(1, 2)
+    end.should raise_error(
+      Errors::ScenarioDefinitionError,
+      "implemented_by_original_method (probe) cannot be used when method does not exist on the object"
+    )
+  end
 end
 
 describe Scenario, "#call implemented by a proc" do
