@@ -51,14 +51,10 @@ module RR
 
     protected
     def transform!
-      if @strategy == :mock
-        mock!
-      elsif @strategy == :stub
-        stub!
-      elsif @strategy == :do_not_call
-        @scenario.never
-        permissive_argument!
-        reimplementation!
+      case @strategy
+      when :mock; mock!
+      when :stub; stub!
+      when :do_not_call; do_not_call!
       end
       
       if @probe
@@ -75,6 +71,12 @@ module RR
     def stub!
       @scenario.any_number_of_times
       permissive_argument!
+    end
+
+    def do_not_call!
+      @scenario.never
+      permissive_argument!
+      reimplementation!
     end
 
     def permissive_argument!
