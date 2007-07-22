@@ -45,8 +45,8 @@ module RR
         mock_transform!
         reimplementation_transform!
       when :stub
-        reimplementation_transform!
         stub_transform!
+        reimplementation_transform!
       when :mock_probe
         mock_transform!
         probe_transform!
@@ -54,9 +54,9 @@ module RR
         stub_transform!
         probe_transform!
       when :do_not_call
+        @scenario.never
         permissive_argument_transform!
         reimplementation_transform!
-        @scenario.never
       end
     end
 
