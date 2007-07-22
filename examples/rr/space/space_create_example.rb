@@ -285,7 +285,7 @@ describe Space, "#double when double does not exist" do
 
   it "returns double and adds double to double list when method_name is a symbol" do
     double = @space.double(@object, @method_name)
-    @space.doubles[@object][@method_name].should === double
+    @space.double(@object, @method_name).should === double
     double.space.should === @space
     double.object.should === @object
     double.method_name.should === @method_name
@@ -293,7 +293,7 @@ describe Space, "#double when double does not exist" do
 
   it "returns double and adds double to double list when method_name is a string" do
     double = @space.double(@object, 'foobar')
-    @space.doubles[@object][@method_name].should === double
+    @space.double(@object, @method_name).should === double
     double.space.should === @space
     double.object.should === @object
     double.method_name.should === @method_name
