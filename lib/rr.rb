@@ -1,3 +1,10 @@
+require "rr/errors/rr_error"
+require "rr/errors/scenario_definition_error"
+require "rr/errors/scenario_not_found_error"
+require "rr/errors/scenario_order_error"
+require "rr/errors/argument_equality_error"
+require "rr/errors/times_called_error"
+
 require "rr/space"
 require "rr/double"
 require "rr/hash_with_object_id_key"
@@ -8,12 +15,6 @@ require "rr/scenario_creator"
 
 require "rr/scenario"
 require "rr/scenario_matches"
-
-require "rr/errors/rr_error"
-require "rr/errors/scenario_not_found_error"
-require "rr/errors/scenario_order_error"
-require "rr/errors/argument_equality_error"
-require "rr/errors/times_called_error"
 
 require "rr/expectations/argument_equality_expectation"
 require "rr/expectations/any_argument_expectation"

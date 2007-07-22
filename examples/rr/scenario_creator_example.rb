@@ -13,6 +13,20 @@ describe ScenarioCreator, :shared => true do
   end
 end
 
+describe ScenarioCreator, "#mock" do
+  it_should_behave_like "RR::ScenarioCreator"
+
+  it "raises error when stub called before" do
+    @creator.stub
+    proc do
+      @creator.mock
+    end.should raise_error(
+      Errors::ScenarioDefinitionError,
+      "This Scenario is already a stub. It cannot be a mock."
+    )
+  end
+end
+
 describe ScenarioCreator, "#create! using mock strategy" do
   it_should_behave_like "RR::ScenarioCreator"
   

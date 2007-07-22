@@ -2,6 +2,8 @@ module RR
   # RR::ScenarioCreator is the superclass for all creators.
   class ScenarioCreator
     attr_reader :space, :subject
+    include Errors
+
     def initialize(space, subject)
       @space = space
       @subject = subject
@@ -21,6 +23,12 @@ module RR
     end
 
     def mock
+      if @strategy == :stub
+        raise(
+          ScenarioDefinitionError,
+          "This Scenario is already a stub. It cannot be a mock."
+        )
+      end
       @strategy = :mock
     end
 
