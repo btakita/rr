@@ -13,11 +13,8 @@ module RR
   #      m.method_name(arg1, arg2) { return_value }
   #    end
   class MockCreator < ScenarioCreator
-    def create(method_name, *args, &returns)
-      double = @space.double(@subject, method_name)
-      scenario = @space.scenario(double)
+    def transform(scenario, *args, &returns)
       scenario.with(*args).once.returns(&returns)
-      scenario
     end
   end
 end
