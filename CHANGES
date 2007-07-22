@@ -1,3 +1,5 @@
+- Fixed [#12486] ScenarioMethodProxy when Kernel passed into instance methods
+
 * 0.3.1
 - Automatically require Test::Unit and Rspec adapters
 

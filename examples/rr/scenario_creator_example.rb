@@ -21,6 +21,11 @@ describe ScenarioCreator, " strategy definition", :shared => true do
     scenario.should be_instance_of(Scenario)
   end
 
+  it "returns a ScenarioMethodProxy when passed Kernel" do
+    scenario = @creator.__send__(@method_name, Kernel).foobar
+    scenario.should be_instance_of(Scenario)
+  end
+
   it "raises error if passed a method name and a block" do
     proc do
       @creator.__send__(@method_name, @subject, :foobar) {}

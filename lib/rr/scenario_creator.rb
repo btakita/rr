@@ -67,7 +67,7 @@ module RR
     def mock(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       strategy_error! if @strategy
       @strategy = :mock
-      return self if subject === NO_SUBJECT_ARG
+      return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
 
@@ -102,7 +102,7 @@ module RR
     def stub(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       strategy_error! if @strategy
       @strategy = :stub
-      return self if subject === NO_SUBJECT_ARG
+      return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
 
@@ -126,7 +126,7 @@ module RR
       strategy_error! if @strategy
       probe_when_do_not_call_error! if @probe
       @strategy = :do_not_call
-      return self if subject === NO_SUBJECT_ARG
+      return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
     alias_method :dont_call, :do_not_call
@@ -181,7 +181,7 @@ module RR
     def probe(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       probe_when_do_not_call_error! if @strategy == :do_not_call
       @probe = true
-      return self if subject === NO_SUBJECT_ARG
+      return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
     
