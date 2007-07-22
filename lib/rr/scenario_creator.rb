@@ -32,6 +32,12 @@ module RR
     end
 
     def probe
+      if @strategy == :do_not_call
+        raise(
+          ScenarioDefinitionError,
+          "Scenarios cannot be probed when using do_not_call strategy"
+        )
+      end
       @probe = true
     end
 

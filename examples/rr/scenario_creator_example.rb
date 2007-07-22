@@ -51,6 +51,20 @@ describe ScenarioCreator, "#stub" do
   end
 end
 
+describe ScenarioCreator, "#probe" do
+  it_should_behave_like "RR::ScenarioCreator"
+
+  it "raises error when using do_not_call strategy" do
+    @creator.do_not_call
+    proc do
+      @creator.probe
+    end.should raise_error(
+      Errors::ScenarioDefinitionError,
+      "Scenarios cannot be probed when using do_not_call strategy"
+    )
+  end
+end
+
 describe ScenarioCreator, "#create! using no strategy" do
   it_should_behave_like "RR::ScenarioCreator"
 
