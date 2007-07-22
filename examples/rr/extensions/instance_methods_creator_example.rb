@@ -212,11 +212,11 @@ module Extensions
       should create_stub_probe_call_chain(rr_stub.probe(@subject))
     end
 
-    it "#stub_probe creates a stub Scenario for method when passed a second argument" do
+    it "#stub.probe creates a stub Scenario for method when passed a second argument" do
       should create_scenario_with_method_name(stub.probe(@subject, :foobar))
     end
 
-    it "#rr_stub_probe creates a stub Scenario for method when passed a second argument with rr_stub" do
+    it "#rr_stub.probe creates a stub Scenario for method when passed a second argument with rr_stub" do
       should create_scenario_with_method_name(rr_stub.probe(@subject, :foobar))
     end
 
