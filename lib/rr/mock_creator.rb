@@ -14,7 +14,7 @@ module RR
   #    end
   class MockCreator < ScenarioCreator
     def create(method_name, *args, &returns)
-      double = @space.create_double(@subject, method_name)
+      double = @space.double(@subject, method_name)
       scenario = @space.scenario(double)
       scenario.with(*args).once.returns(&returns)
       scenario

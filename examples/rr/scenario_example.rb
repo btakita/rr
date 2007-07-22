@@ -6,7 +6,7 @@ describe Scenario, :shared => true do
     @space = Space.new
     @object = Object.new
     @method_name = :foobar
-    @double = @space.create_double(@object, @method_name)
+    @double = @space.double(@object, @method_name)
     @scenario = @space.scenario(@double)
   end
 end

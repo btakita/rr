@@ -12,7 +12,7 @@ describe Space, "#verify_doubles" do
   end
 
   it "verifies and deletes the doubles" do
-    double1 = @space.create_double(@object1, @method_name)
+    double1 = @space.double(@object1, @method_name)
     double1_verify_calls = 0
     double1_reset_calls = 0
     (class << double1; self; end).class_eval do
@@ -23,7 +23,7 @@ describe Space, "#verify_doubles" do
         double1_reset_calls += 1
       end
     end
-    double2 = @space.create_double(@object2, @method_name)
+    double2 = @space.double(@object2, @method_name)
     double2_verify_calls = 0
     double2_reset_calls = 0
     (class << double2; self; end).class_eval do
@@ -53,7 +53,7 @@ describe Space, "#verify_double" do
   end
 
   it "verifies and deletes the double" do
-    double = @space.create_double(@object, @method_name)
+    double = @space.double(@object, @method_name)
     @space.doubles[@object][@method_name].should === double
     @object.methods.should include("__rr__#{@method_name}")
 
@@ -71,7 +71,7 @@ describe Space, "#verify_double" do
   end
 
   it "deletes the double when verifying the double raises an error" do
-    double = @space.create_double(@object, @method_name)
+    double = @space.double(@object, @method_name)
     @space.doubles[@object][@method_name].should === double
     @object.methods.should include("__rr__#{@method_name}")
 
@@ -97,7 +97,7 @@ describe Space, "#verify_ordered_scenario", :shared => true do
     @space = Space.new
     @object = Object.new
     @method_name = :foobar
-    @double = @space.create_double(@object, @method_name)
+    @double = @space.double(@object, @method_name)
   end
 
   it "raises an error when Scenario is NonTerminal" do

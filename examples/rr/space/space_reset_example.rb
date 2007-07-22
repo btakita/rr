@@ -12,8 +12,8 @@ describe Space, "#reset" do
   end
 
   it "removes the ordered scenarios" do
-    double1 = @space.create_double(@object1, :foobar1)
-    double2 = @space.create_double(@object1, :foobar2)
+    double1 = @space.double(@object1, :foobar1)
+    double2 = @space.double(@object1, :foobar2)
 
     scenario1 = @space.scenario(double1)
     scenario2 = @space.scenario(double2)
@@ -28,14 +28,14 @@ describe Space, "#reset" do
   end
 
   it "resets all doubles" do
-    double1 = @space.create_double(@object1, @method_name)
+    double1 = @space.double(@object1, @method_name)
     double1_reset_calls = 0
     (class << double1; self; end).class_eval do
       define_method(:reset) do ||
         double1_reset_calls += 1
       end
     end
-    double2 = @space.create_double(@object2, @method_name)
+    double2 = @space.double(@object2, @method_name)
     double2_reset_calls = 0
     (class << double2; self; end).class_eval do
       define_method(:reset) do ||
@@ -59,7 +59,7 @@ describe Space, "#reset_double" do
   end
 
   it "resets the doubles" do
-    double = @space.create_double(@object, @method_name)
+    double = @space.double(@object, @method_name)
     @space.doubles[@object][@method_name].should === double
     @object.methods.should include("__rr__#{@method_name}")
 
@@ -69,8 +69,8 @@ describe Space, "#reset_double" do
   end
 
   it "removes the object from the doubles map when it has no doubles" do
-    double1 = @space.create_double(@object, :foobar1)
-    double2 = @space.create_double(@object, :foobar2)
+    double1 = @space.double(@object, :foobar1)
+    double2 = @space.double(@object, :foobar2)
 
     @space.doubles.include?(@object).should == true
     @space.doubles[@object][:foobar1].should_not be_nil
@@ -97,14 +97,14 @@ describe Space, "#reset_doubles" do
   end
 
   it "resets the double and removes it from the doubles list" do
-    double1 = @space.create_double(@object1, @method_name)
+    double1 = @space.double(@object1, @method_name)
     double1_reset_calls = 0
     (class << double1; self; end).class_eval do
       define_method(:reset) do ||
         double1_reset_calls += 1
       end
     end
-    double2 = @space.create_double(@object2, @method_name)
+    double2 = @space.double(@object2, @method_name)
     double2_reset_calls = 0
     (class << double2; self; end).class_eval do
       define_method(:reset) do ||

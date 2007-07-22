@@ -241,7 +241,7 @@ describe Space, "#scenario" do
   end
 
   it "creates a Scenario and registers it to the double" do
-    double = @space.create_double(@object, @method_name)
+    double = @space.double(@object, @method_name)
     def double.scenarios
       @scenarios
     end
@@ -251,7 +251,7 @@ describe Space, "#scenario" do
   end
 end
 
-describe Space, "#create_double" do
+describe Space, "#double" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -264,14 +264,14 @@ describe Space, "#create_double" do
     (object1 === object2).should be_true
     object1.__id__.should_not == object2.__id__
 
-    double1 = @space.create_double(object1, :foobar)
-    double2 = @space.create_double(object2, :foobar)
+    double1 = @space.double(object1, :foobar)
+    double2 = @space.double(object2, :foobar)
     
     double1.should_not == double2
   end
 end
 
-describe Space, "#create_double when double does not exist" do
+describe Space, "#double when double does not exist" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -284,7 +284,7 @@ describe Space, "#create_double when double does not exist" do
   end
 
   it "returns double and adds double to double list when method_name is a symbol" do
-    double = @space.create_double(@object, @method_name)
+    double = @space.double(@object, @method_name)
     @space.doubles[@object][@method_name].should === double
     double.space.should === @space
     double.object.should === @object
@@ -292,7 +292,7 @@ describe Space, "#create_double when double does not exist" do
   end
 
   it "returns double and adds double to double list when method_name is a string" do
-    double = @space.create_double(@object, 'foobar')
+    double = @space.double(@object, 'foobar')
     @space.doubles[@object][@method_name].should === double
     double.space.should === @space
     double.object.should === @object
@@ -300,12 +300,12 @@ describe Space, "#create_double when double does not exist" do
   end
 
   it "overrides the method when passing a block" do
-    double = @space.create_double(@object, @method_name)
+    double = @space.double(@object, @method_name)
     @object.methods.should include("__rr__#{@method_name}")
   end
 end
 
-describe Space, "#create_double when double exists" do
+describe Space, "#double when double exists" do
   it_should_behave_like "RR::Space"
 
   before do
@@ -319,11 +319,11 @@ describe Space, "#create_double when double exists" do
 
   it "returns the existing double" do
     original_foobar_method = @object.method(:foobar)
-    double = @space.create_double(@object, 'foobar')
+    double = @space.double(@object, 'foobar')
 
     double.original_method.should == original_foobar_method
 
-    @space.create_double(@object, 'foobar').should === double
+    @space.double(@object, 'foobar').should === double
 
     double.reset
     @object.foobar.should == :original_foobar

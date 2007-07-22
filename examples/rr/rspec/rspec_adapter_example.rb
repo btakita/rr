@@ -12,7 +12,7 @@ module Adapters
     end
 
     it "resets the doubles" do
-      RR::Space.instance.create_double(@subject, @method_name)
+      RR::Space.instance.double(@subject, @method_name)
       RR::Space.instance.doubles.should_not be_empty
 
       @fixture.setup_mocks_for_rspec
@@ -30,7 +30,7 @@ module Adapters
     end
 
     it "verifies the doubles" do
-      double = RR::Space.instance.create_double(@subject, @method_name)
+      double = RR::Space.instance.double(@subject, @method_name)
       scenario = RR::Space.instance.scenario(double)
 
       scenario.once
@@ -52,7 +52,7 @@ module Adapters
     end
 
     it "resets the doubles" do
-      RR::Space.instance.create_double(@subject, @method_name)
+      RR::Space.instance.double(@subject, @method_name)
       RR::Space.instance.doubles.should_not be_empty
 
       @fixture.teardown_mocks_for_rspec

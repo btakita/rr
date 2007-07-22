@@ -70,7 +70,7 @@ module RR
     # in object and method_name.
     # When a Double is created, it binds the dispatcher to the
     # object.
-    def create_double(object, method_name)
+    def double(object, method_name)
       double = @doubles[object][method_name.to_sym]
       return double if double
 

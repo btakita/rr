@@ -7,7 +7,7 @@ describe Double, "method dispatching", :shared => true do
     @object = Object.new
     @method_name = :foobar
     @object.methods.should_not include(@method_name.to_s)
-    @double = @space.create_double(@object, @method_name)
+    @double = @space.double(@object, @method_name)
   end
 end
 
@@ -17,7 +17,7 @@ describe Double, " method dispatching where method name has a ! in it" do
     @object = Object.new
     @method_name = :foobar!
     @object.methods.should_not include(@method_name.to_s)
-    @double = @space.create_double(@object, @method_name)
+    @double = @space.double(@object, @method_name)
   end
 
   it "executes the block" do
@@ -33,7 +33,7 @@ describe Double, " method dispatching where method name has a ? in it" do
     @object = Object.new
     @method_name = :foobar?
     @object.methods.should_not include(@method_name.to_s)
-    @double = @space.create_double(@object, @method_name)
+    @double = @space.double(@object, @method_name)
   end
 
   it "executes the block" do

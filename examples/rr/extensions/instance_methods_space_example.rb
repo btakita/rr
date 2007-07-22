@@ -31,7 +31,7 @@ module Extensions
     end
 
     def verify_all_doubles
-      double1 = @space.create_double(@object1, @method_name)
+      double1 = @space.double(@object1, @method_name)
       double1_verify_calls = 0
       double1_reset_calls = 0
       (class << double1; self; end).class_eval do
@@ -42,7 +42,7 @@ module Extensions
           double1_reset_calls += 1
         end
       end
-      double2 = @space.create_double(@object2, @method_name)
+      double2 = @space.double(@object2, @method_name)
       double2_verify_calls = 0
       double2_reset_calls = 0
       (class << double2; self; end).class_eval do
@@ -82,8 +82,8 @@ module Extensions
     end
 
     def remove_ordered_scenarios
-      double1 = @space.create_double(@object1, :foobar1)
-      double2 = @space.create_double(@object1, :foobar2)
+      double1 = @space.double(@object1, :foobar1)
+      double2 = @space.double(@object1, :foobar2)
 
       scenario1 = @space.scenario(double1)
       scenario2 = @space.scenario(double2)
@@ -98,14 +98,14 @@ module Extensions
     end
 
     def reset_all_doubles
-      double1 = @space.create_double(@object1, @method_name)
+      double1 = @space.double(@object1, @method_name)
       double1_reset_calls = 0
       (class << double1; self; end).class_eval do
         define_method(:reset) do ||
           double1_reset_calls += 1
         end
       end
-      double2 = @space.create_double(@object2, @method_name)
+      double2 = @space.double(@object2, @method_name)
       double2_reset_calls = 0
       (class << double2; self; end).class_eval do
         define_method(:reset) do ||

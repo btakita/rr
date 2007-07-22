@@ -17,12 +17,12 @@ describe Space, " class" do
   it "proxies to a singleton instance of Space" do
     create_double_args = nil
     (class << @space; self; end).class_eval do
-      define_method :create_double do |*args|
+      define_method :double do |*args|
         create_double_args = args
       end
     end
 
-    Space.create_double(:foo, :bar)
+    Space.double(:foo, :bar)
     create_double_args.should == [:foo, :bar]
   end
 end

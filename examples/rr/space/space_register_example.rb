@@ -10,7 +10,7 @@ describe Space, "#register_ordered_scenario" do
     Space.instance = @space
     @object = Object.new
     @method_name = :foobar
-    @double = @space.create_double(@object, @method_name)
+    @double = @space.double(@object, @method_name)
   end
 
   after(:each) do

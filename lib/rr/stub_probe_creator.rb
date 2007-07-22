@@ -23,7 +23,7 @@ module RR
   #   user.valid? # false
   class StubProbeCreator < ScenarioCreator
     def create(method_name, *args, &after_call)
-      double = @space.create_double(@subject, method_name)
+      double = @space.double(@subject, method_name)
       scenario = @space.scenario(double)
       scenario.implemented_by(double.original_method)
       scenario.any_number_of_times

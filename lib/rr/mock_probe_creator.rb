@@ -23,7 +23,7 @@ module RR
   #   user.valid? # false
   class MockProbeCreator < ScenarioCreator
     def create(method_name, *args, &after_call)
-      double = @space.create_double(@subject, method_name)
+      double = @space.double(@subject, method_name)
       scenario = @space.scenario(double)
       scenario.with(*args).once.implemented_by(double.original_method)
       scenario.after_call(&after_call) if after_call
