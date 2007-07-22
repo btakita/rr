@@ -9,7 +9,7 @@ module RR
         end
 
         def method_missing(method_name, *args, &block)
-          @creator.create(method_name, *args, &block)
+          @creator.create!(method_name, *args, &block)
         end
       end
       yield(self) if block_given?

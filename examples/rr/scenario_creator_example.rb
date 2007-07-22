@@ -12,7 +12,7 @@ describe ScenarioCreator, :shared => true do
   end
 end
 
-describe ScenarioCreator, "#create using mock strategy" do
+describe ScenarioCreator, "#create! using mock strategy" do
   it_should_behave_like "RR::ScenarioCreator"
   
   before do
@@ -22,7 +22,7 @@ describe ScenarioCreator, "#create using mock strategy" do
   end
 
   it "sets expectations on the subject" do
-    @creator.create(:foobar, 1, 2) {:baz}.twice
+    @creator.create!(:foobar, 1, 2) {:baz}.twice
 
     @subject.foobar(1, 2).should == :baz
     @subject.foobar(1, 2).should == :baz
@@ -30,7 +30,7 @@ describe ScenarioCreator, "#create using mock strategy" do
   end
 end
 
-describe ScenarioCreator, "#create using stub strategy" do
+describe ScenarioCreator, "#create! using stub strategy" do
   it_should_behave_like "RR::ScenarioCreator"
 
   before do
@@ -40,21 +40,21 @@ describe ScenarioCreator, "#create using stub strategy" do
   end
 
   it "stubs the subject without any args" do
-    @creator.create(:foobar) {:baz}
+    @creator.create!(:foobar) {:baz}
     @subject.foobar.should == :baz
   end
 
   it "stubs the subject mapping passed in args with the output" do
-    @creator.create(:foobar, 1, 2) {:one_two}
-    @creator.create(:foobar, 1) {:one}
-    @creator.create(:foobar) {:nothing}
+    @creator.create!(:foobar, 1, 2) {:one_two}
+    @creator.create!(:foobar, 1) {:one}
+    @creator.create!(:foobar) {:nothing}
     @subject.foobar.should == :nothing
     @subject.foobar(1).should == :one
     @subject.foobar(1, 2).should == :one_two
   end
 end
 
-describe ScenarioCreator, "#create using do_not_call strategy" do
+describe ScenarioCreator, "#create! using do_not_call strategy" do
   it_should_behave_like "RR::ScenarioCreator"
 
   before do
@@ -64,25 +64,25 @@ describe ScenarioCreator, "#create using do_not_call strategy" do
   end
 
   it "sets expectation for method to never be called with any arguments when on arguments passed in" do
-    @creator.create(:foobar)
+    @creator.create!(:foobar)
     proc {@subject.foobar}.should raise_error(Errors::TimesCalledError)
     proc {@subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "sets expectation for method to never be called with passed in arguments" do
-    @creator.create(:foobar, 1, 2)
+    @creator.create!(:foobar, 1, 2)
     proc {@subject.foobar}.should raise_error(Errors::ScenarioNotFoundError)
     proc {@subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "sets expectation for method to never be called with no arguments when with_no_args is set" do
-    @creator.create(:foobar).with_no_args
+    @creator.create!(:foobar).with_no_args
     proc {@subject.foobar}.should raise_error(Errors::TimesCalledError)
     proc {@subject.foobar(1, 2)}.should raise_error(Errors::ScenarioNotFoundError)
   end
 end
 
-describe ScenarioCreator, "#create using mock_probe strategy" do
+describe ScenarioCreator, "#create! using mock_probe strategy" do
   it_should_behave_like "RR::ScenarioCreator"
 
   before do
@@ -93,7 +93,7 @@ describe ScenarioCreator, "#create using mock_probe strategy" do
 
   it "sets expectations on the subject while calling the original method" do
     def @subject.foobar(*args); :baz; end
-    @creator.create(:foobar,1, 2).twice
+    @creator.create!(:foobar,1, 2).twice
     @subject.foobar(1, 2).should == :baz
     @subject.foobar(1, 2).should == :baz
     proc {@subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
@@ -104,7 +104,7 @@ describe ScenarioCreator, "#create using mock_probe strategy" do
     (class << @subject; self; end).class_eval do
       define_method(:foobar) {real_value}
     end
-    @creator.create(:foobar, 1, 2) do |value|
+    @creator.create!(:foobar, 1, 2) do |value|
       mock(value).a_method {99}
       value
     end
@@ -115,7 +115,7 @@ describe ScenarioCreator, "#create using mock_probe strategy" do
   end
 end
 
-describe ScenarioCreator, "#create using stub_probe strategy" do
+describe ScenarioCreator, "#create! using stub_probe strategy" do
   it_should_behave_like "RR::ScenarioCreator"
 
   before do
@@ -126,7 +126,7 @@ describe ScenarioCreator, "#create using stub_probe strategy" do
 
   it "sets up a scenario with passed in arguments" do
     def @subject.foobar(*args); :baz; end
-    @creator.create(:foobar, 1, 2)
+    @creator.create!(:foobar, 1, 2)
     proc do
       @subject.foobar
     end.should raise_error(Errors::ScenarioNotFoundError)
@@ -134,7 +134,7 @@ describe ScenarioCreator, "#create using stub_probe strategy" do
 
   it "sets expectations on the subject while calling the original method" do
     def @subject.foobar(*args); :baz; end
-    @creator.create(:foobar, 1, 2) {:new_value}
+    @creator.create!(:foobar, 1, 2) {:new_value}
     10.times do
       @subject.foobar(1, 2).should == :new_value
     end
@@ -145,7 +145,7 @@ describe ScenarioCreator, "#create using stub_probe strategy" do
     (class << @subject; self; end).class_eval do
       define_method(:foobar) {real_value}
     end
-    @creator.create(:foobar, 1, 2) do |value|
+    @creator.create!(:foobar, 1, 2) do |value|
       mock(value).a_method {99}
       value
     end
