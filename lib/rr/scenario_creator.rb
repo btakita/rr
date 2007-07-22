@@ -29,6 +29,33 @@ module RR
       @scenario
     end
 
+    # This method sets the Scenario to have a mock strategy. A mock strategy
+    # sets the default state of the Scenario to expect the method call
+    # with arguments exactly one time. The Scenario's expectations can be
+    # changed.
+    #
+    # This method can be chained with probe.
+    #   mock.probe(subject).method_name_1
+    #   or
+    #   probe.mock(subject).method_name_1
+    #
+    # When passed the subject, a ScenarioMethodProxy is returned. Passing
+    # a method with arguments to the proxy will set up expectations that
+    # the a call to the subject's method with the arguments will happen.
+    #   mock(subject).method_name_1 {return_value_1}
+    #   mock(subject).method_name_2(arg1, arg2) {return_value_2}
+    #
+    # When passed the subject and the method_name, this method returns
+    # a mock Scenario with the method already set.
+    #
+    #   mock(subject, :method_name_1) {return_value_1}
+    #   mock(subject, :method_name_2).with(arg1, arg2) {return_value_2}
+    #
+    # mock also takes a block for definitions.
+    #   mock(subject) do
+    #     method_name_1 {return_value_1}
+    #     method_name_2(arg_1, arg_2) {return_value_2}
+    #   end
     def mock(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       strategy_error! if @strategy
       @strategy = :mock
