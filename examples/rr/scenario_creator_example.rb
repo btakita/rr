@@ -51,6 +51,19 @@ describe ScenarioCreator, "#stub" do
   end
 end
 
+describe ScenarioCreator, "#create! using no strategy" do
+  it_should_behave_like "RR::ScenarioCreator"
+
+  it "raises error" do
+    proc do
+      @creator.create!(:foobar, 1, 2)
+    end.should raise_error(
+      Errors::ScenarioDefinitionError,
+      "This Scenario has no strategy."
+    )
+  end
+end
+
 describe ScenarioCreator, "#create! using mock strategy" do
   it_should_behave_like "RR::ScenarioCreator"
   

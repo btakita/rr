@@ -12,6 +12,7 @@ module RR
     end
     
     def create!(method_name, *args, &handler)
+      no_strategy_error! unless @strategy
       @method_name = method_name
       @args = args
       @handler = handler
@@ -100,6 +101,13 @@ module RR
       raise(
         ScenarioDefinitionError,
         "This Scenario already has a #{@strategy} strategy."
+      )
+    end
+
+    def no_strategy_error!
+      raise(
+        ScenarioDefinitionError,
+        "This Scenario has no strategy."
       )
     end
   end
