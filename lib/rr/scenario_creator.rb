@@ -45,29 +45,25 @@ module RR
         @scenario.with(*@args).once.returns(&@handler)
       when :stub
         @scenario.returns(&@handler).any_number_of_times
-        if @args.empty?
-          @scenario.with_any_args
-        else
-          @scenario.with(*@args)
-        end
+        permissive_argment_strategy
       when :mock_probe
         @scenario.with(*@args).once
         probe_strategy
       when :stub_probe
         @scenario.any_number_of_times
-        if @args.empty?
-          @scenario.with_any_args
-        else
-          @scenario.with(*@args)
-        end
+        permissive_argment_strategy
         probe_strategy
       when :do_not_call
-        if @args.empty?
-          @scenario.with_any_args
-        else
-          @scenario.with(*@args)
-        end
+        permissive_argment_strategy
         @scenario.never.returns(&@handler)
+      end
+    end
+
+    def permissive_argment_strategy
+      if @args.empty?
+        @scenario.with_any_args
+      else
+        @scenario.with(*@args)
       end
     end
     
