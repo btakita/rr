@@ -106,6 +106,51 @@ module RR
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
 
+    # This method add probe capabilities to the Scenario. probe can be called
+    # with mock or stub.
+    #
+    #   mock.probe(controller.template).render(:partial => "my/socks")
+    #
+    #   stub.probe(controller.template).render(:partial => "my/socks") do |html|
+    #     html.should include("My socks are wet")
+    #     html
+    #   end
+    #
+    #   mock.probe(controller.template).render(:partial => "my/socks") do |html|
+    #     html.should include("My socks are wet")
+    #     "My new return value"
+    #   end
+    #
+    # mock.probe also takes a block for definitions.
+    #   mock.probe(subject) do
+    #     render(:partial => "my/socks")
+    #
+    #     render(:partial => "my/socks") do |html|
+    #       html.should include("My socks are wet")
+    #       html
+    #     end
+    #
+    #     render(:partial => "my/socks") do |html|
+    #       html.should include("My socks are wet")
+    #       html
+    #     end
+    #
+    #     render(:partial => "my/socks") do |html|
+    #       html.should include("My socks are wet")
+    #       "My new return value"
+    #     end
+    #   end
+    #
+    # Passing a block to the Scenario (after the method name and arguments)
+    # allows you to intercept the return value.
+    # The return value can be modified, validated, and/or overridden by
+    # passing in a block. The return value of the block will replace
+    # the actual return value.
+    #
+    #   mock.probe(controller.template).render(:partial => "my/socks") do |html|
+    #     html.should include("My socks are wet")
+    #     "My new return value"
+    #   end
     def probe(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       probe_when_do_not_call_error! if @strategy == :do_not_call
       @probe = true
