@@ -42,14 +42,18 @@ module RR
       @strategy = :stub
     end
 
-    def mock_probe
-      @strategy = :mock
+    def probe
       @probe = true
     end
 
+    def mock_probe
+      mock
+      probe
+    end
+
     def stub_probe
-      @strategy = :stub
-      @probe = true
+      stub
+      probe
     end
 
     def do_not_call
