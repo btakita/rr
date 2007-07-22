@@ -34,29 +34,9 @@ module RR
       proxy.__send__(method_name)
     end
 
-    # Creates a MockCreator.
-    def mock_creator(subject)
-      MockCreator.new(self, subject)
-    end
-
-    # Creates a StubCreator.
-    def stub_creator(subject)
-      StubCreator.new(self, subject)
-    end
-
-    # Creates a MockProbeCreator.
-    def mock_probe_creator(subject)
-      MockProbeCreator.new(self, subject)
-    end
-
-    # Creates a StubProbeCreator.
-    def stub_probe_creator(subject)
-      StubProbeCreator.new(self, subject)
-    end
-
-    # Creates a DoNotAllowCreator.
-    def do_not_allow_creator(subject)
-      DoNotAllowCreator.new(self, subject)
+    # Creates a ScenarioCreator.
+    def scenario_creator(subject)
+      ScenarioCreator.new(self, subject)
     end
 
     # Creates and registers a Scenario to be verified.

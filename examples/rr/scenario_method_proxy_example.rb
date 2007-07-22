@@ -5,7 +5,8 @@ describe ScenarioMethodProxy, :shared => true do
   before(:each) do
     @space = Space.new
     @subject = Object.new
-    @creator = MockCreator.new(@space, @subject)
+    @creator = @space.scenario_creator(@subject)
+    @creator.mock
   end
 
   it "initializes proxy with passed in creator" do

@@ -26,8 +26,9 @@ module Extensions
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
     def mock(object, method_name=nil, &definition)
-      mock_creator = RR::Space.mock_creator(object)
-      RR::Space.scenario_method_proxy(mock_creator, method_name, &definition)
+      creator = RR::Space.scenario_creator(object)
+      creator.mock
+      RR::Space.scenario_method_proxy(creator, method_name, &definition)
     end
 
     # When passed the object, this method returns a StubCreator
@@ -44,8 +45,9 @@ module Extensions
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
     def stub(object, method_name=nil, &definition)
-      stub_creator = RR::Space.stub_creator(object)
-      RR::Space.scenario_method_proxy(stub_creator, method_name, &definition)
+      creator = RR::Space.scenario_creator(object)
+      creator.stub
+      RR::Space.scenario_method_proxy(creator, method_name, &definition)
     end
 
     # When passed the object, this method returns a MockProbeCreator
@@ -94,8 +96,9 @@ module Extensions
     #     "My new return value"
     #   end
     def mock_probe(object, method_name=nil, &definition)
-      mock_probe_creator = RR::Space.mock_probe_creator(object)
-      RR::Space.scenario_method_proxy(mock_probe_creator, method_name, &definition)
+      creator = RR::Space.scenario_creator(object)
+      creator.mock_probe
+      RR::Space.scenario_method_proxy(creator, method_name, &definition)
     end
 
     # When passed the object, this method returns a StubProbeCreator
@@ -142,19 +145,33 @@ module Extensions
     #     "My new return value"
     #   end
     def stub_probe(object, method_name=nil, &definition)
-      stub_probe_creator = RR::Space.stub_probe_creator(object)
-      RR::Space.scenario_method_proxy(stub_probe_creator, method_name, &definition)
+      creator = RR::Space.scenario_creator(object)
+      creator.stub_probe
+      RR::Space.scenario_method_proxy(creator, method_name, &definition)
     end
 
     # Same as mock_probe
     alias_method :probe, :mock_probe
 
-    # Sets up a DoNotAllowCreator that generates a Double Scenario that
-    # expects never to be called.
-    #   do_not_allow(object).method_name
+    # RR::DoNotAllowCreator uses RR::DoNotAllowCreator#method_missing to create
+    # a Scenario that expects never to be called.
+    #
+    # The following example mocks method_name with arg1 and arg2
+    # returning return_value.
+    #
+    #   do_not_allow(subject).method_name(arg1, arg2) { return_value }
+    #
+    # The DoNotAllowCreator also supports a block sytnax.
+    #
+    #    do_not_allow(subject) do |m|
+    #      m.method1 # Do not allow method1 with any arguments
+    #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
+    #      m.method3.with_no_args # Do not allow method3 with no arguments
+    #    end
     def do_not_allow(object, method_name=nil, &definition)
-      do_not_allow_creator = RR::Space.do_not_allow_creator(object)
-      RR::Space.scenario_method_proxy(do_not_allow_creator, method_name, &definition)
+      creator = RR::Space.scenario_creator(object)
+      creator.do_not_call
+      RR::Space.scenario_method_proxy(creator, method_name, &definition)
     end
     alias_method :dont_allow, :do_not_allow
 

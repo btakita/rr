@@ -37,11 +37,12 @@ describe Space, "#scenario_method_proxy", :shared => true do
   end
 end
 
-describe Space, "#scenario_method_proxy with a MockCreator" do
+describe Space, "#scenario_method_proxy with a Mock strategy" do
   it_should_behave_like "RR::Space#scenario_method_proxy"
 
   before do
-    @creator = @space.mock_creator(@object)
+    @creator = @space.scenario_creator(@object)
+    @creator.mock
   end
 
   it "creates a mock Scenario for method when passed a second argument" do
@@ -59,11 +60,12 @@ describe Space, "#scenario_method_proxy with a MockCreator" do
   end
 end
 
-describe Space, "#scenario_method_proxy with a StubCreator" do
+describe Space, "#scenario_method_proxy with a Stub strategy" do
   it_should_behave_like "RR::Space#scenario_method_proxy"
 
   before do
-    @creator = @space.stub_creator(@object)
+    @creator = @space.scenario_creator(@object)
+    @creator.stub
   end
 
   it "creates a stub Scenario for method when passed a second argument" do
@@ -84,11 +86,12 @@ describe Space, "#scenario_method_proxy with a StubCreator" do
   end
 end
 
-describe Space, "#scenario_method_proxy with a MockProbeCreator" do
+describe Space, "#scenario_method_proxy with a Mock Probe strategy" do
   it_should_behave_like "RR::Space#scenario_method_proxy"
 
   before do
-    @creator = @space.mock_probe_creator(@object)
+    @creator = @space.scenario_creator(@object)
+    @creator.mock_probe
     def @object.foobar(*args)
       :original_foobar
     end
@@ -109,11 +112,12 @@ describe Space, "#scenario_method_proxy with a MockProbeCreator" do
   end
 end
 
-describe Space, "#scenario_method_proxy with a StubProbeCreator" do
+describe Space, "#scenario_method_proxy with a Stub Probe strategy" do
   it_should_behave_like "RR::Space#scenario_method_proxy"
 
   before do
-    @creator = @space.stub_probe_creator(@creator)
+    @creator = @space.scenario_creator(@creator)
+    @creator.stub_probe
     def @object.foobar(*args)
       :original_foobar
     end
@@ -134,11 +138,12 @@ describe Space, "#scenario_method_proxy with a StubProbeCreator" do
   end
 end
 
-describe Space, "#scenario_method_proxy with a DoNotAllowCreator" do
+describe Space, "#scenario_method_proxy with a Do Not Allow strategy" do
   it_should_behave_like "RR::Space#scenario_method_proxy"
 
   before do
-    @creator = @space.do_not_allow_creator(@object)
+    @creator = @space.scenario_creator(@object)
+    @creator.do_not_call
   end
 
   it "creates a do not allow Scenario for method when passed a second argument" do
@@ -154,12 +159,13 @@ describe Space, "#scenario_method_proxy with a DoNotAllowCreator" do
   end
 end
 
-describe Space, " creator method", :shared => true do
+describe Space, "#scenario_creator" do
   it_should_behave_like "RR::Space"
 
   before do
     @space = Space.new
     @object = Object.new
+    @creator = @space.scenario_creator(@object)
   end
 
   it "sets the space" do
@@ -169,65 +175,9 @@ describe Space, " creator method", :shared => true do
   it "sets the subject" do
     @creator.subject.should === @object
   end
-end
 
-describe Space, "#mock_creator" do
-  it_should_behave_like "RR::Space creator method"
-
-  before do
-    @creator = @space.mock_creator(@object)
-  end
-
-  it "creates a MockCreator" do
-    @creator.should be_instance_of(MockCreator)
-  end
-end
-
-describe Space, "#stub_creator" do
-  it_should_behave_like "RR::Space creator method"
-
-  before do
-    @creator = @space.stub_creator(@object)
-  end
-
-  it "creates a StubCreator" do
-    @creator.should be_instance_of(StubCreator)
-  end
-end
-
-describe Space, "#mock_probe_creator" do
-  it_should_behave_like "RR::Space creator method"
-
-  before do
-    @creator = @space.mock_probe_creator(@object)
-  end
-
-  it "creates a MockProbeCreator" do
-    @creator.should be_instance_of(MockProbeCreator)
-  end
-end
-
-describe Space, "#stub_probe_creator" do
-  it_should_behave_like "RR::Space creator method"
-
-  before do
-    @creator = @space.stub_probe_creator(@object)
-  end
-
-  it "creates a StubProbeCreator" do
-    @creator.should be_instance_of(StubProbeCreator)
-  end
-end
-
-describe Space, "#do_not_allow_creator" do
-  it_should_behave_like "RR::Space creator method"
-
-  before do
-    @creator = @space.do_not_allow_creator(@object)
-  end
-
-  it "creates a DoNotAllowCreator" do
-    @creator.should be_instance_of(DoNotAllowCreator)
+  it "creates a ScenarioCreator" do
+    @creator.should be_instance_of(ScenarioCreator)
   end
 end
 

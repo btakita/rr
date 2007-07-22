@@ -5,11 +5,6 @@ require "rr/hash_with_object_id_key"
 require "rr/scenario_method_proxy"
 
 require "rr/scenario_creator"
-require "rr/mock_creator"
-require "rr/stub_creator"
-require "rr/mock_probe_creator"
-require "rr/stub_probe_creator"
-require "rr/do_not_allow_creator"
 
 require "rr/scenario"
 require "rr/scenario_matches"
