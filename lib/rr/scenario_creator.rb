@@ -12,7 +12,6 @@ module RR
     end
     
     def create!(method_name, *args, &handler)
-      no_strategy_error! unless @strategy
       @method_name = method_name
       @args = args
       @handler = handler
@@ -56,6 +55,7 @@ module RR
       when :mock; mock!
       when :stub; stub!
       when :do_not_call; do_not_call!
+      else no_strategy_error!
       end
       
       if @probe
