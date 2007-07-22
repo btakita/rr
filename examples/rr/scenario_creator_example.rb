@@ -69,6 +69,16 @@ describe ScenarioCreator, "#do_not_call" do
   before do
     @method_name = :do_not_call
   end
+
+  it "raises error when probed" do
+    @creator.probe
+    proc do
+      @creator.do_not_call
+    end.should raise_error(
+      Errors::ScenarioDefinitionError,
+      "Scenarios cannot be probed when using do_not_call strategy"
+    )
+  end
 end
 
 describe ScenarioCreator, "#probe" do

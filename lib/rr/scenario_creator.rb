@@ -31,6 +31,12 @@ module RR
       @strategy = :stub
     end
 
+    def do_not_call
+      strategy_error! if @strategy
+      probe_when_do_not_call_error! if @probe
+      @strategy = :do_not_call
+    end
+
     def probe
       probe_when_do_not_call_error! if @strategy == :do_not_call
       @probe = true
@@ -44,11 +50,6 @@ module RR
     def stub_probe
       stub
       probe
-    end
-
-    def do_not_call
-      strategy_error! if @strategy
-      @strategy = :do_not_call
     end
 
     protected
