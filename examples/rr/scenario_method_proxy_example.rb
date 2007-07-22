@@ -5,7 +5,7 @@ describe ScenarioMethodProxy, :shared => true do
   before(:each) do
     @space = Space.new
     @subject = Object.new
-    @creator = @space.scenario_creator(@subject)
+    @creator = @space.scenario_creator
     @creator.mock
   end
 
@@ -21,7 +21,7 @@ describe ScenarioMethodProxy, ".new without block" do
   it_should_behave_like "RR::ScenarioMethodProxy"
 
   before do
-    @proxy = ScenarioMethodProxy.new(@space, @creator)
+    @proxy = ScenarioMethodProxy.new(@space, @creator, @subject)
   end
 
   it "clears out all methods from proxy" do
@@ -31,7 +31,7 @@ describe ScenarioMethodProxy, ".new without block" do
     end
     proxy_subclass.instance_methods.should include('i_should_be_a_scenario')
 
-    proxy = proxy_subclass.new(@space, @creator)
+    proxy = proxy_subclass.new(@space, @creator, @subject)
     proxy.i_should_be_a_scenario.should be_instance_of(Scenario)
   end
 end
@@ -40,7 +40,7 @@ describe ScenarioMethodProxy, ".new with block" do
   it_should_behave_like "RR::ScenarioMethodProxy"
 
   before do
-    @proxy = ScenarioMethodProxy.new(@space, @creator) do |b|
+    @proxy = ScenarioMethodProxy.new(@space, @creator, @subject) do |b|
       b.foobar(1, 2) {:one_two}
       b.foobar(1) {:one}
       b.foobar.with_any_args {:default}
@@ -62,7 +62,7 @@ describe ScenarioMethodProxy, ".new with block" do
     end
     proxy_subclass.instance_methods.should include('i_should_be_a_scenario')
 
-    proxy_subclass.new(@space, @creator) do |m|
+    proxy_subclass.new(@space, @creator, @subject) do |m|
       m.i_should_be_a_scenario.should be_instance_of(Scenario)
     end
   end

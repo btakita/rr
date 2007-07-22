@@ -25,18 +25,18 @@ module RR
       @trim_backtrace = false
     end
 
-    def scenario_method_proxy(creator, method_name=nil, &definition)
+    def scenario_method_proxy(creator, object, method_name=nil, &definition)
       if method_name && definition
         raise ArgumentError, "Cannot pass in a method name and a block"
       end
-      proxy = ScenarioMethodProxy.new(self, creator, &definition)
+      proxy = ScenarioMethodProxy.new(self, creator, object, &definition)
       return proxy unless method_name
       proxy.__send__(method_name)
     end
 
     # Creates a ScenarioCreator.
-    def scenario_creator(subject)
-      ScenarioCreator.new(self, subject)
+    def scenario_creator
+      ScenarioCreator.new(self)
     end
 
     # Creates and registers a Scenario to be verified.

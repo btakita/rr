@@ -4,14 +4,14 @@ module RR
     attr_reader :space, :subject
     include Errors
 
-    def initialize(space, subject)
+    def initialize(space)
       @space = space
-      @subject = subject
       @strategy = nil
       @probe = false
     end
     
-    def create!(method_name, *args, &handler)
+    def create!(subject, method_name, *args, &handler)
+      @subject = subject
       @method_name = method_name
       @args = args
       @handler = handler

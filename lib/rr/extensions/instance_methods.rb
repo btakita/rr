@@ -1,6 +1,8 @@
 module RR
 module Extensions
   module InstanceMethods
+    NO_SCENARIO_ARG = Object.new
+
     # Verifies all the Double objects have met their
     # TimesCalledExpectations.
     def verify
@@ -26,9 +28,9 @@ module Extensions
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
     def mock(object, method_name=nil, &definition)
-      creator = RR::Space.scenario_creator(object)
+      creator = RR::Space.scenario_creator
       creator.mock
-      RR::Space.scenario_method_proxy(creator, method_name, &definition)
+      RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
     end
 
     # When passed the object, this method returns a StubCreator
@@ -45,9 +47,9 @@ module Extensions
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
     def stub(object, method_name=nil, &definition)
-      creator = RR::Space.scenario_creator(object)
+      creator = RR::Space.scenario_creator
       creator.stub
-      RR::Space.scenario_method_proxy(creator, method_name, &definition)
+      RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
     end
 
     # When passed the object, this method returns a MockProbeCreator
@@ -96,9 +98,9 @@ module Extensions
     #     "My new return value"
     #   end
     def mock_probe(object, method_name=nil, &definition)
-      creator = RR::Space.scenario_creator(object)
+      creator = RR::Space.scenario_creator
       creator.mock_probe
-      RR::Space.scenario_method_proxy(creator, method_name, &definition)
+      RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
     end
 
     # When passed the object, this method returns a StubProbeCreator
@@ -145,9 +147,9 @@ module Extensions
     #     "My new return value"
     #   end
     def stub_probe(object, method_name=nil, &definition)
-      creator = RR::Space.scenario_creator(object)
+      creator = RR::Space.scenario_creator
       creator.stub_probe
-      RR::Space.scenario_method_proxy(creator, method_name, &definition)
+      RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
     end
 
     # Same as mock_probe
@@ -169,9 +171,9 @@ module Extensions
     #      m.method3.with_no_args # Do not allow method3 with no arguments
     #    end
     def do_not_allow(object, method_name=nil, &definition)
-      creator = RR::Space.scenario_creator(object)
+      creator = RR::Space.scenario_creator
       creator.do_not_call
-      RR::Space.scenario_method_proxy(creator, method_name, &definition)
+      RR::Space.scenario_method_proxy(creator, object, method_name, &definition)
     end
     alias_method :dont_allow, :do_not_allow
 

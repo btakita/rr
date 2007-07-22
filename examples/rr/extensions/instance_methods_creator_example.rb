@@ -14,6 +14,10 @@ module Extensions
       end
     end
 
+    it "returns a ScenarioCreator when passed no arguments" #do
+#      mock.should be_instance_of(ScenarioCreator)
+#    end
+
     it "sets up the RR mock call chain" do
       should create_mock_call_chain(mock(@subject))
     end

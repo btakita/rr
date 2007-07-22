@@ -10,12 +10,12 @@ describe Space, "#scenario_method_proxy", :shared => true do
   end
 
   it "creates a ScenarioMethodProxy" do
-    proxy = @space.scenario_method_proxy(@creator)
+    proxy = @space.scenario_method_proxy(@creator, @object)
     proxy.should be_instance_of(ScenarioMethodProxy)
   end
 
   it "sets space to self" do
-    proxy = @space.scenario_method_proxy(@creator)
+    proxy = @space.scenario_method_proxy(@creator, @object)
     class << proxy
       attr_reader :space
     end
@@ -23,7 +23,7 @@ describe Space, "#scenario_method_proxy", :shared => true do
   end
 
   it "sets creator to passed in creator" do
-    proxy = @space.scenario_method_proxy(@creator)
+    proxy = @space.scenario_method_proxy(@creator, @object)
     class << proxy
       attr_reader :creator
     end
@@ -32,7 +32,7 @@ describe Space, "#scenario_method_proxy", :shared => true do
 
   it "raises error if passed a method name and a block" do
     proc do
-      @space.scenario_method_proxy(@creator, :foobar) {}
+      @space.scenario_method_proxy(@creator, @object, :foobar) {}
     end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
   end
 end
@@ -41,18 +41,18 @@ describe Space, "#scenario_method_proxy with a Mock strategy" do
   it_should_behave_like "RR::Space#scenario_method_proxy"
 
   before do
-    @creator = @space.scenario_creator(@object)
+    @creator = @space.scenario_creator
     @creator.mock
   end
 
   it "creates a mock Scenario for method when passed a second argument" do
-    @space.scenario_method_proxy(@creator, :foobar).with(1) {:baz}
+    @space.scenario_method_proxy(@creator, @object, :foobar).with(1) {:baz}
     @object.foobar(1).should == :baz
     proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "uses block definition when passed a block" do
-    @space.scenario_method_proxy(@creator) do |c|
+    @space.scenario_method_proxy(@creator, @object) do |c|
       c.foobar(1) {:baz}
     end
     @object.foobar(1).should == :baz
@@ -64,18 +64,18 @@ describe Space, "#scenario_method_proxy with a Stub strategy" do
   it_should_behave_like "RR::Space#scenario_method_proxy"
 
   before do
-    @creator = @space.scenario_creator(@object)
+    @creator = @space.scenario_creator
     @creator.stub
   end
 
   it "creates a stub Scenario for method when passed a second argument" do
-    @space.scenario_method_proxy(@creator, :foobar).with(1) {:baz}
+    @space.scenario_method_proxy(@creator, @object, :foobar).with(1) {:baz}
     @object.foobar(1).should == :baz
     @object.foobar(1).should == :baz
   end
 
   it "uses block definition when passed a block" do
-    @space.scenario_method_proxy(@creator) do |c|
+    @space.scenario_method_proxy(@creator, @object) do |c|
       c.foobar(1) {:return_value}
       c.foobar.with_any_args {:default}
       c.baz(1) {:baz_value}
@@ -90,7 +90,7 @@ describe Space, "#scenario_method_proxy with a Mock Probe strategy" do
   it_should_behave_like "RR::Space#scenario_method_proxy"
 
   before do
-    @creator = @space.scenario_creator(@object)
+    @creator = @space.scenario_creator
     @creator.mock_probe
     def @object.foobar(*args)
       :original_foobar
@@ -98,13 +98,13 @@ describe Space, "#scenario_method_proxy with a Mock Probe strategy" do
   end
 
   it "creates a mock probe Scenario for method when passed a second argument" do
-    @space.scenario_method_proxy(@creator, :foobar).with(1)
+    @space.scenario_method_proxy(@creator, @object, :foobar).with(1)
     @object.foobar(1).should == :original_foobar
     proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "uses block definition when passed a block" do
-    @space.scenario_method_proxy(@creator) do |c|
+    @space.scenario_method_proxy(@creator, @object) do |c|
       c.foobar(1)
     end
     @object.foobar(1).should == :original_foobar
@@ -116,7 +116,7 @@ describe Space, "#scenario_method_proxy with a Stub Probe strategy" do
   it_should_behave_like "RR::Space#scenario_method_proxy"
 
   before do
-    @creator = @space.scenario_creator(@creator)
+    @creator = @space.scenario_creator
     @creator.stub_probe
     def @object.foobar(*args)
       :original_foobar
@@ -124,13 +124,13 @@ describe Space, "#scenario_method_proxy with a Stub Probe strategy" do
   end
 
   it "creates a stub probe Scenario for method when passed a second argument" do
-    @space.scenario_method_proxy(@creator, :foobar)
+    @space.scenario_method_proxy(@creator, @object, :foobar)
     @object.foobar(1).should == :original_foobar
     @object.foobar(1).should == :original_foobar
   end
 
   it "uses block definition when passed a block" do
-    @space.scenario_method_proxy(@creator) do |c|
+    @space.scenario_method_proxy(@creator, @object) do |c|
       c.foobar(1)
     end
     @object.foobar(1).should == :original_foobar
@@ -142,17 +142,17 @@ describe Space, "#scenario_method_proxy with a Do Not Allow strategy" do
   it_should_behave_like "RR::Space#scenario_method_proxy"
 
   before do
-    @creator = @space.scenario_creator(@object)
+    @creator = @space.scenario_creator
     @creator.do_not_call
   end
 
   it "creates a do not allow Scenario for method when passed a second argument" do
-    @space.scenario_method_proxy(@creator, :foobar).with(1)
+    @space.scenario_method_proxy(@creator, @object, :foobar).with(1)
     proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
   end
 
   it "uses block definition when passed a block" do
-    @space.scenario_method_proxy(@creator) do |c|
+    @space.scenario_method_proxy(@creator, @object) do |c|
       c.foobar(1)
     end
     proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
@@ -165,15 +165,11 @@ describe Space, "#scenario_creator" do
   before do
     @space = Space.new
     @object = Object.new
-    @creator = @space.scenario_creator(@object)
+    @creator = @space.scenario_creator
   end
 
   it "sets the space" do
     @creator.space.should === @space
-  end
-
-  it "sets the subject" do
-    @creator.subject.should === @object
   end
 
   it "creates a ScenarioCreator" do
