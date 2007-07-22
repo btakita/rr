@@ -27,6 +27,20 @@ describe ScenarioCreator, "#mock" do
   end
 end
 
+describe ScenarioCreator, "#stub" do
+  it_should_behave_like "RR::ScenarioCreator"
+
+  it "raises error when mock called before" do
+    @creator.mock
+    proc do
+      @creator.stub
+    end.should raise_error(
+      Errors::ScenarioDefinitionError,
+      "This Scenario is already a mock. It cannot be a stub."
+    )
+  end
+end
+
 describe ScenarioCreator, "#create! using mock strategy" do
   it_should_behave_like "RR::ScenarioCreator"
   

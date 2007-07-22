@@ -33,6 +33,12 @@ module RR
     end
 
     def stub
+      if @strategy == :mock
+        raise(
+          ScenarioDefinitionError,
+          "This Scenario is already a mock. It cannot be a stub."
+        )
+      end
       @strategy = :stub
     end
 
