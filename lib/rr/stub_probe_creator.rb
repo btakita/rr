@@ -23,8 +23,7 @@ module RR
   #   user.valid? # false
   class StubProbeCreator < ScenarioCreator
     def transform(scenario, *args, &after_call)
-      double = scenario.double
-      scenario.implemented_by(double.original_method)
+      scenario.implemented_by_original_method
       scenario.any_number_of_times
       if args.empty?
         scenario.with_any_args

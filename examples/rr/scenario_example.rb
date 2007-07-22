@@ -5,8 +5,10 @@ describe Scenario, :shared => true do
   before do
     @space = Space.new
     @object = Object.new
-    @method_name = :foobar
-    @double = @space.double(@object, @method_name)
+    def @object.foobar(a, b)
+      [b, a]
+    end
+    @double = @space.double(@object, :foobar)
     @scenario = @space.scenario(@double)
   end
 end
@@ -348,6 +350,19 @@ describe Scenario, "#implemented_by" do
       [b, a]
     end
     @scenario.implemented_by(@object.method(:foobar))
+    @scenario.call(1, 2).should == [2, 1]
+  end
+end
+
+describe Scenario, "#implemented_by_original_method" do
+  it_should_behave_like "RR::Scenario"
+
+  it "returns the scenario object" do
+    @scenario.implemented_by_original_method.should === @scenario
+  end
+
+  it "sets the implementation to the original method" do
+    @scenario.implemented_by_original_method
     @scenario.call(1, 2).should == [2, 1]
   end
 end

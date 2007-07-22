@@ -23,8 +23,7 @@ module RR
   #   user.valid? # false
   class MockProbeCreator < ScenarioCreator
     def transform(scenario, *args, &after_call)
-      double = scenario.double
-      scenario.with(*args).once.implemented_by(double.original_method)
+      scenario.with(*args).once.implemented_by_original_method
       scenario.after_call(&after_call) if after_call
     end
   end

@@ -20,12 +20,12 @@ module RR
 
     def initialize(space, double)
       @space = space
+      @double = double
       @implementation = nil
       @argument_expectation = nil
       @times_called_expectation = nil
       @times_called = 0
       @after_call = nil
-      @double = double
       @yields = nil
     end
 
@@ -233,6 +233,11 @@ module RR
     #   mock(obj).method_name.implemented_by(obj.method(:foobar))
     def implemented_by(implementation)
       @implementation = implementation
+      self
+    end
+
+    def implemented_by_original_method
+      implemented_by @double.original_method
       self
     end
 
