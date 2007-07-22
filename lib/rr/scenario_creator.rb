@@ -100,14 +100,14 @@ module RR
     def strategy_error!
       raise(
         ScenarioDefinitionError,
-        "This Scenario already has a #{@strategy} strategy."
+        "This Scenario already has a #{@strategy} strategy"
       )
     end
 
     def no_strategy_error!
       raise(
         ScenarioDefinitionError,
-        "This Scenario has no strategy."
+        "This Scenario has no strategy"
       )
     end
   end
