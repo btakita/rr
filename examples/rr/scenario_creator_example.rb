@@ -16,7 +16,7 @@ end
 describe ScenarioCreator, "#mock" do
   it_should_behave_like "RR::ScenarioCreator"
 
-  it "raises error when stub called before" do
+  it "raises error when using stub strategy" do
     @creator.stub
     proc do
       @creator.mock
@@ -26,7 +26,7 @@ describe ScenarioCreator, "#mock" do
     )
   end
 
-  it "raises error when do_not_call called before" do
+  it "raises error when using do_not_call strategy" do
     @creator.do_not_call
     proc do
       @creator.mock
@@ -40,7 +40,7 @@ end
 describe ScenarioCreator, "#stub" do
   it_should_behave_like "RR::ScenarioCreator"
 
-  it "raises error when mock called before" do
+  it "raises error when using mock strategy" do
     @creator.mock
     proc do
       @creator.stub
