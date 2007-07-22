@@ -12,40 +12,54 @@ module Extensions
       RR::Space.instance.reset
     end
 
-    # When passed the object, this method returns a MockCreator
-    # that generates a Double Scenario that acts like a mock.
-    #   mock(object).method_name_1 {return_value_1}
-    #   mock(object).method_name_2(arg1, arg2) {return_value_2}
+    # This method sets the Scenario to have a mock strategy. A mock strategy
+    # sets the default state of the Scenario to expect the method call
+    # with arguments exactly one time. The Scenario's expectations can be
+    # changed.
     #
-    # When passed the object and the method_name, this method returns
+    # This method can be chained with probe.
+    #   mock.probe(subject).method_name_1
+    #   or
+    #   probe.mock(subject).method_name_1
+    #
+    # When passed the subject, a ScenarioMethodProxy is returned. Passing
+    # a method with arguments to the proxy will set up expectations that
+    # the a call to the subject's method with the arguments will happen.
+    #   mock(subject).method_name_1 {return_value_1}
+    #   mock(subject).method_name_2(arg1, arg2) {return_value_2}
+    #
+    # When passed the subject and the method_name, this method returns
     # a mock Scenario with the method already set.
     #
+    #   mock(subject, :method_name_1) {return_value_1}
+    #   mock(subject, :method_name_2).with(arg1, arg2) {return_value_2}
+    #
     # mock also takes a block for definitions.
-    #   mock(object) do
+    #   mock(subject) do
     #     method_name_1 {return_value_1}
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
-    def mock(object=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+    def mock(subject=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
       creator = RR::Space.scenario_creator
-      creator.mock(object, method_name, &definition)
+      creator.mock(subject, method_name, &definition)
     end
 
-    # When passed the object, this method returns a StubCreator
+    # When passed the subject, this method returns a StubCreator
     # that generates a Double Scenario that acts like a stub.
-    #   stub(object).method_name_1 {return_value_1}
-    #   stub(object).method_name_2(arg_1, arg_2) {return_value_2}
+    #   stub(subject).method_name_1 {return_value_1}
+    #   stub(subject).method_name_2(arg_1, arg_2) {return_value_2}
     #
-    # When passed the object and the method_name, this method returns
+    # When passed the subject and the method_name, this method returns
     # a stub Scenario with the method already set.
     #
     # stub also takes a block for definitions.
-    #   stub(object) do
+    #   stub(subject) do
     #     method_name_1 {return_value_1}
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
-    def stub(object=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+    def stub(subject=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
       creator = RR::Space.scenario_creator
-      creator.stub(object, method_name, &definition)
+      creator.stub(subject, method_name, &definition)
     end
 
     # This method add probe capabilities to the Scenario. probe can be called
@@ -64,7 +78,7 @@ module Extensions
     #   end
     #
     # mock.probe also takes a block for definitions.
-    #   mock.probe(object) do
+    #   mock.probe(subject) do
     #     render(:partial => "my/socks")
     #
     #     render(:partial => "my/socks") do |html|
@@ -93,9 +107,9 @@ module Extensions
     #     html.should include("My socks are wet")
     #     "My new return value"
     #   end
-    def probe(object=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+    def probe(subject=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
       creator = RR::Space.scenario_creator
-      creator.probe(object, method_name, &definition)
+      creator.probe(subject, method_name, &definition)
     end
 
     # RR::DoNotAllowCreator uses RR::DoNotAllowCreator#method_missing to create
@@ -113,9 +127,9 @@ module Extensions
     #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
     #      m.method3.with_no_args # Do not allow method3 with no arguments
     #    end
-    def do_not_allow(object=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+    def do_not_allow(subject=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
       creator = RR::Space.scenario_creator
-      creator.do_not_call(object, method_name, &definition)
+      creator.do_not_call(subject, method_name, &definition)
     end
     alias_method :dont_allow, :do_not_allow
 
