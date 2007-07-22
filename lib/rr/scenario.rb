@@ -203,7 +203,7 @@ module RR
       @after_call = block
       self
     end
-    
+
     # Scenario#returns accepts an argument value or a block.
     # It will raise an ArgumentError if both are passed in.
     #
@@ -236,6 +236,16 @@ module RR
       self
     end
 
+    # Scenario#implemented_by_original_method sets the implementation
+    # of the Scenario to be the original method.
+    # This is primarily used with probes.
+    #
+    #   obj = Object.new
+    #   def obj.foobar
+    #     yield(1)
+    #   end
+    #   mock(obj).method_name.implemented_by_original_method
+    #   obj.foobar {|arg| puts arg} # puts 1
     def implemented_by_original_method
       implemented_by @double.original_method
       self
@@ -275,7 +285,7 @@ module RR
     # Scenario#exact_match? returns true when the passed in arguments
     # exactly match the ArgumentEqualityExpectation arguments.
     def exact_match?(*arguments)
-      return false unless @argument_expectation 
+      return false unless @argument_expectation
       @argument_expectation.exact_match?(*arguments)
     end
 
