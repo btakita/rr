@@ -65,6 +65,30 @@ describe ScenarioCreator, "#probe" do
   end
 end
 
+describe ScenarioCreator, "#do_not_call" do
+  it_should_behave_like "RR::ScenarioCreator"
+
+  it "raises error when using mock strategy" do
+    @creator.mock
+    proc do
+      @creator.do_not_call
+    end.should raise_error(
+      Errors::ScenarioDefinitionError,
+      "This Scenario already has a mock strategy"
+    )
+  end
+
+  it "raises error when using stub strategy" do
+    @creator.stub
+    proc do
+      @creator.do_not_call
+    end.should raise_error(
+      Errors::ScenarioDefinitionError,
+      "This Scenario already has a stub strategy"
+    )
+  end
+end
+
 describe ScenarioCreator, "#create! using no strategy" do
   it_should_behave_like "RR::ScenarioCreator"
 

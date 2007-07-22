@@ -52,6 +52,7 @@ module RR
     end
 
     def do_not_call
+      strategy_error! if @strategy
       @strategy = :do_not_call
     end
 
