@@ -260,34 +260,24 @@ module Extensions
     end
 
     it "sets up the RR do_not_allow call chain" do
+      should create_do_not_allow_call_chain(do_not_call(@subject))
+      should create_do_not_allow_call_chain(rr_do_not_call(@subject))
+      should create_do_not_allow_call_chain(dont_call(@subject))
+      should create_do_not_allow_call_chain(rr_dont_call(@subject))
       should create_do_not_allow_call_chain(do_not_allow(@subject))
-    end
-
-    it "sets up the RR do_not_allow call chain with rr_do_not_allow" do
       should create_do_not_allow_call_chain(rr_do_not_allow(@subject))
-    end
-
-    it "sets up the RR do_not_allow call chain" do
       should create_do_not_allow_call_chain(dont_allow(@subject))
-    end
-
-    it "sets up the RR do_not_allow call chain with rr_do_not_allow" do
       should create_do_not_allow_call_chain(rr_dont_allow(@subject))
     end
 
-    it "#do_not_allow creates a mock Scenario for method when passed a second argument" do
+    it "creates a mock Scenario for method when passed a second argument" do
+      should create_scenario_with_method_name(do_not_call(@subject, :foobar))
+      should create_scenario_with_method_name(rr_do_not_call(@subject, :foobar))
+      should create_scenario_with_method_name(dont_call(@subject, :foobar))
+      should create_scenario_with_method_name(rr_dont_call(@subject, :foobar))
       should create_scenario_with_method_name(do_not_allow(@subject, :foobar))
-    end
-
-    it "#rr_do_not_allow creates a mock Scenario for method when passed a second argument with rr_mock" do
       should create_scenario_with_method_name(rr_do_not_allow(@subject, :foobar))
-    end
-
-    it "#dont_allow creates a mock Scenario for method when passed a second argument" do
       should create_scenario_with_method_name(dont_allow(@subject, :foobar))
-    end
-
-    it "#rr_dont_allow creates a mock Scenario for method when passed a second argument with rr_mock" do
       should create_scenario_with_method_name(rr_dont_allow(@subject, :foobar))
     end
 

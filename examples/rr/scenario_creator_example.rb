@@ -147,8 +147,32 @@ describe ScenarioCreator, "#do_not_call" do
     should create_do_not_call_call_chain(@creator.do_not_call(@subject))
   end
 
-  it "#do_not_allow creates a mock Scenario for method when passed a second argument" do
+  it "sets up the RR do_not_call call chain" do
+    should create_do_not_call_call_chain(@creator.dont_call(@subject))
+  end
+
+  it "sets up the RR do_not_call call chain" do
+    should create_do_not_call_call_chain(@creator.do_not_allow(@subject))
+  end
+
+  it "sets up the RR do_not_call call chain" do
+    should create_do_not_call_call_chain(@creator.dont_allow(@subject))
+  end
+
+  it "creates a mock Scenario for method when passed a second argument" do
     should create_scenario_with_method_name(@creator.do_not_call(@subject, :foobar))
+  end
+
+  it "creates a mock Scenario for method when passed a second argument" do
+    should create_scenario_with_method_name(@creator.dont_call(@subject, :foobar))
+  end
+
+  it "creates a mock Scenario for method when passed a second argument" do
+    should create_scenario_with_method_name(@creator.do_not_allow(@subject, :foobar))
+  end
+
+  it "creates a mock Scenario for method when passed a second argument" do
+    should create_scenario_with_method_name(@creator.dont_allow(@subject, :foobar))
   end
 
   def create_scenario_with_method_name(scenario)

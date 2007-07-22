@@ -105,6 +105,9 @@ module RR
       return self if subject === NO_SUBJECT_ARG
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
+    alias_method :dont_call, :do_not_call
+    alias_method :do_not_allow, :do_not_call
+    alias_method :dont_allow, :do_not_call
 
     # This method add probe capabilities to the Scenario. probe can be called
     # with mock or stub.
