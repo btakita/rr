@@ -1,3 +1,5 @@
+- Fixed [#12495] Error Probing method_missing interaction
+
 * 0.3.2
 - Fixed [#12486] ScenarioMethodProxy when Kernel passed into instance methods
 

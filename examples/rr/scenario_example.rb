@@ -366,18 +366,19 @@ describe Scenario, "#implemented_by_original_method" do
     @scenario.call(@double, 1, 2).should == [2, 1]
   end
 
-  it "raises error when original_method does not exist" do
+  it "calls method_missing when original_method does not exist" do
+    class << @object
+      def method_missing(method_name, *args, &block)
+        "method_missing for #{method_name}(#{args.inspect})"
+      end
+    end
     double = @space.double(@object, :does_not_exist)
     scenario = @space.scenario(double)
     scenario.with_any_args
     scenario.implemented_by_original_method
 
-    proc do
-      @object.does_not_exist(1, 2)
-    end.should raise_error(
-      Errors::ScenarioDefinitionError,
-      "implemented_by_original_method (probe) cannot be used when method does not exist on the object"
-    )
+    return_value = @object.does_not_exist(1, 2)
+    return_value.should == "method_missing for does_not_exist([1, 2])"
   end
 end
 

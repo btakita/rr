@@ -280,11 +280,16 @@ module RR
       return nil unless @implementation
 
       if @implementation === ORIGINAL_METHOD
-        if !double.original_method
-          raise Errors::ScenarioDefinitionError,
-                "implemented_by_original_method (probe) cannot be used when method does not exist on the object"
+        if double.original_method
+          return double.original_method.call(*args, &block)
+        else
+          return double.object.__send__(
+            :method_missing,
+            double.method_name,
+            *args,
+            &block
+          )
         end
-        return double.original_method.call(*args, &block)
       end
 
       if @implementation.is_a?(Method)
