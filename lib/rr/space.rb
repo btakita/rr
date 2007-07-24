@@ -46,6 +46,10 @@ module RR
       scenario
     end
 
+    def occurance(double, scenario)
+      Occurance.new(self, double, scenario)
+    end
+
     # Reuses or creates, if none exists, a Double for the passed
     # in object and method_name.
     # When a Double is created, it binds the dispatcher to the
