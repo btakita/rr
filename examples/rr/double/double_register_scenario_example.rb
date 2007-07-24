@@ -14,7 +14,7 @@ describe Double, "#register_scenario" do
   end
   
   it "adds the scenario to the scenarios list" do
-    scenario = Scenario.new(@space, @double)
+    scenario = Scenario.new(@space, @double, @space.scenario_definition)
 
     @double.scenarios.should_not include(scenario)
     @double.register_scenario scenario

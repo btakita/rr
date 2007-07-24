@@ -41,9 +41,13 @@ module RR
 
     # Creates and registers a Scenario to be verified.
     def scenario(double)
-      scenario = Scenario.new(self, double)
+      scenario = Scenario.new(self, double, scenario_definition)
       double.register_scenario scenario
       scenario
+    end
+
+    def scenario_definition
+      ScenarioDefinition.new(self)
     end
 
     # Reuses or creates, if none exists, a Double for the passed

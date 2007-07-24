@@ -1,3 +1,5 @@
+require "forwardable"
+
 require "rr/errors/rr_error"
 require "rr/errors/scenario_definition_error"
 require "rr/errors/scenario_not_found_error"
@@ -14,6 +16,7 @@ require "rr/scenario_method_proxy"
 require "rr/scenario_creator"
 
 require "rr/scenario"
+require "rr/scenario_definition"
 require "rr/scenario_matches"
 
 require "rr/expectations/argument_equality_expectation"

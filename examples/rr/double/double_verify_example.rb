@@ -11,7 +11,7 @@ describe Double, "#verify" do
   end
 
   it "verifies each scenario was met" do
-    scenario = Scenario.new(@space, @double)
+    scenario = Scenario.new(@space, @double, @space.scenario_definition)
     @double.register_scenario scenario
     
     scenario.with(1).once.returns {nil}

@@ -2,28 +2,22 @@ module RR
   # RR::Scenario is the use case for a method call.
   # It has the ArgumentEqualityExpectation, TimesCalledExpectation,
   # and the implementation.
-  class Scenario
-    class << self
-      def formatted_name(method_name, args)
-        formatted_errors = args.collect {|arg| arg.inspect}.join(', ')
-        "#{method_name}(#{formatted_errors})"
-      end
+  class ScenarioDefinition
+    attr_accessor :times_called,
+                  :argument_expectation,
+                  :times_called_expectation,
+                  :double,
+                  :implementation,
+                  :after_call_value,
+                  :yields_value
 
-      def list_message_part(scenarios)
-        scenarios.collect do |scenario|
-          "- #{formatted_name(scenario.method_name, scenario.expected_arguments)}"
-        end.join("\n")
-      end
-    end
-    ORIGINAL_METHOD = Object.new
-
-    attr_reader :times_called, :double, :definition
-
-    def initialize(space, double, definition)
+    def initialize(space)
       @space = space
-      @double = double
-      @definition = definition
-      @times_called = 0
+      @implementation = nil
+      @argument_expectation = nil
+      @times_called_expectation = nil
+      @after_call_value = nil
+      @yields_value = nil
     end
 
     # Scenario#with sets the expectation that the Scenario will receive
@@ -33,7 +27,7 @@ module RR
     #
     #   mock(subject).method_name.with(1, 2) {:return_value}
     def with(*args, &returns)
-      self.argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
+      @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
       returns(&returns) if returns
       self
     end
@@ -45,7 +39,7 @@ module RR
     #
     #   mock(subject).method_name.with_any_args {:return_value}
     def with_any_args(&returns)
-      self.argument_expectation = Expectations::AnyArgumentExpectation.new
+      @argument_expectation = Expectations::AnyArgumentExpectation.new
       returns(&returns) if returns
       self
     end
@@ -57,7 +51,7 @@ module RR
     #
     #   mock(subject).method_name.with_no_args {:return_value}
     def with_no_args(&returns)
-      self.argument_expectation = Expectations::ArgumentEqualityExpectation.new()
+      @argument_expectation = Expectations::ArgumentEqualityExpectation.new()
       returns(&returns) if returns
       self
     end
@@ -69,7 +63,7 @@ module RR
     #
     #   mock(subject).method_name.never
     def never
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(0)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(0)
       self
     end
 
@@ -80,7 +74,7 @@ module RR
     #
     #   mock(subject).method_name.once {:return_value}
     def once(&returns)
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(1)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(1)
       returns(&returns) if returns
       self
     end
@@ -92,7 +86,7 @@ module RR
     #
     #   mock(subject).method_name.twice {:return_value}
     def twice(&returns)
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(2)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(2)
       returns(&returns) if returns
       self
     end
@@ -106,7 +100,7 @@ module RR
     #   mock(subject).method_name.at_least(4) {:return_value}
     def at_least(number, &returns)
       matcher = RR::TimesCalledMatchers::AtLeastMatcher.new(number)
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
       returns(&returns) if returns
       self
     end
@@ -120,7 +114,7 @@ module RR
     #   mock(subject).method_name.at_most(4) {:return_value}
     def at_most(number, &returns)
       matcher = RR::TimesCalledMatchers::AtMostMatcher.new(number)
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
       returns(&returns) if returns
       self
     end
@@ -133,7 +127,7 @@ module RR
     #
     #   mock(subject).method_name.any_number_of_times
     def any_number_of_times(&returns)
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(TimesCalledMatchers::AnyTimesMatcher.new)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(TimesCalledMatchers::AnyTimesMatcher.new)
       returns(&returns) if returns
       self
     end
@@ -145,7 +139,7 @@ module RR
     #
     #   mock(subject).method_name.times(4) {:return_value}
     def times(number, &returns)
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(number)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(number)
       returns(&returns) if returns
       self
     end
@@ -180,7 +174,8 @@ module RR
     #   mock(subject).method_name.yields(yield_arg1, yield_arg2) {return_value}
     #   subject.method_name {|yield_arg1, yield_arg2|}
     def yields(*args, &returns)
-      definition.yields(*args, &returns)
+      @yields_value = args
+      returns(&returns) if returns
       self
     end
 
@@ -195,7 +190,8 @@ module RR
     # This feature is built into probes.
     #   probe(User).find('1') {|user| mock(user).valid? {false}}
     def after_call(&block)
-      definition.after_call &block
+      raise ArgumentError, "after_call expects a block" unless block
+      @after_call_value = block
       self
     end
 
@@ -227,7 +223,7 @@ module RR
     #   end
     #   mock(obj).method_name.implemented_by(obj.method(:foobar))
     def implemented_by(implementation)
-      self.implementation = implementation
+      @implementation = implementation
       self
     end
 
@@ -246,93 +242,39 @@ module RR
       self
     end
 
-    # Scenario#call calls the Scenario's implementation. The return
-    # value of the implementation is returned.
-    #
-    # A TimesCalledError is raised when the times called
-    # exceeds the expected TimesCalledExpectation.
-    def call(double, *args, &block)
-      self.times_called_expectation.attempt! if self.times_called_expectation
-      @space.verify_ordered_scenario(self) if ordered?
-      yields!(block)
-      return_value = call_implementation(double, *args, &block)
-      return return_value unless definition.after_call_value
-      definition.after_call_value.call(return_value)
-    end
-
-    def yields!(block)
-      if definition.yields_value
-        unless block
-          raise ArgumentError, "A Block must be passed into the method call when using yields"
-        end
-        block.call(*definition.yields_value)
-      end
-    end
-    protected :yields!
-
-    def call_implementation(double, *args, &block)
-      return nil unless implementation
-
-      if implementation === ORIGINAL_METHOD
-        if double.original_method
-          return double.original_method.call(*args, &block)
-        else
-          return double.object.__send__(
-            :method_missing,
-            double.method_name,
-            *args,
-            &block
-          )
-        end
-      end
-
-      if implementation.is_a?(Method)
-        return implementation.call(*args, &block)
-      else
-        args << block if block
-        return implementation.call(*args)
-      end
-    end
-    protected :call_implementation
-
     # Scenario#exact_match? returns true when the passed in arguments
     # exactly match the ArgumentEqualityExpectation arguments.
     def exact_match?(*arguments)
-      return false unless self.argument_expectation
-      self.argument_expectation.exact_match?(*arguments)
+      return false unless @argument_expectation
+      @argument_expectation.exact_match?(*arguments)
     end
 
     # Scenario#wildcard_match? returns true when the passed in arguments
     # wildcard match the ArgumentEqualityExpectation arguments.
     def wildcard_match?(*arguments)
-      return false unless self.argument_expectation
-      self.argument_expectation.wildcard_match?(*arguments)
+      return false unless @argument_expectation
+      @argument_expectation.wildcard_match?(*arguments)
     end
 
     # Scenario#attempt? returns true when the
     # TimesCalledExpectation is satisfied.
     def attempt?
-      return true unless self.times_called_expectation
-      self.times_called_expectation.attempt?
+      return true unless @times_called_expectation
+      @times_called_expectation.attempt?
     end
 
     # Scenario#verify verifies the the TimesCalledExpectation
     # is satisfied for this scenario. A TimesCalledError
     # is raised if the TimesCalledExpectation is not met.
     def verify
-      return true unless self.times_called_expectation
-      self.times_called_expectation.verify!
+      return true unless @times_called_expectation
+      @times_called_expectation.verify!
       true
     end
 
     def terminal?
-      return false unless self.times_called_expectation
-      self.times_called_expectation.terminal?
-    end
-
-    # The method name that this Scenario is attatched to
-    def method_name
-      double.method_name
+      return false unless @times_called_expectation
+      @times_called_expectation.terminal?
     end
 
     # The Arguments that this Scenario expects
@@ -345,29 +287,5 @@ module RR
     def times_matcher
       times_called_expectation.matcher
     end
-
-    def implementation
-      definition.implementation
-    end
-    def implementation=(value)
-      definition.implementation = value
-    end
-    protected :implementation=
-
-    def argument_expectation
-      definition.argument_expectation
-    end
-    def argument_expectation=(value)
-      definition.argument_expectation = value
-    end
-    protected :argument_expectation=
-
-    def times_called_expectation
-      definition.times_called_expectation
-    end
-    def times_called_expectation=(value)
-      definition.times_called_expectation = value
-    end
-    protected :times_called_expectation=
   end
 end
