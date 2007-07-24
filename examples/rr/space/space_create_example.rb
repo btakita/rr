@@ -283,14 +283,13 @@ describe Space, "#occurance" do
     @space = Space.new
     @subject = Object.new
     @double = @space.double(@subject, :foobar)
-    @scenario = @space.scenario(@double)
   end
 
   it "creates an Occurance" do
-    occurance = @space.occurance(@double, @scenario)
+    occurance = @space.occurance(@double, [1, 2])
     occurance.class.should == Occurance
     occurance.double.should == @double
-    occurance.scenario.should == @scenario
+    occurance.arguments.should == [1, 2]
   end
 end
 end
