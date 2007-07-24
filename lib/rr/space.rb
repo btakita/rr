@@ -46,8 +46,8 @@ module RR
       scenario
     end
 
-    def occurance(double, scenario)
-      Occurance.new(self, double, scenario)
+    def occurance(double, arguments)
+      Occurance.new(self, double, arguments)
     end
 
     # Reuses or creates, if none exists, a Double for the passed
