@@ -16,8 +16,6 @@ require "rr/scenario_creator"
 require "rr/scenario"
 require "rr/scenario_matches"
 
-require "rr/occurance"
-
 require "rr/expectations/argument_equality_expectation"
 require "rr/expectations/any_argument_expectation"
 require "rr/expectations/times_called_expectation"

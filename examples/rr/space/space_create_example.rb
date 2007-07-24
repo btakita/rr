@@ -275,21 +275,4 @@ describe Space, "#double when double exists" do
     @object.foobar.should == :original_foobar
   end
 end
-
-describe Space, "#occurance" do
-  it_should_behave_like "RR::Space"
-
-  before do
-    @space = Space.new
-    @subject = Object.new
-    @double = @space.double(@subject, :foobar)
-  end
-
-  it "creates an Occurance" do
-    occurance = @space.occurance(@double, [1, 2])
-    occurance.class.should == Occurance
-    occurance.double.should == @double
-    occurance.arguments.should == [1, 2]
-  end
-end
 end
