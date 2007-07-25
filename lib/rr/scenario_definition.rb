@@ -6,8 +6,7 @@ module RR
     ORIGINAL_METHOD = Object.new
     attr_accessor :times_called,
                   :argument_expectation,
-                  :times_called_expectation,
-                  :times_called_matcher,
+                  :times_matcher,
                   :double,
                   :implementation,
                   :after_call_value,
@@ -18,8 +17,7 @@ module RR
       @space = space
       @implementation = nil
       @argument_expectation = nil
-      @times_called_expectation = nil
-      @times_called_matcher = nil
+      @times_matcher = nil
       @after_call_value = nil
       @yields_value = nil
     end
@@ -67,8 +65,7 @@ module RR
     #
     #   mock(subject).method_name.never
     def never
-      @times_called_matcher = TimesCalledMatchers::IntegerMatcher.new(0)
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
+      @times_matcher = TimesCalledMatchers::IntegerMatcher.new(0)
       self
     end
 
@@ -79,8 +76,7 @@ module RR
     #
     #   mock(subject).method_name.once {:return_value}
     def once(&returns)
-      @times_called_matcher = TimesCalledMatchers::IntegerMatcher.new(1)
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
+      @times_matcher = TimesCalledMatchers::IntegerMatcher.new(1)
       returns(&returns) if returns
       self
     end
@@ -92,8 +88,7 @@ module RR
     #
     #   mock(subject).method_name.twice {:return_value}
     def twice(&returns)
-      @times_called_matcher = TimesCalledMatchers::IntegerMatcher.new(2)
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
+      @times_matcher = TimesCalledMatchers::IntegerMatcher.new(2)
       returns(&returns) if returns
       self
     end
@@ -106,8 +101,7 @@ module RR
     #
     #   mock(subject).method_name.at_least(4) {:return_value}
     def at_least(number, &returns)
-      matcher = TimesCalledMatchers::AtLeastMatcher.new(number)
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
+      @times_matcher = TimesCalledMatchers::AtLeastMatcher.new(number)
       returns(&returns) if returns
       self
     end
@@ -120,8 +114,7 @@ module RR
     #
     #   mock(subject).method_name.at_most(4) {:return_value}
     def at_most(number, &returns)
-      @times_called_matcher = TimesCalledMatchers::AtMostMatcher.new(number)
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
+      @times_matcher = TimesCalledMatchers::AtMostMatcher.new(number)
       returns(&returns) if returns
       self
     end
@@ -134,8 +127,7 @@ module RR
     #
     #   mock(subject).method_name.any_number_of_times
     def any_number_of_times(&returns)
-      @times_called_matcher = TimesCalledMatchers::AnyTimesMatcher.new
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
+      @times_matcher = TimesCalledMatchers::AnyTimesMatcher.new
       returns(&returns) if returns
       self
     end
@@ -147,8 +139,7 @@ module RR
     #
     #   mock(subject).method_name.times(4) {:return_value}
     def times(matcher_value, &returns)
-      @times_called_matcher = TimesCalledMatchers::TimesCalledMatcher.create(matcher_value)
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
+      @times_matcher = TimesCalledMatchers::TimesCalledMatcher.create(matcher_value)
       returns(&returns) if returns
       self
     end
@@ -267,19 +258,14 @@ module RR
     end
 
     def terminal?
-      return false unless @times_called_expectation
-      @times_called_expectation.terminal?
+      return false unless @times_matcher
+      @times_matcher.terminal?
     end
 
     # The Arguments that this Scenario expects
     def expected_arguments
       return [] unless argument_expectation
       argument_expectation.expected_arguments
-    end
-
-    # The TimesCalledMatcher for the TimesCalledExpectation
-    def times_matcher
-      times_called_expectation.matcher
     end
   end
 end

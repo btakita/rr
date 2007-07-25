@@ -217,7 +217,7 @@ module RR
     # A TimesCalledError is raised when the times called
     # exceeds the expected TimesCalledExpectation.
     def call(double, *args, &block)
-      self.times_called_expectation.attempt! if definition.times_called_matcher
+      self.times_called_expectation.attempt! if definition.times_matcher
       @space.verify_ordered_scenario(self) if ordered?
       yields!(block)
       return_value = call_implementation(double, *args, &block)
@@ -275,7 +275,7 @@ module RR
     # Scenario#attempt? returns true when the
     # TimesCalledExpectation is satisfied.
     def attempt?
-      return true unless definition.times_called_matcher
+      return true unless definition.times_matcher
       times_called_expectation.attempt?
     end
 
@@ -283,13 +283,13 @@ module RR
     # is satisfied for this scenario. A TimesCalledError
     # is raised if the TimesCalledExpectation is not met.
     def verify
-      return true unless definition.times_called_matcher
+      return true unless definition.times_matcher
       times_called_expectation.verify!
       true
     end
 
     def terminal?
-      return false unless definition.times_called_matcher
+      return false unless definition.times_matcher
       times_called_expectation.terminal?
     end
 
@@ -310,7 +310,7 @@ module RR
     end
 
     def times_called_expectation
-      @times_called_expectation.matcher = definition.times_called_matcher
+      @times_called_expectation.matcher = definition.times_matcher
       @times_called_expectation
     end
 

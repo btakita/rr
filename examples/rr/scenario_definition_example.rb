@@ -457,20 +457,20 @@ end
 describe ScenarioDefinition, "#terminal?" do
   it_should_behave_like "RR::ScenarioDefinition"
 
-  it "returns true when times_called_expectation's terminal? is true" do
+  it "returns true when times_matcher's terminal? is true" do
     @definition.once
-    @definition.times_called_expectation.should be_terminal
+    @definition.times_matcher.should be_terminal
     @definition.should be_terminal
   end
 
-  it "returns false when times_called_expectation's terminal? is false" do
+  it "returns false when times_matcher's terminal? is false" do
     @definition.any_number_of_times
-    @definition.times_called_expectation.should_not be_terminal
+    @definition.times_matcher.should_not be_terminal
     @definition.should_not be_terminal
   end
 
-  it "returns false when there is not times_called_expectation" do
-    @definition.times_called_expectation.should be_nil
+  it "returns false when there is not times_matcher" do
+    @definition.times_matcher.should be_nil
     @definition.should_not be_terminal
   end
 end

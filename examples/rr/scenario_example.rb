@@ -137,7 +137,7 @@ describe Scenario, "#at_least" do
     @scenario.with_any_args.at_least(2).should === @scenario.definition
   end
 
-  it "sets up a Times Called Expectation with 1" do
+  it "sets up a AtLeastMatcher with 2" do
     @scenario.at_least(2)
     @scenario.definition.times_matcher.should == TimesCalledMatchers::AtLeastMatcher.new(2)
   end
@@ -589,7 +589,7 @@ describe Scenario, "#attempt?" do
 
   it "returns true when there is no Times Called expectation" do
     @scenario.with(1, 2, 3)
-    @scenario.definition.times_called_matcher.should be_nil
+    @scenario.definition.times_matcher.should be_nil
     @scenario.should be_attempt
   end
 end
@@ -632,8 +632,8 @@ describe Scenario, "#terminal?" do
     @scenario.should_not be_terminal
   end
 
-  it "returns false when there is no times_called_matcher" do
-    @scenario.definition.times_called_matcher.should be_nil
+  it "returns false when there is no times_matcher" do
+    @scenario.definition.times_matcher.should be_nil
     @scenario.should_not be_terminal
   end
 end
