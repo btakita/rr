@@ -177,7 +177,6 @@ module RR
 
     def create!(subject, method_name, *args, &handler)
       @subject = subject
-      @method_name = method_name
       @args = args
       @handler = handler
       if @instance_of
