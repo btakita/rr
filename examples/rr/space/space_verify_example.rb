@@ -161,9 +161,9 @@ describe Space, "#verify_ordered_scenario where the passed in scenario is not at
   end
 
   def scenario
-    scenario = @space.scenario(@double).once
-    @space.register_ordered_scenario(scenario)
-    scenario
+    scenario_definition = @space.scenario(@double).once
+    @space.register_ordered_scenario(scenario_definition.scenario)
+    scenario_definition.scenario
   end
 end
 end

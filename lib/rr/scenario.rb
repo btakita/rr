@@ -33,7 +33,6 @@ module RR
     #   mock(subject).method_name.with(1, 2) {:return_value}
     def with(*args, &returns)
       definition.with(*args, &returns)
-      self
     end
 
     # Scenario#with_any_args sets the expectation that the Scenario can receive
@@ -44,7 +43,6 @@ module RR
     #   mock(subject).method_name.with_any_args {:return_value}
     def with_any_args(&returns)
       definition.with_any_args(&returns)
-      self
     end
 
     # Scenario#with_no_args sets the expectation that the Scenario will receive
@@ -55,7 +53,6 @@ module RR
     #   mock(subject).method_name.with_no_args {:return_value}
     def with_no_args(&returns)
       definition.with_no_args(&returns)
-      self
     end
 
     # Scenario#never sets the expectation that the Scenario will never be
@@ -66,7 +63,6 @@ module RR
     #   mock(subject).method_name.never
     def never
       definition.never
-      self
     end
 
     # Scenario#once sets the expectation that the Scenario will be called
@@ -77,7 +73,6 @@ module RR
     #   mock(subject).method_name.once {:return_value}
     def once(&returns)
       definition.once(&returns)
-      self
     end
 
     # Scenario#twice sets the expectation that the Scenario will be called
@@ -88,7 +83,6 @@ module RR
     #   mock(subject).method_name.twice {:return_value}
     def twice(&returns)
       definition.twice(&returns)
-      self
     end
 
     # Scenario#at_least sets the expectation that the Scenario
@@ -100,7 +94,6 @@ module RR
     #   mock(subject).method_name.at_least(4) {:return_value}
     def at_least(number, &returns)
       definition.at_least(number, &returns)
-      self
     end
 
     # Scenario#at_most allows sets the expectation that the Scenario
@@ -112,7 +105,6 @@ module RR
     #   mock(subject).method_name.at_most(4) {:return_value}
     def at_most(number, &returns)
       definition.at_most(number, &returns)
-      self
     end
 
     # Scenario#any_number_of_times sets an that the Scenario will be called
@@ -124,7 +116,6 @@ module RR
     #   mock(subject).method_name.any_number_of_times
     def any_number_of_times(&returns)
       definition.any_number_of_times(&returns)
-      self
     end
 
     # Scenario#times creates an TimesCalledExpectation of the passed
@@ -135,7 +126,6 @@ module RR
     #   mock(subject).method_name.times(4) {:return_value}
     def times(number, &returns)
       definition.times(number, &returns)
-      self
     end
 
     # Scenario#ordered sets the Scenario to have an ordered
@@ -146,7 +136,6 @@ module RR
     #   mock(subject).method_name.ordered {return_value}
     def ordered(&returns)
       definition.ordered(&returns)
-      self
     end
 
     # Scenario#ordered? returns true when the Scenario is ordered.
@@ -167,7 +156,6 @@ module RR
     #   subject.method_name {|yield_arg1, yield_arg2|}
     def yields(*args, &returns)
       definition.yields(*args, &returns)
-      self
     end
 
     # Scenario#after_call creates a callback that occurs after call
@@ -182,7 +170,6 @@ module RR
     #   probe(User).find('1') {|user| mock(user).valid? {false}}
     def after_call(&block)
       definition.after_call &block
-      self
     end
 
     # Scenario#returns accepts an argument value or a block.
@@ -194,7 +181,6 @@ module RR
     # Passing in an argument causes Scenario to return the argument.
     def returns(value=nil, &implementation)
       definition.returns(value, &implementation)
-      self
     end
 
     # Scenario#implemented_by sets the implementation of the Scenario.
@@ -208,7 +194,6 @@ module RR
     #   mock(obj).method_name.implemented_by(obj.method(:foobar))
     def implemented_by(implementation)
       definition.implemented_by implementation
-      self
     end
 
     # Scenario#implemented_by_original_method sets the implementation
@@ -223,7 +208,6 @@ module RR
     #   obj.foobar {|arg| puts arg} # puts 1
     def implemented_by_original_method
       definition.implemented_by_original_method
-      self
     end
 
     # Scenario#call calls the Scenario's implementation. The return

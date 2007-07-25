@@ -16,8 +16,12 @@ end
 describe Scenario, "#with" do
   it_should_behave_like "RR::Scenario"
 
+  it "returns ScenarioDefinition" do
+    @scenario.with(1).should === @scenario.definition
+  end
+
   it "sets an ArgumentEqualityExpectation" do
-    @scenario.with(1).should === @scenario
+    @scenario.with(1)
     @scenario.should be_exact_match(1)
     @scenario.should_not be_exact_match(2)
   end
@@ -35,8 +39,8 @@ describe Scenario, "#with_any_args" do
     @scenario.with_any_args {:return_value}
   end
 
-  it "returns self" do
-    @scenario.with_no_args.should === @scenario
+  it "returns ScenarioDefinition" do
+    @scenario.with_no_args.should === @scenario.definition
   end
 
   it "sets an AnyArgumentExpectation" do
@@ -56,8 +60,8 @@ describe Scenario, "#with_no_args" do
     @scenario.with_no_args {:return_value}
   end
 
-  it "returns self" do
-    @scenario.with_no_args.should === @scenario
+  it "returns ScenarioDefinition" do
+    @scenario.with_no_args.should === @scenario.definition
   end
 
   it "sets an ArgumentEqualityExpectation with no arguments" do
@@ -72,8 +76,8 @@ end
 describe Scenario, "#never" do
   it_should_behave_like "RR::Scenario"
 
-  it "returns self" do
-    @scenario.never.should === @scenario
+  it "returns ScenarioDefinition" do
+    @scenario.never.should === @scenario.definition
   end
 
   it "sets up a Times Called Expectation with 0" do
@@ -90,8 +94,12 @@ end
 describe Scenario, "#once" do
   it_should_behave_like "RR::Scenario"
 
+  it "returns ScenarioDefinition" do
+    @scenario.once.should === @scenario.definition
+  end
+
   it "sets up a Times Called Expectation with 1" do
-    @scenario.once.should === @scenario
+    @scenario.once
     @scenario.call(@double)
     proc {@scenario.call(@double)}.should raise_error(Errors::TimesCalledError)
   end
@@ -105,8 +113,12 @@ end
 describe Scenario, "#twice" do
   it_should_behave_like "RR::Scenario"
 
+  it "returns ScenarioDefinition" do
+    @scenario.twice.should === @scenario.definition
+  end
+
   it "sets up a Times Called Expectation with 2" do
-    @scenario.twice.should === @scenario
+    @scenario.twice
     @scenario.call(@double)
     @scenario.call(@double)
     proc {@scenario.call(@double)}.should raise_error(Errors::TimesCalledError)
@@ -121,8 +133,8 @@ end
 describe Scenario, "#at_least" do
   it_should_behave_like "RR::Scenario"
 
-  it "returns self" do
-    @scenario.with_any_args.at_least(2).should === @scenario
+  it "returns ScenarioDefinition" do
+    @scenario.with_any_args.at_least(2).should === @scenario.definition
   end
 
   it "sets up a Times Called Expectation with 1" do
@@ -139,8 +151,8 @@ end
 describe Scenario, "#at_most" do
   it_should_behave_like "RR::Scenario"
 
-  it "returns self" do
-    @scenario.with_any_args.at_most(2).should === @scenario
+  it "returns ScenarioDefinition" do
+    @scenario.with_any_args.at_most(2).should === @scenario.definition
   end
 
   it "sets up a Times Called Expectation with 1" do
@@ -164,8 +176,12 @@ end
 describe Scenario, "#times" do
   it_should_behave_like "RR::Scenario"
 
+  it "returns ScenarioDefinition" do
+    @scenario.times(3).should === @scenario.definition
+  end
+
   it "sets up a Times Called Expectation with passed in times" do
-    @scenario.times(3).should === @scenario
+    @scenario.times(3)
     @scenario.call(@double)
     @scenario.call(@double)
     @scenario.call(@double)
@@ -181,8 +197,8 @@ end
 describe Scenario, "#any_number_of_times" do
   it_should_behave_like "RR::Scenario"
 
-  it "returns self" do
-    @scenario.any_number_of_times.should === @scenario
+  it "returns ScenarioDefinition" do
+    @scenario.any_number_of_times.should === @scenario.definition
   end
 
   it "sets up a Times Called Expectation with AnyTimes matcher" do
@@ -232,8 +248,8 @@ end
 describe Scenario, "#yields" do
   it_should_behave_like "RR::Scenario"
 
-  it "returns self" do
-    @scenario.yields(:baz).should === @scenario
+  it "returns ScenarioDefinition" do
+    @scenario.yields(:baz).should === @scenario.definition
   end
 
   it "yields the passed in argument to the call block when there is no returns value set" do
@@ -260,8 +276,8 @@ end
 describe Scenario, "#after_call" do
   it_should_behave_like "RR::Scenario"
 
-  it "returns self" do
-    @scenario.after_call {}.should === @scenario
+  it "returns ScenarioDefinition" do
+    @scenario.after_call {}.should === @scenario.definition
   end
 
   it "sends return value of Scenario implementation to after_call" do
@@ -306,9 +322,9 @@ end
 describe Scenario, "#returns" do
   it_should_behave_like "RR::Scenario"
 
-  it "returns self" do
-    @scenario.returns {:baz}.should === @scenario
-    @scenario.returns(:baz).should === @scenario
+  it "returns ScenarioDefinition" do
+    @scenario.returns {:baz}.should === @scenario.definition
+    @scenario.returns(:baz).should === @scenario.definition
   end
 
   it "sets the value of the method when passed a block" do
@@ -336,8 +352,8 @@ end
 describe Scenario, "#implemented_by" do
   it_should_behave_like "RR::Scenario"
 
-  it "returns the scenario object" do
-    @scenario.implemented_by(proc{:baz}).should === @scenario
+  it "returns the ScenarioDefinition" do
+    @scenario.implemented_by(proc{:baz}).should === @scenario.definition
   end
 
   it "sets the implementation to the passed in proc" do
@@ -357,8 +373,8 @@ end
 describe Scenario, "#implemented_by_original_method" do
   it_should_behave_like "RR::Scenario"
 
-  it "returns the scenario object" do
-    @scenario.implemented_by_original_method.should === @scenario
+  it "returns the ScenarioDefinition object" do
+    @scenario.implemented_by_original_method.should === @scenario.definition
   end
 
   it "sets the implementation to the original method" do
