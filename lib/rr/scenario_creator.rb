@@ -20,40 +20,6 @@ module RR
       @instance_of_method_name = nil
     end
     
-    def create!(subject, method_name, *args, &handler)
-      @subject = subject
-      @method_name = method_name
-      @args = args
-      @handler = handler
-      if @instance_of
-        @class_double = @space.double(@subject, :new)
-        @class_scenario = @space.scenario(@class_double)
-
-        @instance_of_method_name = method_name
-
-        @definition = @space.scenario_definition
-        handler = proc do |return_value|
-          double = @space.double(return_value, @instance_of_method_name)
-          @space.scenario(double, @definition)
-          return_value
-        end
-
-        builder = ScenarioDefinitionBuilder.new(
-          @class_scenario.definition,
-          [],
-          handler
-        )
-        builder.stub!
-        builder.probe!
-      else
-        @double = @space.double(@subject, method_name)
-        @scenario = @space.scenario(@double)
-        @definition = @scenario.definition
-      end
-      transform!
-      @definition
-    end
-
     def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       return self if subject === NO_SUBJECT_ARG
       raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
@@ -208,8 +174,46 @@ module RR
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
+
+    def create!(subject, method_name, *args, &handler)
+      @subject = subject
+      @method_name = method_name
+      @args = args
+      @handler = handler
+      if @instance_of
+        setup_class_probe(method_name)
+      else
+        @double = @space.double(@subject, method_name)
+        @scenario = @space.scenario(@double)
+        @definition = @scenario.definition
+      end
+      transform!
+      @definition
+    end
     
     protected
+    def setup_class_probe(method_name)
+      @class_double = @space.double(@subject, :new)
+      @class_scenario = @space.scenario(@class_double)
+
+      @instance_of_method_name = method_name
+
+      @definition = @space.scenario_definition
+      handler = proc do |return_value|
+        double = @space.double(return_value, @instance_of_method_name)
+        @space.scenario(double, @definition)
+        return_value
+      end
+
+      builder = ScenarioDefinitionBuilder.new(
+        @class_scenario.definition,
+        [],
+        handler
+      )
+      builder.stub!
+      builder.probe!
+    end
+
     def transform!
       builder = ScenarioDefinitionBuilder.new(@definition, @args, @handler)
 
