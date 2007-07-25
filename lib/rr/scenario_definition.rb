@@ -7,6 +7,7 @@ module RR
     attr_accessor :times_called,
                   :argument_expectation,
                   :times_called_expectation,
+                  :times_called_matcher,
                   :double,
                   :implementation,
                   :after_call_value,
@@ -18,6 +19,7 @@ module RR
       @implementation = nil
       @argument_expectation = nil
       @times_called_expectation = nil
+      @times_called_matcher = nil
       @after_call_value = nil
       @yields_value = nil
     end
@@ -65,7 +67,8 @@ module RR
     #
     #   mock(subject).method_name.never
     def never
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(0)
+      @times_called_matcher = TimesCalledMatchers::IntegerMatcher.new(0)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
       self
     end
 
@@ -76,7 +79,8 @@ module RR
     #
     #   mock(subject).method_name.once {:return_value}
     def once(&returns)
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(1)
+      @times_called_matcher = TimesCalledMatchers::IntegerMatcher.new(1)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
       returns(&returns) if returns
       self
     end
@@ -88,7 +92,8 @@ module RR
     #
     #   mock(subject).method_name.twice {:return_value}
     def twice(&returns)
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(2)
+      @times_called_matcher = TimesCalledMatchers::IntegerMatcher.new(2)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
       returns(&returns) if returns
       self
     end
@@ -101,7 +106,7 @@ module RR
     #
     #   mock(subject).method_name.at_least(4) {:return_value}
     def at_least(number, &returns)
-      matcher = RR::TimesCalledMatchers::AtLeastMatcher.new(number)
+      matcher = TimesCalledMatchers::AtLeastMatcher.new(number)
       @times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
       returns(&returns) if returns
       self
@@ -115,7 +120,7 @@ module RR
     #
     #   mock(subject).method_name.at_most(4) {:return_value}
     def at_most(number, &returns)
-      matcher = RR::TimesCalledMatchers::AtMostMatcher.new(number)
+      matcher = TimesCalledMatchers::AtMostMatcher.new(number)
       @times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
       returns(&returns) if returns
       self
@@ -129,7 +134,8 @@ module RR
     #
     #   mock(subject).method_name.any_number_of_times
     def any_number_of_times(&returns)
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(TimesCalledMatchers::AnyTimesMatcher.new)
+      @times_called_matcher = TimesCalledMatchers::AnyTimesMatcher.new
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
       returns(&returns) if returns
       self
     end
@@ -141,7 +147,8 @@ module RR
     #
     #   mock(subject).method_name.times(4) {:return_value}
     def times(number, &returns)
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(number)
+      @times_called_matcher = TimesCalledMatchers::IntegerMatcher.new(number)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
       returns(&returns) if returns
       self
     end
