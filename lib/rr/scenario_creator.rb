@@ -197,22 +197,22 @@ module RR
     end
 
     def setup_class_probing_instances(method_name)
-      @class_double = @space.double(@subject, :new)
-      @class_scenario = @space.scenario(@class_double)
+      class_double = @space.double(@subject, :new)
+      class_scenario = @space.scenario(class_double)
 
-      @instance_of_method_name = method_name
+      instance_method_name = method_name
 
       @definition = @space.scenario_definition
-      handler = proc do |return_value|
-        double = @space.double(return_value, @instance_of_method_name)
+      class_handler = proc do |return_value|
+        double = @space.double(return_value, instance_method_name)
         @space.scenario(double, @definition)
         return_value
       end
 
       builder = ScenarioDefinitionBuilder.new(
-        @class_scenario.definition,
+        class_scenario.definition,
         [],
-        handler
+        class_handler
       )
       builder.stub!
       builder.probe!
