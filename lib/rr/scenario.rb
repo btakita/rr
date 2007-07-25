@@ -274,15 +274,16 @@ module RR
     # Scenario#attempt? returns true when the
     # TimesCalledExpectation is satisfied.
     def attempt?
-      definition.attempt?
+      return true unless definition.times_called_expectation
+      definition.times_called_expectation.attempt?
     end
 
     # Scenario#verify verifies the the TimesCalledExpectation
     # is satisfied for this scenario. A TimesCalledError
     # is raised if the TimesCalledExpectation is not met.
     def verify
-      return true unless self.times_called_expectation
-      self.times_called_expectation.verify!
+      return true unless definition.times_called_expectation
+      definition.times_called_expectation.verify!
       true
     end
 

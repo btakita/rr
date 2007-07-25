@@ -259,22 +259,6 @@ module RR
       @argument_expectation.wildcard_match?(*arguments)
     end
 
-    # Scenario#attempt? returns true when the
-    # TimesCalledExpectation is satisfied.
-    def attempt?
-      return true unless @times_called_expectation
-      @times_called_expectation.attempt?
-    end
-
-    # Scenario#verify verifies the the TimesCalledExpectation
-    # is satisfied for this scenario. A TimesCalledError
-    # is raised if the TimesCalledExpectation is not met.
-    def verify
-      return true unless @times_called_expectation
-      @times_called_expectation.verify!
-      true
-    end
-
     def terminal?
       return false unless @times_called_expectation
       @times_called_expectation.terminal?

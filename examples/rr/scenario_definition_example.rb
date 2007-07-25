@@ -454,58 +454,6 @@ describe ScenarioDefinition, "#wildcard_match?" do
   end
 end
 
-describe ScenarioDefinition, "#attempt?" do
-  it_should_behave_like "RR::ScenarioDefinition"
-
-  it "returns true when TimesCalledExpectation#attempt? is true" do
-    @definition.with(1, 2, 3).twice
-    @object.foobar(1, 2, 3)
-    @definition.times_called_expectation.should be_attempt
-    @definition.should be_attempt
-  end
-
-  it "returns false when TimesCalledExpectation#attempt? is true" do
-    @definition.with(1, 2, 3).twice
-    @object.foobar(1, 2, 3)
-    @object.foobar(1, 2, 3)
-    @definition.times_called_expectation.should_not be_attempt
-    @definition.should_not be_attempt
-  end
-
-  it "returns true when there is no Times Called expectation" do
-    @definition.with(1, 2, 3)
-    @definition.times_called_expectation.should be_nil
-    @definition.should be_attempt
-  end
-end
-
-describe ScenarioDefinition, "#verify" do
-  it_should_behave_like "RR::ScenarioDefinition"
-
-  before do
-    @definition.with_any_args
-  end
-
-  it "verifies that times called expectation was met" do
-    @definition.twice.returns {:return_value}
-
-    proc {@definition.verify}.should raise_error(Errors::TimesCalledError)
-    @object.foobar
-    proc {@definition.verify}.should raise_error(Errors::TimesCalledError)
-    @object.foobar
-    
-    proc {@definition.verify}.should_not raise_error
-  end
-
-  it "does not raise an error when there is no times called expectation" do
-    proc {@definition.verify}.should_not raise_error
-    @object.foobar
-    proc {@definition.verify}.should_not raise_error
-    @object.foobar
-    proc {@definition.verify}.should_not raise_error
-  end
-end
-
 describe ScenarioDefinition, "#terminal?" do
   it_should_behave_like "RR::ScenarioDefinition"
 
