@@ -237,6 +237,18 @@ describe ScenarioDefinition, "#ordered" do
     @definition.with_any_args.once.ordered {:return_value}
     @object.foobar.should == :return_value
   end
+
+  it "raises error when there is no Scenario" do
+    @definition.scenario = nil
+    proc do
+      @definition.ordered
+    end.should raise_error(
+      Errors::ScenarioDefinitionError,
+      "Scenario Definitions must have a dedicated Scenario to be ordered. " <<
+      "For example, using instance_of does not allow ordered to be used. " <<
+      "probe the class's #new method instead."
+    )
+  end
 end
 
 describe ScenarioDefinition, "#ordered?" do

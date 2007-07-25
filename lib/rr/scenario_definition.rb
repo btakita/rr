@@ -151,6 +151,12 @@ module RR
     #
     #   mock(subject).method_name.ordered {return_value}
     def ordered(&returns)
+      raise(
+        Errors::ScenarioDefinitionError,
+        "Scenario Definitions must have a dedicated Scenario to be ordered. " <<
+        "For example, using instance_of does not allow ordered to be used. " <<
+        "probe the class's #new method instead."
+      ) unless @scenario
       @ordered = true
       @space.ordered_scenarios << @scenario unless @space.ordered_scenarios.include?(@scenario)
       returns(&returns) if returns
