@@ -245,26 +245,28 @@ end
 describe ScenarioCreator, "#instance_of" do
   it_should_behave_like "RR::ScenarioCreator"
 
-  it "raises an error when not passed a class" #do
-#    proc do
-#      @creator.instance_of(Object.new)
-#    end.should raise_error(ArgumentError, "instance_of only accepts class objects")
-#  end
+  it "raises an error when not passed a class" do
+    proc do
+      @creator.instance_of(Object.new)
+    end.should raise_error(ArgumentError, "instance_of only accepts class objects")
+  end
 
-  it "sets up the RR probe call chain" #do
-#    scenario = @creator.stub.instance_of(Class).foobar(1, 2) {:baz}
-#    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-#    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-#    Class.new.foobar(1, 2).should == :baz
-#  end
+  it "sets up the RR probe call chain" do
+    klass = Class.new
+    scenario = @creator.stub.instance_of(klass).foobar(1, 2) {:baz}
+    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    klass.new.foobar(1, 2).should == :baz
+  end
 
-  it "creates a probe Scenario for method when passed a second argument" #do
-#    scenario = @creator.stub.instance_of(Class, :foobar)
-#    scenario.with(1, 2) {:baz}
-#    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-#    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-#    Class.new.foobar(1, 2).should == :baz
-#  end
+  it "creates a probe Scenario for method when passed a second argument" do
+    klass = Class.new
+    scenario = @creator.stub.instance_of(klass, :foobar)
+    scenario.with(1, 2) {:baz}
+    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    klass.new.foobar(1, 2).should == :baz
+  end
 end
 
 describe ScenarioCreator, "#create! using no strategy" do

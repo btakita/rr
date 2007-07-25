@@ -25,28 +25,41 @@ module RR
       @method_name = method_name
       @args = args
       @handler = handler
-#      if @instance_of
-#        @double = @space.double(@subject, :new)
-#        @instance_class_scenario = @space.scenario(@double)
-#        stub!(@instance_class_scenario)
-#
-#        @instance_of_method_name = method_name
-#        @definition = @space.scenario_definition
-#      else
-      @double = @space.double(@subject, method_name)
-      @scenario = @space.scenario(@double)
-      @definition = @scenario.definition
-#      end
+      if @instance_of
+        @class_double = @space.double(@subject, :new)
+        @class_scenario = @space.scenario(@class_double)
+
+        @instance_of_method_name = method_name
+
+        @definition = @space.scenario_definition
+        handler = proc do |return_value|
+          double = @space.double(return_value, @instance_of_method_name)
+          @space.scenario(double, @definition)
+          return_value
+        end
+
+        builder = ScenarioDefinitionBuilder.new(
+          @class_scenario.definition,
+          [],
+          handler
+        )
+        builder.stub!
+        builder.probe!
+      else
+        @double = @space.double(@subject, method_name)
+        @scenario = @space.scenario(@double)
+        @definition = @scenario.definition
+      end
       transform!
       @definition
     end
 
-#    def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
-#      return self if subject === NO_SUBJECT_ARG
-#      raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
-#      @instance_of = true
-#      RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
-#    end
+    def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
+      return self if subject === NO_SUBJECT_ARG
+      raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
+      @instance_of = true
+      RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
+    end
 
     # This method sets the Scenario to have a mock strategy. A mock strategy
     # sets the default state of the Scenario to expect the method call
