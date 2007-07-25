@@ -181,18 +181,22 @@ module RR
       @args = args
       @handler = handler
       if @instance_of
-        setup_class_probe(method_name)
+        setup_class_probing_instances(method_name)
       else
-        @double = @space.double(@subject, method_name)
-        @scenario = @space.scenario(@double)
-        @definition = @scenario.definition
+        setup_scenario(method_name)
       end
       transform!
       @definition
     end
     
     protected
-    def setup_class_probe(method_name)
+    def setup_scenario(method_name)
+      @double = @space.double(@subject, method_name)
+      @scenario = @space.scenario(@double)
+      @definition = @scenario.definition
+    end
+
+    def setup_class_probing_instances(method_name)
       @class_double = @space.double(@subject, :new)
       @class_scenario = @space.scenario(@class_double)
 
