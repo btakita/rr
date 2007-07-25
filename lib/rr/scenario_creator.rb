@@ -26,8 +26,9 @@ module RR
       @handler = handler
       @double = @space.double(@subject, method_name)
       @scenario = @space.scenario(@double)
+      @definition = @scenario.definition
       transform!
-      @scenario.definition
+      @definition
     end
 
 #    def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
@@ -202,35 +203,35 @@ module RR
     end
 
     def mock!
-      @scenario.with(*@args).once
+      @definition.with(*@args).once
     end
 
     def stub!
-      @scenario.any_number_of_times
+      @definition.any_number_of_times
       permissive_argument!
     end
 
     def do_not_call!
-      @scenario.never
+      @definition.never
       permissive_argument!
       reimplementation!
     end
 
     def permissive_argument!
       if @args.empty?
-        @scenario.with_any_args
+        @definition.with_any_args
       else
-        @scenario.with(*@args)
+        @definition.with(*@args)
       end
     end
 
     def reimplementation!
-      @scenario.returns(&@handler)
+      @definition.returns(&@handler)
     end
     
     def probe!
-      @scenario.implemented_by_original_method
-      @scenario.after_call(&@handler) if @handler
+      @definition.implemented_by_original_method
+      @definition.after_call(&@handler) if @handler
     end
 
     def strategy_error!
