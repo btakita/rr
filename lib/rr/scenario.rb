@@ -262,22 +262,19 @@ module RR
     # Scenario#exact_match? returns true when the passed in arguments
     # exactly match the ArgumentEqualityExpectation arguments.
     def exact_match?(*arguments)
-      return false unless self.argument_expectation
-      self.argument_expectation.exact_match?(*arguments)
+      definition.exact_match?(*arguments)
     end
 
     # Scenario#wildcard_match? returns true when the passed in arguments
     # wildcard match the ArgumentEqualityExpectation arguments.
     def wildcard_match?(*arguments)
-      return false unless self.argument_expectation
-      self.argument_expectation.wildcard_match?(*arguments)
+      definition.wildcard_match?(*arguments)
     end
 
     # Scenario#attempt? returns true when the
     # TimesCalledExpectation is satisfied.
     def attempt?
-      return true unless self.times_called_expectation
-      self.times_called_expectation.attempt?
+      definition.attempt?
     end
 
     # Scenario#verify verifies the the TimesCalledExpectation
