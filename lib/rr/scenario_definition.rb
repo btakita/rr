@@ -3,13 +3,15 @@ module RR
   # It has the ArgumentEqualityExpectation, TimesCalledExpectation,
   # and the implementation.
   class ScenarioDefinition
+    ORIGINAL_METHOD = Object.new
     attr_accessor :times_called,
                   :argument_expectation,
                   :times_called_expectation,
                   :double,
                   :implementation,
                   :after_call_value,
-                  :yields_value
+                  :yields_value,
+                  :scenario
 
     def initialize(space)
       @space = space
@@ -152,7 +154,7 @@ module RR
     #   mock(subject).method_name.ordered {return_value}
     def ordered(&returns)
       @ordered = true
-      @space.ordered_scenarios << self unless @space.ordered_scenarios.include?(self)
+      @space.ordered_scenarios << @scenario unless @space.ordered_scenarios.include?(@scenario)
       returns(&returns) if returns
       self
     end
@@ -211,6 +213,7 @@ module RR
       else
         implemented_by proc {value}
       end
+      self
     end
 
     # Scenario#implemented_by sets the implementation of the Scenario.

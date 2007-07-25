@@ -27,7 +27,7 @@ module RR
       @double = @space.double(@subject, method_name)
       @scenario = @space.scenario(@double)
       transform!
-      @scenario
+      @scenario.definition
     end
 
 #    def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition)

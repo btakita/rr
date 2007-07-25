@@ -32,7 +32,7 @@ describe ScenarioMethodProxy, ".new without block" do
     proxy_subclass.instance_methods.should include('i_should_be_a_scenario')
 
     proxy = proxy_subclass.new(@space, @creator, @subject)
-    proxy.i_should_be_a_scenario.should be_instance_of(Scenario)
+    proxy.i_should_be_a_scenario.should be_instance_of(ScenarioDefinition)
   end
 end
 
@@ -63,7 +63,7 @@ describe ScenarioMethodProxy, ".new with block" do
     proxy_subclass.instance_methods.should include('i_should_be_a_scenario')
 
     proxy_subclass.new(@space, @creator, @subject) do |m|
-      m.i_should_be_a_scenario.should be_instance_of(Scenario)
+      m.i_should_be_a_scenario.should be_instance_of(ScenarioDefinition)
     end
   end
 end

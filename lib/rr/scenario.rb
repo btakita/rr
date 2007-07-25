@@ -15,7 +15,6 @@ module RR
         end.join("\n")
       end
     end
-    ORIGINAL_METHOD = Object.new
 
     attr_reader :times_called, :double, :definition
 
@@ -33,8 +32,7 @@ module RR
     #
     #   mock(subject).method_name.with(1, 2) {:return_value}
     def with(*args, &returns)
-      self.argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
-      returns(&returns) if returns
+      definition.with(*args, &returns)
       self
     end
 
@@ -45,8 +43,7 @@ module RR
     #
     #   mock(subject).method_name.with_any_args {:return_value}
     def with_any_args(&returns)
-      self.argument_expectation = Expectations::AnyArgumentExpectation.new
-      returns(&returns) if returns
+      definition.with_any_args(&returns)
       self
     end
 
@@ -57,8 +54,7 @@ module RR
     #
     #   mock(subject).method_name.with_no_args {:return_value}
     def with_no_args(&returns)
-      self.argument_expectation = Expectations::ArgumentEqualityExpectation.new()
-      returns(&returns) if returns
+      definition.with_no_args(&returns)
       self
     end
 
@@ -69,7 +65,7 @@ module RR
     #
     #   mock(subject).method_name.never
     def never
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(0)
+      definition.never
       self
     end
 
@@ -80,8 +76,7 @@ module RR
     #
     #   mock(subject).method_name.once {:return_value}
     def once(&returns)
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(1)
-      returns(&returns) if returns
+      definition.once(&returns)
       self
     end
 
@@ -92,8 +87,7 @@ module RR
     #
     #   mock(subject).method_name.twice {:return_value}
     def twice(&returns)
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(2)
-      returns(&returns) if returns
+      definition.twice(&returns)
       self
     end
 
@@ -105,9 +99,7 @@ module RR
     #
     #   mock(subject).method_name.at_least(4) {:return_value}
     def at_least(number, &returns)
-      matcher = RR::TimesCalledMatchers::AtLeastMatcher.new(number)
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
-      returns(&returns) if returns
+      definition.at_least(number, &returns)
       self
     end
 
@@ -119,9 +111,7 @@ module RR
     #
     #   mock(subject).method_name.at_most(4) {:return_value}
     def at_most(number, &returns)
-      matcher = RR::TimesCalledMatchers::AtMostMatcher.new(number)
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
-      returns(&returns) if returns
+      definition.at_most(number, &returns)
       self
     end
 
@@ -133,8 +123,7 @@ module RR
     #
     #   mock(subject).method_name.any_number_of_times
     def any_number_of_times(&returns)
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(TimesCalledMatchers::AnyTimesMatcher.new)
-      returns(&returns) if returns
+      definition.any_number_of_times(&returns)
       self
     end
 
@@ -145,8 +134,7 @@ module RR
     #
     #   mock(subject).method_name.times(4) {:return_value}
     def times(number, &returns)
-      self.times_called_expectation = Expectations::TimesCalledExpectation.new(number)
-      returns(&returns) if returns
+      definition.times(number, &returns)
       self
     end
 
@@ -157,9 +145,7 @@ module RR
     #
     #   mock(subject).method_name.ordered {return_value}
     def ordered(&returns)
-      @ordered = true
-      @space.ordered_scenarios << self unless @space.ordered_scenarios.include?(self)
-      returns(&returns) if returns
+      definition.ordered(&returns)
       self
     end
 
@@ -167,7 +153,7 @@ module RR
     #
     #   mock(subject).method_name.ordered?
     def ordered?
-      @ordered
+      definition.ordered?
     end
 
     # Scenario#yields sets the Scenario to invoke a passed in block when
@@ -207,14 +193,8 @@ module RR
     #
     # Passing in an argument causes Scenario to return the argument.
     def returns(value=nil, &implementation)
-      if value && implementation
-        raise ArgumentError, "returns cannot accept both an argument and a block"
-      end
-      if value.nil?
-        implemented_by implementation
-      else
-        implemented_by proc {value}
-      end
+      definition.returns(value, &implementation)
+      self
     end
 
     # Scenario#implemented_by sets the implementation of the Scenario.
@@ -227,7 +207,7 @@ module RR
     #   end
     #   mock(obj).method_name.implemented_by(obj.method(:foobar))
     def implemented_by(implementation)
-      self.implementation = implementation
+      definition.implemented_by implementation
       self
     end
 
@@ -242,7 +222,7 @@ module RR
     #   mock(obj).method_name.implemented_by_original_method
     #   obj.foobar {|arg| puts arg} # puts 1
     def implemented_by_original_method
-      implemented_by ORIGINAL_METHOD
+      definition.implemented_by_original_method
       self
     end
 
@@ -273,7 +253,7 @@ module RR
     def call_implementation(double, *args, &block)
       return nil unless implementation
 
-      if implementation === ORIGINAL_METHOD
+      if implementation === ScenarioDefinition::ORIGINAL_METHOD
         if double.original_method
           return double.original_method.call(*args, &block)
         else

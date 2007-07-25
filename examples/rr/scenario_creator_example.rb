@@ -18,12 +18,12 @@ describe ScenarioCreator, " strategy definition", :shared => true do
 
   it "returns a ScenarioMethodProxy when passed a subject" do
     scenario = @creator.__send__(@method_name, @subject).foobar
-    scenario.should be_instance_of(Scenario)
+    scenario.should be_instance_of(ScenarioDefinition)
   end
 
   it "returns a ScenarioMethodProxy when passed Kernel" do
     scenario = @creator.__send__(@method_name, Kernel).foobar
-    scenario.should be_instance_of(Scenario)
+    scenario.should be_instance_of(ScenarioDefinition)
   end
 
   it "raises error if passed a method name and a block" do
@@ -81,13 +81,12 @@ describe ScenarioCreator, "#mock" do
   end
 
   def create_scenario_with_method_name(scenario)
-    method_name = scenario.method_name
     scenario.with(1, 2) {:baz}
     scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
     scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
     scenario.argument_expectation.expected_arguments.should == [1, 2]
 
-    @subject.__send__(method_name, 1, 2).should == :baz
+    @subject.foobar(1, 2).should == :baz
   end
 
   def create_mock_call_chain(creator)
@@ -116,11 +115,10 @@ describe ScenarioCreator, "#stub" do
   end
 
   def create_scenario_with_method_name(scenario)
-    method_name = scenario.method_name
     scenario.with(1, 2) {:baz}
     scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
     scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-    @subject.__send__(method_name, 1, 2).should == :baz
+    @subject.foobar(1, 2).should == :baz
   end
 
   def create_stub_call_chain(creator)
@@ -181,14 +179,13 @@ describe ScenarioCreator, "#do_not_call" do
   end
 
   def create_scenario_with_method_name(scenario)
-    method_name = scenario.method_name
     scenario.with(1, 2)
     scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
     scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
     scenario.argument_expectation.expected_arguments.should == [1, 2]
 
     proc do
-      @subject.__send__(method_name, 1, 2)
+      @subject.foobar(1, 2)
     end.should raise_error(Errors::TimesCalledError)
     reset
     nil
