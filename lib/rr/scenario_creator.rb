@@ -17,6 +17,7 @@ module RR
       @strategy = nil
       @probe = false
       @instance_of = nil
+      @instance_of_method_name = nil
     end
     
     def create!(subject, method_name, *args, &handler)
@@ -24,9 +25,18 @@ module RR
       @method_name = method_name
       @args = args
       @handler = handler
+#      if @instance_of
+#        @double = @space.double(@subject, :new)
+#        @instance_class_scenario = @space.scenario(@double)
+#        stub!(@instance_class_scenario)
+#
+#        @instance_of_method_name = method_name
+#        @definition = @space.scenario_definition
+#      else
       @double = @space.double(@subject, method_name)
       @scenario = @space.scenario(@double)
       @definition = @scenario.definition
+#      end
       transform!
       @definition
     end
@@ -188,50 +198,20 @@ module RR
     
     protected
     def transform!
+      builder = ScenarioDefinitionBuilder.new(@definition, @args, @handler)
+
       case @strategy
-      when :mock; mock!
-      when :stub; stub!
-      when :do_not_call; do_not_call!
+      when :mock; builder.mock!
+      when :stub; builder.stub!
+      when :do_not_call; builder.do_not_call!
       else no_strategy_error!
       end
       
       if @probe
-        probe!
+        builder.probe!
       else
-        reimplementation!
+        builder.reimplementation!
       end
-    end
-
-    def mock!
-      @definition.with(*@args).once
-    end
-
-    def stub!
-      @definition.any_number_of_times
-      permissive_argument!
-    end
-
-    def do_not_call!
-      @definition.never
-      permissive_argument!
-      reimplementation!
-    end
-
-    def permissive_argument!
-      if @args.empty?
-        @definition.with_any_args
-      else
-        @definition.with(*@args)
-      end
-    end
-
-    def reimplementation!
-      @definition.returns(&@handler)
-    end
-    
-    def probe!
-      @definition.implemented_by_original_method
-      @definition.after_call(&@handler) if @handler
     end
 
     def strategy_error!

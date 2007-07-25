@@ -17,6 +17,7 @@ require "rr/scenario_creator"
 
 require "rr/scenario"
 require "rr/scenario_definition"
+require "rr/scenario_definition_builder"
 require "rr/scenario_matches"
 
 require "rr/expectations/argument_equality_expectation"
