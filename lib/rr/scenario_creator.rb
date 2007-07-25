@@ -9,7 +9,7 @@ module RR
   class ScenarioCreator
     NO_SUBJECT_ARG = Object.new
 
-    attr_reader :space, :subject
+    attr_reader :space
     include Errors
 
     def initialize(space)
@@ -176,27 +176,26 @@ module RR
     end
 
     def create!(subject, method_name, *args, &handler)
-      @subject = subject
       @args = args
       @handler = handler
       if @instance_of
-        setup_class_probing_instances(method_name)
+        setup_class_probing_instances(subject, method_name)
       else
-        setup_scenario(method_name)
+        setup_scenario(subject, method_name)
       end
       transform!
       @definition
     end
     
     protected
-    def setup_scenario(method_name)
-      @double = @space.double(@subject, method_name)
+    def setup_scenario(subject, method_name)
+      @double = @space.double(subject, method_name)
       @scenario = @space.scenario(@double)
       @definition = @scenario.definition
     end
 
-    def setup_class_probing_instances(method_name)
-      class_double = @space.double(@subject, :new)
+    def setup_class_probing_instances(subject, method_name)
+      class_double = @space.double(subject, :new)
       class_scenario = @space.scenario(class_double)
 
       instance_method_name = method_name

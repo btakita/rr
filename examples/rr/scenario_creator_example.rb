@@ -282,17 +282,8 @@ describe ScenarioCreator, "#create! using no strategy" do
   end
 end
 
-describe ScenarioCreator, "#create!", :shared => true do
-  it_should_behave_like "RR::ScenarioCreator"
-
-  it "initializes creator with passed in object" do
-    @creator.create!(@subject, :foobar)
-    @creator.subject.should === @subject
-  end
-end
-
 describe ScenarioCreator, "#create! using mock strategy" do
-  it_should_behave_like "RR::ScenarioCreator#create!"
+  it_should_behave_like "RR::ScenarioCreator"
   
   before do
     @creator.mock
@@ -308,7 +299,7 @@ describe ScenarioCreator, "#create! using mock strategy" do
 end
 
 describe ScenarioCreator, "#create! using stub strategy" do
-  it_should_behave_like "RR::ScenarioCreator#create!"
+  it_should_behave_like "RR::ScenarioCreator"
 
   before do
     @creator.stub
@@ -330,7 +321,7 @@ describe ScenarioCreator, "#create! using stub strategy" do
 end
 
 describe ScenarioCreator, "#create! using do_not_call strategy" do
-  it_should_behave_like "RR::ScenarioCreator#create!"
+  it_should_behave_like "RR::ScenarioCreator"
 
   before do
     @creator.do_not_call
@@ -356,7 +347,7 @@ describe ScenarioCreator, "#create! using do_not_call strategy" do
 end
 
 describe ScenarioCreator, "#create! using mock strategy with probe" do
-  it_should_behave_like "RR::ScenarioCreator#create!"
+  it_should_behave_like "RR::ScenarioCreator"
 
   before do
     @creator.mock
@@ -388,7 +379,7 @@ describe ScenarioCreator, "#create! using mock strategy with probe" do
 end
 
 describe ScenarioCreator, "#create! using stub strategy with probe" do
-  it_should_behave_like "RR::ScenarioCreator#create!"
+  it_should_behave_like "RR::ScenarioCreator"
 
   before do
     @creator.stub
