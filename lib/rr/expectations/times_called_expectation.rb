@@ -3,10 +3,8 @@ module RR
     class TimesCalledExpectation
       attr_reader :matcher, :times_called
       
-      def initialize(matcher=nil, &time_condition_block)
-        raise ArgumentError, "Cannot pass in both an argument and a block" if matcher && time_condition_block
-        matcher_value = matcher || time_condition_block
-        @matcher = TimesCalledMatchers::TimesCalledMatcher.create(matcher_value)
+      def initialize(matcher=nil)
+        @matcher = matcher
         @times_called = 0
         @verify_backtrace = caller[1..-1]
       end

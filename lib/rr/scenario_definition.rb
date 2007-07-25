@@ -146,8 +146,8 @@ module RR
     # Passing in a block sets the return value.
     #
     #   mock(subject).method_name.times(4) {:return_value}
-    def times(number, &returns)
-      @times_called_matcher = TimesCalledMatchers::IntegerMatcher.new(number)
+    def times(matcher_value, &returns)
+      @times_called_matcher = TimesCalledMatchers::TimesCalledMatcher.create(matcher_value)
       @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
       returns(&returns) if returns
       self

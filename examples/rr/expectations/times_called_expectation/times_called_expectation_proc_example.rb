@@ -6,11 +6,11 @@ module Expectations
     it_should_behave_like "RR::Expectations::TimesCalledExpectation"
     
     before do
-      @expectation = TimesCalledExpectation.new {|value| value == 2}
+      @matcher = TimesCalledMatchers::ProcMatcher.new(proc {|value| value == 2})
+      @expectation = TimesCalledExpectation.new(@matcher)
       @expected_line = __LINE__ - 1
     end
   end
-
 
   describe TimesCalledExpectation, "#verify" do
     it_should_behave_like "RR::Expectations::TimesCalledExpectation with ProcMatcher"

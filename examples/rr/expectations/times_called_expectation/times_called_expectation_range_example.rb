@@ -6,7 +6,8 @@ module Expectations
     it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 
     before do
-      @expectation = TimesCalledExpectation.new(1..2)
+      @matcher = TimesCalledMatchers::RangeMatcher.new(1..2)
+      @expectation = TimesCalledExpectation.new(@matcher)
       @expected_line = __LINE__ - 1
     end
   end
