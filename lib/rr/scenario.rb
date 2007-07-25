@@ -23,6 +23,7 @@ module RR
       @double = double
       @definition = definition
       @times_called = 0
+      @times_called_expectation = Expectations::TimesCalledExpectation.new
     end
 
     # Scenario#with sets the expectation that the Scenario will receive
@@ -216,7 +217,7 @@ module RR
     # A TimesCalledError is raised when the times called
     # exceeds the expected TimesCalledExpectation.
     def call(double, *args, &block)
-      self.times_called_expectation.attempt! if self.times_called_expectation
+      self.times_called_expectation.attempt! if definition.times_called_matcher
       @space.verify_ordered_scenario(self) if ordered?
       yields!(block)
       return_value = call_implementation(double, *args, &block)
@@ -274,22 +275,22 @@ module RR
     # Scenario#attempt? returns true when the
     # TimesCalledExpectation is satisfied.
     def attempt?
-      return true unless definition.times_called_expectation
-      definition.times_called_expectation.attempt?
+      return true unless definition.times_called_matcher
+      times_called_expectation.attempt?
     end
 
     # Scenario#verify verifies the the TimesCalledExpectation
     # is satisfied for this scenario. A TimesCalledError
     # is raised if the TimesCalledExpectation is not met.
     def verify
-      return true unless definition.times_called_expectation
-      definition.times_called_expectation.verify!
+      return true unless definition.times_called_matcher
+      times_called_expectation.verify!
       true
     end
 
     def terminal?
-      return false unless self.times_called_expectation
-      self.times_called_expectation.terminal?
+      return false unless definition.times_called_matcher
+      times_called_expectation.terminal?
     end
 
     # The method name that this Scenario is attatched to
@@ -308,6 +309,11 @@ module RR
       times_called_expectation.matcher
     end
 
+    def times_called_expectation
+      @times_called_expectation.matcher = definition.times_called_matcher
+      @times_called_expectation
+    end
+
     def implementation
       definition.implementation
     end
@@ -323,13 +329,5 @@ module RR
       definition.argument_expectation = value
     end
     protected :argument_expectation=
-
-    def times_called_expectation
-      definition.times_called_expectation
-    end
-    def times_called_expectation=(value)
-      definition.times_called_expectation = value
-    end
-    protected :times_called_expectation=
   end
 end

@@ -1,7 +1,8 @@
 module RR
   module Expectations
     class TimesCalledExpectation
-      attr_reader :matcher, :times_called
+      attr_reader :times_called
+      attr_accessor :matcher
       
       def initialize(matcher=nil)
         @matcher = matcher

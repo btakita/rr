@@ -120,8 +120,8 @@ module RR
     #
     #   mock(subject).method_name.at_most(4) {:return_value}
     def at_most(number, &returns)
-      matcher = TimesCalledMatchers::AtMostMatcher.new(number)
-      @times_called_expectation = Expectations::TimesCalledExpectation.new(matcher)
+      @times_called_matcher = TimesCalledMatchers::AtMostMatcher.new(number)
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(@times_called_matcher)
       returns(&returns) if returns
       self
     end
