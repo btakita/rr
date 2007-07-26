@@ -180,9 +180,9 @@ module RR
     #     projects[0..2]
     #   end
     def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
+      @instance_of = true
       return self if subject === NO_SUBJECT_ARG
       raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
-      @instance_of = true
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
 

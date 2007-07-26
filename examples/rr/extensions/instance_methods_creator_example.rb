@@ -309,5 +309,55 @@ module Extensions
       nil
     end
   end
+
+  describe ScenarioCreator, "#instance_of and #mock" do
+    before do
+      @klass = Class.new
+    end
+
+    it "returns a ScenarioCreator when passed no arguments" do
+      instance_of.instance_of.should be_instance_of(ScenarioCreator)
+    end
+
+    it "sets up the RR instance_of call chain" do
+      should create_instance_of_call_chain(instance_of.mock(@klass))
+    end
+
+    it "#rr_instance_of sets up the RR instance_of call chain" do
+      should create_instance_of_call_chain(rr_instance_of.mock(@klass))
+    end
+
+    it "creates a instance_of Scenario for method when passed a second argument" do
+      should create_scenario_with_method_name(instance_of.mock(@klass, :foobar))
+    end
+
+    it "creates a instance_of Scenario for method when passed a second argument with rr_instance_of" do
+      should create_scenario_with_method_name(rr_instance_of.mock(@klass, :foobar))
+    end
+
+    it "raises error if passed a method name and a block" do
+      proc do
+        instance_of.mock(@klass, :foobar) {}
+      end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
+    end
+
+    def create_scenario_with_method_name(scenario)
+      scenario.with(1, 2) {:baz}
+      scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+      scenario.argument_expectation.expected_arguments.should == [1, 2]
+
+      @klass.new.foobar(1, 2).should == :baz
+    end
+
+    def create_instance_of_call_chain(creator)
+      scenario = creator.foobar(1, 2) {:baz}
+      scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+      scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+      scenario.argument_expectation.expected_arguments.should == [1, 2]
+
+      @klass.new.foobar(1, 2).should == :baz
+    end
+  end
 end
 end

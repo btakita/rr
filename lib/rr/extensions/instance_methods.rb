@@ -153,6 +153,22 @@ module Extensions
     alias_method :do_not_allow, :do_not_call
     alias_method :dont_allow, :do_not_call
 
+    # Calling instance_of will cause all instances of the passed in Class
+    # to have the Scenario defined.
+    #
+    # The following example mocks all User's valid? method and return false.
+    #   mock.instance_of(User).valid? {false}
+    #
+    # The following example mocks and probes User#projects and returns the
+    # first 3 projects.
+    #   mock.instance_of(User).projects do |projects|
+    #     projects[0..2]
+    #   end
+    def instance_of(subject=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+      creator = RR::Space.scenario_creator
+      creator.instance_of(subject, method_name, &definition)
+    end
+
     # Returns a AnyTimesMatcher. This is meant to be passed in as an argument
     # to Scenario#times.
     #
