@@ -20,13 +20,6 @@ module RR
       @instance_of_method_name = nil
     end
     
-    def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
-      return self if subject === NO_SUBJECT_ARG
-      raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
-      @instance_of = true
-      RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
-    end
-
     # This method sets the Scenario to have a mock strategy. A mock strategy
     # sets the default state of the Scenario to expect the method call
     # with arguments exactly one time. The Scenario's expectations can be
@@ -172,6 +165,24 @@ module RR
       probe_when_do_not_call_error! if @strategy == :do_not_call
       @probe = true
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
+      RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
+    end
+
+    # Calling instance_of will cause all instances of the passed in Class
+    # to have the Scenario defined.
+    #
+    # The following example mocks all User's valid? method and return false. 
+    #   mock.instance_of(User).valid? {false}
+    #
+    # The following example mocks and probes User#projects and returns the
+    # first 3 projects.
+    #   mock.instance_of(User).projects do |projects|
+    #     projects[0..2]
+    #   end
+    def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
+      return self if subject === NO_SUBJECT_ARG
+      raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
+      @instance_of = true
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
 
