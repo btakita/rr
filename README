@@ -59,6 +59,11 @@ renders the partial.
     html
   end
 
+== Instance of Doubles
+Put double scenarios on instances of a Class.
+
+  mock.instance_of(User).valid? {false}
+
 == Block Syntax
   script = MyScript.new
   mock(script) do |m|
