@@ -15,13 +15,17 @@ task(:spec) do
   run_suite
 end
 
+task(:tag_release) do
+  tag_release
+end
+
 def run_suite
   dir = File.dirname(__FILE__)
   system("ruby #{dir}/examples/example_suite.rb") || raise("Example Suite failed")
 end
 
 PKG_NAME = "rr"
-PKG_VERSION = "0.3.4"
+PKG_VERSION = "0.3.5"
 PKG_FILES = FileList[
   '[A-Z]*',
   '*.rb',
@@ -57,4 +61,9 @@ end
 Rake::GemPackageTask.new(spec) do |pkg|
   pkg.need_zip = true
   pkg.need_tar = true
+end
+
+def tag_release
+  dashed_version = PKG_VERSION.gsub('.', '-')
+  `svn cp svn+ssh://rubyforge.org/var/svn/pivotalrb/rr/trunk svn+ssh://rubyforge.org/var/svn/pivotalrb/rr/tags/REL-#{dashed_version} -m 'Version #{PKG_VERSION}'`
 end

@@ -1,3 +1,4 @@
+* 0.3.5
 - trim_backtrace is only set for Test::Unit
 
 * 0.3.4
