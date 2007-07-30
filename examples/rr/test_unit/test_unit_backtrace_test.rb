@@ -11,6 +11,10 @@ class TestUnitBacktraceTest < Test::Unit::TestCase
     super
   end
 
+  def test_trim_backtrace_is_set
+    assert RR::Space.trim_backtrace
+  end
+
   def test_backtrace_tweaking
     old_result = @_result
     result = Test::Unit::TestResult.new

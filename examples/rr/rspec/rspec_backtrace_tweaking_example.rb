@@ -1,6 +1,10 @@
 require "examples/example_helper"
 
 describe RR, " backtrace tweaking" do
+  it "does not set trim_backtrace" do
+    RR::Space.trim_backtrace.should == false
+  end
+
   it "hides rr library from the backtrace by default" do
     output = StringIO.new("")
     backtrace_tweaker = ::Spec::Runner::QuietBacktraceTweaker.new

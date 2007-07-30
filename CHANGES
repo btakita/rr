@@ -1,3 +1,5 @@
+- trim_backtrace is only set for Test::Unit
+
 * 0.3.4
 - Implemented instance_of
 
