@@ -5,7 +5,7 @@ class ExampleSuite
   def run
     options = ::Spec::Runner::OptionParser.new.parse(ARGV.dup, STDERR, STDOUT, false)
     $behaviour_runner = options.create_behaviour_runner
-    
+
     require_specs
 
     puts "Running Example Suite"

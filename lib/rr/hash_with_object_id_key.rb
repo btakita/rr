@@ -1,28 +1,37 @@
 module RR
 class HashWithObjectIdKey < ::Hash
+  def initialize
+    @keys = {}
+    super do |hash, subject_object|
+      hash.set_with_object_id(subject_object, {})
+    end
+  end
+
   alias_method :get_with_object_id, :[]
   def [](key)
+    @keys[key.__id__] = key
     super(key.__id__)
   end
 
   alias_method :set_with_object_id, :[]=
   def []=(key, value)
+    @keys[key.__id__] = key
     super(key.__id__, value)
   end
 
   def each
     super do |object_id, value|
-      yield ObjectSpace._id2ref(object_id), value
+      yield @keys[object_id], value
     end
   end
 
   def delete(key)
+    @keys.delete(key.__id__)
     super(key.__id__)
   end
 
   def keys
-    raw_keys = super
-    raw_keys.collect {|raw_key| ObjectSpace._id2ref(raw_key)}
+    @keys.values
   end
 
   def include?(key)

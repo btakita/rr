@@ -18,9 +18,7 @@ module RR
     attr_reader :doubles, :ordered_scenarios
     attr_accessor :trim_backtrace
     def initialize
-      @doubles = HashWithObjectIdKey.new do |hash, subject_object|
-        hash.set_with_object_id(subject_object, HashWithObjectIdKey.new)
-      end
+      @doubles = HashWithObjectIdKey.new
       @ordered_scenarios = []
       @trim_backtrace = false
     end

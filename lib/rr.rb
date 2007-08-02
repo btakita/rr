@@ -1,5 +1,3 @@
-require "forwardable"
-
 require "rr/errors/rr_error"
 require "rr/errors/scenario_definition_error"
 require "rr/errors/scenario_not_found_error"
