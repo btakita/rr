@@ -1,3 +1,5 @@
+- Fixed [#12765] Issues with ObjectSpace._id2ref
+
 * 0.3.5
 - trim_backtrace is only set for Test::Unit
 
