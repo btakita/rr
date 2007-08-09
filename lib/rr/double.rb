@@ -10,7 +10,7 @@ module RR
       @space = space
       @object = object
       @method_name = method_name.to_sym
-      if @object.respond_to?(method_name)
+      if object_has_method?(method_name)
         meta.send(:alias_method, original_method_name, method_name)
       end
       @scenarios = []
@@ -60,7 +60,7 @@ module RR
     # The original method of the object. It returns nil if the object
     # does not have an original method.
     def original_method
-      return nil unless @object.respond_to?(original_method_name)
+      return nil unless object_has_method?(original_method_name)
       return @object.method(original_method_name)
     end
 
@@ -118,6 +118,10 @@ module RR
 
     def original_method_name
       "__rr__original_#{@method_name}"
+    end
+
+    def object_has_method?(method_name)
+      @object.methods.include?(method_name.to_s)
     end
 
     def meta

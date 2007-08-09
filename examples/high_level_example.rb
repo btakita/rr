@@ -130,4 +130,11 @@ describe "RR stub:" do
     @obj.to_s.should == "a value"
     @obj.to_sym.should == :crazy
   end
+
+  it "stubs instance_of" do
+    stub.instance_of(Date) do |o|
+      o.to_s {"The Date"}
+    end
+    Date.new.to_s.should == "The Date"
+  end
 end

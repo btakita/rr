@@ -1,3 +1,5 @@
+- Fixed [#12928] Reset doubles fails on Rails association proxies
+
 * 0.3.6
 - Fixed [#12765] Issues with ObjectSpace._id2ref
 
