@@ -1,3 +1,4 @@
+* 0.3.8
 - Implemented [#13009] Better error mesage from TimesCalledMatcher
 
 * 0.3.7
