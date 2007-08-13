@@ -40,7 +40,7 @@ This technique is also useful for verifying that you are mocking exists and
 functions proberly, thereby testing you interface.
 For example, using ActiveRecord:
 
-  probe(User).find('5') do |user|
+  mock.probe(User).find('5') do |user|
     mock.probe(user).projects do |projects|
       projects[0..3]
     end
