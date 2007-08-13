@@ -23,7 +23,7 @@ module RR
       @double = double
       @definition = definition
       @times_called = 0
-      @times_called_expectation = Expectations::TimesCalledExpectation.new
+      @times_called_expectation = Expectations::TimesCalledExpectation.new(self)
     end
 
     # Scenario#with sets the expectation that the Scenario will receive
@@ -244,7 +244,7 @@ module RR
         else
           return double.object.__send__(
             :method_missing,
-            double.method_name,
+            method_name,
             *args,
             &block
           )
@@ -329,5 +329,9 @@ module RR
       definition.argument_expectation = value
     end
     protected :argument_expectation=
+
+    def formatted_name
+      self.class.formatted_name(method_name, expected_arguments)
+    end
   end
 end

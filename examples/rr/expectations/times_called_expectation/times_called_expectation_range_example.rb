@@ -7,7 +7,7 @@ module Expectations
 
     before do
       @matcher = TimesCalledMatchers::RangeMatcher.new(1..2)
-      @expectation = TimesCalledExpectation.new(@matcher)
+      @expectation = TimesCalledExpectation.new(@scenario, @matcher)
       @expected_line = __LINE__ - 1
     end
   end
@@ -43,7 +43,7 @@ module Expectations
       @expectation.attempt!
       proc do
         @expectation.attempt!
-      end.should raise_error(Errors::TimesCalledError, "Called 3 times.\nExpected 1..2 times.")
+      end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 1..2 times.")
     end
   end
 

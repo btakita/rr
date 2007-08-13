@@ -7,7 +7,7 @@ module Expectations
     
     before do
       @at_least = TimesCalledMatchers::AnyTimesMatcher.new
-      @expectation = TimesCalledExpectation.new(@at_least)
+      @expectation = TimesCalledExpectation.new(@scenario, @at_least)
     end
   end
 

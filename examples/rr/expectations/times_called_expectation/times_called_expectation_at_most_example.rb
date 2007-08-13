@@ -8,7 +8,7 @@ module Expectations
     before do
       @times = 3
       @at_most = TimesCalledMatchers::AtMostMatcher.new(@times)
-      @expectation = TimesCalledExpectation.new(@at_most)
+      @expectation = TimesCalledExpectation.new(@scenario, @at_most)
     end
   end
 
@@ -54,7 +54,7 @@ module Expectations
       3.times {@expectation.attempt!}
       proc do
         @expectation.attempt!
-      end.should raise_error(Errors::TimesCalledError, "Called 4 times.\nExpected at most 3 times.")
+      end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 4 times.\nExpected at most 3 times.")
     end
 
     it "passes when times called == times" do

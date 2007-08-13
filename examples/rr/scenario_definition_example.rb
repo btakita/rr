@@ -165,7 +165,7 @@ describe ScenarioDefinition, "#at_most" do
       @object.foobar
     end.should raise_error(
       Errors::TimesCalledError,
-      "Called 3 times.\nExpected at most 2 times."
+      "foobar()\nCalled 3 times.\nExpected at most 2 times."
     )
   end
 

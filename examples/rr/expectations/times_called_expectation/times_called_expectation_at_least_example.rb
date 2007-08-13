@@ -8,7 +8,7 @@ module Expectations
     before do
       @times = 3
       @at_least = TimesCalledMatchers::AtLeastMatcher.new(@times)
-      @expectation = TimesCalledExpectation.new(@at_least)
+      @expectation = TimesCalledExpectation.new(@scenario, @at_least)
     end
   end
 
@@ -31,7 +31,7 @@ module Expectations
         @expectation.verify!
       end.should raise_error(
         RR::Errors::TimesCalledError,
-        "Called 1 time.\nExpected at least 3 times."
+        "foobar()\nCalled 1 time.\nExpected at least 3 times."
       )
     end
   end

@@ -7,7 +7,7 @@ module Expectations
 
     before do
       @matcher = TimesCalledMatchers::IntegerMatcher.new(2)
-      @expectation = TimesCalledExpectation.new(@matcher)
+      @expectation = TimesCalledExpectation.new(@scenario, @matcher)
       @expected_line = __LINE__ - 1
     end
   end
@@ -37,7 +37,7 @@ module Expectations
       @expectation.attempt!
       proc {@expectation.verify!}.should raise_error(
         Errors::TimesCalledError,
-        "Called 1 time.\nExpected 2 times."
+        "foobar()\nCalled 1 time.\nExpected 2 times."
       )
     end
 
@@ -46,7 +46,7 @@ module Expectations
       @expectation.attempt!
       proc do
         @expectation.attempt!
-      end.should raise_error(Errors::TimesCalledError, "Called 3 times.\nExpected 2 times.")
+      end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 2 times.")
     end
 
     it "has a backtrace to where the TimesCalledExpectation was instantiated on failure" do
@@ -63,7 +63,7 @@ module Expectations
     it "has an error message that includes the number of times called and expected number of times" do
       proc do
         @expectation.verify!
-      end.should raise_error(Errors::TimesCalledError, "Called 0 times.\nExpected 2 times.")
+      end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 0 times.\nExpected 2 times.")
     end
   end
 

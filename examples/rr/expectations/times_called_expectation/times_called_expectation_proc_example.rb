@@ -7,7 +7,7 @@ module Expectations
     
     before do
       @matcher = TimesCalledMatchers::ProcMatcher.new(proc {|value| value == 2})
-      @expectation = TimesCalledExpectation.new(@matcher)
+      @expectation = TimesCalledExpectation.new(@scenario, @matcher)
       @expected_line = __LINE__ - 1
     end
   end

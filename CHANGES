@@ -1,3 +1,5 @@
+- Implemented [#13009] Better error mesage from TimesCalledMatcher
+
 * 0.3.7
 - Fixed [#12928] Reset doubles fails on Rails association proxies
 

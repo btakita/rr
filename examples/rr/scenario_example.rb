@@ -163,7 +163,7 @@ describe Scenario, "#at_most" do
       @scenario.call(@double)
     end.should raise_error(
       Errors::TimesCalledError,
-      "Called 3 times.\nExpected at most 2 times."
+      "foobar()\nCalled 3 times.\nExpected at most 2 times."
     )
   end
 
@@ -658,6 +658,19 @@ describe Scenario, "#expected_arguments" do
   it "returns an empty array when there is no argument expectation" do
     @scenario.argument_expectation.should be_nil
     @scenario.expected_arguments.should == []
+  end
+end
+
+describe Scenario, "#formatted_name" do
+  it_should_behave_like "RR::Scenario"
+
+  it "renders the formatted name of the Scenario with no arguments" do
+    @scenario.formatted_name.should == "foobar()"
+  end
+
+  it "renders the formatted name of the Scenario with arguments" do
+    @scenario.with(1, 2)
+    @scenario.formatted_name.should == "foobar(1, 2)"
   end
 end
 end
