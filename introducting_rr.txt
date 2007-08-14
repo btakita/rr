@@ -6,8 +6,8 @@ A Test Double is [double description]. You can read more about test doubles at h
 RR supports the following constructs:
  * Mock
  * Stub
- * Probe
  * instance_of
+ * Probe
 
 **Mock**
 <pre>
@@ -26,6 +26,14 @@ that the find method will receive the argument '2' once.
 </pre>
 
 The previous example overrides can_edit?. When the method receives the article, it returns true.
+
+**instance_of**
+You can mock or stub instances of a class.
+<pre>
+  stub.instance_of(User).can_edit?(my_article) {true}
+</pre>
+
+The previous example stubs the can_edit? method of any intstance of User.
 
 **Probe**
 
