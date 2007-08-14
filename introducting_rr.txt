@@ -77,18 +77,39 @@ ArticlesController#edit action:
   end.should raise_error(SecurityTrangressionError)
 
 These two examples are interesting because they verify slight different things.
-The mock example states that when can_edit? with @article is called and returns false, a SecurityTrangressionError
+The interaction example states that when can_edit? with @article is called and returns false, a SecurityTrangressionError
 is raised.
 The state example gives information that bob cannot edit the article, and from that one can infer that
 bob trying to edit the article will raise a SecurityTrangressionError.
 
-The state based example is more brittle because it requires @bob to be set up in a way where he cannot
-edit the article. That requires knowledge about how User.can_edit? is implemented, which increases behaviour coupling.
+State based testing tends to be more coupling than interaction based testing.
+Note that coupling is not necessarily bad.
+The state based example has both interface, data, and knowledge coupling compared to the interaction based test:
+ * Interface coupling - If can_edit? does not return false, there is an error.
+ * Fixture Data coupling - If the fixture data changes, there is an error.
+ * Knowledge coupling - The ArticleController test needs to know how can_edit? returns false
 
-So if the fixtures change to where bob can edit the article, then the spec will fail. It is reasonable
-to assume that the coupling in this case is not that serious because the fixtures will probably not often
-change in such a way where bob can edit my_article. Changes do happen though.
+Interface coupling is actually a good thing, because it verifies the User and ArticleController work
+together proberly. This sort of testing is functional or integration testing.
 
+The Data and Knowledge coupling are not desirable characteristics because they cause the
+developer to be concerned about another part of the system, which takes development time.
+It can also cause unwanted test failures when the global fixture data is changed or when a change
+occurs that makes the ArticleController's test setup logic incorrect.
+
+Martin Fowler also notes that interaction testing has coupling to the edit action's implementation,
+in that the interaction example states that User#can_edit? must be called for the test to pass.
+I've found that sometimes this is desirable and sometimes it is not desirable.
+
+The coupling to the implementation encourages more decomposition but it also makes
+causes brittleness because changing the edit action to call another method will cause
+the test to fail.
+
+I'm not proposing the right solution in this case, because it is dependent on
+your situation. One thing to consider is:
+ * Do you have functional or integration tests for the failure case?
+
+Taking the desirable and undesirable coupling into account
 
 Here is a view example that renders counts:
 ==== State Based Example
@@ -113,11 +134,22 @@ Here is a view example that renders counts:
   response.body.should include("Comments Received: 15")
   response.body.should include("Gold Stars Received: 80")
 
+The same tradeoffs are present in this view example as in the ActiclesController example,
+but the values of each of the tradeoffs are different.
+
+State testing couplings:
+ * Interface coupling - If count returns a non-number, there is an error.
+ * Fixture Data coupling - If the fixture data changes, there is an error.
+ * Knowledge coupling - There is no noticeable knowledge coupling.
+
+Interaction testing couplings:
+ * Implementation coupling - If the way the count is determined changes, there is an error.
+
 In these examples, it is fair to expect the counts derived from the fixtures to change quite often.
 Decoupling the counts from your fixtures yields more of a benefit because the interaction based example
-will not need to be changed as often as the state based example.
+will probably not need to be changed as often as the state based example.
 
-The interaction based example also provides the benefits of
+The interaction based example also provides the benefits of:
  * being faster because there is no database access
  * providing more focus because non-count user data is not important to this example (the interaction example
    ignores the user data while the state based approach includes the user data)
@@ -126,17 +158,19 @@ The interaction based example also provides the benefits of
    that returns 0)
 
 === State vs. Interaction Based testing?
-The examples I provided favor interaction based testing. This does not mean all testing should be
-done with interaction testing. There are many situations where state based testing is more
+The examples I provided favor or are neutral to interaction based testing.
+This does not mean all testing should be done with interaction testing.
+There are many situations where state based testing is more
 straightforward and no more coupled than an interaction based test.
 
-Please pick the right toolset for your situation. In the future, I will blog about different situations
-and the trade-offs of using a state based approach, and/or an interaction based approach.
+Please pick the right toolset for your situation.
+In the future, I will blog about different situations and the trade-offs of
+using a state based approach, and/or an interaction based approach.
 
 === Extremely Bad Examples
 Since this is a blog post, the examples are short and relatively benign.
-However, I'm sure you can look at any of your projects and see where state and/or interaction
-based testing has been overused and abused.
+However, There are many examples where state and/or interaction
+based testing is overused and abused.
 Expanding your toolset can help you and your coworkers fix these issues.
 
 There are already several nice Mock/Stub frameworks in the ruby world. These libraries include:
