@@ -167,6 +167,7 @@ module RR
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
+    alias_method :proxy, :probe
 
     # Calling instance_of will cause all instances of the passed in Class
     # to have the Scenario defined.

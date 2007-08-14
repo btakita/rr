@@ -49,3 +49,17 @@ describe RR, "#stub and #probe" do
     @subject.foobar.should == :baz
   end
 end
+
+describe RR, "#stub and #proxy" do
+  before do
+    @subject = Object.new
+    def @subject.foobar
+      :baz
+    end
+  end
+
+  it "creates a probe Double Scenario" do
+    stub.proxy(@subject).foobar
+    @subject.foobar.should == :baz
+  end
+end

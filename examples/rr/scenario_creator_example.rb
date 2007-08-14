@@ -205,7 +205,7 @@ describe ScenarioCreator, "#do_not_call" do
   end
 end
 
-describe ScenarioCreator, "#probe and #stub" do
+describe ScenarioCreator, "(#probe or #proxy) and #stub" do
   it_should_behave_like "RR::ScenarioCreator"
 
   before do
@@ -233,8 +233,23 @@ describe ScenarioCreator, "#probe and #stub" do
     @subject.foobar(1, 2).should == :baz
   end
 
+  it "sets up the RR proxy call chain" do
+    scenario = @creator.stub.proxy(@subject).foobar(1, 2) {:baz}
+    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    @subject.foobar(1, 2).should == :baz
+  end
+
   it "creates a probe Scenario for method when passed a second argument" do
     scenario = @creator.stub.probe(@subject, :foobar)
+    scenario.with(1, 2) {:baz}
+    scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+    scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+    @subject.foobar(1, 2).should == :baz
+  end
+
+  it "creates a proxy Scenario for method when passed a second argument" do
+    scenario = @creator.stub.proxy(@subject, :foobar)
     scenario.with(1, 2) {:baz}
     scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
     scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
