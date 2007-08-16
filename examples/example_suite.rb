@@ -1,11 +1,5 @@
-require "rubygems"
-require "spec"
-
 class ExampleSuite
   def run
-    options = ::Spec::Runner::OptionParser.new.parse(ARGV.dup, STDERR, STDOUT, false)
-    $behaviour_runner = options.create_behaviour_runner
-
     run_core_examples
     run_rspec_examples
     run_test_unit_examples
