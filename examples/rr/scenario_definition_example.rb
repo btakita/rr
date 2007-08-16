@@ -12,6 +12,18 @@ describe ScenarioDefinition, :shared => true do
     @scenario = @space.scenario(@double)
     @definition = @scenario.definition
   end
+
+  def test_arguments
+    [1, 2]
+  end
+
+  def be_returns_callback_strategy(args)
+    args.should == [1, 2]
+  end
+
+  def be_after_call_callback_strategy(args)
+    args.should == [[2, 1]]
+  end
 end
 
 describe ScenarioDefinition, "#with" do
@@ -30,18 +42,18 @@ describe ScenarioDefinition, "#with" do
   it "sets return value when block passed in and using returns block_callback_strategy" do
     args = nil
     @definition.returns_block_callback_strategy!
-    @definition.with(1, 2) {|*args| args = args; :return_value}
-    @object.foobar(1, 2).should == :return_value
-    args.should == [1, 2]
+    @definition.with(*test_arguments) {|*args| args = args; :return_value}
+    @object.foobar(*test_arguments).should == :return_value
+    should be_returns_callback_strategy(args)
   end
 
   it "sets after_call when block passed in and using after_call block_callback_strategy" do
     args = nil
     @definition.implemented_by_original_method
     @definition.after_call_block_callback_strategy!
-    @definition.with(1, 2) {|*args| args = args; :return_value}
-    @object.foobar(1, 2).should == :return_value
-    args.should == [[2, 1]]
+    @definition.with(*test_arguments) {|*args| args = args; :return_value}
+    @object.foobar(*test_arguments).should == :return_value
+    should be_after_call_callback_strategy(args)
   end
 end
 
@@ -75,7 +87,7 @@ describe ScenarioDefinition, "#with_any_args when using returns block_callback_s
 
   it "sets return value when block passed in" do
     @return_value.should == :return_value
-    @args.should == [1, 2]
+    should be_returns_callback_strategy(@args)
   end
 end
 
@@ -89,8 +101,8 @@ describe ScenarioDefinition, "#with_any_args when using after_call block_callbac
   end
 
   it "sets return value when block passed in" do
-    @object.foobar(1, 2).should == :return_value
-    @args.should == [[2, 1]]
+    @object.foobar(*test_arguments).should == :return_value
+    should be_after_call_callback_strategy(@args)
   end
 end
 
