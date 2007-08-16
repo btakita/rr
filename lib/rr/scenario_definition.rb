@@ -29,7 +29,7 @@ module RR
     #   mock(subject).method_name.with(1, 2) {:return_value}
     def with(*args, &returns)
       @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
-      returns(&returns) if returns
+      install_method_callback returns
       self
     end
 
@@ -41,7 +41,7 @@ module RR
     #   mock(subject).method_name.with_any_args {:return_value}
     def with_any_args(&returns)
       @argument_expectation = Expectations::AnyArgumentExpectation.new
-      returns(&returns) if returns
+      install_method_callback returns
       self
     end
 
@@ -53,7 +53,7 @@ module RR
     #   mock(subject).method_name.with_no_args {:return_value}
     def with_no_args(&returns)
       @argument_expectation = Expectations::ArgumentEqualityExpectation.new()
-      returns(&returns) if returns
+      install_method_callback returns
       self
     end
 
@@ -76,7 +76,7 @@ module RR
     #   mock(subject).method_name.once {:return_value}
     def once(&returns)
       @times_matcher = TimesCalledMatchers::IntegerMatcher.new(1)
-      returns(&returns) if returns
+      install_method_callback returns
       self
     end
 
@@ -88,7 +88,7 @@ module RR
     #   mock(subject).method_name.twice {:return_value}
     def twice(&returns)
       @times_matcher = TimesCalledMatchers::IntegerMatcher.new(2)
-      returns(&returns) if returns
+      install_method_callback returns
       self
     end
 
@@ -101,7 +101,7 @@ module RR
     #   mock(subject).method_name.at_least(4) {:return_value}
     def at_least(number, &returns)
       @times_matcher = TimesCalledMatchers::AtLeastMatcher.new(number)
-      returns(&returns) if returns
+      install_method_callback returns
       self
     end
 
@@ -114,7 +114,7 @@ module RR
     #   mock(subject).method_name.at_most(4) {:return_value}
     def at_most(number, &returns)
       @times_matcher = TimesCalledMatchers::AtMostMatcher.new(number)
-      returns(&returns) if returns
+      install_method_callback returns
       self
     end
 
@@ -127,7 +127,7 @@ module RR
     #   mock(subject).method_name.any_number_of_times
     def any_number_of_times(&returns)
       @times_matcher = TimesCalledMatchers::AnyTimesMatcher.new
-      returns(&returns) if returns
+      install_method_callback returns
       self
     end
 
@@ -139,7 +139,7 @@ module RR
     #   mock(subject).method_name.times(4) {:return_value}
     def times(matcher_value, &returns)
       @times_matcher = TimesCalledMatchers::TimesCalledMatcher.create(matcher_value)
-      returns(&returns) if returns
+      install_method_callback returns
       self
     end
 
@@ -158,7 +158,7 @@ module RR
       ) unless @scenario
       @ordered = true
       @space.ordered_scenarios << @scenario unless @space.ordered_scenarios.include?(@scenario)
-      returns(&returns) if returns
+      install_method_callback returns
       self
     end
 
@@ -180,7 +180,7 @@ module RR
     #   subject.method_name {|yield_arg1, yield_arg2|}
     def yields(*args, &returns)
       @yields_value = args
-      returns(&returns) if returns
+      install_method_callback returns
       self
     end
 
@@ -271,6 +271,11 @@ module RR
     def expected_arguments
       return [] unless argument_expectation
       argument_expectation.expected_arguments
+    end
+
+    protected
+    def install_method_callback(block)
+      returns(&block) if block
     end
   end
 end
