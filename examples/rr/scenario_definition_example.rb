@@ -6,7 +6,7 @@ describe ScenarioDefinition, :shared => true do
     @space = Space.new
     @object = Object.new
     def @object.foobar(a, b)
-      [b, a]
+      :original_return_value
     end
     @double = @space.double(@object, :foobar)
     @scenario = @space.scenario(@double)
@@ -22,7 +22,7 @@ describe ScenarioDefinition, :shared => true do
   end
 
   def be_after_call_callback_strategy(args)
-    args.should == [[2, 1]]
+    args.should == [:original_return_value]
   end
 end
 
@@ -57,6 +57,31 @@ describe ScenarioDefinition, "#with" do
   end
 end
 
+describe ScenarioDefinition, " with returns block_callback_strategy", :shared => true do
+  before do
+    @definition.returns_block_callback_strategy!
+    create_definition
+  end
+
+  it "sets return value when block passed in" do
+    @return_value.should == :return_value
+    should be_returns_callback_strategy(@args)
+  end
+end
+
+describe ScenarioDefinition, " with after_call block_callback_strategy", :shared => true do
+  before do
+    @definition.implemented_by_original_method
+    @definition.after_call_block_callback_strategy!
+    create_definition
+  end
+
+  it "sets return value when block passed in" do
+    @object.foobar(*test_arguments).should == :return_value
+    should be_after_call_callback_strategy(@args)
+  end
+end
+
 describe ScenarioDefinition, "#with_any_args", :shared => true do
   it_should_behave_like "RR::ScenarioDefinition"
 
@@ -79,34 +104,15 @@ end
 
 describe ScenarioDefinition, "#with_any_args when using returns block_callback_strategy" do
   it_should_behave_like "RR::ScenarioDefinition#with_any_args"
-
-  before do
-    @definition.returns_block_callback_strategy!
-    create_definition
-  end
-
-  it "sets return value when block passed in" do
-    @return_value.should == :return_value
-    should be_returns_callback_strategy(@args)
-  end
+  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
 end
 
 describe ScenarioDefinition, "#with_any_args when using after_call block_callback_strategy" do
   it_should_behave_like "RR::ScenarioDefinition#with_any_args"
-
-  before do
-    @definition.implemented_by_original_method
-    @definition.after_call_block_callback_strategy!
-    create_definition
-  end
-
-  it "sets return value when block passed in" do
-    @object.foobar(*test_arguments).should == :return_value
-    should be_after_call_callback_strategy(@args)
-  end
+  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
 end
 
-describe ScenarioDefinition, "#with_no_args" do
+describe ScenarioDefinition, "#with_no_args", :shared => true do
   it_should_behave_like "RR::ScenarioDefinition"
 
   before do
@@ -121,9 +127,32 @@ describe ScenarioDefinition, "#with_no_args" do
     @definition.argument_expectation.should == Expectations::ArgumentEqualityExpectation.new()
   end
 
+  def create_definition
+    def @object.foobar()
+      :original_return_value
+    end
+    actual_args = nil
+    @definition.with_any_args {|*args| actual_args = args; :return_value}
+    @return_value = @object.foobar
+    @args = actual_args
+  end
+
+  def be_returns_callback_strategy(args)
+    args.should == []
+  end
+
+  def be_after_call_callback_strategy(args)
+    args.should == [:original_return_value]
+  end
+end
+
+describe ScenarioDefinition, "#with_no_args when using returns block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#with_no_args"
+#  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+  
   it "sets return value when block passed in" do
     @object.foobar().should == :return_value
-  end
+  end  
 end
 
 describe ScenarioDefinition, "#never" do
@@ -445,7 +474,7 @@ describe ScenarioDefinition, "#implemented_by_original_method" do
 
   it "sets the implementation to the original method" do
     @definition.implemented_by_original_method.with_any_args
-    @object.foobar(1, 2).should == [2, 1]
+    @object.foobar(1, 2).should == :original_return_value
   end
 
   it "calls method_missing when original_method does not exist" do
