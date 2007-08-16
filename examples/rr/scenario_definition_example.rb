@@ -27,18 +27,26 @@ describe ScenarioDefinition, "#with" do
     @definition.should_not be_exact_match(2)
   end
 
-  it "sets return value when block passed in" do
-    @definition.with(1) {:return_value}
-    @object.foobar(1).should == :return_value
+  it "sets return value when block passed in and using returns block_callback_strategy" do
+    args = nil
+    @definition.returns_block_callback_strategy!
+    @definition.with(1, 2) {|*args| args = args; :return_value}
+    @object.foobar(1, 2).should == :return_value
+    args.should == [1, 2]
+  end
+
+  it "sets after_call when block passed in and using after_call block_callback_strategy" do
+    args = nil
+    @definition.implemented_by_original_method
+    @definition.after_call_block_callback_strategy!
+    @definition.with(1, 2) {|*args| args = args; :return_value}
+    @object.foobar(1, 2).should == :return_value
+    args.should == [[2, 1]]
   end
 end
 
-describe ScenarioDefinition, "#with_any_args" do
+describe ScenarioDefinition, "#with_any_args", :shared => true do
   it_should_behave_like "RR::ScenarioDefinition"
-
-  before do
-    @definition.with_any_args {:return_value}
-  end
 
   it "returns ScenarioDefinition" do
     @definition.with_no_args.should === @definition
@@ -49,8 +57,40 @@ describe ScenarioDefinition, "#with_any_args" do
     @definition.should be_wildcard_match(1)
   end
 
+  def create_definition
+    actual_args = nil
+    @definition.with_any_args {|*args| actual_args = args; :return_value}
+    @return_value = @object.foobar(1, 2)
+    @args = actual_args
+  end
+end
+
+describe ScenarioDefinition, "#with_any_args when using returns block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#with_any_args"
+
+  before do
+    @definition.returns_block_callback_strategy!
+    create_definition
+  end
+
   it "sets return value when block passed in" do
-    @object.foobar(:anything).should == :return_value
+    @return_value.should == :return_value
+    @args.should == [1, 2]
+  end
+end
+
+describe ScenarioDefinition, "#with_any_args when using after_call block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#with_any_args"
+
+  before do
+    @definition.implemented_by_original_method
+    @definition.after_call_block_callback_strategy!
+    create_definition
+  end
+
+  it "sets return value when block passed in" do
+    @object.foobar(1, 2).should == :return_value
+    @args.should == [[2, 1]]
   end
 end
 
@@ -498,6 +538,32 @@ describe ScenarioDefinition, "#expected_arguments" do
   it "returns an empty array when there is no argument expectation" do
     @definition.argument_expectation.should be_nil
     @definition.expected_arguments.should == []
+  end
+end
+
+describe ScenarioDefinition, "#block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition"
+
+  it "defaults to :returns" do
+    @definition.block_callback_strategy.should == :returns
+  end
+end
+
+describe ScenarioDefinition, "#returns_block_callback_strategy!" do
+  it_should_behave_like "RR::ScenarioDefinition"
+
+  it "sets the block_callback_strategy to :returns" do
+    @definition.returns_block_callback_strategy!
+    @definition.block_callback_strategy.should == :returns
+  end
+end
+
+describe ScenarioDefinition, "#after_call_block_callback_strategy!" do
+  it_should_behave_like "RR::ScenarioDefinition"
+
+  it "sets the block_callback_strategy to :after_call" do
+    @definition.after_call_block_callback_strategy!
+    @definition.block_callback_strategy.should == :after_call
   end
 end
 end

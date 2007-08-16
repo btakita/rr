@@ -11,6 +11,7 @@ module RR
                   :after_call_value,
                   :yields_value,
                   :scenario
+    attr_reader   :block_callback_strategy
 
     def initialize(space)
       @space = space
@@ -19,6 +20,7 @@ module RR
       @times_matcher = nil
       @after_call_value = nil
       @yields_value = nil
+      returns_block_callback_strategy!
     end
 
     # Scenario#with sets the expectation that the Scenario will receive
@@ -273,9 +275,22 @@ module RR
       argument_expectation.expected_arguments
     end
 
+    def returns_block_callback_strategy! # :nodoc:
+      @block_callback_strategy = :returns
+    end
+
+    def after_call_block_callback_strategy! # :nodoc:
+      @block_callback_strategy = :after_call
+    end
+
     protected
     def install_method_callback(block)
-      returns(&block) if block
+      return unless block
+      case @block_callback_strategy
+      when :returns; returns(&block)
+      when :after_call; after_call(&block)
+      else raise "Unknown block_callback_strategy: #{@block_callback_strategy.inspect}"
+      end
     end
   end
 end
