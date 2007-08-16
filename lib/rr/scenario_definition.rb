@@ -7,7 +7,6 @@ module RR
     attr_accessor :times_called,
                   :argument_expectation,
                   :times_matcher,
-                  :double,
                   :implementation,
                   :after_call_value,
                   :yields_value,

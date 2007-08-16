@@ -2,16 +2,6 @@ require "examples/example_helper"
 
 module RR
 module Expectations
-describe TimesCalledExpectation, :shared => true do
-  before do
-    @space = Space.new
-    @object = Object.new
-    @double = @space.double(@object, :foobar)
-    @scenario = @space.scenario(@double)
-    @scenario.with(1, 2)
-  end
-end
-
 describe TimesCalledExpectation, " with failure", :shared => true do
   it_should_behave_like "RR::Expectations::TimesCalledExpectation"
 

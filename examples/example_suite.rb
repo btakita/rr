@@ -6,25 +6,13 @@ class ExampleSuite
     options = ::Spec::Runner::OptionParser.new.parse(ARGV.dup, STDERR, STDOUT, false)
     $behaviour_runner = options.create_behaviour_runner
 
-    require_specs
-
-    puts "Running Example Suite"
-    $behaviour_runner.run(ARGV, false)
-
+    run_core_examples
     run_rspec_examples
     run_test_unit_examples
   end
 
-  def require_specs
-    exclusions = []
-    exclusions << "rspec/"
-    exclusions << "test_unit/"
-
-    Dir["#{dir}/**/*_example.rb"].each do |file|
-      unless exclusions.any? {|match| file.include?(match)}
-        require file
-      end
-    end
+  def run_core_examples
+    system("ruby #{dir}/core_example_suite.rb") || raise("Core suite Failed")
   end
 
   def run_rspec_examples
