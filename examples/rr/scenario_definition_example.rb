@@ -398,7 +398,7 @@ describe ScenarioDefinition, "#times with after_call block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#any_number_of_times" do
+describe ScenarioDefinition, "#any_number_of_times", :shared => true do
   it_should_behave_like "RR::ScenarioDefinition"
 
   it "returns ScenarioDefinition" do
@@ -406,13 +406,38 @@ describe ScenarioDefinition, "#any_number_of_times" do
   end
 
   it "sets up a Times Called Expectation with AnyTimes matcher" do
-    @definition.any_number_of_times
     @definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
   end
 
+  def create_definition
+    actual_args = nil
+    @definition.with(1, 2).any_number_of_times do |*args|
+      actual_args = args
+      :new_return_value
+    end
+    @object.foobar(1, 2)
+    @return_value = @object.foobar(1, 2)
+    @args = actual_args
+  end
+end
+
+describe ScenarioDefinition, "#any_number_of_times with returns block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#any_number_of_times"
+  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+
   it "sets return value when block passed in" do
-    @definition.with_any_args.any_number_of_times {:new_return_value}
-    @object.foobar.should == :new_return_value
+    @return_value.should == :new_return_value
+    @args.should == [1, 2]
+  end
+end
+
+describe ScenarioDefinition, "#any_number_of_times with after_call block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#any_number_of_times"
+  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+
+  it "sets return value when block passed in" do
+    @return_value.should == :new_return_value
+    @args.should == [:original_return_value]
   end
 end
 
