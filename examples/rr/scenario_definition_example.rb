@@ -509,31 +509,52 @@ describe ScenarioDefinition, "#ordered?" do
   end
 end
 
-describe ScenarioDefinition, "#yields" do
+describe ScenarioDefinition, "#yields", :shared => true do
   it_should_behave_like "RR::ScenarioDefinition"
 
   it "returns ScenarioDefinition" do
     @definition.yields(:baz).should === @definition
   end
 
-  it "yields the passed in argument to the call block when there is no returns value set" do
-    @definition.with_any_args.yields(:baz)
-    passed_in_block_arg = nil
-    @object.foobar {|arg| passed_in_block_arg = arg}.should == nil
-    passed_in_block_arg.should == :baz
-  end
-
   it "yields the passed in argument to the call block when there is a no returns value set" do
-    @definition.with_any_args.yields(:baz).returns(:new_return_value)
-
-    passed_in_block_arg = nil
-    @object.foobar {|arg| passed_in_block_arg = arg}.should == :new_return_value
-    passed_in_block_arg.should == :baz
+    @passed_in_block_arg.should == :baz
   end
+
+  def create_definition
+    actual_args = nil
+    @definition.with(1, 2).once.yields(:baz) do |*args|
+      actual_args = args
+      :new_return_value
+    end
+    passed_in_block_arg = nil
+    @return_value = @object.foobar(1, 2) do |arg|
+      passed_in_block_arg = arg
+    end
+    @passed_in_block_arg = passed_in_block_arg
+    
+    @args = actual_args
+  end
+end
+
+describe ScenarioDefinition, "#yields with returns block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#yields"
+  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
 
   it "sets return value when block passed in" do
-    @definition.with_any_args.yields {:new_return_value}
-    @object.foobar {}.should == :new_return_value
+    @return_value.should == :new_return_value
+    @args.length.should == 3
+    @args[0..1].should == [1, 2]
+    @args[2].should be_instance_of(Proc)
+  end
+end
+
+describe ScenarioDefinition, "#yields with after_call block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#yields"
+  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+
+  it "sets return value when block passed in" do
+    @return_value.should == :new_return_value
+    @args.should == [:original_return_value]
   end
 end
 
