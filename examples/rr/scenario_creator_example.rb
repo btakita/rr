@@ -80,6 +80,11 @@ describe ScenarioCreator, "#mock" do
     )
   end
 
+  it "sets up the ScenarioDefinition to be in returns block_callback_strategy" do
+    scenario = @creator.mock(@subject, :foobar)
+    scenario.block_callback_strategy.should == :returns
+  end
+
   def create_scenario_with_method_name(scenario)
     scenario.with(1, 2) {:baz}
     scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
@@ -112,6 +117,11 @@ describe ScenarioCreator, "#stub" do
 
   it "creates a stub Scenario for method when passed a second argument" do
     should create_scenario_with_method_name(@creator.stub(@subject, :foobar))
+  end
+
+  it "sets up the ScenarioDefinition to be in returns block_callback_strategy" do
+    scenario = @creator.stub(@subject, :foobar)
+    scenario.block_callback_strategy.should == :returns
   end
 
   def create_scenario_with_method_name(scenario)
@@ -254,6 +264,20 @@ describe ScenarioCreator, "(#probe or #proxy) and #stub" do
     scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
     scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
     @subject.foobar(1, 2).should == :baz
+  end
+  
+  it "sets up the ScenarioDefinition to be in after_call block_callback_strategy" do
+    def @subject.foobar
+      :original_implementation_value
+    end
+
+    args = nil
+    scenario = @creator.stub.proxy(@subject, :foobar).with() do |*args|
+      args = args
+    end
+    @subject.foobar
+    args.should == [:original_implementation_value]
+    scenario.block_callback_strategy.should == :after_call
   end
 end
 
