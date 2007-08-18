@@ -33,7 +33,7 @@ describe ScenarioDefinition, " with after_call block_callback_strategy", :shared
   end
 end
 
-describe ScenarioDefinition, "#with" do
+describe ScenarioDefinition, "#with", :shared => true do
   it_should_behave_like "RR::ScenarioDefinition"
 
   it "returns ScenarioDefinition" do
@@ -41,29 +41,39 @@ describe ScenarioDefinition, "#with" do
   end
 
   it "sets an ArgumentEqualityExpectation" do
-    @definition.with(1)
-    @definition.should be_exact_match(1)
+    @definition.should be_exact_match(1, 2)
     @definition.should_not be_exact_match(2)
   end
 
-  it "sets return value when block passed in and using returns block_callback_strategy" do
-    args = nil
-    @definition.returns_block_callback_strategy!
-    @definition.with(1, 2) {|*args| args = args; :new_return_value}
-    @object.foobar(1, 2).should == :new_return_value
-    args.should == [1, 2]
-  end
-
-  it "sets after_call when block passed in and using after_call block_callback_strategy" do
-    args = nil
-    @definition.implemented_by_original_method
-    @definition.after_call_block_callback_strategy!
+  def create_definition
+    actual_args = nil
     @definition.with(1, 2) do |*args|
-      args = args
+      actual_args = args
       :new_return_value
     end
-    @object.foobar(1, 2).should == :new_return_value
-    args.should == [:original_return_value]
+    @object.foobar(1, 2)
+    @return_value = @object.foobar(1, 2)
+    @args = actual_args
+  end
+end
+
+describe ScenarioDefinition, "#with with returns block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#with"
+  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+
+  it "sets return value when block passed in" do
+    @return_value.should == :new_return_value
+    @args.should == [1, 2]
+  end
+end
+
+describe ScenarioDefinition, "#with with after_call block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#with"
+  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+
+  it "sets return value when block passed in" do
+    @return_value.should == :new_return_value
+    @args.should == [:original_return_value]
   end
 end
 
