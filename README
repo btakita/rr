@@ -22,14 +22,14 @@ http://xunitpatterns.com/Test%20Stub.html
   jane = User.new
   stub(User).find('42') {jane}
 
-== Mock Probes
+== Mock Proxies/Probes
 Add verifications that a method was called while actually calling it.
 The following example verifies render partial will be called and
 renders the partial.
 
   view = controller.template
-  mock.probe(view).render(:partial => "right_navigation")
-  mock.probe(view).render(:partial => "user_info") do |html|
+  mock.proxy(view).render(:partial => "right_navigation")
+  mock.proxy(view).render(:partial => "user_info") do |html|
     html.should include("John Doe")
     "Different html"
   end
@@ -40,21 +40,21 @@ This technique is also useful for verifying that you are mocking exists and
 functions proberly, thereby testing you interface.
 For example, using ActiveRecord:
 
-  mock.probe(User).find('5') do |user|
-    mock.probe(user).projects do |projects|
+  mock.proxy(User).find('5') do |user|
+    mock.proxy(user).projects do |projects|
       projects[0..3]
     end
     mock(user).valid? {false}
     user
   end
 
-== Stub Probes
+== Stub Proxy/Probes
 Intercept the return value of a method call.
 The following example verifies render partial will be called and
 renders the partial.
 
   view = controller.template
-  stub.probe(view).render(:partial => "user_info") do |html|
+  stub.proxy(view).render(:partial => "user_info") do |html|
     html.should include("Joe Smith")
     html
   end
