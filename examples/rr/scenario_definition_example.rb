@@ -223,7 +223,7 @@ describe ScenarioDefinition, "#once with after_call block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#twice" do
+describe ScenarioDefinition, "#twice", :shared => true do
   it_should_behave_like "RR::ScenarioDefinition"
 
   it "returns ScenarioDefinition" do
@@ -232,14 +232,38 @@ describe ScenarioDefinition, "#twice" do
 
   it "sets up a Times Called Expectation with 2" do
     @definition.twice.with_any_args
-    @object.foobar
-    @object.foobar
-    proc {@object.foobar}.should raise_error(Errors::TimesCalledError)
+    proc {@object.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
   end
 
+  def create_definition
+    actual_args = nil
+    @definition.with_any_args.twice do |*args|
+      actual_args = args
+      :new_return_value
+    end
+    @object.foobar(1, 2)
+    @return_value = @object.foobar(1, 2)
+    @args = actual_args
+  end
+end
+
+describe ScenarioDefinition, "#twice with returns block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#twice"
+  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+
   it "sets return value when block passed in" do
-    @definition.with_any_args.twice {:new_return_value}
-    @object.foobar.should == :new_return_value
+    @return_value.should == :new_return_value
+    @args.should == [1, 2]
+  end
+end
+
+describe ScenarioDefinition, "#twice with after_call block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#twice"
+  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+
+  it "sets return value when block passed in" do
+    @return_value.should == :new_return_value
+    @args.should == [:original_return_value]
   end
 end
 
