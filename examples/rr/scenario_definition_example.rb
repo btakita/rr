@@ -188,10 +188,6 @@ describe ScenarioDefinition, "#once", :shared => true do
     proc {@object.foobar}.should raise_error(Errors::TimesCalledError)
   end
 
-  it "sets return value when block passed in" do
-    @return_value.should == :new_return_value
-  end
-
   def create_definition
     actual_args = nil
     @definition.with_any_args.once do |*args|
@@ -358,7 +354,7 @@ describe ScenarioDefinition, "#at_most with after_call block_callback_strategy" 
   end
 end
 
-describe ScenarioDefinition, "#times" do
+describe ScenarioDefinition, "#times", :shared => true do
   it_should_behave_like "RR::ScenarioDefinition"
 
   it "returns ScenarioDefinition" do
@@ -366,16 +362,39 @@ describe ScenarioDefinition, "#times" do
   end
 
   it "sets up a Times Called Expectation with passed in times" do
-    @definition.times(3).with_any_args
-    @object.foobar
-    @object.foobar
-    @object.foobar
-    proc {@object.foobar}.should raise_error(Errors::TimesCalledError)
+    proc {@object.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
   end
 
+  def create_definition
+    actual_args = nil
+    @definition.with(1, 2).times(3) do |*args|
+      actual_args = args
+      :new_return_value
+    end
+    @object.foobar(1, 2)
+    @object.foobar(1, 2)
+    @return_value = @object.foobar(1, 2)
+    @args = actual_args
+  end
+end
+
+describe ScenarioDefinition, "#times with returns block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#times"
+  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+
   it "sets return value when block passed in" do
-    @definition.with_any_args.times(3) {:new_return_value}
-    @object.foobar.should == :new_return_value
+    @return_value.should == :new_return_value
+    @args.should == [1, 2]
+  end
+end
+
+describe ScenarioDefinition, "#times with after_call block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#times"
+  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+
+  it "sets return value when block passed in" do
+    @return_value.should == :new_return_value
+    @args.should == [:original_return_value]
   end
 end
 
