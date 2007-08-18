@@ -441,7 +441,7 @@ describe ScenarioDefinition, "#any_number_of_times with after_call block_callbac
   end
 end
 
-describe ScenarioDefinition, "#ordered" do
+describe ScenarioDefinition, "#ordered", :shared => true do
   it_should_behave_like "RR::ScenarioDefinition"
 
   it "adds itself to the ordered scenarios list" do
@@ -451,18 +451,11 @@ describe ScenarioDefinition, "#ordered" do
 
   it "does not double add itself" do
     @definition.ordered
-    @definition.ordered
     @space.ordered_scenarios.should == [@scenario]
   end
 
   it "sets ordered? to true" do
-    @definition.ordered
     @definition.should be_ordered
-  end
-
-  it "sets return value when block passed in" do
-    @definition.with_any_args.once.ordered {:new_return_value}
-    @object.foobar.should == :new_return_value
   end
 
   it "raises error when there is no Scenario" do
@@ -475,6 +468,36 @@ describe ScenarioDefinition, "#ordered" do
       "For example, using instance_of does not allow ordered to be used. " <<
       "probe the class's #new method instead."
     )
+  end
+
+  def create_definition
+    actual_args = nil
+    @definition.with(1, 2).once.ordered do |*args|
+      actual_args = args
+      :new_return_value
+    end
+    @return_value = @object.foobar(1, 2)
+    @args = actual_args
+  end
+end
+
+describe ScenarioDefinition, "#ordered with returns block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#ordered"
+  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+
+  it "sets return value when block passed in" do
+    @return_value.should == :new_return_value
+    @args.should == [1, 2]
+  end
+end
+
+describe ScenarioDefinition, "#ordered with after_call block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#ordered"
+  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+
+  it "sets return value when block passed in" do
+    @return_value.should == :new_return_value
+    @args.should == [:original_return_value]
   end
 end
 
