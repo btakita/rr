@@ -310,7 +310,7 @@ describe ScenarioDefinition, "#at_least with after_call block_callback_strategy"
   end
 end
 
-describe ScenarioDefinition, "#at_most" do
+describe ScenarioDefinition, "#at_most", :shared => true do
   it_should_behave_like "RR::ScenarioDefinition"
 
   it "returns ScenarioDefinition" do
@@ -318,9 +318,6 @@ describe ScenarioDefinition, "#at_most" do
   end
 
   it "sets up a Times Called Expectation with 1" do
-    @definition.at_most(2).with_any_args
-    @object.foobar
-    @object.foobar
     proc do
       @object.foobar
     end.should raise_error(
@@ -329,9 +326,35 @@ describe ScenarioDefinition, "#at_most" do
     )
   end
 
+  def create_definition
+    actual_args = nil
+    @definition.with_any_args.at_most(2) do |*args|
+      actual_args = args
+      :new_return_value
+    end
+    @object.foobar(1, 2)
+    @return_value = @object.foobar(1, 2)
+    @args = actual_args
+  end
+end
+
+describe ScenarioDefinition, "#at_most with returns block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#at_most"
+  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+
   it "sets return value when block passed in" do
-    @definition.with_any_args.at_most(2) {:new_return_value}
-    @object.foobar.should == :new_return_value
+    @return_value.should == :new_return_value
+    @args.should == [1, 2]
+  end
+end
+
+describe ScenarioDefinition, "#at_most with after_call block_callback_strategy" do
+  it_should_behave_like "RR::ScenarioDefinition#at_most"
+  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+
+  it "sets return value when block passed in" do
+    @return_value.should == :new_return_value
+    @args.should == [:original_return_value]
   end
 end
 
