@@ -15,6 +15,7 @@ task(:spec) do
   run_suite
 end
 
+desc "Copies the trunk to a tag with the name of the current release"
 task(:tag_release) do
   tag_release
 end
