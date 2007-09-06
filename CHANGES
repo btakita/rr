@@ -1,3 +1,5 @@
+- Fixed [#13724] Mock Proxy on Active Record Association proxies causes error
+
 * 0.3.10
 - Fixed [#13139] Blocks added to proxy sets the return_value and not the after_call callback
 

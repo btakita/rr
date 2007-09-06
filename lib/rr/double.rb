@@ -49,7 +49,7 @@ module RR
     # if one exists.
     def reset
       meta.send(:remove_method, placeholder_name)
-      if original_method
+      if object_has_original_method?
         meta.send(:alias_method, @method_name, original_method_name)
         meta.send(:remove_method, original_method_name)
       else
@@ -57,11 +57,12 @@ module RR
       end
     end
 
-    # The original method of the object. It returns nil if the object
-    # does not have an original method.
-    def original_method
-      return nil unless object_has_method?(original_method_name)
-      return @object.method(original_method_name)
+    def call_original_method(*args, &block)
+      @object.__send__(original_method_name, *args, &block)
+    end
+
+    def object_has_original_method?
+      object_has_method?(original_method_name)
     end
 
     protected
@@ -121,7 +122,7 @@ module RR
     end
 
     def object_has_method?(method_name)
-      @object.methods.include?(method_name.to_s)
+      @object.methods.include?(method_name.to_s) || @object.respond_to?(method_name)
     end
 
     def meta

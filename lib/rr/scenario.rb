@@ -239,8 +239,8 @@ module RR
       return nil unless implementation
 
       if implementation === ScenarioDefinition::ORIGINAL_METHOD
-        if double.original_method
-          return double.original_method.call(*args, &block)
+        if double.object_has_original_method?
+          return double.call_original_method(*args, &block)
         else
           return double.object.__send__(
             :method_missing,

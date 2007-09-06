@@ -267,7 +267,7 @@ describe Space, "#double when double exists" do
     original_foobar_method = @object.method(:foobar)
     double = @space.double(@object, 'foobar')
 
-    double.original_method.should == original_foobar_method
+    double.object_has_original_method?.should be_true
 
     @space.double(@object, 'foobar').should === double
 

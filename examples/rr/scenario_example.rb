@@ -382,7 +382,32 @@ describe Scenario, "#implemented_by_original_method" do
     @scenario.call(@double, 1, 2).should == [2, 1]
   end
 
-  it "calls method_missing when original_method does not exist" do
+  it "calls methods when respond_to? is true and methods does not contain original method" do
+    method_name = nil
+    class << @object
+      def methods
+        []
+      end
+      def method(name)
+        raise "We should not be here"
+      end
+      def respond_to?(name)
+        true
+      end
+      def method_missing(method_name, *args, &block)
+        raise "We should not be here"
+      end
+    end
+
+    double = @space.double(@object, :foobar)
+    scenario = @space.scenario(double)
+    scenario.with_any_args
+    scenario.implemented_by_original_method
+
+    @object.foobar(1, 2).should == [2, 1]
+  end
+
+  it "calls method when original_method does not exist" do
     class << @object
       def method_missing(method_name, *args, &block)
         "method_missing for #{method_name}(#{args.inspect})"

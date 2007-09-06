@@ -43,8 +43,8 @@ describe Double, "#initialize where method does not exist on object" do
     @double = Double.new(@space, @object, @method_name)
   end
 
-  it "has a nil original_method" do
-    @double.original_method.should be_nil
+  it "object does not have original method" do
+    @double.object_has_original_method?.should be_false
   end
 end
 
@@ -59,8 +59,8 @@ describe Double, "#initialize where method exists on object" do
     @double = Double.new(@space, @object, @method_name)
   end
 
-  it "has a nil original_method" do
-    @double.original_method.should == @object.method(@method_name)
+  it "has a original_method" do
+    @double.object_has_original_method?.should be_true
   end
 end
 end
