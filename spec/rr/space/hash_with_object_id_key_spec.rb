@@ -1,86 +1,88 @@
 require "spec/spec_helper"
 
 module RR
-describe HashWithObjectIdKey, "#[] and #[]=" do
-  it "stores object via object id" do
-    hash = HashWithObjectIdKey.new
-    array_1 = []
-    hash[array_1] = 1
-    array_2 = []
-    hash[array_2] = 2
+  describe HashWithObjectIdKey do
+    describe "#[] and #[]=" do
+      it "stores object via object id" do
+        hash = HashWithObjectIdKey.new
+        array_1 = []
+        hash[array_1] = 1
+        array_2 = []
+        hash[array_2] = 2
 
-    hash[array_1].should_not == hash[array_2]
-  end
+        hash[array_1].should_not == hash[array_2]
+      end
 
-  it "stores the passed in object" do
-    hash = HashWithObjectIdKey.new
-    obj = Object.new
-    hash[obj] = 1
-    hash.instance_eval {@keys}.should == {obj.__id__ => obj}
-  end
-end
-
-describe HashWithObjectIdKey, "#each" do
-  it "iterates through the items in the hash" do
-    hash = HashWithObjectIdKey.new
-    hash['one'] = 1
-    hash['two'] = 2
-
-    keys = []
-    values = []
-    hash.each do |key, value|
-      keys << key
-      values << value
+      it "stores the passed in object" do
+        hash = HashWithObjectIdKey.new
+        obj = Object.new
+        hash[obj] = 1
+        hash.instance_eval {@keys}.should == {obj.__id__ => obj}
+      end
     end
 
-    keys.sort.should == ['one', 'two']
-    values.sort.should == [1, 2]
-  end
-end
+    describe "#each" do
+      it "iterates through the items in the hash" do
+        hash = HashWithObjectIdKey.new
+        hash['one'] = 1
+        hash['two'] = 2
 
-describe HashWithObjectIdKey, "#delete" do
-  before do
-    @hash = HashWithObjectIdKey.new
-    @key = Object.new
-    @hash[@key] = 1
-  end
+        keys = []
+        values = []
+        hash.each do |key, value|
+          keys << key
+          values << value
+        end
 
-  it "removes the object from the hash" do
-    @hash.delete(@key)
-    @hash[@key].should == {}
-  end
+        keys.sort.should == ['one', 'two']
+        values.sort.should == [1, 2]
+      end
+    end
 
-  it "removes the object from the keys hash" do
-    @hash.delete(@key)
-    @hash.instance_eval {@keys}.should == {}
-  end
-end
+    describe "#delete" do
+      before do
+        @hash = HashWithObjectIdKey.new
+        @key = Object.new
+        @hash[@key] = 1
+      end
 
-describe HashWithObjectIdKey, "#keys" do
-  before do
-    @hash = HashWithObjectIdKey.new
-    @key = Object.new
-    @hash[@key] = 1
-  end
+      it "removes the object from the hash" do
+        @hash.delete(@key)
+        @hash[@key].should == {}
+      end
 
-  it "returns an array of the keys" do
-    @hash.keys.should == [@key]
-  end
-end
+      it "removes the object from the keys hash" do
+        @hash.delete(@key)
+        @hash.instance_eval {@keys}.should == {}
+      end
+    end
 
-describe HashWithObjectIdKey, "#include?" do
-  before do
-    @hash = HashWithObjectIdKey.new
-    @key = Object.new
-    @hash[@key] = 1
-  end
+    describe "#keys" do
+      before do
+        @hash = HashWithObjectIdKey.new
+        @key = Object.new
+        @hash[@key] = 1
+      end
 
-  it "returns true when the key is in the Hash" do
-    @hash.should include(@key)
-  end
+      it "returns an array of the keys" do
+        @hash.keys.should == [@key]
+      end
+    end
 
-  it "returns false when the key is not in the Hash" do
-    @hash.should_not include(Object.new)
+    describe "#include?" do
+      before do
+        @hash = HashWithObjectIdKey.new
+        @key = Object.new
+        @hash[@key] = 1
+      end
+
+      it "returns true when the key is in the Hash" do
+        @hash.should include(@key)
+      end
+
+      it "returns false when the key is not in the Hash" do
+        @hash.should_not include(Object.new)
+      end
+    end
   end
-end
 end
