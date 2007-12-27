@@ -1,4 +1,4 @@
-require "spec/example_helper"
+require "spec/spec_helper"
 
 describe RR::Adapters::Rspec, "#trim_backtrace" do
   it "does not set trim_backtrace" do

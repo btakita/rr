@@ -1,4 +1,4 @@
-require "spec/example_helper"
+require "spec/spec_helper"
 
 module RR
 describe Space, "#verify_doubles" do

@@ -1,4 +1,4 @@
-require "spec/example_helper"
+require "spec/spec_helper"
 
 module RR
 describe Space, "#scenario_method_proxy", :shared => true do

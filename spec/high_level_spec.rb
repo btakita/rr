@@ -1,5 +1,5 @@
 dir = File.dirname(__FILE__)
-require "#{dir}/example_helper"
+require "#{dir}/spec_helper"
 
 describe "RR", :shared => true do
   before(:each) do
