@@ -23,7 +23,7 @@ describe RR do
     end
   end
 
-  describe "#mock and #probe" do
+  describe "#mock and #proxy" do
     before do
       @subject = Object.new
       def @subject.foobar
@@ -31,22 +31,8 @@ describe RR do
       end
     end
 
-    it "creates a probe Double Scenario" do
-      mock.probe(@subject).foobar
-      @subject.foobar.should == :baz
-    end
-  end
-
-  describe "#stub and #probe" do
-    before do
-      @subject = Object.new
-      def @subject.foobar
-        :baz
-      end
-    end
-
-    it "creates a probe Double Scenario" do
-      stub.probe(@subject).foobar
+    it "creates a proxy Double Scenario" do
+      mock.proxy(@subject).foobar
       @subject.foobar.should == :baz
     end
   end
@@ -59,7 +45,21 @@ describe RR do
       end
     end
 
-    it "creates a probe Double Scenario" do
+    it "creates a proxy Double Scenario" do
+      stub.proxy(@subject).foobar
+      @subject.foobar.should == :baz
+    end
+  end
+
+  describe "#stub and #proxy" do
+    before do
+      @subject = Object.new
+      def @subject.foobar
+        :baz
+      end
+    end
+
+    it "creates a proxy Double Scenario" do
       stub.proxy(@subject).foobar
       @subject.foobar.should == :baz
     end

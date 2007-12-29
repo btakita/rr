@@ -3,15 +3,15 @@ require "spec/spec_helper"
 module RR
   describe ScenarioMethodProxy, "initializes proxy with passed in creator", :shared => true do
     it "initializes proxy with passed in creator" do
-      class << proxy
+      class << the_proxy
         attr_reader :creator
       end
-      proxy.creator.should === creator
+      the_proxy.creator.should === creator
     end
   end
 
   describe ScenarioMethodProxy do
-    attr_reader :space, :subject, :creator, :proxy
+    attr_reader :space, :subject, :creator, :the_proxy
     before(:each) do
       @space = Space.new
       @subject = Object.new
@@ -22,7 +22,7 @@ module RR
     describe ".new without block" do
       it_should_behave_like "RR::ScenarioMethodProxy initializes proxy with passed in creator"
       before do
-        @proxy = ScenarioMethodProxy.new(space, creator, subject)
+        @the_proxy = ScenarioMethodProxy.new(space, creator, subject)
       end
 
       it "clears out all methods from proxy" do
@@ -40,7 +40,7 @@ module RR
     describe ".new with block" do
       it_should_behave_like "RR::ScenarioMethodProxy initializes proxy with passed in creator"
       before do
-        @proxy = ScenarioMethodProxy.new(space, creator, subject) do |b|
+        @the_proxy = ScenarioMethodProxy.new(space, creator, subject) do |b|
           b.foobar(1, 2) {:one_two}
           b.foobar(1) {:one}
           b.foobar.with_any_args {:default}

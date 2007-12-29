@@ -86,18 +86,18 @@ module RR
     end
   end
 
-  describe Space, "#scenario_method_proxy with a Mock Probe strategy" do
+  describe Space, "#scenario_method_proxy with a Mock Proxy strategy" do
     it_should_behave_like "RR::Space#scenario_method_proxy"
 
     before do
       @creator = @space.scenario_creator
-      @creator.mock.probe
+      @creator.mock.proxy
       def @object.foobar(*args)
         :original_foobar
       end
     end
 
-    it "creates a mock probe Scenario for method when passed a second argument" do
+    it "creates a mock proxy Scenario for method when passed a second argument" do
       @space.scenario_method_proxy(@creator, @object, :foobar).with(1)
       @object.foobar(1).should == :original_foobar
       proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
@@ -112,18 +112,18 @@ module RR
     end
   end
 
-  describe Space, "#scenario_method_proxy with a Stub Probe strategy" do
+  describe Space, "#scenario_method_proxy with a Stub proxy strategy" do
     it_should_behave_like "RR::Space#scenario_method_proxy"
 
     before do
       @creator = @space.scenario_creator
-      @creator.stub.probe
+      @creator.stub.proxy
       def @object.foobar(*args)
         :original_foobar
       end
     end
 
-    it "creates a stub probe Scenario for method when passed a second argument" do
+    it "creates a stub proxy Scenario for method when passed a second argument" do
       @space.scenario_method_proxy(@creator, @object, :foobar)
       @object.foobar(1).should == :original_foobar
       @object.foobar(1).should == :original_foobar

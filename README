@@ -4,10 +4,10 @@ RR (Double Ruby) is a double framework that features a rich
 selection of double techniques and a terse syntax.
 http://xunitpatterns.com/Test%20Double.html
 
-Currently RR implements mocks, stubs, and probes. It is a goal of
+Currently RR implements mocks, stubs, and proxies. It is a goal of
 RR to support a wide range of double techniques and patterns.
 
-== Mocks
+== mock
 http://xunitpatterns.com/Mock%20Object.html
   view = controller.template
   mock(view).render(:partial => "user_info") {"Information"}
@@ -17,12 +17,12 @@ http://xunitpatterns.com/Mock%20Object.html
     render(:partial => "user_info") {"Information"}
   end
 
-== Stubs
+== stub
 http://xunitpatterns.com/Test%20Stub.html
   jane = User.new
   stub(User).find('42') {jane}
 
-== Mock Proxies/Probes
+== mock.proxy
 Add verifications that a method was called while actually calling it.
 The following example verifies render partial will be called and
 renders the partial.
@@ -34,10 +34,10 @@ renders the partial.
     "Different html"
   end
 
-Probes support after_call callbacks. This is useful for Stubbing out
+Proxies support after_call callbacks. This is useful for Stubbing out
 a class method and getting its return value. You can also change the return value.
 This technique is also useful for verifying that you are mocking exists and
-functions proberly, thereby testing you interface.
+functions properly, thereby testing you interface.
 For example, using ActiveRecord:
 
   mock.proxy(User).find('5') do |user|
@@ -48,7 +48,7 @@ For example, using ActiveRecord:
     user
   end
 
-== Stub Proxy/Probes
+== stub.proxy
 Intercept the return value of a method call.
 The following example verifies render partial will be called and
 renders the partial.
@@ -59,7 +59,7 @@ renders the partial.
     html
   end
 
-== Instance of Doubles
+== instance_of
 Put double scenarios on instances of a Class.
 
   mock.instance_of(User).valid? {false}

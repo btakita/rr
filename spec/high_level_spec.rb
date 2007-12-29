@@ -62,22 +62,22 @@ describe "RR mock:" do
   end
 end
 
-describe "RR probe or proxy:" do
+describe "RR proxy:" do
   it_should_behave_like "RR"
 
-  it "probes via inline call" do
+  it "proxies via inline call" do
     expected_to_s_value = @obj.to_s
-    mock.probe(@obj).to_s
+    mock.proxy(@obj).to_s
     @obj.to_s.should == expected_to_s_value
     proc {@obj.to_s}.should raise_error
   end
 
-  it "probe allows ordering" do
+  it "proxy allows ordering" do
     def @obj.to_s(arg)
       "Original to_s with arg #{arg}"
     end
-    mock.probe(@obj).to_s(:foo).ordered
-    mock.probe(@obj).to_s(:bar).twice.ordered
+    mock.proxy(@obj).to_s(:foo).ordered
+    mock.proxy(@obj).to_s(:bar).twice.ordered
 
     @obj.to_s(:foo).should == "Original to_s with arg foo"
     @obj.to_s(:bar).should == "Original to_s with arg bar"
@@ -98,7 +98,7 @@ describe "RR probe or proxy:" do
     proc {@obj.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
   end
 
-  it "probes via block" do
+  it "proxies via block" do
     def @obj.foobar_1(*args)
       :original_value_1
     end
@@ -107,7 +107,7 @@ describe "RR probe or proxy:" do
       :original_value_2
     end
 
-    mock.probe @obj do |c|
+    mock.proxy @obj do |c|
       c.foobar_1(1)
       c.foobar_2
     end

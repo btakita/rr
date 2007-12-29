@@ -167,8 +167,8 @@ module RR
     #   mock(subject).method_name {return_value}.after_call {|return_value|}
     #   subject.method_name # return_value
     #
-    # This feature is built into probes.
-    #   probe(User).find('1') {|user| mock(user).valid? {false}}
+    # This feature is built into proxies.
+    #   mock.proxy(User).find('1') {|user| mock(user).valid? {false}}
     def after_call(&block)
       definition.after_call &block
     end
@@ -199,7 +199,7 @@ module RR
 
     # Scenario#implemented_by_original_method sets the implementation
     # of the Scenario to be the original method.
-    # This is primarily used with probes.
+    # This is primarily used with proxy.
     #
     #   obj = Object.new
     #   def obj.foobar

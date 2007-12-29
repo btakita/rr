@@ -156,7 +156,7 @@ module RR
         Errors::ScenarioDefinitionError,
         "Scenario Definitions must have a dedicated Scenario to be ordered. " <<
         "For example, using instance_of does not allow ordered to be used. " <<
-        "probe the class's #new method instead."
+        "proxy the class's #new method instead."
       ) unless @scenario
       @ordered = true
       @space.ordered_scenarios << @scenario unless @space.ordered_scenarios.include?(@scenario)
@@ -194,8 +194,8 @@ module RR
     #   mock(subject).method_name {return_value}.after_call {|return_value|}
     #   subject.method_name # return_value
     #
-    # This feature is built into probes.
-    #   probe(User).find('1') {|user| mock(user).valid? {false}}
+    # This feature is built into proxys.
+    #   mock.proxy(User).find('1') {|user| mock(user).valid? {false}}
     def after_call(&block)
       raise ArgumentError, "after_call expects a block" unless block
       @after_call_value = block
@@ -237,7 +237,7 @@ module RR
 
     # Scenario#implemented_by_original_method sets the implementation
     # of the Scenario to be the original method.
-    # This is primarily used with probes.
+    # This is primarily used with proxyies.
     #
     #   obj = Object.new
     #   def obj.foobar

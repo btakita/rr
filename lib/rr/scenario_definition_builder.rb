@@ -35,7 +35,7 @@ module RR
       @definition.returns(&@handler)
     end
     
-    def probe!
+    def proxy!
       @definition.after_call_block_callback_strategy!
       @definition.implemented_by_original_method
       @definition.after_call(&@handler) if @handler

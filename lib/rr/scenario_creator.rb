@@ -15,7 +15,7 @@ module RR
     def initialize(space)
       @space = space
       @strategy = nil
-      @probe = false
+      @proxy = false
       @instance_of = nil
       @instance_of_method_name = nil
     end
@@ -25,10 +25,10 @@ module RR
     # with arguments exactly one time. The Scenario's expectations can be
     # changed.
     #
-    # This method can be chained with probe.
-    #   mock.probe(subject).method_name_1
+    # This method can be chained with proxy.
+    #   mock.proxy(subject).method_name_1
     #   or
-    #   probe.mock(subject).method_name_1
+    #   proxy.mock(subject).method_name_1
     #
     # When passed the subject, a ScenarioMethodProxy is returned. Passing
     # a method with arguments to the proxy will set up expectations that
@@ -59,10 +59,10 @@ module RR
     # with any arguments any number of times. The Scenario's
     # expectations can be changed.
     #
-    # This method can be chained with probe.
-    #   stub.probe(subject).method_name_1
+    # This method can be chained with proxy.
+    #   stub.proxy(subject).method_name_1
     #   or
-    #   probe.stub(subject).method_name_1
+    #   proxy.stub(subject).method_name_1
     #
     # When passed the subject, a ScenarioMethodProxy is returned. Passing
     # a method with arguments to the proxy will set up expectations that
@@ -107,7 +107,7 @@ module RR
     #    end
     def do_not_call(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       strategy_error! if @strategy
-      probe_when_do_not_call_error! if @probe
+      proxy_when_do_not_call_error! if @proxy
       @strategy = :do_not_call
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
@@ -116,23 +116,23 @@ module RR
     alias_method :do_not_allow, :do_not_call
     alias_method :dont_allow, :do_not_call
 
-    # This method add probe capabilities to the Scenario. probe can be called
+    # This method add proxy capabilities to the Scenario. proxy can be called
     # with mock or stub.
     #
-    #   mock.probe(controller.template).render(:partial => "my/socks")
+    #   mock.proxy(controller.template).render(:partial => "my/socks")
     #
-    #   stub.probe(controller.template).render(:partial => "my/socks") do |html|
+    #   stub.proxy(controller.template).render(:partial => "my/socks") do |html|
     #     html.should include("My socks are wet")
     #     html
     #   end
     #
-    #   mock.probe(controller.template).render(:partial => "my/socks") do |html|
+    #   mock.proxy(controller.template).render(:partial => "my/socks") do |html|
     #     html.should include("My socks are wet")
     #     "My new return value"
     #   end
     #
-    # mock.probe also takes a block for definitions.
-    #   mock.probe(subject) do
+    # mock.proxy also takes a block for definitions.
+    #   mock.proxy(subject) do
     #     render(:partial => "my/socks")
     #
     #     render(:partial => "my/socks") do |html|
@@ -157,17 +157,17 @@ module RR
     # passing in a block. The return value of the block will replace
     # the actual return value.
     #
-    #   mock.probe(controller.template).render(:partial => "my/socks") do |html|
+    #   mock.proxy(controller.template).render(:partial => "my/socks") do |html|
     #     html.should include("My socks are wet")
     #     "My new return value"
     #   end
-    def probe(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
-      probe_when_do_not_call_error! if @strategy == :do_not_call
-      @probe = true
+    def proxy(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
+      proxy_when_do_not_call_error! if @strategy == :do_not_call
+      @proxy = true
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
-    alias_method :proxy, :probe
+    alias_method :probe, :proxy
 
     # Calling instance_of will cause all instances of the passed in Class
     # to have the Scenario defined.
@@ -175,7 +175,7 @@ module RR
     # The following example mocks all User's valid? method and return false. 
     #   mock.instance_of(User).valid? {false}
     #
-    # The following example mocks and probes User#projects and returns the
+    # The following example mocks and proxies User#projects and returns the
     # first 3 projects.
     #   mock.instance_of(User).projects do |projects|
     #     projects[0..2]
@@ -225,7 +225,7 @@ module RR
         class_handler
       )
       builder.stub!
-      builder.probe!
+      builder.proxy!
     end
 
     def transform!
@@ -238,8 +238,8 @@ module RR
       else no_strategy_error!
       end
       
-      if @probe
-        builder.probe!
+      if @proxy
+        builder.proxy!
       else
         builder.reimplementation!
       end
@@ -259,10 +259,10 @@ module RR
       )
     end
 
-    def probe_when_do_not_call_error!
+    def proxy_when_do_not_call_error!
       raise(
         ScenarioDefinitionError,
-        "Scenarios cannot be probed when using do_not_call strategy"
+        "Scenarios cannot be proxied when using do_not_call strategy"
       )
     end
   end

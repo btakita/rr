@@ -476,7 +476,7 @@ describe ScenarioDefinition, "#ordered", :shared => true do
       Errors::ScenarioDefinitionError,
       "Scenario Definitions must have a dedicated Scenario to be ordered. " <<
       "For example, using instance_of does not allow ordered to be used. " <<
-      "probe the class's #new method instead."
+      "proxy the class's #new method instead."
     )
   end
 

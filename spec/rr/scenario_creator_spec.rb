@@ -144,13 +144,13 @@ module RR
         @method_name = :do_not_call
       end
 
-      it "raises error when probed" do
-        creator.probe
+      it "raises error when proxied" do
+        creator.proxy
         proc do
           creator.do_not_call
         end.should raise_error(
         Errors::ScenarioDefinitionError,
-        "Scenarios cannot be probed when using do_not_call strategy"
+        "Scenarios cannot be proxied when using do_not_call strategy"
         )
       end
 
@@ -213,7 +213,7 @@ module RR
       end
     end
 
-    describe "(#probe or #proxy) and #stub" do
+    describe "(#proxy or #proxy) and #stub" do
       before do
         class << subject
           def foobar(*args)
@@ -225,15 +225,15 @@ module RR
       it "raises error when using do_not_call strategy" do
         creator.do_not_call
         proc do
-          creator.probe
+          creator.proxy
         end.should raise_error(
         Errors::ScenarioDefinitionError,
-        "Scenarios cannot be probed when using do_not_call strategy"
+        "Scenarios cannot be proxied when using do_not_call strategy"
         )
       end
 
-      it "sets up the RR probe call chain" do
-        scenario = creator.stub.probe(subject).foobar(1, 2) {:baz}
+      it "sets up the RR proxy call chain" do
+        scenario = creator.stub.proxy(subject).foobar(1, 2) {:baz}
         scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
         scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
         subject.foobar(1, 2).should == :baz
@@ -246,8 +246,8 @@ module RR
         subject.foobar(1, 2).should == :baz
       end
 
-      it "creates a probe Scenario for method when passed a second argument" do
-        scenario = creator.stub.probe(subject, :foobar)
+      it "creates a proxy Scenario for method when passed a second argument" do
+        scenario = creator.stub.proxy(subject, :foobar)
         scenario.with(1, 2) {:baz}
         scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
         scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
@@ -284,7 +284,7 @@ module RR
         end.should raise_error(ArgumentError, "instance_of only accepts class objects")
       end
 
-      it "sets up the RR probe call chain" do
+      it "sets up the RR proxy call chain" do
         klass = Class.new
         scenario = creator.stub.instance_of(klass).foobar(1, 2) {:baz}
         scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
@@ -292,7 +292,7 @@ module RR
         klass.new.foobar(1, 2).should == :baz
       end
 
-      it "creates a probe Scenario for method when passed a second argument" do
+      it "creates a proxy Scenario for method when passed a second argument" do
         klass = Class.new
         scenario = creator.stub.instance_of(klass, :foobar)
         scenario.with(1, 2) {:baz}
@@ -371,10 +371,10 @@ module RR
       end
     end
 
-    describe "#create! using mock strategy with probe" do
+    describe "#create! using mock strategy with proxy" do
       before do
         creator.mock
-        creator.probe
+        creator.proxy
       end
 
       it "sets expectations on the subject while calling the original method" do
@@ -406,10 +406,10 @@ module RR
       end
     end
 
-    describe "#create! using stub strategy with probe" do
+    describe "#create! using stub strategy with proxy" do
       before do
         creator.stub
-        creator.probe
+        creator.proxy
       end
 
       it "sets up a scenario with passed in arguments" do

@@ -113,7 +113,7 @@ module RR
         end
       end
 
-      describe "#probe and #mock" do
+      describe "#proxy and #mock" do
         it_should_behave_like "RR::Extensions::InstanceMethods"
 
         before do
@@ -125,45 +125,45 @@ module RR
           end
         end
 
-        it "#probe returns a ScenarioCreator when passed no arguments" do
-          probe.should be_instance_of(ScenarioCreator)
+        it "#proxy returns a ScenarioCreator when passed no arguments" do
+          proxy.should be_instance_of(ScenarioCreator)
         end
 
-        it "#probe sets up the RR probe call chain" do
-          creates_mock_probe_call_chain(mock.probe(@subject))
+        it "#proxy sets up the RR proxy call chain" do
+          creates_mock_proxy_call_chain(mock.proxy(@subject))
         end
 
-        it "#rr_probe sets up the RR probe call chain" do
-          creates_mock_probe_call_chain(rr_mock.probe(@subject))
+        it "#rr_proxy sets up the RR proxy call chain" do
+          creates_mock_proxy_call_chain(rr_mock.proxy(@subject))
         end
 
-        it "#mock_probe sets up the RR probe call chain" do
-          creates_mock_probe_call_chain(mock.probe(@subject))
+        it "#mock_proxy sets up the RR proxy call chain" do
+          creates_mock_proxy_call_chain(mock.proxy(@subject))
         end
 
-        it "#rr_mock_probe sets up the RR probe call chain with rr_probe" do
-          creates_mock_probe_call_chain(rr_mock.probe(@subject))
+        it "#rr_mock_proxy sets up the RR proxy call chain with rr_proxy" do
+          creates_mock_proxy_call_chain(rr_mock.proxy(@subject))
         end
 
-        it "#probe creates a mock Scenario for method when passed a second argument" do
-          creates_scenario_with_method_name(mock.probe(@subject, :foobar))
+        it "#proxy creates a mock Scenario for method when passed a second argument" do
+          creates_scenario_with_method_name(mock.proxy(@subject, :foobar))
         end
 
-        it "#rr_probe creates a mock Scenario for method when passed a second argument with rr_mock" do
-          creates_scenario_with_method_name(rr_probe.mock(@subject, :foobar))
+        it "#rr_proxy creates a mock Scenario for method when passed a second argument with rr_mock" do
+          creates_scenario_with_method_name(rr_proxy.mock(@subject, :foobar))
         end
 
-        it "#mock_probe creates a mock Scenario for method when passed a second argument" do
-          creates_scenario_with_method_name(mock.probe(@subject, :foobar))
+        it "#mock_proxy creates a mock Scenario for method when passed a second argument" do
+          creates_scenario_with_method_name(mock.proxy(@subject, :foobar))
         end
 
-        it "#rr_mock_probe creates a mock Scenario for method when passed a second argument with rr_mock" do
-          creates_scenario_with_method_name(rr_mock.probe(@subject, :foobar))
+        it "#rr_mock_proxy creates a mock Scenario for method when passed a second argument with rr_mock" do
+          creates_scenario_with_method_name(rr_mock.proxy(@subject, :foobar))
         end
 
         it "raises error if passed a method name and a block" do
           proc do
-            mock.probe(@object, :foobar) {}
+            mock.proxy(@object, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 
@@ -176,7 +176,7 @@ module RR
           @subject.foobar(1, 2).should == :original_value
         end
 
-        def creates_mock_probe_call_chain(creator)
+        def creates_mock_proxy_call_chain(creator)
           scenario = creator.foobar(1, 2)
           scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
           scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
@@ -186,7 +186,7 @@ module RR
         end
       end
 
-      describe "#stub and #probe" do
+      describe "#stub and #proxy" do
         it_should_behave_like "RR::Extensions::InstanceMethods"
 
         before do
@@ -199,28 +199,28 @@ module RR
         end
 
         it "returns a ScenarioCreator when passed no arguments" do
-          stub.probe.should be_instance_of(ScenarioCreator)
+          stub.proxy.should be_instance_of(ScenarioCreator)
         end
 
-        it "sets up the RR probe call chain" do
-          creates_stub_probe_call_chain(stub.probe(@subject))
+        it "sets up the RR proxy call chain" do
+          creates_stub_proxy_call_chain(stub.proxy(@subject))
         end
 
-        it "sets up the RR probe call chain" do
-          creates_stub_probe_call_chain(rr_stub.probe(@subject))
+        it "sets up the RR proxy call chain" do
+          creates_stub_proxy_call_chain(rr_stub.proxy(@subject))
         end
 
-        it "#stub.probe creates a stub Scenario for method when passed a second argument" do
-          creates_scenario_with_method_name(stub.probe(@subject, :foobar))
+        it "#stub.proxy creates a stub Scenario for method when passed a second argument" do
+          creates_scenario_with_method_name(stub.proxy(@subject, :foobar))
         end
 
-        it "#rr_stub.probe creates a stub Scenario for method when passed a second argument with rr_stub" do
-          creates_scenario_with_method_name(rr_stub.probe(@subject, :foobar))
+        it "#rr_stub.proxy creates a stub Scenario for method when passed a second argument with rr_stub" do
+          creates_scenario_with_method_name(rr_stub.proxy(@subject, :foobar))
         end
 
         it "raises error if passed a method name and a block" do
           proc do
-            stub.probe(@object, :foobar) {}
+            stub.proxy(@object, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 
@@ -231,7 +231,7 @@ module RR
           @subject.foobar(:something).should == :original_value
         end
 
-        def creates_stub_probe_call_chain(creator)
+        def creates_stub_proxy_call_chain(creator)
           scenario = creator.foobar
           scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
           scenario.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
