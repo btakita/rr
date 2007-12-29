@@ -2,9 +2,9 @@ require "spec/spec_helper"
 
 module RR
   module Adapters
-    describe InstanceMethods, :shared => true do
+    describe DefinitionMethods, :shared => true do
       before do
-        extend RR::Adapters::InstanceMethods
+        extend RR::Adapters::DefinitionMethods
       end
     end
   end

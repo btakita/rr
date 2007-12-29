@@ -2,9 +2,9 @@ require "spec/spec_helper"
 
 module RR
   module Adapters
-    describe InstanceMethods, " Space interactions" do
-      describe InstanceMethods, " space example" do
-        it_should_behave_like "RR::Adapters::InstanceMethods"
+    describe DefinitionMethods, " Space interactions" do
+      describe DefinitionMethods, " space example" do
+        it_should_behave_like "RR::Adapters::DefinitionMethods"
         before do
           @old_space = Space.instance
 
@@ -19,7 +19,7 @@ module RR
           Space.instance = @old_space
         end
         
-        describe InstanceMethods, "#verify" do
+        describe DefinitionMethods, "#verify" do
           it "#verify verifies and deletes the doubles" do
             verifies_all_doubles {verify}
           end
@@ -66,7 +66,7 @@ module RR
           end
         end
 
-        describe InstanceMethods, "#reset" do
+        describe DefinitionMethods, "#reset" do
           it "#reset removes the ordered scenarios" do
             removes_ordered_scenarios {reset}
           end

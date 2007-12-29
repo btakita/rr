@@ -8,7 +8,7 @@ module RR
         end
       end
 
-      include InstanceMethods
+      include DefinitionMethods
       def setup_mocks_for_rspec
         rr_reset
       end

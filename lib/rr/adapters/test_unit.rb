@@ -1,7 +1,7 @@
 module RR
   module Adapters
     module TestUnit
-      include InstanceMethods
+      include DefinitionMethods
       def self.included(mod)
         RR::Space.trim_backtrace = true
         mod.class_eval do

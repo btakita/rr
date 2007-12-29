@@ -2,9 +2,9 @@ require "spec/spec_helper"
 
 module RR
   module Adapters
-    describe InstanceMethods do
+    describe DefinitionMethods do
       describe "#mock" do
-        it_should_behave_like "RR::Adapters::InstanceMethods"
+        it_should_behave_like "RR::Adapters::DefinitionMethods"
 
         before do
           @subject = Object.new
@@ -61,7 +61,7 @@ module RR
       end
 
       describe "#stub" do
-        it_should_behave_like "RR::Adapters::InstanceMethods"
+        it_should_behave_like "RR::Adapters::DefinitionMethods"
 
         before do
           @subject = Object.new
@@ -114,7 +114,7 @@ module RR
       end
 
       describe "#proxy and #mock" do
-        it_should_behave_like "RR::Adapters::InstanceMethods"
+        it_should_behave_like "RR::Adapters::DefinitionMethods"
 
         before do
           @subject = Object.new
@@ -187,7 +187,7 @@ module RR
       end
 
       describe "#stub and #proxy" do
-        it_should_behave_like "RR::Adapters::InstanceMethods"
+        it_should_behave_like "RR::Adapters::DefinitionMethods"
 
         before do
           @subject = Object.new
@@ -241,7 +241,7 @@ module RR
       end
 
       describe "#do_not_allow" do
-        it_should_behave_like "RR::Adapters::InstanceMethods"
+        it_should_behave_like "RR::Adapters::DefinitionMethods"
 
         before do
           @subject = Object.new

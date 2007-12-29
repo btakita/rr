@@ -2,8 +2,8 @@ require "spec/spec_helper"
 
 module RR
 module Adapters
-  describe InstanceMethods, "#any_times" do
-    it_should_behave_like "RR::Adapters::InstanceMethods"
+  describe DefinitionMethods, "#any_times" do
+    it_should_behave_like "RR::Adapters::DefinitionMethods"
     
     it "returns an AnyTimesMatcher" do
       any_times.should == TimesCalledMatchers::AnyTimesMatcher.new

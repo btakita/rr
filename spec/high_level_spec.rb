@@ -4,7 +4,7 @@ require "#{dir}/spec_helper"
 describe "RR", :shared => true do
   before(:each) do
     @obj = Object.new
-    extend RR::Adapters::InstanceMethods
+    extend RR::Adapters::DefinitionMethods
   end
 
   after(:each) do
