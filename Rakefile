@@ -22,7 +22,7 @@ end
 
 def run_suite
   dir = File.dirname(__FILE__)
-  system("ruby #{dir}/examples/example_suite.rb") || raise("Example Suite failed")
+  system("ruby #{dir}/spec/spec_suite.rb") || raise("Spec Suite failed")
 end
 
 PKG_NAME = "rr"
@@ -31,7 +31,7 @@ PKG_FILES = FileList[
   '[A-Z]*',
   '*.rb',
   'lib/**/*.rb',
-  'examples/**/*.rb'
+  'spec/**/*.rb'
 ]
 
 spec = Gem::Specification.new do |s|
@@ -40,7 +40,7 @@ spec = Gem::Specification.new do |s|
   s.summary = "RR (Double Ruby) is a double framework that features a rich " <<
               "selection of double techniques and a terse syntax. " <<
               "http://xunitpatterns.com/Test%20Double.html"
-  s.test_files = "examples/example_suite.rb"
+  s.test_files = "spec/spec_suite.rb"
   s.description = s.summary
 
   s.files = PKG_FILES.to_a
