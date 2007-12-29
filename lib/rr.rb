@@ -41,7 +41,7 @@ require "#{dir}/rr/times_called_matchers/proc_matcher"
 require "#{dir}/rr/times_called_matchers/at_least_matcher"
 require "#{dir}/rr/times_called_matchers/at_most_matcher"
 
-require "#{dir}/rr/extensions/instance_methods"
+require "#{dir}/rr/adapters/instance_methods"
 
 require "#{dir}/rr/adapters/rspec"
 require "#{dir}/rr/adapters/test_unit"

@@ -1,6 +1,6 @@
 module RR
   module Expectations
-    class TimesCalledExpectation
+    class TimesCalledExpectation #:nodoc:
       attr_reader :scenario, :times_called
       attr_accessor :matcher
 

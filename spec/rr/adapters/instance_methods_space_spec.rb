@@ -1,10 +1,10 @@
 require "spec/spec_helper"
 
 module RR
-  module Extensions
+  module Adapters
     describe InstanceMethods, " Space interactions" do
-      describe InstanceMethods, " space example", :shared => true do
-        it_should_behave_like "RR::Extensions::InstanceMethods"
+      describe InstanceMethods, " space example" do
+        it_should_behave_like "RR::Adapters::InstanceMethods"
         before do
           @old_space = Space.instance
 

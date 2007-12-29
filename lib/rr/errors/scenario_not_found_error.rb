@@ -1,6 +1,6 @@
 module RR
-module Errors
-  class ScenarioNotFoundError < RRError
+  module Errors
+    class ScenarioNotFoundError < RRError
+    end
   end
-end
 end

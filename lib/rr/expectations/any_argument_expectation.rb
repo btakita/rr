@@ -1,6 +1,6 @@
 module RR
   module Expectations
-    class AnyArgumentExpectation < ArgumentEqualityExpectation
+    class AnyArgumentExpectation < ArgumentEqualityExpectation #:nodoc:
       def initialize
         super
       end

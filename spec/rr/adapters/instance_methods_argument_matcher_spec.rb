@@ -1,10 +1,10 @@
 require "spec/spec_helper"
 
 module RR
-  module Extensions
+  module Adapters
     describe InstanceMethods do
       describe "#anything" do
-        it_should_behave_like "RR::Extensions::InstanceMethods"
+        it_should_behave_like "RR::Adapters::InstanceMethods"
 
         it "returns an Anything matcher" do
           anything.should == WildcardMatchers::Anything.new
@@ -16,7 +16,7 @@ module RR
       end
 
       describe "#is_a" do
-        it_should_behave_like "RR::Extensions::InstanceMethods"
+        it_should_behave_like "RR::Adapters::InstanceMethods"
 
         it "returns an IsA matcher" do
           is_a(Integer).should == WildcardMatchers::IsA.new(Integer)
@@ -28,7 +28,7 @@ module RR
       end
 
       describe "#numeric" do
-        it_should_behave_like "RR::Extensions::InstanceMethods"
+        it_should_behave_like "RR::Adapters::InstanceMethods"
 
         it "returns an Numeric matcher" do
           numeric.should == WildcardMatchers::Numeric.new
@@ -40,7 +40,7 @@ module RR
       end
 
       describe "#boolean" do
-        it_should_behave_like "RR::Extensions::InstanceMethods"
+        it_should_behave_like "RR::Adapters::InstanceMethods"
 
         it "returns an Boolean matcher" do
           boolean.should == WildcardMatchers::Boolean.new
@@ -52,7 +52,7 @@ module RR
       end
 
       describe "#duck_type" do
-        it_should_behave_like "RR::Extensions::InstanceMethods"
+        it_should_behave_like "RR::Adapters::InstanceMethods"
 
         it "returns a DuckType matcher" do
           duck_type(:one, :two).should == WildcardMatchers::DuckType.new(:one, :two)
