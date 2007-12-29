@@ -30,7 +30,7 @@ module RR
           def i_should_be_a_scenario
           end
         end
-        proxy_subclass.definition_methods.should include('i_should_be_a_scenario')
+        proxy_subclass.instance_methods.should include('i_should_be_a_scenario')
 
         proxy = proxy_subclass.new(space, creator, subject)
         proxy.i_should_be_a_scenario.should be_instance_of(ScenarioDefinition)
@@ -60,7 +60,7 @@ module RR
           def i_should_be_a_scenario
           end
         end
-        proxy_subclass.definition_methods.should include('i_should_be_a_scenario')
+        proxy_subclass.instance_methods.should include('i_should_be_a_scenario')
 
         proxy_subclass.new(space, creator, subject) do |m|
           m.i_should_be_a_scenario.should be_instance_of(ScenarioDefinition)

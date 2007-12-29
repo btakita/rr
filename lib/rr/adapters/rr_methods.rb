@@ -1,6 +1,6 @@
 module RR
   module Adapters
-    module InstanceMethods
+    module RRMethods
       # Verifies all the Double objects have met their
       # TimesCalledExpectations.
       def verify
