@@ -1,32 +1,134 @@
 = RR
 
-RR (Double Ruby) is a double framework that features a rich
+RR (Double Ruby) is a test double framework that features a rich
 selection of double techniques and a terse syntax.
+
+== What is a Test Double?
+A Test Double is a generalization of something that replaces a real
+object to make it easier to test another object. Its like a stunt
+double for tests. The following are test doubles:
+* Mocks
+* Stubs
+* Fakes
+* Spies
+* Proxies
 http://xunitpatterns.com/Test%20Double.html
 
-Currently RR implements mocks, stubs, and proxies. It is a goal of
-RR to support a wide range of double techniques and patterns.
+Currently RR implements mocks, stubs, and proxies. In the future, RR will
+support spies.
 
-== mock
-http://xunitpatterns.com/Mock%20Object.html
+== Syntax between RR and other double/mock frameworks
+=== Terse Syntax
+One of the goals of RR is to make doubles more scannable.
+This is accomplished by removing words from a double declaration.
+Here is RR compared to other mock frameworks:
+
+  flexmock(User).should_receive(:find).with('42').and_return(jane) # Flexmock
+  User.should_receive(:find).with('42').and_return(jane) # Rspec
+  User.expects(:find).with('42').returns {jane} # Mocha
+  User.should_receive(:find).with('42') {jane} # Rspec using return value blocks
+  mock(User).find('42') {jane} # RR
+
+=== No mock objects
+RR is an opinionated framework. RR does not create a mock object for you,
+like other frameworks. Instead, RR utilizes a technique known as
+"partial mocking".
+
+  my_object = MyClass.new
+  mock(my_object).hello
+
+Compare this with doing a mock in mocha:
+  my_mocked_object = mock()
+  my_mocked_object.expects(:hello)
+
+=== No should_receive or expects method
+RR uses method_missing to set your method expectation. This means you do not
+need to use a method such as should_receive or expects.
+
+  mock(my_object).hello # The hello method on my_object is mocked
+
+Mocha:
+  my_object.expects(:hello) # expects sets the hello method expectation
+Rspec mocks:
+  my_object.should_receive(:hello) # should_receive sets the hello method expectation
+
+=== with method call is not necessary
+Since RR uses method_missing, it also make using the with method unnecessary
+to set the argument expectations.
+
+  mock(my_object).hello('bob', 'jane')
+
+Mocha:
+  my_object.expects(:hello).with('bob', 'jane')
+Rspec mocks:
+  my_object.should_receive(:hello).with('bob', 'jane')
+
+=== using a block to set the return value
+RR supports using a block to set the return value. RR also has the #returns method.
+Both of the examples are equivalent.
+
+  mock(my_object).hello('bob', 'jane') {'Hello Bob and Jane'}
+  mock(my_object).hello('bob', 'jane').returns('Hello Bob and Jane')
+
+Mocha:
+  my_object.expects(:hello).with('bob', 'jane').returns('Hello Bob and Jane')
+Rspec mocks:
+  my_object.should_receive(:hello).with('bob', 'jane').and_return('Hello Bob and Jane')
+  my_object.should_receive(:hello).with('bob', 'jane') {'Hello Bob and Jane'} #rspec also supports blocks for the return value
+
+== Using RR
+To create a double on an object, you can use the following methods:
+* mock
+* stub
+* proxy
+* instance_of
+
+These methods are composable. mock and stub can be used by themselves and
+are mutually exclusive.
+proxy and instance_of must be chained with mock or stub. You can chain
+proxy and instance_of together.
+
+=== mock
+mock replaces the method on the object with an expectation and implementation.
+The expectations are a mock will be called with certain arguments a certain
+number of times (the default is once). You can also set the return value
+of the method invocation.
+
+See http://xunitpatterns.com/Mock%20Object.html
+
+The following example sets an expectation that the view will receive a method
+call to #render with the arguments {:partial => "user_info"} once.
+When the method is called "Information" is returned.
   view = controller.template
   mock(view).render(:partial => "user_info") {"Information"}
 
-  # or
-  mock(view) do
-    render(:partial => "user_info") {"Information"}
+=== stub
+stub replaces the method on the object with only an implementation. You
+can still use arguments to differentiate which stub gets invoked.
+
+See http://xunitpatterns.com/Test%20Stub.html
+
+The following example makes the User.find method return jane when passed
+'42' and returns bob when passed '99'. If another id is passed to User.find,
+an exception is raised.
+  jane = User.new
+  bob = User.new
+  stub(User).find('42') {jane}
+  stub(User).find('99') {bob}
+  stub(User).find do |id|
+    raise "Unexpected id #{id.inspect} passed to me"
   end
 
-== stub
-http://xunitpatterns.com/Test%20Stub.html
-  jane = User.new
-  stub(User).find('42') {jane}
+=== mock.proxy
+mock.proxy replaces the method on the object with an expectation, implementation, and
+also invokes the actual method. mock.proxy also intercepts the return value and
+passes it into the return value block.
 
-== mock.proxy
-Add verifications that a method was called while actually calling it.
-The following example verifies render partial will be called and
-renders the partial.
-
+The following example makes sets an expectation that view.render({:partial => "right_navigation"})
+gets called once and return the actual content of the rendered partial template.
+A call to view.render({:partial => "user_info"}) will render the user_info
+partial template and send the content into the block and is represented by the html variable.
+An assertion is done on the html and "Different html" is returned.
   view = controller.template
   mock.proxy(view).render(:partial => "right_navigation")
   mock.proxy(view).render(:partial => "user_info") do |html|
@@ -34,21 +136,20 @@ renders the partial.
     "Different html"
   end
 
-Proxies support after_call callbacks. This is useful for Stubbing out
-a class method and getting its return value. You can also change the return value.
-This technique is also useful for verifying that you are mocking exists and
-functions properly, thereby testing you interface.
-For example, using ActiveRecord:
-
-  mock.proxy(User).find('5') do |user|
-    mock.proxy(user).projects do |projects|
+You can also use mock.proxy to set expectations on the returned value. In
+the following example, a call to User.find('5') does the normal ActiveRecord
+implementation and passes the actual value, represented by the variable bob,
+into the block. bob is then set with a mock.proxy for projects to return
+only the first 3 projects. bob is also mocked with valid? to return false.
+  mock.proxy(User).find('5') do |bob|
+    mock.proxy(bob).projects do |projects|
       projects[0..3]
     end
-    mock(user).valid? {false}
-    user
+    mock(bob).valid? {false}
+    bob
   end
 
-== stub.proxy
+=== stub.proxy
 Intercept the return value of a method call.
 The following example verifies render partial will be called and
 renders the partial.
@@ -59,29 +160,18 @@ renders the partial.
     html
   end
 
-== instance_of
+=== instance_of
 Put double scenarios on instances of a Class.
 
   mock.instance_of(User).valid? {false}
 
-== Block Syntax
+=== Block Syntax
   script = MyScript.new
   mock(script) do |m|
     m.system("cd #{RAILS_ENV}") {true}
     m.system("rake foo:bar") {true}
     m.system("rake baz") {true}
   end
-
-== Terse Syntax
-One of the goals of RR is to make doubles more scannable.
-This is accomplished by removing words from a double declaration.
-Here is RR compared to other mock frameworks:
-
-  flexmock(User).should_receive(:find).with('42').and_return(jane) # Flexmock
-  User.should_receive(:find).with('42').and_return(jane) # Rspec
-  User.expects(:find).with('42').returns {jane} # Mocha
-  User.should_receive(:find).with('42') {jane} # Rspec using return value blocks
-  mock(User).find('42') {jane} # RR
 
 == Special Thanks To
 With any development effort, there are countless people who have contributed
