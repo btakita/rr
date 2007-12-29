@@ -108,7 +108,7 @@ module RR
     end
 
     def scenario_not_found_error(*args)
-      message = "No scenario for #{Scenario.formatted_name(@method_name, args)} in\n"
+      message = "Unexpected method invocation #{Scenario.formatted_name(@method_name, args)}, expected\n"
       message << Scenario.list_message_part(@scenarios)
       raise Errors::ScenarioNotFoundError, message
     end

@@ -62,7 +62,7 @@ module RR
 
           proc {@object.foobar(:arg1, :arg2)}.should raise_error(
           Errors::ScenarioNotFoundError,
-          "No scenario for foobar(:arg1, :arg2) in\n" <<
+          "Unexpected method invocation foobar(:arg1, :arg2), expected\n" <<
           "- foobar(1, 2)\n" <<
           "- foobar(3)"
           )
