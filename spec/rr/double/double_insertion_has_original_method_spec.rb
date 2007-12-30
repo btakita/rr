@@ -1,12 +1,12 @@
 require "spec/spec_helper"
 
 module RR
-  describe Double, "#object_has_original_method?" do
+  describe DoubleInsertion, "#object_has_original_method?" do
     before do
       @space = Space.new
       @object = Object.new
       @method_name = :to_s
-      @double = Double.new(@space, @object, @method_name)
+      @double = DoubleInsertion.new(@space, @object, @method_name)
       class << @double
         public :original_method_name
       end

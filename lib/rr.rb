@@ -7,7 +7,7 @@ require "#{dir}/rr/errors/argument_equality_error"
 require "#{dir}/rr/errors/times_called_error"
 
 require "#{dir}/rr/space"
-require "#{dir}/rr/double"
+require "#{dir}/rr/double_insertion"
 require "#{dir}/rr/hash_with_object_id_key"
 
 require "#{dir}/rr/scenario_method_proxy"

@@ -49,15 +49,15 @@ module RR
       ScenarioDefinition.new(self)
     end
 
-    # Reuses or creates, if none exists, a Double for the passed
+    # Reuses or creates, if none exists, a DoubleInsertion for the passed
     # in object and method_name.
-    # When a Double is created, it binds the dispatcher to the
+    # When a DoubleInsertion is created, it binds the dispatcher to the
     # object.
     def double(object, method_name)
       double = @doubles[object][method_name.to_sym]
       return double if double
 
-      double = Double.new(self, object, method_name.to_sym)
+      double = DoubleInsertion.new(self, object, method_name.to_sym)
       @doubles[object][method_name.to_sym] = double
       double.bind
       double
@@ -85,7 +85,7 @@ module RR
       scenario
     end
 
-    # Verifies all the Double objects have met their
+    # Verifies all the DoubleInsertion objects have met their
     # TimesCalledExpectations.
     def verify_doubles
       @doubles.each do |object, method_double_map|
@@ -101,14 +101,14 @@ module RR
       reset_doubles
     end
 
-    # Verifies the Double for the passed in object and method_name.
+    # Verifies the DoubleInsertion for the passed in object and method_name.
     def verify_double(object, method_name)
       @doubles[object][method_name].verify
     ensure
       reset_double object, method_name
     end
 
-    # Resets the Double for the passed in object and method_name.
+    # Resets the DoubleInsertion for the passed in object and method_name.
     def reset_double(object, method_name)
       double = @doubles[object].delete(method_name)
       @doubles.delete(object) if @doubles[object].empty?

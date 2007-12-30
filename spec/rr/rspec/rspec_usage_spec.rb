@@ -6,7 +6,7 @@ describe RR do
       @subject = Object.new
     end
 
-    it "creates a mock Double Scenario" do
+    it "creates a mock DoubleInsertion Scenario" do
       mock(@subject).foobar(1, 2) {:baz}
       @subject.foobar(1, 2).should == :baz
     end
@@ -17,7 +17,7 @@ describe RR do
       @subject = Object.new
     end
 
-    it "creates a stub Double Scenario" do
+    it "creates a stub DoubleInsertion Scenario" do
       stub(@subject).foobar {:baz}
       @subject.foobar("any", "thing").should == :baz
     end
@@ -31,7 +31,7 @@ describe RR do
       end
     end
 
-    it "creates a proxy Double Scenario" do
+    it "creates a proxy DoubleInsertion Scenario" do
       mock.proxy(@subject).foobar
       @subject.foobar.should == :baz
     end
@@ -45,7 +45,7 @@ describe RR do
       end
     end
 
-    it "creates a proxy Double Scenario" do
+    it "creates a proxy DoubleInsertion Scenario" do
       stub.proxy(@subject).foobar
       @subject.foobar.should == :baz
     end
@@ -59,7 +59,7 @@ describe RR do
       end
     end
 
-    it "creates a proxy Double Scenario" do
+    it "creates a proxy DoubleInsertion Scenario" do
       stub.proxy(@subject).foobar
       @subject.foobar.should == :baz
     end

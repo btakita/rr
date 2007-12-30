@@ -1,13 +1,13 @@
 require "spec/spec_helper"
 
 module RR
-  describe Double, "#register_scenario" do
+  describe DoubleInsertion, "#register_scenario" do
     before do
       @space = Space.new
       @object = Object.new
       @method_name = :foobar
       @object.methods.should_not include(@method_name.to_s)
-      @double = Double.new(@space, @object, @method_name)
+      @double = DoubleInsertion.new(@space, @object, @method_name)
       def @double.scenarios
         @scenarios
       end

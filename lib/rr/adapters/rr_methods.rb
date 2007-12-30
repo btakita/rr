@@ -1,7 +1,7 @@
 module RR
   module Adapters
     module RRMethods
-      # Verifies all the Double objects have met their
+      # Verifies all the DoubleInsertion objects have met their
       # TimesCalledExpectations.
       def verify
         RR::Space.instance.verify_doubles
