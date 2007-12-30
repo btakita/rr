@@ -1,7 +1,7 @@
 require "spec/spec_helper"
 
 module RR
-describe ScenarioDefinition, :shared => true do
+describe DoubleDefinition, :shared => true do
   before do
     @space = Space.new
     @object = Object.new
@@ -18,14 +18,14 @@ describe ScenarioDefinition, :shared => true do
   end
 end
 
-describe ScenarioDefinition, " with returns block_callback_strategy", :shared => true do
+describe DoubleDefinition, " with returns block_callback_strategy", :shared => true do
   before do
     @definition.returns_block_callback_strategy!
     create_definition
   end
 end
 
-describe ScenarioDefinition, " with after_call block_callback_strategy", :shared => true do
+describe DoubleDefinition, " with after_call block_callback_strategy", :shared => true do
   before do
     @definition.implemented_by_original_method
     @definition.after_call_block_callback_strategy!
@@ -33,10 +33,10 @@ describe ScenarioDefinition, " with after_call block_callback_strategy", :shared
   end
 end
 
-describe ScenarioDefinition, "#with", :shared => true do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#with", :shared => true do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.with(1).should === @definition
   end
 
@@ -57,9 +57,9 @@ describe ScenarioDefinition, "#with", :shared => true do
   end
 end
 
-describe ScenarioDefinition, "#with with returns block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#with"
-  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+describe DoubleDefinition, "#with with returns block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#with"
+  it_should_behave_like "RR::DoubleDefinition with returns block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -67,9 +67,9 @@ describe ScenarioDefinition, "#with with returns block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#with with after_call block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#with"
-  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+describe DoubleDefinition, "#with with after_call block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#with"
+  it_should_behave_like "RR::DoubleDefinition with after_call block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -77,10 +77,10 @@ describe ScenarioDefinition, "#with with after_call block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#with_any_args", :shared => true do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#with_any_args", :shared => true do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.with_no_args.should === @definition
   end
 
@@ -100,9 +100,9 @@ describe ScenarioDefinition, "#with_any_args", :shared => true do
   end
 end
 
-describe ScenarioDefinition, "#with_any_args with returns block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#with_any_args"
-  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+describe DoubleDefinition, "#with_any_args with returns block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#with_any_args"
+  it_should_behave_like "RR::DoubleDefinition with returns block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -110,9 +110,9 @@ describe ScenarioDefinition, "#with_any_args with returns block_callback_strateg
   end
 end
 
-describe ScenarioDefinition, "#with_any_args with after_call block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#with_any_args"
-  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+describe DoubleDefinition, "#with_any_args with after_call block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#with_any_args"
+  it_should_behave_like "RR::DoubleDefinition with after_call block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -120,10 +120,10 @@ describe ScenarioDefinition, "#with_any_args with after_call block_callback_stra
   end
 end
 
-describe ScenarioDefinition, "#with_no_args", :shared => true do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#with_no_args", :shared => true do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.with_no_args.should === @definition
   end
 
@@ -148,9 +148,9 @@ describe ScenarioDefinition, "#with_no_args", :shared => true do
   end
 end
 
-describe ScenarioDefinition, "#with_no_args with returns block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#with_no_args"
-  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+describe DoubleDefinition, "#with_no_args with returns block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#with_no_args"
+  it_should_behave_like "RR::DoubleDefinition with returns block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -158,9 +158,9 @@ describe ScenarioDefinition, "#with_no_args with returns block_callback_strategy
   end
 end
 
-describe ScenarioDefinition, "#with_no_args with after_call block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#with_no_args"
-  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+describe DoubleDefinition, "#with_no_args with after_call block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#with_no_args"
+  it_should_behave_like "RR::DoubleDefinition with after_call block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -168,10 +168,10 @@ describe ScenarioDefinition, "#with_no_args with after_call block_callback_strat
   end
 end
 
-describe ScenarioDefinition, "#never" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#never" do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.never.should === @definition
   end
 
@@ -187,10 +187,10 @@ describe ScenarioDefinition, "#never" do
   end
 end
 
-describe ScenarioDefinition, "#once", :shared => true do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#once", :shared => true do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.once.should === @definition
   end
 
@@ -209,9 +209,9 @@ describe ScenarioDefinition, "#once", :shared => true do
   end
 end
 
-describe ScenarioDefinition, "#once with returns block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#once"
-  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+describe DoubleDefinition, "#once with returns block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#once"
+  it_should_behave_like "RR::DoubleDefinition with returns block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -219,9 +219,9 @@ describe ScenarioDefinition, "#once with returns block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#once with after_call block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#once"
-  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+describe DoubleDefinition, "#once with after_call block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#once"
+  it_should_behave_like "RR::DoubleDefinition with after_call block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -229,10 +229,10 @@ describe ScenarioDefinition, "#once with after_call block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#twice", :shared => true do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#twice", :shared => true do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.twice.should === @definition
   end
 
@@ -253,9 +253,9 @@ describe ScenarioDefinition, "#twice", :shared => true do
   end
 end
 
-describe ScenarioDefinition, "#twice with returns block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#twice"
-  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+describe DoubleDefinition, "#twice with returns block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#twice"
+  it_should_behave_like "RR::DoubleDefinition with returns block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -263,9 +263,9 @@ describe ScenarioDefinition, "#twice with returns block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#twice with after_call block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#twice"
-  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+describe DoubleDefinition, "#twice with after_call block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#twice"
+  it_should_behave_like "RR::DoubleDefinition with after_call block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -273,10 +273,10 @@ describe ScenarioDefinition, "#twice with after_call block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#at_least", :shared => true do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#at_least", :shared => true do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.with_any_args.at_least(2).should === @definition
   end
 
@@ -296,9 +296,9 @@ describe ScenarioDefinition, "#at_least", :shared => true do
   end
 end
 
-describe ScenarioDefinition, "#at_least with returns block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#at_least"
-  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+describe DoubleDefinition, "#at_least with returns block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#at_least"
+  it_should_behave_like "RR::DoubleDefinition with returns block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -306,9 +306,9 @@ describe ScenarioDefinition, "#at_least with returns block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#at_least with after_call block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#at_least"
-  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+describe DoubleDefinition, "#at_least with after_call block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#at_least"
+  it_should_behave_like "RR::DoubleDefinition with after_call block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -316,10 +316,10 @@ describe ScenarioDefinition, "#at_least with after_call block_callback_strategy"
   end
 end
 
-describe ScenarioDefinition, "#at_most", :shared => true do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#at_most", :shared => true do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.with_any_args.at_most(2).should === @definition
   end
 
@@ -344,9 +344,9 @@ describe ScenarioDefinition, "#at_most", :shared => true do
   end
 end
 
-describe ScenarioDefinition, "#at_most with returns block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#at_most"
-  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+describe DoubleDefinition, "#at_most with returns block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#at_most"
+  it_should_behave_like "RR::DoubleDefinition with returns block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -354,9 +354,9 @@ describe ScenarioDefinition, "#at_most with returns block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#at_most with after_call block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#at_most"
-  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+describe DoubleDefinition, "#at_most with after_call block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#at_most"
+  it_should_behave_like "RR::DoubleDefinition with after_call block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -364,10 +364,10 @@ describe ScenarioDefinition, "#at_most with after_call block_callback_strategy" 
   end
 end
 
-describe ScenarioDefinition, "#times", :shared => true do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#times", :shared => true do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.times(3).should === @definition
   end
 
@@ -388,9 +388,9 @@ describe ScenarioDefinition, "#times", :shared => true do
   end
 end
 
-describe ScenarioDefinition, "#times with returns block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#times"
-  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+describe DoubleDefinition, "#times with returns block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#times"
+  it_should_behave_like "RR::DoubleDefinition with returns block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -398,9 +398,9 @@ describe ScenarioDefinition, "#times with returns block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#times with after_call block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#times"
-  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+describe DoubleDefinition, "#times with after_call block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#times"
+  it_should_behave_like "RR::DoubleDefinition with after_call block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -408,10 +408,10 @@ describe ScenarioDefinition, "#times with after_call block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#any_number_of_times", :shared => true do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#any_number_of_times", :shared => true do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.any_number_of_times.should === @definition
   end
 
@@ -431,9 +431,9 @@ describe ScenarioDefinition, "#any_number_of_times", :shared => true do
   end
 end
 
-describe ScenarioDefinition, "#any_number_of_times with returns block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#any_number_of_times"
-  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+describe DoubleDefinition, "#any_number_of_times with returns block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#any_number_of_times"
+  it_should_behave_like "RR::DoubleDefinition with returns block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -441,9 +441,9 @@ describe ScenarioDefinition, "#any_number_of_times with returns block_callback_s
   end
 end
 
-describe ScenarioDefinition, "#any_number_of_times with after_call block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#any_number_of_times"
-  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+describe DoubleDefinition, "#any_number_of_times with after_call block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#any_number_of_times"
+  it_should_behave_like "RR::DoubleDefinition with after_call block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -451,8 +451,8 @@ describe ScenarioDefinition, "#any_number_of_times with after_call block_callbac
   end
 end
 
-describe ScenarioDefinition, "#ordered", :shared => true do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#ordered", :shared => true do
+  it_should_behave_like "RR::DoubleDefinition"
 
   it "adds itself to the ordered scenarios list" do
     @definition.ordered
@@ -468,13 +468,13 @@ describe ScenarioDefinition, "#ordered", :shared => true do
     @definition.should be_ordered
   end
 
-  it "raises error when there is no Scenario" do
+  it "raises error when there is no Double" do
     @definition.scenario = nil
     proc do
       @definition.ordered
     end.should raise_error(
-      Errors::ScenarioDefinitionError,
-      "Scenario Definitions must have a dedicated Scenario to be ordered. " <<
+      Errors::DoubleDefinitionError,
+      "Double Definitions must have a dedicated Double to be ordered. " <<
       "For example, using instance_of does not allow ordered to be used. " <<
       "proxy the class's #new method instead."
     )
@@ -491,9 +491,9 @@ describe ScenarioDefinition, "#ordered", :shared => true do
   end
 end
 
-describe ScenarioDefinition, "#ordered with returns block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#ordered"
-  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+describe DoubleDefinition, "#ordered with returns block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#ordered"
+  it_should_behave_like "RR::DoubleDefinition with returns block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -501,9 +501,9 @@ describe ScenarioDefinition, "#ordered with returns block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#ordered with after_call block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#ordered"
-  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+describe DoubleDefinition, "#ordered with after_call block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#ordered"
+  it_should_behave_like "RR::DoubleDefinition with after_call block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -511,18 +511,18 @@ describe ScenarioDefinition, "#ordered with after_call block_callback_strategy" 
   end
 end
 
-describe ScenarioDefinition, "#ordered?" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#ordered?" do
+  it_should_behave_like "RR::DoubleDefinition"
 
   it "defaults to false" do
     @definition.should_not be_ordered
   end
 end
 
-describe ScenarioDefinition, "#yields", :shared => true do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#yields", :shared => true do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.yields(:baz).should === @definition
   end
 
@@ -546,9 +546,9 @@ describe ScenarioDefinition, "#yields", :shared => true do
   end
 end
 
-describe ScenarioDefinition, "#yields with returns block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#yields"
-  it_should_behave_like "RR::ScenarioDefinition with returns block_callback_strategy"
+describe DoubleDefinition, "#yields with returns block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#yields"
+  it_should_behave_like "RR::DoubleDefinition with returns block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -558,9 +558,9 @@ describe ScenarioDefinition, "#yields with returns block_callback_strategy" do
   end
 end
 
-describe ScenarioDefinition, "#yields with after_call block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition#yields"
-  it_should_behave_like "RR::ScenarioDefinition with after_call block_callback_strategy"
+describe DoubleDefinition, "#yields with after_call block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition#yields"
+  it_should_behave_like "RR::DoubleDefinition with after_call block_callback_strategy"
 
   it "sets return value when block passed in" do
     @return_value.should == :new_return_value
@@ -568,14 +568,14 @@ describe ScenarioDefinition, "#yields with after_call block_callback_strategy" d
   end
 end
 
-describe ScenarioDefinition, "#after_call" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#after_call" do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.after_call {}.should === @definition
   end
 
-  it "sends return value of Scenario implementation to after_call" do
+  it "sends return value of Double implementation to after_call" do
     return_value = {}
     @definition.with_any_args.returns(return_value).after_call do |value|
       value[:foo] = :bar
@@ -614,10 +614,10 @@ describe ScenarioDefinition, "#after_call" do
   end
 end
 
-describe ScenarioDefinition, "#returns" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#returns" do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns ScenarioDefinition" do
+  it "returns DoubleDefinition" do
     @definition.returns {:baz}.should === @definition
     @definition.returns(:baz).should === @definition
   end
@@ -644,10 +644,10 @@ describe ScenarioDefinition, "#returns" do
   end
 end
 
-describe ScenarioDefinition, "#implemented_by" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#implemented_by" do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns the ScenarioDefinition" do
+  it "returns the DoubleDefinition" do
     @definition.implemented_by(proc{:baz}).should === @definition
   end
 
@@ -665,10 +665,10 @@ describe ScenarioDefinition, "#implemented_by" do
   end
 end
 
-describe ScenarioDefinition, "#implemented_by_original_method" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#implemented_by_original_method" do
+  it_should_behave_like "RR::DoubleDefinition"
 
-  it "returns the ScenarioDefinition object" do
+  it "returns the DoubleDefinition object" do
     @definition.implemented_by_original_method.should === @definition
   end
 
@@ -693,8 +693,8 @@ describe ScenarioDefinition, "#implemented_by_original_method" do
   end
 end
 
-describe ScenarioDefinition, "#exact_match?" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#exact_match?" do
+  it_should_behave_like "RR::DoubleDefinition"
 
   it "returns false when no expectation set" do
     @definition.should_not be_exact_match()
@@ -717,8 +717,8 @@ describe ScenarioDefinition, "#exact_match?" do
   end
 end
 
-describe ScenarioDefinition, "#wildcard_match?" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#wildcard_match?" do
+  it_should_behave_like "RR::DoubleDefinition"
 
   it "returns false when no expectation set" do
     @definition.should_not be_wildcard_match()
@@ -747,8 +747,8 @@ describe ScenarioDefinition, "#wildcard_match?" do
   end
 end
 
-describe ScenarioDefinition, "#terminal?" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#terminal?" do
+  it_should_behave_like "RR::DoubleDefinition"
 
   it "returns true when times_matcher's terminal? is true" do
     @definition.once
@@ -768,8 +768,8 @@ describe ScenarioDefinition, "#terminal?" do
   end
 end
 
-describe ScenarioDefinition, "#expected_arguments" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#expected_arguments" do
+  it_should_behave_like "RR::DoubleDefinition"
 
   it "returns argument expectation's expected_arguments when there is a argument expectation" do
     @definition.with(1, 2)
@@ -782,16 +782,16 @@ describe ScenarioDefinition, "#expected_arguments" do
   end
 end
 
-describe ScenarioDefinition, "#block_callback_strategy" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#block_callback_strategy" do
+  it_should_behave_like "RR::DoubleDefinition"
 
   it "defaults to :returns" do
     @definition.block_callback_strategy.should == :returns
   end
 end
 
-describe ScenarioDefinition, "#returns_block_callback_strategy!" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#returns_block_callback_strategy!" do
+  it_should_behave_like "RR::DoubleDefinition"
 
   it "sets the block_callback_strategy to :returns" do
     @definition.returns_block_callback_strategy!
@@ -799,8 +799,8 @@ describe ScenarioDefinition, "#returns_block_callback_strategy!" do
   end
 end
 
-describe ScenarioDefinition, "#after_call_block_callback_strategy!" do
-  it_should_behave_like "RR::ScenarioDefinition"
+describe DoubleDefinition, "#after_call_block_callback_strategy!" do
+  it_should_behave_like "RR::DoubleDefinition"
 
   it "sets the block_callback_strategy to :after_call" do
     @definition.after_call_block_callback_strategy!

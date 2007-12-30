@@ -27,26 +27,26 @@ module RR
       if method_name && definition
         raise ArgumentError, "Cannot pass in a method name and a block"
       end
-      proxy = ScenarioMethodProxy.new(self, creator, object, &definition)
+      proxy = DoubleMethodProxy.new(self, creator, object, &definition)
       return proxy unless method_name
       proxy.__send__(method_name)
     end
 
-    # Creates a ScenarioCreator.
+    # Creates a DoubleCreator.
     def scenario_creator
-      ScenarioCreator.new(self)
+      DoubleCreator.new(self)
     end
 
-    # Creates and registers a Scenario to be verified.
+    # Creates and registers a Double to be verified.
     def scenario(double_insertion, definition = scenario_definition)
-      scenario = Scenario.new(self, double_insertion, definition)
+      scenario = Double.new(self, double_insertion, definition)
       scenario.definition.scenario = scenario
       double_insertion.register_scenario scenario
       scenario
     end
 
     def scenario_definition
-      ScenarioDefinition.new(self)
+      DoubleDefinition.new(self)
     end
 
     # Reuses or creates, if none exists, a DoubleInsertion for the passed
@@ -63,23 +63,23 @@ module RR
       double_insertion
     end
 
-    # Registers the ordered Scenario to be verified.
+    # Registers the ordered Double to be verified.
     def register_ordered_scenario(scenario)
       @ordered_scenarios << scenario
     end
 
-    # Verifies that the passed in ordered Scenario is being called
+    # Verifies that the passed in ordered Double is being called
     # in the correct position.
     def verify_ordered_scenario(scenario)
       unless scenario.terminal?
-        raise Errors::ScenarioOrderError,
-              "Ordered Scenarios cannot have a NonTerminal TimesCalledExpectation"
+        raise Errors::DoubleOrderError,
+              "Ordered Doubles cannot have a NonTerminal TimesCalledExpectation"
       end
       unless @ordered_scenarios.first == scenario
-        message = Scenario.formatted_name(scenario.method_name, scenario.expected_arguments)
+        message = Double.formatted_name(scenario.method_name, scenario.expected_arguments)
         message << " called out of order in list\n"
-        message << Scenario.list_message_part(@ordered_scenarios)
-        raise Errors::ScenarioOrderError, message
+        message << Double.list_message_part(@ordered_scenarios)
+        raise Errors::DoubleOrderError, message
       end
       @ordered_scenarios.shift unless scenario.attempt?
       scenario
@@ -95,7 +95,7 @@ module RR
       end
     end
 
-    # Resets the registered Doubles and ordered Scenarios
+    # Resets the registered Doubles and ordered Doubles
     def reset
       reset_ordered_scenarios
       reset_double_insertions
@@ -116,7 +116,7 @@ module RR
     end
 
     protected
-    # Removes the ordered Scenarios from the list
+    # Removes the ordered Doubles from the list
     def reset_ordered_scenarios
       @ordered_scenarios.clear
     end

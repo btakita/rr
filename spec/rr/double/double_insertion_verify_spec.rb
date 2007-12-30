@@ -11,7 +11,7 @@ module RR
     end
 
     it "verifies each scenario was met" do
-      scenario = Scenario.new(@space, @double_insertion, @space.scenario_definition)
+      scenario = Double.new(@space, @double_insertion, @space.scenario_definition)
       @double_insertion.register_scenario scenario
 
       scenario.with(1).once.returns {nil}

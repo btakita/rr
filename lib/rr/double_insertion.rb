@@ -1,6 +1,6 @@
 module RR
   # RR::DoubleInsertion is the binding of an object and a method.
-  # A double_insertion has 0 to many Scenario objects. Each Scenario
+  # A double_insertion has 0 to many Double objects. Each Double
   # has Argument Expectations and Times called Expectations.
   class DoubleInsertion
     MethodArguments = Struct.new(:arguments, :block)
@@ -16,14 +16,14 @@ module RR
       @scenarios = []
     end
 
-    # RR::DoubleInsertion#register_scenario adds the passed in Scenario
-    # into this DoubleInsertion's list of Scenario objects.
+    # RR::DoubleInsertion#register_scenario adds the passed in Double
+    # into this DoubleInsertion's list of Double objects.
     def register_scenario(scenario)
       @scenarios << scenario
     end
 
     # RR::DoubleInsertion#bind injects a method that acts as a dispatcher
-    # that dispatches to the matching Scenario when the method
+    # that dispatches to the matching Double when the method
     # is called.
     def bind
       define_implementation_placeholder
@@ -36,7 +36,7 @@ module RR
       meta.class_eval(returns_method, __FILE__, __LINE__ - 5)
     end
 
-    # RR::DoubleInsertion#verify verifies each Scenario
+    # RR::DoubleInsertion#verify verifies each Double
     # TimesCalledExpectation are met.
     def verify
       @scenarios.each do |scenario|
@@ -81,7 +81,7 @@ module RR
     end
 
     def find_scenario_to_attempt(args)
-      matches = ScenarioMatches.new(@scenarios).find_all_matches!(args)
+      matches = DoubleMatches.new(@scenarios).find_all_matches!(args)
 
       unless matches.exact_terminal_scenarios_to_attempt.empty?
         return matches.exact_terminal_scenarios_to_attempt.first
@@ -108,9 +108,9 @@ module RR
     end
 
     def scenario_not_found_error(*args)
-      message = "Unexpected method invocation #{Scenario.formatted_name(@method_name, args)}, expected\n"
-      message << Scenario.list_message_part(@scenarios)
-      raise Errors::ScenarioNotFoundError, message
+      message = "Unexpected method invocation #{Double.formatted_name(@method_name, args)}, expected\n"
+      message << Double.list_message_part(@scenarios)
+      raise Errors::DoubleNotFoundError, message
     end
 
     def placeholder_name

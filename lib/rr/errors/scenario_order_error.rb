@@ -1,6 +1,6 @@
 module RR
   module Errors
-    class ScenarioOrderError < RRError
+    class DoubleOrderError < RRError
     end
   end
 end

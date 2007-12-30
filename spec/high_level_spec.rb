@@ -58,7 +58,7 @@ describe "RR mock:" do
     ).should == "value 1"
     proc do
       @obj.foobar(:failure)
-    end.should raise_error( RR::Errors::ScenarioNotFoundError )
+    end.should raise_error( RR::Errors::DoubleNotFoundError )
   end
 end
 

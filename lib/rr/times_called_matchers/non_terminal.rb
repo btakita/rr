@@ -1,11 +1,11 @@
 module RR
 module TimesCalledMatchers
   # Including this module marks the TimesCalledMatcher as NonTerminal.
-  # Being NonTerminal means the Scenario will not "terminate" even when
+  # Being NonTerminal means the Double will not "terminate" even when
   # called infinite times.
   #
-  # The Scenario that uses a NonTerminal TimesCalledMatcher will
-  # continue using the Scenario when passed the matching arguments.
+  # The Double that uses a NonTerminal TimesCalledMatcher will
+  # continue using the Double when passed the matching arguments.
   # This is done by the attempt? always returning true.
   #
   # This is in opposition to Terminal TimesCalledMatchers, where

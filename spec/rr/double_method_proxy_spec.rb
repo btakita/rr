@@ -1,7 +1,7 @@
 require "spec/spec_helper"
 
 module RR
-  describe ScenarioMethodProxy, "initializes proxy with passed in creator", :shared => true do
+  describe DoubleMethodProxy, "initializes proxy with passed in creator", :shared => true do
     it "initializes proxy with passed in creator" do
       class << the_proxy
         attr_reader :creator
@@ -10,7 +10,7 @@ module RR
     end
   end
 
-  describe ScenarioMethodProxy do
+  describe DoubleMethodProxy do
     attr_reader :space, :subject, :creator, :the_proxy
     before(:each) do
       @space = Space.new
@@ -20,27 +20,27 @@ module RR
     end
 
     describe ".new without block" do
-      it_should_behave_like "RR::ScenarioMethodProxy initializes proxy with passed in creator"
+      it_should_behave_like "RR::DoubleMethodProxy initializes proxy with passed in creator"
       before do
-        @the_proxy = ScenarioMethodProxy.new(space, creator, subject)
+        @the_proxy = DoubleMethodProxy.new(space, creator, subject)
       end
 
       it "clears out all methods from proxy" do
-        proxy_subclass = Class.new(ScenarioMethodProxy) do
+        proxy_subclass = Class.new(DoubleMethodProxy) do
           def i_should_be_a_scenario
           end
         end
         proxy_subclass.instance_methods.should include('i_should_be_a_scenario')
 
         proxy = proxy_subclass.new(space, creator, subject)
-        proxy.i_should_be_a_scenario.should be_instance_of(ScenarioDefinition)
+        proxy.i_should_be_a_scenario.should be_instance_of(DoubleDefinition)
       end
     end
 
     describe ".new with block" do
-      it_should_behave_like "RR::ScenarioMethodProxy initializes proxy with passed in creator"
+      it_should_behave_like "RR::DoubleMethodProxy initializes proxy with passed in creator"
       before do
-        @the_proxy = ScenarioMethodProxy.new(space, creator, subject) do |b|
+        @the_proxy = DoubleMethodProxy.new(space, creator, subject) do |b|
           b.foobar(1, 2) {:one_two}
           b.foobar(1) {:one}
           b.foobar.with_any_args {:default}
@@ -56,14 +56,14 @@ module RR
       end
 
       it "clears out all methods from proxy" do
-        proxy_subclass = Class.new(ScenarioMethodProxy) do
+        proxy_subclass = Class.new(DoubleMethodProxy) do
           def i_should_be_a_scenario
           end
         end
         proxy_subclass.instance_methods.should include('i_should_be_a_scenario')
 
         proxy_subclass.new(space, creator, subject) do |m|
-          m.i_should_be_a_scenario.should be_instance_of(ScenarioDefinition)
+          m.i_should_be_a_scenario.should be_instance_of(DoubleDefinition)
         end
       end
     end

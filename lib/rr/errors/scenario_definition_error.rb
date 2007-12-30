@@ -1,6 +1,6 @@
 module RR
   module Errors
-    class ScenarioDefinitionError < RRError
+    class DoubleDefinitionError < RRError
     end
   end
 end

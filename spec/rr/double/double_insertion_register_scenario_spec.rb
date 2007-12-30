@@ -14,7 +14,7 @@ module RR
     end
 
     it "adds the scenario to the scenarios list" do
-      scenario = Scenario.new(@space, @double_insertion, @space.scenario_definition)
+      scenario = Double.new(@space, @double_insertion, @space.scenario_definition)
 
       @double_insertion.scenarios.should_not include(scenario)
       @double_insertion.register_scenario scenario

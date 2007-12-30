@@ -1,5 +1,6 @@
 - Documentation improvements
 - Renamed Double to DoubleInsertion
+- Renamed Scenario to Double
 
 * 0.3.11
 - Fixed [#13724] Mock Proxy on Active Record Association proxies causes error

@@ -7,14 +7,14 @@ module RR
         RR::Space.instance.verify_double_insertions
       end
 
-      # Resets the registered Doubles and ordered Scenarios
+      # Resets the registered Doubles and ordered Doubles
       def reset
         RR::Space.instance.reset
       end
 
-      # This method sets the Scenario to have a mock strategy. A mock strategy
-      # sets the default state of the Scenario to expect the method call
-      # with arguments exactly one time. The Scenario's expectations can be
+      # This method sets the Double to have a mock strategy. A mock strategy
+      # sets the default state of the Double to expect the method call
+      # with arguments exactly one time. The Double's expectations can be
       # changed.
       #
       # This method can be chained with proxy.
@@ -22,7 +22,7 @@ module RR
       #   or
       #   proxy.mock(subject).method_name_1
       #
-      # When passed the subject, a ScenarioMethodProxy is returned. Passing
+      # When passed the subject, a DoubleMethodProxy is returned. Passing
       # a method with arguments to the proxy will set up expectations that
       # the a call to the subject's method with the arguments will happen,
       # and return the prescribed value.
@@ -30,7 +30,7 @@ module RR
       #   mock(subject).method_name_2(arg1, arg2) {return_value_2}
       #
       # When passed the subject and the method_name, this method returns
-      # a mock Scenario with the method already set.
+      # a mock Double with the method already set.
       #
       #   mock(subject, :method_name_1) {return_value_1}
       #   mock(subject, :method_name_2).with(arg1, arg2) {return_value_2}
@@ -40,15 +40,15 @@ module RR
       #     method_name_1 {return_value_1}
       #     method_name_2(arg_1, arg_2) {return_value_2}
       #   end
-      def mock(subject=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+      def mock(subject=DoubleCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
         creator = RR::Space.scenario_creator
         creator.mock(subject, method_name, &definition)
       end
 
 
-      # This method sets the Scenario to have a stub strategy. A stub strategy
-      # sets the default state of the Scenario to expect the method call
-      # with any arguments any number of times. The Scenario's
+      # This method sets the Double to have a stub strategy. A stub strategy
+      # sets the default state of the Double to expect the method call
+      # with any arguments any number of times. The Double's
       # expectations can be changed.
       #
       # This method can be chained with proxy.
@@ -56,7 +56,7 @@ module RR
       #   or
       #   proxy.stub(subject).method_name_1
       #
-      # When passed the subject, a ScenarioMethodProxy is returned. Passing
+      # When passed the subject, a DoubleMethodProxy is returned. Passing
       # a method with arguments to the proxy will set up expectations that
       # the a call to the subject's method with the arguments will happen,
       # and return the prescribed value.
@@ -64,7 +64,7 @@ module RR
       #   stub(subject).method_name_2(arg_1, arg_2) {return_value_2}
       #
       # When passed the subject and the method_name, this method returns
-      # a stub Scenario with the method already set.
+      # a stub Double with the method already set.
       #
       #   mock(subject, :method_name_1) {return_value_1}
       #   mock(subject, :method_name_2).with(arg1, arg2) {return_value_2}
@@ -74,12 +74,12 @@ module RR
       #     method_name_1 {return_value_1}
       #     method_name_2(arg_1, arg_2) {return_value_2}
       #   end
-      def stub(subject=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+      def stub(subject=DoubleCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
         creator = RR::Space.scenario_creator
         creator.stub(subject, method_name, &definition)
       end
 
-      # This method add proxy capabilities to the Scenario. proxy can be called
+      # This method add proxy capabilities to the Double. proxy can be called
       # with mock or stub.
       #
       #   mock.proxy(controller.template).render(:partial => "my/socks")
@@ -114,7 +114,7 @@ module RR
       #     end
       #   end
       #
-      # Passing a block to the Scenario (after the method name and arguments)
+      # Passing a block to the Double (after the method name and arguments)
       # allows you to intercept the return value.
       # The return value can be modified, validated, and/or overridden by
       # passing in a block. The return value of the block will replace
@@ -124,14 +124,14 @@ module RR
       #     html.should include("My socks are wet")
       #     "My new return value"
       #   end
-      def proxy(subject=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+      def proxy(subject=DoubleCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
         creator = RR::Space.scenario_creator
         creator.proxy(subject, method_name, &definition)
       end
 
-      # This method sets the Scenario to have a do_not_call strategy.
-      # A do_not_call strategy sets the default state of the Scenario
-      # to expect never to be called. The Scenario's expectations can be
+      # This method sets the Double to have a do_not_call strategy.
+      # A do_not_call strategy sets the default state of the Double
+      # to expect never to be called. The Double's expectations can be
       # changed.
       #
       # The following example sets the expectation that subject.method_name
@@ -145,7 +145,7 @@ module RR
       #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
       #      m.method3.with_no_args # Do not allow method3 with no arguments
       #    end
-      def do_not_call(subject=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+      def do_not_call(subject=DoubleCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
         creator = RR::Space.scenario_creator
         creator.do_not_call(subject, method_name, &definition)
       end
@@ -154,7 +154,7 @@ module RR
       alias_method :dont_allow, :do_not_call
 
       # Calling instance_of will cause all instances of the passed in Class
-      # to have the Scenario defined.
+      # to have the Double defined.
       #
       # The following example mocks all User's valid? method and return false.
       #   mock.instance_of(User).valid? {false}
@@ -164,13 +164,13 @@ module RR
       #   mock.instance_of(User).projects do |projects|
       #     projects[0..2]
       #   end
-      def instance_of(subject=ScenarioCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+      def instance_of(subject=DoubleCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
         creator = RR::Space.scenario_creator
         creator.instance_of(subject, method_name, &definition)
       end
 
       # Returns a AnyTimesMatcher. This is meant to be passed in as an argument
-      # to Scenario#times.
+      # to Double#times.
       #
       #   mock(object).method_name(anything).times(any_times) {return_value}
       def any_times

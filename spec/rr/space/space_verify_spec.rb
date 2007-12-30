@@ -9,7 +9,7 @@ module RR
       @double_insertion = @space.double_insertion(@object, @method_name)
     end
 
-    it "raises an error when Scenario is NonTerminal" do
+    it "raises an error when Double is NonTerminal" do
       scenario = @space.scenario(@double_insertion)
       @space.register_ordered_scenario(scenario)
 
@@ -19,8 +19,8 @@ module RR
       proc do
         @space.verify_ordered_scenario(scenario)
       end.should raise_error(
-      Errors::ScenarioOrderError,
-      "Ordered Scenarios cannot have a NonTerminal TimesCalledExpectation"
+      Errors::DoubleOrderError,
+      "Ordered Doubles cannot have a NonTerminal TimesCalledExpectation"
       )
     end
   end
@@ -164,7 +164,7 @@ module RR
         proc do
           @space.verify_ordered_scenario(second_scenario)
         end.should raise_error(
-        Errors::ScenarioOrderError,
+        Errors::DoubleOrderError,
         "foobar() called out of order in list\n" <<
         "- foobar()\n" <<
         "- foobar()"

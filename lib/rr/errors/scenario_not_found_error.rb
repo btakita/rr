@@ -1,6 +1,6 @@
 module RR
   module Errors
-    class ScenarioNotFoundError < RRError
+    class DoubleNotFoundError < RRError
     end
   end
 end

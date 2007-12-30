@@ -1,19 +1,19 @@
 require "spec/spec_helper"
 
 module RR
-  describe ScenarioCreator, " strategy definition", :shared => true do
+  describe DoubleCreator, " strategy definition", :shared => true do
     it "returns self when passing no args" do
       creator.__send__(method_name).should === creator
     end
 
-    it "returns a ScenarioMethodProxy when passed a subject" do
+    it "returns a DoubleMethodProxy when passed a subject" do
       scenario = creator.__send__(method_name, subject).foobar
-      scenario.should be_instance_of(ScenarioDefinition)
+      scenario.should be_instance_of(DoubleDefinition)
     end
 
-    it "returns a ScenarioMethodProxy when passed Kernel" do
+    it "returns a DoubleMethodProxy when passed Kernel" do
       scenario = creator.__send__(method_name, Kernel).foobar
-      scenario.should be_instance_of(ScenarioDefinition)
+      scenario.should be_instance_of(DoubleDefinition)
     end
 
     it "raises error if passed a method name and a block" do
@@ -27,8 +27,8 @@ module RR
       proc do
         creator.__send__(method_name)
       end.should raise_error(
-      Errors::ScenarioDefinitionError,
-      "This Scenario already has a mock strategy"
+      Errors::DoubleDefinitionError,
+      "This Double already has a mock strategy"
       )
     end
 
@@ -37,8 +37,8 @@ module RR
       proc do
         creator.__send__(method_name)
       end.should raise_error(
-      Errors::ScenarioDefinitionError,
-      "This Scenario already has a stub strategy"
+      Errors::DoubleDefinitionError,
+      "This Double already has a stub strategy"
       )
     end
 
@@ -47,22 +47,22 @@ module RR
       proc do
         creator.__send__(method_name)
       end.should raise_error(
-      Errors::ScenarioDefinitionError,
-      "This Scenario already has a do_not_call strategy"
+      Errors::DoubleDefinitionError,
+      "This Double already has a do_not_call strategy"
       )
     end
   end
 
-  describe ScenarioCreator do
+  describe DoubleCreator do
     attr_reader :creator, :subject, :space, :method_name
     before(:each) do
       @space = Space.new
       @subject = Object.new
-      @creator = ScenarioCreator.new(space)
+      @creator = DoubleCreator.new(space)
     end
 
     describe "#mock" do
-      it_should_behave_like "RR::ScenarioCreator strategy definition"
+      it_should_behave_like "RR::DoubleCreator strategy definition"
 
       before do
         @method_name = :mock
@@ -72,13 +72,13 @@ module RR
         creates_mock_call_chain(creator.mock(subject))
       end
 
-      it "creates a mock Scenario for method when passed a second argument with rr_mock" do
+      it "creates a mock Double for method when passed a second argument with rr_mock" do
         creates_scenario_with_method_name(
         creator.mock(subject, :foobar)
         )
       end
 
-      it "sets up the ScenarioDefinition to be in returns block_callback_strategy" do
+      it "sets up the DoubleDefinition to be in returns block_callback_strategy" do
         scenario = creator.mock(subject, :foobar)
         scenario.block_callback_strategy.should == :returns
       end
@@ -103,7 +103,7 @@ module RR
     end
 
     describe "#stub" do
-      it_should_behave_like "RR::ScenarioCreator strategy definition"
+      it_should_behave_like "RR::DoubleCreator strategy definition"
 
       before do
         @method_name = :stub
@@ -113,11 +113,11 @@ module RR
         creates_stub_call_chain(creator.stub(subject))
       end
 
-      it "creates a stub Scenario for method when passed a second argument" do
+      it "creates a stub Double for method when passed a second argument" do
         creates_scenario_with_method_name(creator.stub(subject, :foobar))
       end
 
-      it "sets up the ScenarioDefinition to be in returns block_callback_strategy" do
+      it "sets up the DoubleDefinition to be in returns block_callback_strategy" do
         scenario = creator.stub(subject, :foobar)
         scenario.block_callback_strategy.should == :returns
       end
@@ -138,7 +138,7 @@ module RR
     end
 
     describe "#do_not_call" do
-      it_should_behave_like "RR::ScenarioCreator strategy definition"
+      it_should_behave_like "RR::DoubleCreator strategy definition"
 
       before do
         @method_name = :do_not_call
@@ -149,8 +149,8 @@ module RR
         proc do
           creator.do_not_call
         end.should raise_error(
-        Errors::ScenarioDefinitionError,
-        "Scenarios cannot be proxied when using do_not_call strategy"
+        Errors::DoubleDefinitionError,
+        "Doubles cannot be proxied when using do_not_call strategy"
         )
       end
 
@@ -170,19 +170,19 @@ module RR
         creates_do_not_call_call_chain(creator.dont_allow(subject))
       end
 
-      it "creates a mock Scenario for method when passed a second argument" do
+      it "creates a mock Double for method when passed a second argument" do
         creates_scenario_with_method_name(creator.do_not_call(subject, :foobar))
       end
 
-      it "creates a mock Scenario for method when passed a second argument" do
+      it "creates a mock Double for method when passed a second argument" do
         creates_scenario_with_method_name(creator.dont_call(subject, :foobar))
       end
 
-      it "creates a mock Scenario for method when passed a second argument" do
+      it "creates a mock Double for method when passed a second argument" do
         creates_scenario_with_method_name(creator.do_not_allow(subject, :foobar))
       end
 
-      it "creates a mock Scenario for method when passed a second argument" do
+      it "creates a mock Double for method when passed a second argument" do
         creates_scenario_with_method_name(creator.dont_allow(subject, :foobar))
       end
 
@@ -227,8 +227,8 @@ module RR
         proc do
           creator.proxy
         end.should raise_error(
-        Errors::ScenarioDefinitionError,
-        "Scenarios cannot be proxied when using do_not_call strategy"
+        Errors::DoubleDefinitionError,
+        "Doubles cannot be proxied when using do_not_call strategy"
         )
       end
 
@@ -246,7 +246,7 @@ module RR
         subject.foobar(1, 2).should == :baz
       end
 
-      it "creates a proxy Scenario for method when passed a second argument" do
+      it "creates a proxy Double for method when passed a second argument" do
         scenario = creator.stub.proxy(subject, :foobar)
         scenario.with(1, 2) {:baz}
         scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
@@ -254,7 +254,7 @@ module RR
         subject.foobar(1, 2).should == :baz
       end
 
-      it "creates a proxy Scenario for method when passed a second argument" do
+      it "creates a proxy Double for method when passed a second argument" do
         scenario = creator.stub.proxy(subject, :foobar)
         scenario.with(1, 2) {:baz}
         scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
@@ -262,7 +262,7 @@ module RR
         subject.foobar(1, 2).should == :baz
       end
 
-      it "sets up the ScenarioDefinition to be in after_call block_callback_strategy" do
+      it "sets up the DoubleDefinition to be in after_call block_callback_strategy" do
         def subject.foobar
           :original_implementation_value
         end
@@ -292,7 +292,7 @@ module RR
         klass.new.foobar(1, 2).should == :baz
       end
 
-      it "creates a proxy Scenario for method when passed a second argument" do
+      it "creates a proxy Double for method when passed a second argument" do
         klass = Class.new
         scenario = creator.stub.instance_of(klass, :foobar)
         scenario.with(1, 2) {:baz}
@@ -307,8 +307,8 @@ module RR
         proc do
           creator.create!(subject, :foobar, 1, 2)
         end.should raise_error(
-        Errors::ScenarioDefinitionError,
-        "This Scenario has no strategy"
+        Errors::DoubleDefinitionError,
+        "This Double has no strategy"
         )
       end
     end
@@ -360,14 +360,14 @@ module RR
 
       it "sets expectation for method to never be called with passed in arguments" do
         creator.create!(subject, :foobar, 1, 2)
-        proc {subject.foobar}.should raise_error(Errors::ScenarioNotFoundError)
+        proc {subject.foobar}.should raise_error(Errors::DoubleNotFoundError)
         proc {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets expectation for method to never be called with no arguments when with_no_args is set" do
         creator.create!(subject, :foobar).with_no_args
         proc {subject.foobar}.should raise_error(Errors::TimesCalledError)
-        proc {subject.foobar(1, 2)}.should raise_error(Errors::ScenarioNotFoundError)
+        proc {subject.foobar(1, 2)}.should raise_error(Errors::DoubleNotFoundError)
       end
     end
 
@@ -419,7 +419,7 @@ module RR
         creator.create!(subject, :foobar, 1, 2)
         proc do
           subject.foobar
-        end.should raise_error(Errors::ScenarioNotFoundError)
+        end.should raise_error(Errors::DoubleNotFoundError)
       end
 
       it "sets expectations on the subject while calling the original method" do

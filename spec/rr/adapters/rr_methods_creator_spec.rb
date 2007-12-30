@@ -15,8 +15,8 @@ module RR
           end
         end
 
-        it "returns a ScenarioCreator when passed no arguments" do
-          mock.should be_instance_of(ScenarioCreator)
+        it "returns a DoubleCreator when passed no arguments" do
+          mock.should be_instance_of(DoubleCreator)
         end
 
         it "sets up the RR mock call chain" do
@@ -27,11 +27,11 @@ module RR
           creates_mock_call_chain(rr_mock(@subject))
         end
 
-        it "creates a mock Scenario for method when passed a second argument" do
+        it "creates a mock Double for method when passed a second argument" do
           creates_scenario_with_method_name(mock(@subject, :foobar))
         end
 
-        it "creates a mock Scenario for method when passed a second argument with rr_mock" do
+        it "creates a mock Double for method when passed a second argument with rr_mock" do
           creates_scenario_with_method_name(rr_mock(@subject, :foobar))
         end
 
@@ -72,8 +72,8 @@ module RR
           end
         end
 
-        it "returns a ScenarioCreator when passed no arguments" do
-          stub.should be_instance_of(ScenarioCreator)
+        it "returns a DoubleCreator when passed no arguments" do
+          stub.should be_instance_of(DoubleCreator)
         end
 
         it "sets up the RR stub call chain" do
@@ -84,11 +84,11 @@ module RR
           creates_stub_call_chain(rr_stub(@subject))
         end
 
-        it "creates a stub Scenario for method when passed a second argument" do
+        it "creates a stub Double for method when passed a second argument" do
           creates_scenario_with_method_name(stub(@subject, :foobar))
         end
 
-        it "#rr_stub creates a stub Scenario for method when passed a second argument" do
+        it "#rr_stub creates a stub Double for method when passed a second argument" do
           creates_scenario_with_method_name(rr_stub(@subject, :foobar))
         end
 
@@ -125,8 +125,8 @@ module RR
           end
         end
 
-        it "#proxy returns a ScenarioCreator when passed no arguments" do
-          proxy.should be_instance_of(ScenarioCreator)
+        it "#proxy returns a DoubleCreator when passed no arguments" do
+          proxy.should be_instance_of(DoubleCreator)
         end
 
         it "#proxy sets up the RR proxy call chain" do
@@ -145,19 +145,19 @@ module RR
           creates_mock_proxy_call_chain(rr_mock.proxy(@subject))
         end
 
-        it "#proxy creates a mock Scenario for method when passed a second argument" do
+        it "#proxy creates a mock Double for method when passed a second argument" do
           creates_scenario_with_method_name(mock.proxy(@subject, :foobar))
         end
 
-        it "#rr_proxy creates a mock Scenario for method when passed a second argument with rr_mock" do
+        it "#rr_proxy creates a mock Double for method when passed a second argument with rr_mock" do
           creates_scenario_with_method_name(rr_proxy.mock(@subject, :foobar))
         end
 
-        it "#mock_proxy creates a mock Scenario for method when passed a second argument" do
+        it "#mock_proxy creates a mock Double for method when passed a second argument" do
           creates_scenario_with_method_name(mock.proxy(@subject, :foobar))
         end
 
-        it "#rr_mock_proxy creates a mock Scenario for method when passed a second argument with rr_mock" do
+        it "#rr_mock_proxy creates a mock Double for method when passed a second argument with rr_mock" do
           creates_scenario_with_method_name(rr_mock.proxy(@subject, :foobar))
         end
 
@@ -198,8 +198,8 @@ module RR
           end
         end
 
-        it "returns a ScenarioCreator when passed no arguments" do
-          stub.proxy.should be_instance_of(ScenarioCreator)
+        it "returns a DoubleCreator when passed no arguments" do
+          stub.proxy.should be_instance_of(DoubleCreator)
         end
 
         it "sets up the RR proxy call chain" do
@@ -210,11 +210,11 @@ module RR
           creates_stub_proxy_call_chain(rr_stub.proxy(@subject))
         end
 
-        it "#stub.proxy creates a stub Scenario for method when passed a second argument" do
+        it "#stub.proxy creates a stub Double for method when passed a second argument" do
           creates_scenario_with_method_name(stub.proxy(@subject, :foobar))
         end
 
-        it "#rr_stub.proxy creates a stub Scenario for method when passed a second argument with rr_stub" do
+        it "#rr_stub.proxy creates a stub Double for method when passed a second argument with rr_stub" do
           creates_scenario_with_method_name(rr_stub.proxy(@subject, :foobar))
         end
 
@@ -252,8 +252,8 @@ module RR
           end
         end
 
-        it "returns a ScenarioCreator when passed no arguments" do
-          do_not_allow.should be_instance_of(ScenarioCreator)
+        it "returns a DoubleCreator when passed no arguments" do
+          do_not_allow.should be_instance_of(DoubleCreator)
         end
 
         it "sets up the RR do_not_allow call chain" do
@@ -267,7 +267,7 @@ module RR
           creates_do_not_allow_call_chain(rr_dont_allow(@subject))
         end
 
-        it "creates a mock Scenario for method when passed a second argument" do
+        it "creates a mock Double for method when passed a second argument" do
           creates_scenario_with_method_name(do_not_call(@subject, :foobar))
           creates_scenario_with_method_name(rr_do_not_call(@subject, :foobar))
           creates_scenario_with_method_name(dont_call(@subject, :foobar))
@@ -311,13 +311,13 @@ module RR
         end
       end
 
-      describe ScenarioCreator, "#instance_of and #mock" do
+      describe DoubleCreator, "#instance_of and #mock" do
         before do
           @klass = Class.new
         end
 
-        it "returns a ScenarioCreator when passed no arguments" do
-          instance_of.instance_of.should be_instance_of(ScenarioCreator)
+        it "returns a DoubleCreator when passed no arguments" do
+          instance_of.instance_of.should be_instance_of(DoubleCreator)
         end
 
         it "sets up the RR instance_of call chain" do
@@ -328,11 +328,11 @@ module RR
           creates_instance_of_call_chain(rr_instance_of.mock(@klass))
         end
 
-        it "creates a instance_of Scenario for method when passed a second argument" do
+        it "creates a instance_of Double for method when passed a second argument" do
           creates_scenario_with_method_name(instance_of.mock(@klass, :foobar))
         end
 
-        it "creates a instance_of Scenario for method when passed a second argument with rr_instance_of" do
+        it "creates a instance_of Double for method when passed a second argument with rr_instance_of" do
           creates_scenario_with_method_name(rr_instance_of.mock(@klass, :foobar))
         end
 

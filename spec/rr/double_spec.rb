@@ -1,7 +1,7 @@
 require "spec/spec_helper"
 
 module RR
-  describe Scenario do
+  describe Double do
     attr_reader :space, :object, :double_insertion, :scenario
     before do
       @space = Space.new
@@ -14,7 +14,7 @@ module RR
     end
 
     describe "#with" do
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.with(1).should === scenario.definition
       end
 
@@ -35,7 +35,7 @@ module RR
         scenario.with_any_args {:return_value}
       end
 
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.with_no_args.should === scenario.definition
       end
 
@@ -54,7 +54,7 @@ module RR
         scenario.with_no_args {:return_value}
       end
 
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.with_no_args.should === scenario.definition
       end
 
@@ -68,7 +68,7 @@ module RR
     end
 
     describe "#never" do
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.never.should === scenario.definition
       end
 
@@ -84,7 +84,7 @@ module RR
     end
 
     describe "#once" do
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.once.should === scenario.definition
       end
 
@@ -101,7 +101,7 @@ module RR
     end
 
     describe "#twice" do
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.twice.should === scenario.definition
       end
 
@@ -119,7 +119,7 @@ module RR
     end
 
     describe "#at_least" do
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.with_any_args.at_least(2).should === scenario.definition
       end
 
@@ -135,7 +135,7 @@ module RR
     end
 
     describe "#at_most" do
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.with_any_args.at_most(2).should === scenario.definition
       end
 
@@ -158,7 +158,7 @@ module RR
     end
 
     describe "#times" do
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.times(3).should === scenario.definition
       end
 
@@ -177,7 +177,7 @@ module RR
     end
 
     describe "#any_number_of_times" do
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.any_number_of_times.should === scenario.definition
       end
 
@@ -222,7 +222,7 @@ module RR
     end
     
     describe "#yields" do
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.yields(:baz).should === scenario.definition
       end
 
@@ -248,11 +248,11 @@ module RR
     end
 
     describe "#after_call" do
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.after_call {}.should === scenario.definition
       end
 
-      it "sends return value of Scenario implementation to after_call" do
+      it "sends return value of Double implementation to after_call" do
         return_value = {}
         scenario.returns(return_value).after_call do |value|
           value[:foo] = :bar
@@ -292,7 +292,7 @@ module RR
     end
 
     describe "#returns" do
-      it "returns ScenarioDefinition" do
+      it "returns DoubleDefinition" do
         scenario.returns {:baz}.should === scenario.definition
         scenario.returns(:baz).should === scenario.definition
       end
@@ -320,7 +320,7 @@ module RR
     end
 
     describe "#implemented_by" do
-      it "returns the ScenarioDefinition" do
+      it "returns the DoubleDefinition" do
         scenario.implemented_by(proc{:baz}).should === scenario.definition
       end
 
@@ -339,7 +339,7 @@ module RR
     end
 
     describe "#implemented_by_original_method" do
-      it "returns the ScenarioDefinition object" do
+      it "returns the DoubleDefinition object" do
         scenario.implemented_by_original_method.should === scenario.definition
       end
 
@@ -419,7 +419,7 @@ module RR
         proc {scenario.call(double_insertion, :foobar)}.should raise_error(Errors::TimesCalledError)
       end
 
-      it "raises ScenarioOrderError when ordered and called out of order" do
+      it "raises DoubleOrderError when ordered and called out of order" do
         scenario1 = scenario
         scenario2 = space.scenario(double_insertion)
 
@@ -429,7 +429,7 @@ module RR
         proc do
           object.foobar(2)
         end.should raise_error(
-        Errors::ScenarioOrderError,
+        Errors::DoubleOrderError,
         "foobar(2) called out of order in list\n" <<
         "- foobar(1)\n" <<
         "- foobar(2)"
@@ -641,11 +641,11 @@ module RR
     end
 
     describe "#formatted_name" do
-      it "renders the formatted name of the Scenario with no arguments" do
+      it "renders the formatted name of the Double with no arguments" do
         scenario.formatted_name.should == "foobar()"
       end
 
-      it "renders the formatted name of the Scenario with arguments" do
+      it "renders the formatted name of the Double with arguments" do
         scenario.with(1, 2)
         scenario.formatted_name.should == "foobar(1, 2)"
       end

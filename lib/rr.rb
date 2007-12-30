@@ -10,14 +10,14 @@ require "#{dir}/rr/space"
 require "#{dir}/rr/double_insertion"
 require "#{dir}/rr/hash_with_object_id_key"
 
-require "#{dir}/rr/scenario_method_proxy"
+require "#{dir}/rr/double_method_proxy"
 
-require "#{dir}/rr/scenario_creator"
+require "#{dir}/rr/double_creator"
 
-require "#{dir}/rr/scenario"
-require "#{dir}/rr/scenario_definition"
-require "#{dir}/rr/scenario_definition_builder"
-require "#{dir}/rr/scenario_matches"
+require "#{dir}/rr/double"
+require "#{dir}/rr/double_definition"
+require "#{dir}/rr/double_definition_builder"
+require "#{dir}/rr/double_matches"
 
 require "#{dir}/rr/expectations/argument_equality_expectation"
 require "#{dir}/rr/expectations/any_argument_expectation"

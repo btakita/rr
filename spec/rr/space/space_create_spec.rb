@@ -9,9 +9,9 @@ module RR
       @object = Object.new
     end
 
-    it "creates a ScenarioMethodProxy" do
+    it "creates a DoubleMethodProxy" do
       proxy = @space.scenario_method_proxy(@creator, @object)
-      proxy.should be_instance_of(ScenarioMethodProxy)
+      proxy.should be_instance_of(DoubleMethodProxy)
     end
 
     it "sets space to self" do
@@ -45,7 +45,7 @@ module RR
       @creator.mock
     end
 
-    it "creates a mock Scenario for method when passed a second argument" do
+    it "creates a mock Double for method when passed a second argument" do
       @space.scenario_method_proxy(@creator, @object, :foobar).with(1) {:baz}
       @object.foobar(1).should == :baz
       proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
@@ -68,7 +68,7 @@ module RR
       @creator.stub
     end
 
-    it "creates a stub Scenario for method when passed a second argument" do
+    it "creates a stub Double for method when passed a second argument" do
       @space.scenario_method_proxy(@creator, @object, :foobar).with(1) {:baz}
       @object.foobar(1).should == :baz
       @object.foobar(1).should == :baz
@@ -97,7 +97,7 @@ module RR
       end
     end
 
-    it "creates a mock proxy Scenario for method when passed a second argument" do
+    it "creates a mock proxy Double for method when passed a second argument" do
       @space.scenario_method_proxy(@creator, @object, :foobar).with(1)
       @object.foobar(1).should == :original_foobar
       proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
@@ -123,7 +123,7 @@ module RR
       end
     end
 
-    it "creates a stub proxy Scenario for method when passed a second argument" do
+    it "creates a stub proxy Double for method when passed a second argument" do
       @space.scenario_method_proxy(@creator, @object, :foobar)
       @object.foobar(1).should == :original_foobar
       @object.foobar(1).should == :original_foobar
@@ -146,7 +146,7 @@ module RR
       @creator.do_not_call
     end
 
-    it "creates a do not allow Scenario for method when passed a second argument" do
+    it "creates a do not allow Double for method when passed a second argument" do
       @space.scenario_method_proxy(@creator, @object, :foobar).with(1)
       proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
     end
@@ -172,8 +172,8 @@ module RR
       @creator.space.should === @space
     end
 
-    it "creates a ScenarioCreator" do
-      @creator.should be_instance_of(ScenarioCreator)
+    it "creates a DoubleCreator" do
+      @creator.should be_instance_of(DoubleCreator)
     end
   end
 
@@ -186,7 +186,7 @@ module RR
       @method_name = :foobar
     end
 
-    it "creates a Scenario and registers it to the double_insertion" do
+    it "creates a Double and registers it to the double_insertion" do
       double_insertion = @space.double_insertion(@object, @method_name)
       def double_insertion.scenarios
         @scenarios
