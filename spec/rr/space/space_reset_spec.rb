@@ -27,7 +27,7 @@ module RR
         @space.ordered_scenarios.should be_empty
       end
 
-      it "resets all doubles" do
+      it "resets all double_insertions" do
         double1 = @space.double_insertion(@object1, @method_name)
         double1_reset_calls = 0
         (
@@ -62,35 +62,35 @@ module RR
         @method_name = :foobar
       end
 
-      it "resets the doubles" do
+      it "resets the double_insertions" do
         double_insertion = @space.double_insertion(@object, @method_name)
-        @space.doubles[@object][@method_name].should === double_insertion
+        @space.double_insertions[@object][@method_name].should === double_insertion
         @object.methods.should include("__rr__#{@method_name}")
 
         @space.reset_double(@object, @method_name)
-        @space.doubles[@object][@method_name].should be_nil
+        @space.double_insertions[@object][@method_name].should be_nil
         @object.methods.should_not include("__rr__#{@method_name}")
       end
 
-      it "removes the object from the doubles map when it has no doubles" do
+      it "removes the object from the double_insertions map when it has no double_insertions" do
         double1 = @space.double_insertion(@object, :foobar1)
         double2 = @space.double_insertion(@object, :foobar2)
 
-        @space.doubles.include?(@object).should == true
-        @space.doubles[@object][:foobar1].should_not be_nil
-        @space.doubles[@object][:foobar2].should_not be_nil
+        @space.double_insertions.include?(@object).should == true
+        @space.double_insertions[@object][:foobar1].should_not be_nil
+        @space.double_insertions[@object][:foobar2].should_not be_nil
 
         @space.reset_double(@object, :foobar1)
-        @space.doubles.include?(@object).should == true
-        @space.doubles[@object][:foobar1].should be_nil
-        @space.doubles[@object][:foobar2].should_not be_nil
+        @space.double_insertions.include?(@object).should == true
+        @space.double_insertions[@object][:foobar1].should be_nil
+        @space.double_insertions[@object][:foobar2].should_not be_nil
 
         @space.reset_double(@object, :foobar2)
-        @space.doubles.include?(@object).should == false
+        @space.double_insertions.include?(@object).should == false
       end
     end
 
-    describe "#reset_doubles" do
+    describe "#reset_double_insertions" do
       it_should_behave_like "RR::Space"
 
       before do
@@ -100,7 +100,7 @@ module RR
         @method_name = :foobar
       end
 
-      it "resets the double_insertion and removes it from the doubles list" do
+      it "resets the double_insertion and removes it from the double_insertions list" do
         double1 = @space.double_insertion(@object1, @method_name)
         double1_reset_calls = 0
         (
@@ -122,7 +122,7 @@ module RR
           end
         end
 
-        @space.send(:reset_doubles)
+        @space.send(:reset_double_insertions)
         double1_reset_calls.should == 1
         double2_reset_calls.should == 1
       end

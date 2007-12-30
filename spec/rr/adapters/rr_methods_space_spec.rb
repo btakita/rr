@@ -20,15 +20,15 @@ module RR
         end
         
         describe RRMethods, "#verify" do
-          it "#verify verifies and deletes the doubles" do
-            verifies_all_doubles {verify}
+          it "#verify verifies and deletes the double_insertions" do
+            verifies_all_double_insertions {verify}
           end
 
-          it "#rr_verify verifies and deletes the doubles" do
-            verifies_all_doubles {rr_verify}
+          it "#rr_verify verifies and deletes the double_insertions" do
+            verifies_all_double_insertions {rr_verify}
           end
 
-          def verifies_all_doubles
+          def verifies_all_double_insertions
             double1 = @space.double_insertion(@object1, @method_name)
             double1_verify_calls = 0
             double1_reset_calls = 0
@@ -75,12 +75,12 @@ module RR
             removes_ordered_scenarios {rr_reset}
           end
 
-          it "#reset resets all doubles" do
-            resets_all_doubles {reset}
+          it "#reset resets all double_insertions" do
+            resets_all_double_insertions {reset}
           end
 
-          it "#rr_reset resets all doubles" do
-            resets_all_doubles {rr_reset}
+          it "#rr_reset resets all double_insertions" do
+            resets_all_double_insertions {rr_reset}
           end
 
           def removes_ordered_scenarios
@@ -99,7 +99,7 @@ module RR
             @space.ordered_scenarios.should be_empty
           end
 
-          def resets_all_doubles
+          def resets_all_double_insertions
             double1 = @space.double_insertion(@object1, @method_name)
             double1_reset_calls = 0
             (

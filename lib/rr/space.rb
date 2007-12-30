@@ -15,10 +15,10 @@ module RR
       end
     end
 
-    attr_reader :doubles, :ordered_scenarios
+    attr_reader :double_insertions, :ordered_scenarios
     attr_accessor :trim_backtrace
     def initialize
-      @doubles = HashWithObjectIdKey.new
+      @double_insertions = HashWithObjectIdKey.new
       @ordered_scenarios = []
       @trim_backtrace = false
     end
@@ -54,11 +54,11 @@ module RR
     # When a DoubleInsertion is created, it binds the dispatcher to the
     # object.
     def double_insertion(object, method_name)
-      double_insertion = @doubles[object][method_name.to_sym]
+      double_insertion = @double_insertions[object][method_name.to_sym]
       return double_insertion if double_insertion
 
       double_insertion = DoubleInsertion.new(self, object, method_name.to_sym)
-      @doubles[object][method_name.to_sym] = double_insertion
+      @double_insertions[object][method_name.to_sym] = double_insertion
       double_insertion.bind
       double_insertion
     end
@@ -87,8 +87,8 @@ module RR
 
     # Verifies all the DoubleInsertion objects have met their
     # TimesCalledExpectations.
-    def verify_doubles
-      @doubles.each do |object, method_double_map|
+    def verify_double_insertions
+      @double_insertions.each do |object, method_double_map|
         method_double_map.keys.each do |method_name|
           verify_double(object, method_name)
         end
@@ -98,20 +98,20 @@ module RR
     # Resets the registered Doubles and ordered Scenarios
     def reset
       reset_ordered_scenarios
-      reset_doubles
+      reset_double_insertions
     end
 
     # Verifies the DoubleInsertion for the passed in object and method_name.
     def verify_double(object, method_name)
-      @doubles[object][method_name].verify
+      @double_insertions[object][method_name].verify
     ensure
       reset_double object, method_name
     end
 
     # Resets the DoubleInsertion for the passed in object and method_name.
     def reset_double(object, method_name)
-      double_insertion = @doubles[object].delete(method_name)
-      @doubles.delete(object) if @doubles[object].empty?
+      double_insertion = @double_insertions[object].delete(method_name)
+      @double_insertions.delete(object) if @double_insertions[object].empty?
       double_insertion.reset
     end
 
@@ -122,8 +122,8 @@ module RR
     end
 
     # Resets the registered Doubles for the next test run.
-    def reset_doubles
-      @doubles.each do |object, method_double_map|
+    def reset_double_insertions
+      @double_insertions.each do |object, method_double_map|
         method_double_map.keys.each do |method_name|
           reset_double(object, method_name)
         end

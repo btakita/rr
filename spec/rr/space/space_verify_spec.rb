@@ -28,7 +28,7 @@ module RR
   describe Space do
     it_should_behave_like "RR::Space"
 
-    describe "#verify_doubles" do
+    describe "#verify_double_insertions" do
       before do
         @space = Space.new
         @object1 = Object.new
@@ -36,7 +36,7 @@ module RR
         @method_name = :foobar
       end
 
-      it "verifies and deletes the doubles" do
+      it "verifies and deletes the double_insertions" do
         double1 = @space.double_insertion(@object1, @method_name)
         double1_verify_calls = 0
         double1_reset_calls = 0
@@ -66,7 +66,7 @@ module RR
           end
         end
 
-        @space.verify_doubles
+        @space.verify_double_insertions
         double1_verify_calls.should == 1
         double2_verify_calls.should == 1
         double1_reset_calls.should == 1
@@ -85,7 +85,7 @@ module RR
 
       it "verifies and deletes the double_insertion" do
         double_insertion = @space.double_insertion(@object, @method_name)
-        @space.doubles[@object][@method_name].should === double_insertion
+        @space.double_insertions[@object][@method_name].should === double_insertion
         @object.methods.should include("__rr__#{@method_name}")
 
         verify_calls = 0
@@ -100,13 +100,13 @@ module RR
         @space.verify_double(@object, @method_name)
         verify_calls.should == 1
 
-        @space.doubles[@object][@method_name].should be_nil
+        @space.double_insertions[@object][@method_name].should be_nil
         @object.methods.should_not include("__rr__#{@method_name}")
       end
 
       it "deletes the double_insertion when verifying the double_insertion raises an error" do
         double_insertion = @space.double_insertion(@object, @method_name)
-        @space.doubles[@object][@method_name].should === double_insertion
+        @space.double_insertions[@object][@method_name].should === double_insertion
         @object.methods.should include("__rr__#{@method_name}")
 
         verify_called = true
@@ -122,7 +122,7 @@ module RR
         proc {@space.verify_double(@object, @method_name)}.should raise_error
         verify_called.should be_true
 
-        @space.doubles[@object][@method_name].should be_nil
+        @space.double_insertions[@object][@method_name].should be_nil
         @object.methods.should_not include("__rr__#{@method_name}")
       end
     end
