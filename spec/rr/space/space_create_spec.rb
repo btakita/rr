@@ -186,38 +186,38 @@ module RR
       @method_name = :foobar
     end
 
-    it "creates a Scenario and registers it to the double" do
-      double = @space.double(@object, @method_name)
-      def double.scenarios
+    it "creates a Scenario and registers it to the double_insertion" do
+      double_insertion = @space.double_insertion(@object, @method_name)
+      def double_insertion.scenarios
         @scenarios
       end
 
-      scenario = @space.scenario(double)
-      double.scenarios.should include(scenario)
+      scenario = @space.scenario(double_insertion)
+      double_insertion.scenarios.should include(scenario)
     end
   end
 
-  describe Space, "#double" do
+  describe Space, "#double_insertion" do
     it_should_behave_like "RR::Space"
 
     before do
       @space = Space.new
     end
 
-    it "creates a new double when existing object == but not === with the same method name" do
+    it "creates a new double_insertion when existing object == but not === with the same method name" do
       object1 = []
       object2 = []
       (object1 === object2).should be_true
       object1.__id__.should_not == object2.__id__
 
-      double1 = @space.double(object1, :foobar)
-      double2 = @space.double(object2, :foobar)
+      double1 = @space.double_insertion(object1, :foobar)
+      double2 = @space.double_insertion(object2, :foobar)
 
       double1.should_not == double2
     end
   end
 
-  describe Space, "#double when double does not exist" do
+  describe Space, "#double_insertion when double_insertion does not exist" do
     it_should_behave_like "RR::Space"
 
     before do
@@ -229,29 +229,29 @@ module RR
       @method_name = :foobar
     end
 
-    it "returns double and adds double to double list when method_name is a symbol" do
-      double = @space.double(@object, @method_name)
-      @space.double(@object, @method_name).should === double
-      double.space.should === @space
-      double.object.should === @object
-      double.method_name.should === @method_name
+    it "returns double_insertion and adds double_insertion to double_insertion list when method_name is a symbol" do
+      double_insertion = @space.double_insertion(@object, @method_name)
+      @space.double_insertion(@object, @method_name).should === double_insertion
+      double_insertion.space.should === @space
+      double_insertion.object.should === @object
+      double_insertion.method_name.should === @method_name
     end
 
-    it "returns double and adds double to double list when method_name is a string" do
-      double = @space.double(@object, 'foobar')
-      @space.double(@object, @method_name).should === double
-      double.space.should === @space
-      double.object.should === @object
-      double.method_name.should === @method_name
+    it "returns double_insertion and adds double_insertion to double_insertion list when method_name is a string" do
+      double_insertion = @space.double_insertion(@object, 'foobar')
+      @space.double_insertion(@object, @method_name).should === double_insertion
+      double_insertion.space.should === @space
+      double_insertion.object.should === @object
+      double_insertion.method_name.should === @method_name
     end
 
     it "overrides the method when passing a block" do
-      double = @space.double(@object, @method_name)
+      double_insertion = @space.double_insertion(@object, @method_name)
       @object.methods.should include("__rr__#{@method_name}")
     end
   end
 
-  describe Space, "#double when double exists" do
+  describe Space, "#double_insertion when double_insertion exists" do
     it_should_behave_like "RR::Space"
 
     before do
@@ -263,15 +263,15 @@ module RR
       @method_name = :foobar
     end
 
-    it "returns the existing double" do
+    it "returns the existing double_insertion" do
       original_foobar_method = @object.method(:foobar)
-      double = @space.double(@object, 'foobar')
+      double_insertion = @space.double_insertion(@object, 'foobar')
 
-      double.object_has_original_method?.should be_true
+      double_insertion.object_has_original_method?.should be_true
 
-      @space.double(@object, 'foobar').should === double
+      @space.double_insertion(@object, 'foobar').should === double_insertion
 
-      double.reset
+      double_insertion.reset
       @object.foobar.should == :original_foobar
     end
   end

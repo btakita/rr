@@ -29,7 +29,7 @@ module RR
           end
 
           def verifies_all_doubles
-            double1 = @space.double(@object1, @method_name)
+            double1 = @space.double_insertion(@object1, @method_name)
             double1_verify_calls = 0
             double1_reset_calls = 0
             (
@@ -43,7 +43,7 @@ module RR
                 double1_reset_calls += 1
               end
             end
-            double2 = @space.double(@object2, @method_name)
+            double2 = @space.double_insertion(@object2, @method_name)
             double2_verify_calls = 0
             double2_reset_calls = 0
             (
@@ -84,8 +84,8 @@ module RR
           end
 
           def removes_ordered_scenarios
-            double1 = @space.double(@object1, :foobar1)
-            double2 = @space.double(@object1, :foobar2)
+            double1 = @space.double_insertion(@object1, :foobar1)
+            double2 = @space.double_insertion(@object1, :foobar2)
 
             scenario1 = @space.scenario(double1)
             scenario2 = @space.scenario(double2)
@@ -100,7 +100,7 @@ module RR
           end
 
           def resets_all_doubles
-            double1 = @space.double(@object1, @method_name)
+            double1 = @space.double_insertion(@object1, @method_name)
             double1_reset_calls = 0
             (
             class << double1;
@@ -110,7 +110,7 @@ module RR
                 double1_reset_calls += 1
               end
             end
-            double2 = @space.double(@object2, @method_name)
+            double2 = @space.double_insertion(@object2, @method_name)
             double2_reset_calls = 0
             (
             class << double2;

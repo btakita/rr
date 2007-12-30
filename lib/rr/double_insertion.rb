@@ -1,6 +1,6 @@
 module RR
   # RR::DoubleInsertion is the binding of an object and a method.
-  # A double has 0 to many Scenario objects. Each Scenario
+  # A double_insertion has 0 to many Scenario objects. Each Scenario
   # has Argument Expectations and Times called Expectations.
   class DoubleInsertion
     MethodArguments = Struct.new(:arguments, :block)

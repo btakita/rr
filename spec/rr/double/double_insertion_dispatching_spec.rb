@@ -6,7 +6,7 @@ module RR
       @space = Space.new
       @object = Object.new
       @object.methods.should_not include(method_name.to_s)
-      @double = @space.double(@object, method_name)
+      @double_insertion = @space.double_insertion(@object, method_name)
     end
 
     describe "normal methods" do
@@ -22,7 +22,7 @@ module RR
               yield(a, b)
             end
           end
-          scenario = @space.scenario(@double)
+          scenario = @space.scenario(@double_insertion)
           scenario.with(1, 2).implemented_by(method_fixture.method(:method_with_block))
           @object.foobar(1, 2) {|a, b| [b, a]}.should == [2, 1]
         end
@@ -30,11 +30,11 @@ module RR
 
       describe "where there are no scenarios with duplicate ArgumentExpectations" do
         it "dispatches to Scenario that have an exact match" do
-          scenario1_with_exact_match = @space.scenario(@double)
+          scenario1_with_exact_match = @space.scenario(@double_insertion)
           scenario1_with_exact_match.with(:exact_match_1).returns {:return_1}
-          scenario_with_no_match = @space.scenario(@double)
+          scenario_with_no_match = @space.scenario(@double_insertion)
           scenario_with_no_match.with("nothing that matches").returns {:no_match}
-          scenario2_with_exact_match = @space.scenario(@double)
+          scenario2_with_exact_match = @space.scenario(@double_insertion)
           scenario2_with_exact_match.with(:exact_match_2).returns {:return_2}
 
           @object.foobar(:exact_match_1).should == :return_1
@@ -42,9 +42,9 @@ module RR
         end
 
         it "dispatches to Scenario that have a wildcard match" do
-          scenario_with_wildcard_match = @space.scenario(@double)
+          scenario_with_wildcard_match = @space.scenario(@double_insertion)
           scenario_with_wildcard_match.with_any_args.returns {:wild_card_value}
-          scenario_with_no_match = @space.scenario(@double)
+          scenario_with_no_match = @space.scenario(@double_insertion)
           scenario_with_no_match.with("nothing that matches").returns {:no_match}
 
           @object.foobar(:wildcard_match_1).should == :wild_card_value
@@ -54,10 +54,10 @@ module RR
 
       describe "where there are scenarios" do
         it "raises ScenarioNotFoundError error when arguments do not match a scenario" do
-          scenario_1 = @space.scenario(@double)
+          scenario_1 = @space.scenario(@double_insertion)
           scenario_1.with(1, 2)
 
-          scenario_2 = @space.scenario(@double)
+          scenario_2 = @space.scenario(@double_insertion)
           scenario_2.with(3)
 
           proc {@object.foobar(:arg1, :arg2)}.should raise_error(
@@ -102,7 +102,7 @@ module RR
         end
 
         def scenario(*arguments, &return_value)
-          scenario = @space.scenario(@double)
+          scenario = @space.scenario(@double_insertion)
           scenario.with(*arguments).any_number_of_times.returns(&return_value)
           scenario.should_not be_terminal
           scenario
@@ -144,7 +144,7 @@ module RR
         end
 
         def scenario(*arguments, &return_value)
-          scenario = @space.scenario(@double)
+          scenario = @space.scenario(@double_insertion)
           scenario.with(*arguments).once.returns(&return_value)
           scenario.should be_terminal
           scenario
@@ -186,7 +186,7 @@ module RR
         end
 
         def scenario(&return_value)
-          scenario = @space.scenario(@double)
+          scenario = @space.scenario(@double_insertion)
           scenario.with_any_args.once.returns(&return_value)
           scenario.should be_terminal
           scenario
@@ -200,7 +200,7 @@ module RR
       end
 
       it "executes the block" do
-        scenario = @space.scenario(@double)
+        scenario = @space.scenario(@double_insertion)
         scenario.with(1, 2) {:return_value}
         @object.foobar!(1, 2).should == :return_value
       end
@@ -212,7 +212,7 @@ module RR
       end
 
       it "executes the block" do
-        scenario = @space.scenario(@double)
+        scenario = @space.scenario(@double_insertion)
         scenario.with(1, 2) {:return_value}
         @object.foobar?(1, 2).should == :return_value
       end

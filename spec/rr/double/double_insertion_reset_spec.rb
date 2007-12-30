@@ -3,10 +3,10 @@ require "spec/spec_helper"
 module RR
   describe DoubleInsertion, "#reset", :shared => true do
     it "cleans up by removing the __rr__method" do
-      @double.bind
+      @double_insertion.bind
       @object.methods.should include("__rr__foobar")
 
-      @double.reset
+      @double_insertion.reset
       @object.methods.should_not include("__rr__foobar")
     end
   end
@@ -19,14 +19,14 @@ module RR
       @object = Object.new
       @method_name = :foobar
       @object.methods.should_not include(@method_name.to_s)
-      @double = DoubleInsertion.new(@space, @object, @method_name)
+      @double_insertion = DoubleInsertion.new(@space, @object, @method_name)
     end
 
     it "removes the method" do
-      @double.bind
+      @double_insertion.bind
       @object.methods.should include(@method_name.to_s)
 
-      @double.reset
+      @double_insertion.reset
       @object.methods.should_not include(@method_name.to_s)
       proc {@object.foobar}.should raise_error(NoMethodError)
     end
@@ -44,14 +44,14 @@ module RR
       end
       @object.methods.should include(@method_name.to_s)
       @original_method = @object.method(@method_name)
-      @double = DoubleInsertion.new(@space, @object, @method_name)
+      @double_insertion = DoubleInsertion.new(@space, @object, @method_name)
 
-      @double.bind
+      @double_insertion.bind
       @object.methods.should include(@method_name.to_s)
     end
 
     it "rebind original method" do
-      @double.reset
+      @double_insertion.reset
       @object.methods.should include(@method_name.to_s)
       @object.foobar.should == :original_foobar
     end
@@ -69,14 +69,14 @@ module RR
       end
       @object.methods.should include(@method_name.to_s)
       @original_method = @object.method(@method_name)
-      @double = DoubleInsertion.new(@space, @object, @method_name)
+      @double_insertion = DoubleInsertion.new(@space, @object, @method_name)
 
-      @double.bind
+      @double_insertion.bind
       @object.methods.should include(@method_name.to_s)
     end
 
     it "rebinds original method with block" do
-      @double.reset
+      @double_insertion.reset
       @object.methods.should include(@method_name.to_s)
 
       original_argument = nil

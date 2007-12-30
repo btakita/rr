@@ -2,15 +2,15 @@ require "spec/spec_helper"
 
 module RR
   describe Scenario do
-    attr_reader :space, :object, :double, :scenario
+    attr_reader :space, :object, :double_insertion, :scenario
     before do
       @space = Space.new
       @object = Object.new
       def object.foobar(a, b)
         [b, a]
       end
-      @double = space.double(object, :foobar)
-      @scenario = space.scenario(double)
+      @double_insertion = space.double_insertion(object, :foobar)
+      @scenario = space.scenario(double_insertion)
     end
 
     describe "#with" do
@@ -74,12 +74,12 @@ module RR
 
       it "sets up a Times Called Expectation with 0" do
         scenario.never
-        proc {scenario.call(double)}.should raise_error(Errors::TimesCalledError)
+        proc {scenario.call(double_insertion)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
         scenario.with_any_args.never
-        proc {scenario.call(double)}.should raise_error(Errors::TimesCalledError)
+        proc {scenario.call(double_insertion)}.should raise_error(Errors::TimesCalledError)
       end
     end
 
@@ -90,8 +90,8 @@ module RR
 
       it "sets up a Times Called Expectation with 1" do
         scenario.once
-        scenario.call(double)
-        proc {scenario.call(double)}.should raise_error(Errors::TimesCalledError)
+        scenario.call(double_insertion)
+        proc {scenario.call(double_insertion)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
@@ -107,9 +107,9 @@ module RR
 
       it "sets up a Times Called Expectation with 2" do
         scenario.twice
-        scenario.call(double)
-        scenario.call(double)
-        proc {scenario.call(double)}.should raise_error(Errors::TimesCalledError)
+        scenario.call(double_insertion)
+        scenario.call(double_insertion)
+        proc {scenario.call(double_insertion)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
@@ -141,10 +141,10 @@ module RR
 
       it "sets up a Times Called Expectation with 1" do
         scenario.at_most(2)
-        scenario.call(double)
-        scenario.call(double)
+        scenario.call(double_insertion)
+        scenario.call(double_insertion)
         proc do
-          scenario.call(double)
+          scenario.call(double_insertion)
         end.should raise_error(
         Errors::TimesCalledError,
         "foobar()\nCalled 3 times.\nExpected at most 2 times."
@@ -164,10 +164,10 @@ module RR
 
       it "sets up a Times Called Expectation with passed in times" do
         scenario.times(3)
-        scenario.call(double)
-        scenario.call(double)
-        scenario.call(double)
-        proc {scenario.call(double)}.should raise_error(Errors::TimesCalledError)
+        scenario.call(double_insertion)
+        scenario.call(double_insertion)
+        scenario.call(double_insertion)
+        proc {scenario.call(double_insertion)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
@@ -198,7 +198,7 @@ module RR
         space.ordered_scenarios.should include(scenario)
       end
 
-      it "does not double add itself" do
+      it "does not double_insertion add itself" do
         scenario.ordered
         scenario.ordered
         space.ordered_scenarios.should == [scenario ]
@@ -259,7 +259,7 @@ module RR
           value
         end
 
-        actual_value = scenario.call(double)
+        actual_value = scenario.call(double_insertion)
         actual_value.should === return_value
         actual_value.should == {:foo => :bar}
       end
@@ -270,7 +270,7 @@ module RR
           :after_call_value
         end
 
-        actual_value = scenario.call(double)
+        actual_value = scenario.call(double_insertion)
         actual_value.should == :after_call_value
       end
 
@@ -299,17 +299,17 @@ module RR
 
       it "sets the value of the method when passed a block" do
         scenario.returns {:baz}
-        scenario.call(double).should == :baz
+        scenario.call(double_insertion).should == :baz
       end
 
       it "sets the value of the method when passed an argument" do
         scenario.returns(:baz)
-        scenario.call(double).should == :baz
+        scenario.call(double_insertion).should == :baz
       end
 
       it "returns false when passed false" do
         scenario.returns(false)
-        scenario.call(double).should == false
+        scenario.call(double_insertion).should == false
       end
 
       it "raises an error when both argument and block is passed in" do
@@ -326,7 +326,7 @@ module RR
 
       it "sets the implementation to the passed in proc" do
         scenario.implemented_by(proc{:baz})
-        scenario.call(double).should == :baz
+        scenario.call(double_insertion).should == :baz
       end
 
       it "sets the implementation to the passed in method" do
@@ -334,7 +334,7 @@ module RR
           [b, a]
         end
         scenario.implemented_by(object.method(:foobar))
-        scenario.call(double, 1, 2).should == [2, 1]
+        scenario.call(double_insertion, 1, 2).should == [2, 1]
       end
     end
 
@@ -345,7 +345,7 @@ module RR
 
       it "sets the implementation to the original method" do
         scenario.implemented_by_original_method
-        scenario.call(double, 1, 2).should == [2, 1]
+        scenario.call(double_insertion, 1, 2).should == [2, 1]
       end
 
       it "calls methods when respond_to? is true and methods does not contain original method" do
@@ -365,8 +365,8 @@ module RR
           end
         end
 
-        double = space.double(object, :foobar)
-        scenario = space.scenario(double)
+        double_insertion = space.double_insertion(object, :foobar)
+        scenario = space.scenario(double_insertion)
         scenario.with_any_args
         scenario.implemented_by_original_method
 
@@ -379,8 +379,8 @@ module RR
             "method_missing for #{method_name}(#{args.inspect})"
           end
         end
-        double = space.double(object, :does_not_exist)
-        scenario = space.scenario(double)
+        double_insertion = space.double_insertion(object, :does_not_exist)
+        scenario = space.scenario(double_insertion)
         scenario.with_any_args
         scenario.implemented_by_original_method
 
@@ -392,36 +392,36 @@ module RR
     describe "#call implemented by a proc" do
       it "calls the return proc when implemented by a proc" do
         scenario.returns {|arg| "returning #{arg}"}
-        scenario.call(double, :foobar).should == "returning foobar"
+        scenario.call(double_insertion, :foobar).should == "returning foobar"
       end
 
       it "calls and returns the after_call when after_call is set" do
         scenario.returns {|arg| "returning #{arg}"}.after_call do |value|
           "#{value} after call"
         end
-        scenario.call(double, :foobar).should == "returning foobar after call"
+        scenario.call(double_insertion, :foobar).should == "returning foobar after call"
       end
 
       it "returns nil when to returns is not set" do
-        scenario.call(double).should be_nil
+        scenario.call(double_insertion).should be_nil
       end
 
       it "works when times_called is not set" do
         scenario.returns {:value}
-        scenario.call(double)
+        scenario.call(double_insertion)
       end
 
       it "verifes the times_called does not exceed the TimesCalledExpectation" do
         scenario.times(2).returns {:value}
 
-        scenario.call(double, :foobar)
-        scenario.call(double, :foobar)
-        proc {scenario.call(double, :foobar)}.should raise_error(Errors::TimesCalledError)
+        scenario.call(double_insertion, :foobar)
+        scenario.call(double_insertion, :foobar)
+        proc {scenario.call(double_insertion, :foobar)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "raises ScenarioOrderError when ordered and called out of order" do
         scenario1 = scenario
-        scenario2 = space.scenario(double)
+        scenario2 = space.scenario(double_insertion)
 
         scenario1.with(1).returns {:return_1}.ordered.once
         scenario2.with(2).returns {:return_2}.ordered.once
@@ -451,7 +451,7 @@ module RR
         end
 
         scenario.returns {:value}.ordered
-        scenario.call(double, :foobar)
+        scenario.call(double_insertion, :foobar)
         verify_ordered_scenario_called.should be_true
         passed_in_scenario.should === scenario
       end
@@ -469,7 +469,7 @@ module RR
         end
 
         scenario.returns {:value}
-        scenario.call(double, :foobar)
+        scenario.call(double_insertion, :foobar)
         verify_ordered_scenario_called.should be_false
       end
 
@@ -561,15 +561,15 @@ module RR
     describe "#attempt?" do
       it "returns true when TimesCalledExpectation#attempt? is true" do
         scenario.with(1, 2, 3).twice
-        scenario.call(double, 1, 2, 3)
+        scenario.call(double_insertion, 1, 2, 3)
         scenario.times_called_expectation.should be_attempt
         scenario.should be_attempt
       end
 
       it "returns false when TimesCalledExpectation#attempt? is true" do
         scenario.with(1, 2, 3).twice
-        scenario.call(double, 1, 2, 3)
-        scenario.call(double, 1, 2, 3)
+        scenario.call(double_insertion, 1, 2, 3)
+        scenario.call(double_insertion, 1, 2, 3)
         scenario.times_called_expectation.should_not be_attempt
         scenario.should_not be_attempt
       end
@@ -586,18 +586,18 @@ module RR
         scenario.twice.returns {:return_value}
 
         proc {scenario.verify}.should raise_error(Errors::TimesCalledError)
-        scenario.call(double)
+        scenario.call(double_insertion)
         proc {scenario.verify}.should raise_error(Errors::TimesCalledError)
-        scenario.call(double)
+        scenario.call(double_insertion)
 
         proc {scenario.verify}.should_not raise_error
       end
 
       it "does not raise an error when there is no times called expectation" do
         proc {scenario.verify}.should_not raise_error
-        scenario.call(double)
+        scenario.call(double_insertion)
         proc {scenario.verify}.should_not raise_error
-        scenario.call(double)
+        scenario.call(double_insertion)
         proc {scenario.verify}.should_not raise_error
       end
     end
@@ -623,7 +623,7 @@ module RR
 
     describe "#method_name" do
       it "returns the DoubleInsertion's method_name" do
-        double.method_name.should == :foobar
+        double_insertion.method_name.should == :foobar
         scenario.method_name.should == :foobar
       end
     end

@@ -13,7 +13,7 @@ module RR
         end
 
         it "resets the doubles" do
-          RR::Space.double(@subject, @method_name)
+          RR::Space.double_insertion(@subject, @method_name)
           RR::Space.doubles.should_not be_empty
 
           @fixture.setup_mocks_for_rspec
@@ -31,8 +31,8 @@ module RR
         end
 
         it "verifies the doubles" do
-          double = RR::Space.double(@subject, @method_name)
-          scenario = RR::Space.scenario(double)
+          double_insertion = RR::Space.double_insertion(@subject, @method_name)
+          scenario = RR::Space.scenario(double_insertion)
 
           scenario.once
 
@@ -53,7 +53,7 @@ module RR
         end
 
         it "resets the doubles" do
-          RR::Space.double(@subject, @method_name)
+          RR::Space.double_insertion(@subject, @method_name)
           RR::Space.doubles.should_not be_empty
 
           @fixture.teardown_mocks_for_rspec

@@ -6,8 +6,8 @@ describe ScenarioDefinition, :shared => true do
     @space = Space.new
     @object = Object.new
     add_original_method
-    @double = @space.double(@object, :foobar)
-    @scenario = @space.scenario(@double)
+    @double_insertion = @space.double_insertion(@object, :foobar)
+    @scenario = @space.scenario(@double_insertion)
     @definition = @scenario.definition
   end
 
@@ -459,7 +459,7 @@ describe ScenarioDefinition, "#ordered", :shared => true do
     @space.ordered_scenarios.should include(@scenario)
   end
 
-  it "does not double add itself" do
+  it "does not double_insertion add itself" do
     @definition.ordered
     @space.ordered_scenarios.should == [@scenario]
   end
@@ -683,8 +683,8 @@ describe ScenarioDefinition, "#implemented_by_original_method" do
         "method_missing for #{method_name}(#{args.inspect})"
       end
     end
-    double = @space.double(@object, :does_not_exist)
-    scenario = @space.scenario(double)
+    double_insertion = @space.double_insertion(@object, :does_not_exist)
+    scenario = @space.scenario(double_insertion)
     scenario.with_any_args
     scenario.implemented_by_original_method
 

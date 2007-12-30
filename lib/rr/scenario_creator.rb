@@ -201,21 +201,21 @@ module RR
     
     protected
     def setup_scenario(subject, method_name)
-      @double = @space.double(subject, method_name)
-      @scenario = @space.scenario(@double)
+      @double_insertion = @space.double_insertion(subject, method_name)
+      @scenario = @space.scenario(@double_insertion)
       @definition = @scenario.definition
     end
 
     def setup_class_probing_instances(subject, method_name)
-      class_double = @space.double(subject, :new)
+      class_double = @space.double_insertion(subject, :new)
       class_scenario = @space.scenario(class_double)
 
       instance_method_name = method_name
 
       @definition = @space.scenario_definition
       class_handler = proc do |return_value|
-        double = @space.double(return_value, instance_method_name)
-        @space.scenario(double, @definition)
+        double_insertion = @space.double_insertion(return_value, instance_method_name)
+        @space.scenario(double_insertion, @definition)
         return_value
       end
 

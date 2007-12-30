@@ -38,10 +38,10 @@ module RR
     end
 
     # Creates and registers a Scenario to be verified.
-    def scenario(double, definition = scenario_definition)
-      scenario = Scenario.new(self, double, definition)
+    def scenario(double_insertion, definition = scenario_definition)
+      scenario = Scenario.new(self, double_insertion, definition)
       scenario.definition.scenario = scenario
-      double.register_scenario scenario
+      double_insertion.register_scenario scenario
       scenario
     end
 
@@ -53,14 +53,14 @@ module RR
     # in object and method_name.
     # When a DoubleInsertion is created, it binds the dispatcher to the
     # object.
-    def double(object, method_name)
-      double = @doubles[object][method_name.to_sym]
-      return double if double
+    def double_insertion(object, method_name)
+      double_insertion = @doubles[object][method_name.to_sym]
+      return double_insertion if double_insertion
 
-      double = DoubleInsertion.new(self, object, method_name.to_sym)
-      @doubles[object][method_name.to_sym] = double
-      double.bind
-      double
+      double_insertion = DoubleInsertion.new(self, object, method_name.to_sym)
+      @doubles[object][method_name.to_sym] = double_insertion
+      double_insertion.bind
+      double_insertion
     end
 
     # Registers the ordered Scenario to be verified.
@@ -110,9 +110,9 @@ module RR
 
     # Resets the DoubleInsertion for the passed in object and method_name.
     def reset_double(object, method_name)
-      double = @doubles[object].delete(method_name)
+      double_insertion = @doubles[object].delete(method_name)
       @doubles.delete(object) if @doubles[object].empty?
-      double.reset
+      double_insertion.reset
     end
 
     protected

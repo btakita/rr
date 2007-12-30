@@ -16,11 +16,11 @@ module RR
       end
     end
 
-    attr_reader :times_called, :double, :definition
+    attr_reader :times_called, :double_insertion, :definition
 
-    def initialize(space, double, definition)
+    def initialize(space, double_insertion, definition)
       @space = space
-      @double = double
+      @double_insertion = double_insertion
       @definition = definition
       @times_called = 0
       @times_called_expectation = Expectations::TimesCalledExpectation.new(self)
@@ -216,11 +216,11 @@ module RR
     #
     # A TimesCalledError is raised when the times called
     # exceeds the expected TimesCalledExpectation.
-    def call(double, *args, &block)
+    def call(double_insertion, *args, &block)
       self.times_called_expectation.attempt! if definition.times_matcher
       @space.verify_ordered_scenario(self) if ordered?
       yields!(block)
-      return_value = call_implementation(double, *args, &block)
+      return_value = call_implementation(double_insertion, *args, &block)
       return return_value unless definition.after_call_value
       definition.after_call_value.call(return_value)
     end
@@ -235,14 +235,14 @@ module RR
     end
     protected :yields!
 
-    def call_implementation(double, *args, &block)
+    def call_implementation(double_insertion, *args, &block)
       return nil unless implementation
 
       if implementation === ScenarioDefinition::ORIGINAL_METHOD
-        if double.object_has_original_method?
-          return double.call_original_method(*args, &block)
+        if double_insertion.object_has_original_method?
+          return double_insertion.call_original_method(*args, &block)
         else
-          return double.object.__send__(
+          return double_insertion.object.__send__(
             :method_missing,
             method_name,
             *args,
@@ -295,7 +295,7 @@ module RR
 
     # The method name that this Scenario is attatched to
     def method_name
-      double.method_name
+      double_insertion.method_name
     end
 
     # The Arguments that this Scenario expects

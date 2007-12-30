@@ -7,18 +7,18 @@ module RR
       @object = Object.new
       @method_name = :foobar
       @object.methods.should_not include(@method_name.to_s)
-      @double = DoubleInsertion.new(@space, @object, @method_name)
-      def @double.scenarios
+      @double_insertion = DoubleInsertion.new(@space, @object, @method_name)
+      def @double_insertion.scenarios
         @scenarios
       end
     end
 
     it "adds the scenario to the scenarios list" do
-      scenario = Scenario.new(@space, @double, @space.scenario_definition)
+      scenario = Scenario.new(@space, @double_insertion, @space.scenario_definition)
 
-      @double.scenarios.should_not include(scenario)
-      @double.register_scenario scenario
-      @double.scenarios.should include(scenario)
+      @double_insertion.scenarios.should_not include(scenario)
+      @double_insertion.register_scenario scenario
+      @double_insertion.scenarios.should include(scenario)
     end
   end
 end

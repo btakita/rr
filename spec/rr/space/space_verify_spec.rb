@@ -6,11 +6,11 @@ module RR
       @space = Space.new
       @object = Object.new
       @method_name = :foobar
-      @double = @space.double(@object, @method_name)
+      @double_insertion = @space.double_insertion(@object, @method_name)
     end
 
     it "raises an error when Scenario is NonTerminal" do
-      scenario = @space.scenario(@double)
+      scenario = @space.scenario(@double_insertion)
       @space.register_ordered_scenario(scenario)
 
       scenario.any_number_of_times
@@ -37,7 +37,7 @@ module RR
       end
 
       it "verifies and deletes the doubles" do
-        double1 = @space.double(@object1, @method_name)
+        double1 = @space.double_insertion(@object1, @method_name)
         double1_verify_calls = 0
         double1_reset_calls = 0
         (
@@ -51,7 +51,7 @@ module RR
             double1_reset_calls += 1
           end
         end
-        double2 = @space.double(@object2, @method_name)
+        double2 = @space.double_insertion(@object2, @method_name)
         double2_verify_calls = 0
         double2_reset_calls = 0
         (
@@ -83,14 +83,14 @@ module RR
         @method_name = :foobar
       end
 
-      it "verifies and deletes the double" do
-        double = @space.double(@object, @method_name)
-        @space.doubles[@object][@method_name].should === double
+      it "verifies and deletes the double_insertion" do
+        double_insertion = @space.double_insertion(@object, @method_name)
+        @space.doubles[@object][@method_name].should === double_insertion
         @object.methods.should include("__rr__#{@method_name}")
 
         verify_calls = 0
         (
-        class << double;
+        class << double_insertion;
           self;
         end).class_eval do
           define_method(:verify) do ||
@@ -104,14 +104,14 @@ module RR
         @object.methods.should_not include("__rr__#{@method_name}")
       end
 
-      it "deletes the double when verifying the double raises an error" do
-        double = @space.double(@object, @method_name)
-        @space.doubles[@object][@method_name].should === double
+      it "deletes the double_insertion when verifying the double_insertion raises an error" do
+        double_insertion = @space.double_insertion(@object, @method_name)
+        @space.doubles[@object][@method_name].should === double_insertion
         @object.methods.should include("__rr__#{@method_name}")
 
         verify_called = true
         (
-        class << double;
+        class << double_insertion;
           self;
         end).class_eval do
           define_method(:verify) do ||
@@ -131,7 +131,7 @@ module RR
       it_should_behave_like "RR::Space#verify_ordered_scenario"
 
       it "keeps the scenario when times called is not verified" do
-        scenario = @space.scenario(@double)
+        scenario = @space.scenario(@double_insertion)
         @space.register_ordered_scenario(scenario)
 
         scenario.twice
@@ -142,7 +142,7 @@ module RR
       end
 
       it "removes the scenario when times called expectation should no longer be attempted" do
-        scenario = @space.scenario(@double)
+        scenario = @space.scenario(@double_insertion)
         @space.register_ordered_scenario(scenario)
 
         scenario.with(1).once
@@ -172,7 +172,7 @@ module RR
       end
 
       def scenario
-        scenario_definition = @space.scenario(@double).once
+        scenario_definition = @space.scenario(@double_insertion).once
         @space.register_ordered_scenario(scenario_definition.scenario)
         scenario_definition.scenario
       end

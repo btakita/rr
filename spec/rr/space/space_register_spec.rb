@@ -10,7 +10,7 @@ module RR
       Space.instance = @space
       @object = Object.new
       @method_name = :foobar
-      @double = @space.double(@object, @method_name)
+      @double_insertion = @space.double_insertion(@object, @method_name)
     end
 
     after(:each) do
@@ -18,13 +18,13 @@ module RR
     end
 
     it "adds the ordered scenario to the ordered_scenarios collection" do
-      scenario1 = @space.scenario(@double)
+      scenario1 = @space.scenario(@double_insertion)
 
       @space.ordered_scenarios.should == []
       @space.register_ordered_scenario scenario1
       @space.ordered_scenarios.should == [scenario1]
 
-      scenario2 = @space.scenario(@double)
+      scenario2 = @space.scenario(@double_insertion)
       @space.register_ordered_scenario scenario2
       @space.ordered_scenarios.should == [scenario1, scenario2]
     end
