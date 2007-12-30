@@ -2,7 +2,7 @@ module RR
   # RR::Double is the use case for a method call.
   # It has the ArgumentEqualityExpectation, TimesCalledExpectation,
   # and the implementation.
-  class DoubleDefinition
+  class DoubleDefinition #:nodoc:
     ORIGINAL_METHOD = Object.new
     attr_accessor :times_called,
                   :argument_expectation,

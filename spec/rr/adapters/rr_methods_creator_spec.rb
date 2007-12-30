@@ -257,8 +257,8 @@ module RR
         end
 
         it "sets up the RR do_not_allow call chain" do
-          creates_do_not_allow_call_chain(do_not_call(@subject))
-          creates_do_not_allow_call_chain(rr_do_not_call(@subject))
+          creates_do_not_allow_call_chain(dont_allow(@subject))
+          creates_do_not_allow_call_chain(rr_dont_allow(@subject))
           creates_do_not_allow_call_chain(dont_call(@subject))
           creates_do_not_allow_call_chain(rr_dont_call(@subject))
           creates_do_not_allow_call_chain(do_not_allow(@subject))
@@ -268,8 +268,8 @@ module RR
         end
 
         it "creates a mock Double for method when passed a second argument" do
-          creates_scenario_with_method_name(do_not_call(@subject, :foobar))
-          creates_scenario_with_method_name(rr_do_not_call(@subject, :foobar))
+          creates_scenario_with_method_name(dont_allow(@subject, :foobar))
+          creates_scenario_with_method_name(rr_dont_allow(@subject, :foobar))
           creates_scenario_with_method_name(dont_call(@subject, :foobar))
           creates_scenario_with_method_name(rr_dont_call(@subject, :foobar))
           creates_scenario_with_method_name(do_not_allow(@subject, :foobar))

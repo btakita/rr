@@ -129,8 +129,8 @@ module RR
         creator.proxy(subject, method_name, &definition)
       end
 
-      # This method sets the Double to have a do_not_call strategy.
-      # A do_not_call strategy sets the default state of the Double
+      # This method sets the Double to have a dont_allow strategy.
+      # A dont_allow strategy sets the default state of the Double
       # to expect never to be called. The Double's expectations can be
       # changed.
       #
@@ -139,19 +139,19 @@ module RR
       #
       #   do_not_allow(subject).method_name(arg1, arg2)
       #
-      # do_not_call also supports a block sytnax.
-      #    do_not_call(subject) do |m|
+      # dont_allow also supports a block sytnax.
+      #    dont_allow(subject) do |m|
       #      m.method1 # Do not allow method1 with any arguments
       #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
       #      m.method3.with_no_args # Do not allow method3 with no arguments
       #    end
-      def do_not_call(subject=DoubleCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+      def dont_allow(subject=DoubleCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
         creator = RR::Space.scenario_creator
-        creator.do_not_call(subject, method_name, &definition)
+        creator.dont_allow(subject, method_name, &definition)
       end
-      alias_method :dont_call, :do_not_call
-      alias_method :do_not_allow, :do_not_call
-      alias_method :dont_allow, :do_not_call
+      alias_method :do_not_allow, :dont_allow
+      alias_method :dont_call, :dont_allow
+      alias_method :do_not_call, :dont_allow
 
       # Calling instance_of will cause all instances of the passed in Class
       # to have the Double defined.

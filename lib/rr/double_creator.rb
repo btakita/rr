@@ -3,9 +3,8 @@ module RR
   # The strategies are:
   # * mock
   # * stub
-  # * do_not_call
-  #
-  # Probing can also be added.
+  # * proxy
+  # * dont_allow
   class DoubleCreator
     NO_SUBJECT_ARG = Object.new
 
@@ -89,32 +88,32 @@ module RR
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
 
-    # This method sets the Double to have a do_not_call strategy.
-    # A do_not_call strategy sets the default state of the Double
+    # This method sets the Double to have a dont_allow strategy.
+    # A dont_allow strategy sets the default state of the Double
     # to expect never to be called. The Double's expectations can be
     # changed.
     #
     # The following example sets the expectation that subject.method_name
     # will never be called with arg1 and arg2.
     #
-    #   do_not_allow(subject).method_name(arg1, arg2)
+    #   dont_allow(subject).method_name(arg1, arg2)
     #
-    # do_not_call also supports a block sytnax.
-    #    do_not_call(subject) do |m|
+    # dont_allow also supports a block sytnax.
+    #    dont_allow(subject) do |m|
     #      m.method1 # Do not allow method1 with any arguments
     #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
     #      m.method3.with_no_args # Do not allow method3 with no arguments
     #    end
-    def do_not_call(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
+    def dont_allow(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       strategy_error! if @strategy
-      proxy_when_do_not_call_error! if @proxy
-      @strategy = :do_not_call
+      proxy_when_dont_allow_error! if @proxy
+      @strategy = :dont_allow
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
     end
-    alias_method :dont_call, :do_not_call
-    alias_method :do_not_allow, :do_not_call
-    alias_method :dont_allow, :do_not_call
+    alias_method :do_not_allow, :dont_allow
+    alias_method :dont_call, :dont_allow
+    alias_method :do_not_call, :dont_allow
 
     # This method add proxy capabilities to the Double. proxy can be called
     # with mock or stub.
@@ -162,7 +161,7 @@ module RR
     #     "My new return value"
     #   end
     def proxy(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
-      proxy_when_do_not_call_error! if @strategy == :do_not_call
+      proxy_when_dont_allow_error! if @strategy == :dont_allow
       @proxy = true
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.scenario_method_proxy(self, subject, method_name, &definition)
@@ -234,7 +233,7 @@ module RR
       case @strategy
       when :mock; builder.mock!
       when :stub; builder.stub!
-      when :do_not_call; builder.do_not_call!
+      when :dont_allow; builder.dont_allow!
       else no_strategy_error!
       end
       
@@ -259,10 +258,10 @@ module RR
       )
     end
 
-    def proxy_when_do_not_call_error!
+    def proxy_when_dont_allow_error!
       raise(
         DoubleDefinitionError,
-        "Doubles cannot be proxied when using do_not_call strategy"
+        "Doubles cannot be proxied when using dont_allow strategy"
       )
     end
   end

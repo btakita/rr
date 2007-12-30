@@ -42,13 +42,13 @@ module RR
       )
     end
 
-    it "raises error when using do_not_call strategy" do
-      creator.do_not_call
+    it "raises error when using dont_allow strategy" do
+      creator.dont_allow
       proc do
         creator.__send__(method_name)
       end.should raise_error(
       Errors::DoubleDefinitionError,
-      "This Double already has a do_not_call strategy"
+      "This Double already has a dont_allow strategy"
       )
     end
   end
@@ -137,41 +137,41 @@ module RR
       end
     end
 
-    describe "#do_not_call" do
+    describe "#dont_allow" do
       it_should_behave_like "RR::DoubleCreator strategy definition"
 
       before do
-        @method_name = :do_not_call
+        @method_name = :dont_allow
       end
 
       it "raises error when proxied" do
         creator.proxy
         proc do
-          creator.do_not_call
+          creator.dont_allow
         end.should raise_error(
         Errors::DoubleDefinitionError,
-        "Doubles cannot be proxied when using do_not_call strategy"
+        "Doubles cannot be proxied when using dont_allow strategy"
         )
       end
 
-      it "sets up the RR do_not_call call chain" do
-        creates_do_not_call_call_chain(creator.do_not_call(subject))
+      it "sets up the RR dont_allow call chain" do
+        creates_dont_allow_call_chain(creator.dont_allow(subject))
       end
 
-      it "sets up the RR do_not_call call chain" do
-        creates_do_not_call_call_chain(creator.dont_call(subject))
+      it "sets up the RR dont_allow call chain" do
+        creates_dont_allow_call_chain(creator.dont_call(subject))
       end
 
-      it "sets up the RR do_not_call call chain" do
-        creates_do_not_call_call_chain(creator.do_not_allow(subject))
+      it "sets up the RR dont_allow call chain" do
+        creates_dont_allow_call_chain(creator.do_not_allow(subject))
       end
 
-      it "sets up the RR do_not_call call chain" do
-        creates_do_not_call_call_chain(creator.dont_allow(subject))
+      it "sets up the RR dont_allow call chain" do
+        creates_dont_allow_call_chain(creator.dont_allow(subject))
       end
 
       it "creates a mock Double for method when passed a second argument" do
-        creates_scenario_with_method_name(creator.do_not_call(subject, :foobar))
+        creates_scenario_with_method_name(creator.dont_allow(subject, :foobar))
       end
 
       it "creates a mock Double for method when passed a second argument" do
@@ -199,7 +199,7 @@ module RR
         nil
       end
 
-      def creates_do_not_call_call_chain(creator)
+      def creates_dont_allow_call_chain(creator)
         scenario = creator.foobar(1, 2)
         scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
         scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
@@ -222,13 +222,13 @@ module RR
         end
       end
 
-      it "raises error when using do_not_call strategy" do
-        creator.do_not_call
+      it "raises error when using dont_allow strategy" do
+        creator.dont_allow
         proc do
           creator.proxy
         end.should raise_error(
         Errors::DoubleDefinitionError,
-        "Doubles cannot be proxied when using do_not_call strategy"
+        "Doubles cannot be proxied when using dont_allow strategy"
         )
       end
 
@@ -347,9 +347,9 @@ module RR
       end
     end
 
-    describe "#create! using do_not_call strategy" do
+    describe "#create! using dont_allow strategy" do
       before do
-        creator.do_not_call
+        creator.dont_allow
       end
 
       it "sets expectation for method to never be called with any arguments when on arguments passed in" do

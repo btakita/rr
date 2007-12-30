@@ -1,5 +1,5 @@
 module RR
-class HashWithObjectIdKey < ::Hash
+class HashWithObjectIdKey < ::Hash #:nodoc:
   def initialize
     @keys = {}
     super do |hash, subject_object|

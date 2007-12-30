@@ -5,7 +5,7 @@ class DoubleMatches
               :exact_non_terminal_scenarios_to_attempt,
               :wildcard_terminal_scenarios_to_attempt,
               :wildcard_non_terminal_scenarios_to_attempt
-  def initialize(scenarios)
+  def initialize(scenarios) #:nodoc:
     @scenarios = scenarios
     @matching_scenarios = []
     @exact_terminal_scenarios_to_attempt = []

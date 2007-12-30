@@ -143,7 +143,7 @@ module RR
 
     before do
       @creator = @space.scenario_creator
-      @creator.do_not_call
+      @creator.dont_allow
     end
 
     it "creates a do not allow Double for method when passed a second argument" do

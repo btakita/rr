@@ -1,5 +1,5 @@
 module RR
-  class DoubleDefinitionBuilder
+  class DoubleDefinitionBuilder #:nodoc:
     attr_reader :definition
 
     def initialize(definition, args, handler)
@@ -17,7 +17,7 @@ module RR
       permissive_argument!
     end
 
-    def do_not_call!
+    def dont_allow!
       @definition.never
       permissive_argument!
       reimplementation!
