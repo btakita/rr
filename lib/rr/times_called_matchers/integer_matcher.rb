@@ -1,19 +1,19 @@
 module RR
-module TimesCalledMatchers
-  class IntegerMatcher < TimesCalledMatcher
-    include Terminal
-    
-    def possible_match?(times_called)
-      times_called <= @times
-    end
+  module TimesCalledMatchers #:nodoc:
+    class IntegerMatcher < TimesCalledMatcher
+      include Terminal
 
-    def matches?(times_called)
-      times_called == @times
-    end
+      def possible_match?(times_called)
+        times_called <= @times
+      end
 
-    def attempt?(times_called)
-      times_called < @times
+      def matches?(times_called)
+        times_called == @times
+      end
+
+      def attempt?(times_called)
+        times_called < @times
+      end
     end
   end
-end
 end

@@ -1,19 +1,19 @@
 module RR
-module TimesCalledMatchers
-  class AnyTimesMatcher < TimesCalledMatcher
-    include NonTerminal
-    
-    def initialize
-    end
+  module TimesCalledMatchers #:nodoc:
+    class AnyTimesMatcher < TimesCalledMatcher
+      include NonTerminal
 
-    def matches?(times_called)
-      true
-    end
+      def initialize
+      end
 
-    protected
-    def expected_message_part
-      "Expected any number of times."
+      def matches?(times_called)
+        true
+      end
+
+      protected
+      def expected_message_part
+        "Expected any number of times."
+      end
     end
   end
-end
 end

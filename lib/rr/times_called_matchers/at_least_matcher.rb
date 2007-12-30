@@ -1,16 +1,16 @@
 module RR
-module TimesCalledMatchers
-  class AtLeastMatcher < TimesCalledMatcher
-    include NonTerminal
-    
-    def matches?(times_called)
-      times_called >= @times
-    end
+  module TimesCalledMatchers #:nodoc:
+    class AtLeastMatcher < TimesCalledMatcher
+      include NonTerminal
 
-    protected
-    def expected_message_part
-      "Expected at least #{@times.inspect} times."
+      def matches?(times_called)
+        times_called >= @times
+      end
+
+      protected
+      def expected_message_part
+        "Expected at least #{@times.inspect} times."
+      end
     end
   end
-end
 end
