@@ -28,7 +28,7 @@ module RR
   describe Space do
     it_should_behave_like "RR::Space"
 
-    describe "#verify_double_insertions" do
+    describe "#verify_doubles" do
       before do
         @space = Space.new
         @object1 = Object.new
@@ -66,7 +66,7 @@ module RR
           end
         end
 
-        @space.verify_double_insertions
+        @space.verify_doubles
         double1_verify_calls.should == 1
         double2_verify_calls.should == 1
         double1_reset_calls.should == 1

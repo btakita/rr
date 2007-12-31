@@ -4,7 +4,7 @@ module RR
       # Verifies all the DoubleInsertion objects have met their
       # TimesCalledExpectations.
       def verify
-        RR::Space.instance.verify_double_insertions
+        RR::Space.instance.verify_doubles
       end
 
       # Resets the registered Doubles and ordered Doubles

@@ -87,7 +87,7 @@ module RR
 
     # Verifies all the DoubleInsertion objects have met their
     # TimesCalledExpectations.
-    def verify_double_insertions
+    def verify_doubles
       @double_insertions.each do |object, method_double_map|
         method_double_map.keys.each do |method_name|
           verify_double(object, method_name)

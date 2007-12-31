@@ -1,5 +1,6 @@
 * 0.4.1
 - Fixed backward compatability issues with rspec
+- Renamed Space#verify_double_insertions to #verify_doubles
 
 * 0.4.0
 - Documentation improvements
