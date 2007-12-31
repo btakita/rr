@@ -1,7 +1,7 @@
 require "spec/spec_helper"
 
 module RR
-  describe DoubleInsertion do
+  describe DoubleInjection do
     before do
       @space = Space.new
       @object = Object.new

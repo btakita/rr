@@ -1,7 +1,7 @@
 require "spec/spec_helper"
 
 module RR
-  describe DoubleInsertion, "#bind with an existing method" do
+  describe DoubleInjection, "#bind with an existing method" do
     before do
       @space = Space.new
       @object = Object.new
@@ -11,7 +11,7 @@ module RR
       end
       @original_method = @object.method(:foobar)
       @object.methods.should include(@method_name.to_s)
-      @double_insertion = DoubleInsertion.new(@space, @object, @method_name)
+      @double_insertion = DoubleInjection.new(@space, @object, @method_name)
     end
 
     it "overrides the original method with the double_insertion's dispatching methods" do
@@ -41,13 +41,13 @@ module RR
     end
   end
 
-  describe DoubleInsertion, "#bind without an existing method" do
+  describe DoubleInjection, "#bind without an existing method" do
     before do
       @space = Space.new
       @object = Object.new
       @method_name = :foobar
       @object.methods.should_not include(@method_name.to_s)
-      @double_insertion = DoubleInsertion.new(@space, @object, @method_name)
+      @double_insertion = DoubleInjection.new(@space, @object, @method_name)
     end
 
     it "overrides the original method with the double_insertion's dispatching methods" do

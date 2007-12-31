@@ -1,7 +1,7 @@
 require "spec/spec_helper"
 
 module RR
-  describe DoubleInsertion, "#reset", :shared => true do
+  describe DoubleInjection, "#reset", :shared => true do
     it "cleans up by removing the __rr__method" do
       @double_insertion.bind
       @object.methods.should include("__rr__foobar")
@@ -11,15 +11,15 @@ module RR
     end
   end
 
-  describe DoubleInsertion, "#reset when method does not exist" do
-    it_should_behave_like "RR::DoubleInsertion#reset"
+  describe DoubleInjection, "#reset when method does not exist" do
+    it_should_behave_like "RR::DoubleInjection#reset"
 
     before do
       @space = Space.new
       @object = Object.new
       @method_name = :foobar
       @object.methods.should_not include(@method_name.to_s)
-      @double_insertion = DoubleInsertion.new(@space, @object, @method_name)
+      @double_insertion = DoubleInjection.new(@space, @object, @method_name)
     end
 
     it "removes the method" do
@@ -32,8 +32,8 @@ module RR
     end
   end
 
-  describe DoubleInsertion, "#reset when method exists" do
-    it_should_behave_like "RR::DoubleInsertion#reset"
+  describe DoubleInjection, "#reset when method exists" do
+    it_should_behave_like "RR::DoubleInjection#reset"
 
     before do
       @space = Space.new
@@ -44,7 +44,7 @@ module RR
       end
       @object.methods.should include(@method_name.to_s)
       @original_method = @object.method(@method_name)
-      @double_insertion = DoubleInsertion.new(@space, @object, @method_name)
+      @double_insertion = DoubleInjection.new(@space, @object, @method_name)
 
       @double_insertion.bind
       @object.methods.should include(@method_name.to_s)
@@ -57,8 +57,8 @@ module RR
     end
   end
 
-  describe DoubleInsertion, "#reset when method with block exists" do
-    it_should_behave_like "RR::DoubleInsertion#reset"
+  describe DoubleInjection, "#reset when method with block exists" do
+    it_should_behave_like "RR::DoubleInjection#reset"
 
     before do
       @space = Space.new
@@ -69,7 +69,7 @@ module RR
       end
       @object.methods.should include(@method_name.to_s)
       @original_method = @object.method(@method_name)
-      @double_insertion = DoubleInsertion.new(@space, @object, @method_name)
+      @double_insertion = DoubleInjection.new(@space, @object, @method_name)
 
       @double_insertion.bind
       @object.methods.should include(@method_name.to_s)

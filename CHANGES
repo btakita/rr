@@ -1,3 +1,5 @@
+- Renamed DoubleInsertion to DoubleInjection to be consistent with Mocha terminology
+
 * 0.4.1
 - Fixed backward compatability issues with rspec
 - Renamed Space#verify_double_insertions to #verify_doubles

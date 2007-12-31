@@ -49,15 +49,15 @@ module RR
       DoubleDefinition.new(self)
     end
 
-    # Reuses or creates, if none exists, a DoubleInsertion for the passed
+    # Reuses or creates, if none exists, a DoubleInjection for the passed
     # in object and method_name.
-    # When a DoubleInsertion is created, it binds the dispatcher to the
+    # When a DoubleInjection is created, it binds the dispatcher to the
     # object.
     def double_insertion(object, method_name)
       double_insertion = @double_insertions[object][method_name.to_sym]
       return double_insertion if double_insertion
 
-      double_insertion = DoubleInsertion.new(self, object, method_name.to_sym)
+      double_insertion = DoubleInjection.new(self, object, method_name.to_sym)
       @double_insertions[object][method_name.to_sym] = double_insertion
       double_insertion.bind
       double_insertion
@@ -85,7 +85,7 @@ module RR
       scenario
     end
 
-    # Verifies all the DoubleInsertion objects have met their
+    # Verifies all the DoubleInjection objects have met their
     # TimesCalledExpectations.
     def verify_doubles
       @double_insertions.each do |object, method_double_map|
@@ -101,14 +101,14 @@ module RR
       reset_double_insertions
     end
 
-    # Verifies the DoubleInsertion for the passed in object and method_name.
+    # Verifies the DoubleInjection for the passed in object and method_name.
     def verify_double(object, method_name)
       @double_insertions[object][method_name].verify
     ensure
       reset_double object, method_name
     end
 
-    # Resets the DoubleInsertion for the passed in object and method_name.
+    # Resets the DoubleInjection for the passed in object and method_name.
     def reset_double(object, method_name)
       double_insertion = @double_insertions[object].delete(method_name)
       @double_insertions.delete(object) if @double_insertions[object].empty?

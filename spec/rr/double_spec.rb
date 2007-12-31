@@ -622,7 +622,7 @@ module RR
     end
 
     describe "#method_name" do
-      it "returns the DoubleInsertion's method_name" do
+      it "returns the DoubleInjection's method_name" do
         double_insertion.method_name.should == :foobar
         scenario.method_name.should == :foobar
       end
