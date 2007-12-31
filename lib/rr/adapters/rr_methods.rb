@@ -224,8 +224,8 @@ module RR
         alias_method "rr_#{name}", name
       end
     end
-    module Extensions
-      InstanceMethods = Adapters::RRMethods
-    end
+  end
+  module Extensions
+    InstanceMethods = Adapters::RRMethods
   end
 end
