@@ -1,3 +1,5 @@
+- Fixed backward compatability issues with rspec
+
 * 0.4.0
 - Documentation improvements
 - Renamed Double to DoubleInsertion
