@@ -1,7 +1,7 @@
 require "spec/spec_helper"
 
 module RR
-  describe Space, "#scenario_method_proxy", :shared => true do
+  describe Space, "#double_method_proxy", :shared => true do
     it_should_behave_like "RR::Space"
 
     before do
@@ -10,12 +10,12 @@ module RR
     end
 
     it "creates a DoubleMethodProxy" do
-      proxy = @space.scenario_method_proxy(@creator, @object)
+      proxy = @space.double_method_proxy(@creator, @object)
       proxy.should be_instance_of(DoubleMethodProxy)
     end
 
     it "sets space to self" do
-      proxy = @space.scenario_method_proxy(@creator, @object)
+      proxy = @space.double_method_proxy(@creator, @object)
       class << proxy
         attr_reader :space
       end
@@ -23,7 +23,7 @@ module RR
     end
 
     it "sets creator to passed in creator" do
-      proxy = @space.scenario_method_proxy(@creator, @object)
+      proxy = @space.double_method_proxy(@creator, @object)
       class << proxy
         attr_reader :creator
       end
@@ -32,27 +32,27 @@ module RR
 
     it "raises error if passed a method name and a block" do
       proc do
-        @space.scenario_method_proxy(@creator, @object, :foobar) {}
+        @space.double_method_proxy(@creator, @object, :foobar) {}
       end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
     end
   end
 
-  describe Space, "#scenario_method_proxy with a Mock strategy" do
-    it_should_behave_like "RR::Space#scenario_method_proxy"
+  describe Space, "#double_method_proxy with a Mock strategy" do
+    it_should_behave_like "RR::Space#double_method_proxy"
 
     before do
-      @creator = @space.scenario_creator
+      @creator = @space.double_creator
       @creator.mock
     end
 
     it "creates a mock Double for method when passed a second argument" do
-      @space.scenario_method_proxy(@creator, @object, :foobar).with(1) {:baz}
+      @space.double_method_proxy(@creator, @object, :foobar).with(1) {:baz}
       @object.foobar(1).should == :baz
       proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
     end
 
     it "uses block definition when passed a block" do
-      @space.scenario_method_proxy(@creator, @object) do |c|
+      @space.double_method_proxy(@creator, @object) do |c|
         c.foobar(1) {:baz}
       end
       @object.foobar(1).should == :baz
@@ -60,22 +60,22 @@ module RR
     end
   end
 
-  describe Space, "#scenario_method_proxy with a Stub strategy" do
-    it_should_behave_like "RR::Space#scenario_method_proxy"
+  describe Space, "#double_method_proxy with a Stub strategy" do
+    it_should_behave_like "RR::Space#double_method_proxy"
 
     before do
-      @creator = @space.scenario_creator
+      @creator = @space.double_creator
       @creator.stub
     end
 
     it "creates a stub Double for method when passed a second argument" do
-      @space.scenario_method_proxy(@creator, @object, :foobar).with(1) {:baz}
+      @space.double_method_proxy(@creator, @object, :foobar).with(1) {:baz}
       @object.foobar(1).should == :baz
       @object.foobar(1).should == :baz
     end
 
     it "uses block definition when passed a block" do
-      @space.scenario_method_proxy(@creator, @object) do |c|
+      @space.double_method_proxy(@creator, @object) do |c|
         c.foobar(1) {:return_value}
         c.foobar.with_any_args {:default}
         c.baz(1) {:baz_value}
@@ -86,11 +86,11 @@ module RR
     end
   end
 
-  describe Space, "#scenario_method_proxy with a Mock Proxy strategy" do
-    it_should_behave_like "RR::Space#scenario_method_proxy"
+  describe Space, "#double_method_proxy with a Mock Proxy strategy" do
+    it_should_behave_like "RR::Space#double_method_proxy"
 
     before do
-      @creator = @space.scenario_creator
+      @creator = @space.double_creator
       @creator.mock.proxy
       def @object.foobar(*args)
         :original_foobar
@@ -98,13 +98,13 @@ module RR
     end
 
     it "creates a mock proxy Double for method when passed a second argument" do
-      @space.scenario_method_proxy(@creator, @object, :foobar).with(1)
+      @space.double_method_proxy(@creator, @object, :foobar).with(1)
       @object.foobar(1).should == :original_foobar
       proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
     end
 
     it "uses block definition when passed a block" do
-      @space.scenario_method_proxy(@creator, @object) do |c|
+      @space.double_method_proxy(@creator, @object) do |c|
         c.foobar(1)
       end
       @object.foobar(1).should == :original_foobar
@@ -112,11 +112,11 @@ module RR
     end
   end
 
-  describe Space, "#scenario_method_proxy with a Stub proxy strategy" do
-    it_should_behave_like "RR::Space#scenario_method_proxy"
+  describe Space, "#double_method_proxy with a Stub proxy strategy" do
+    it_should_behave_like "RR::Space#double_method_proxy"
 
     before do
-      @creator = @space.scenario_creator
+      @creator = @space.double_creator
       @creator.stub.proxy
       def @object.foobar(*args)
         :original_foobar
@@ -124,13 +124,13 @@ module RR
     end
 
     it "creates a stub proxy Double for method when passed a second argument" do
-      @space.scenario_method_proxy(@creator, @object, :foobar)
+      @space.double_method_proxy(@creator, @object, :foobar)
       @object.foobar(1).should == :original_foobar
       @object.foobar(1).should == :original_foobar
     end
 
     it "uses block definition when passed a block" do
-      @space.scenario_method_proxy(@creator, @object) do |c|
+      @space.double_method_proxy(@creator, @object) do |c|
         c.foobar(1)
       end
       @object.foobar(1).should == :original_foobar
@@ -138,34 +138,34 @@ module RR
     end
   end
 
-  describe Space, "#scenario_method_proxy with a Do Not Allow strategy" do
-    it_should_behave_like "RR::Space#scenario_method_proxy"
+  describe Space, "#double_method_proxy with a Do Not Allow strategy" do
+    it_should_behave_like "RR::Space#double_method_proxy"
 
     before do
-      @creator = @space.scenario_creator
+      @creator = @space.double_creator
       @creator.dont_allow
     end
 
     it "creates a do not allow Double for method when passed a second argument" do
-      @space.scenario_method_proxy(@creator, @object, :foobar).with(1)
+      @space.double_method_proxy(@creator, @object, :foobar).with(1)
       proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
     end
 
     it "uses block definition when passed a block" do
-      @space.scenario_method_proxy(@creator, @object) do |c|
+      @space.double_method_proxy(@creator, @object) do |c|
         c.foobar(1)
       end
       proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
     end
   end
 
-  describe Space, "#scenario_creator" do
+  describe Space, "#double_creator" do
     it_should_behave_like "RR::Space"
 
     before do
       @space = Space.new
       @object = Object.new
-      @creator = @space.scenario_creator
+      @creator = @space.double_creator
     end
 
     it "sets the space" do
@@ -177,7 +177,7 @@ module RR
     end
   end
 
-  describe Space, "#scenario" do
+  describe Space, "#double" do
     it_should_behave_like "RR::Space"
 
     before do
@@ -188,12 +188,12 @@ module RR
 
     it "creates a Double and registers it to the double_insertion" do
       double_insertion = @space.double_insertion(@object, @method_name)
-      def double_insertion.scenarios
-        @scenarios
+      def double_insertion.doubles
+        @doubles
       end
 
-      scenario = @space.scenario(double_insertion)
-      double_insertion.scenarios.should include(scenario)
+      double = @space.double(double_insertion)
+      double_insertion.doubles.should include(double)
     end
   end
 

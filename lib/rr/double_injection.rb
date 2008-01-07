@@ -4,7 +4,7 @@ module RR
   # has Argument Expectations and Times called Expectations.
   class DoubleInjection
     MethodArguments = Struct.new(:arguments, :block)
-    attr_reader :space, :object, :method_name, :scenarios
+    attr_reader :space, :object, :method_name, :doubles
 
     def initialize(space, object, method_name)
       @space = space
@@ -13,13 +13,13 @@ module RR
       if object_has_method?(method_name)
         meta.send(:alias_method, original_method_name, method_name)
       end
-      @scenarios = []
+      @doubles = []
     end
 
-    # RR::DoubleInjection#register_scenario adds the passed in Double
+    # RR::DoubleInjection#register_double adds the passed in Double
     # into this DoubleInjection's list of Double objects.
-    def register_scenario(scenario)
-      @scenarios << scenario
+    def register_double(double)
+      @doubles << double
     end
 
     # RR::DoubleInjection#bind injects a method that acts as a dispatcher
@@ -39,8 +39,8 @@ module RR
     # RR::DoubleInjection#verify verifies each Double
     # TimesCalledExpectation are met.
     def verify
-      @scenarios.each do |scenario|
-        scenario.verify
+      @doubles.each do |double|
+        double.verify
       end
     end
 
@@ -74,42 +74,42 @@ module RR
     end
 
     def call_method(args, block)
-      if scenario = find_scenario_to_attempt(args)
-        return scenario.call(self, *args, &block)
+      if double = find_double_to_attempt(args)
+        return double.call(self, *args, &block)
       end
-      scenario_not_found_error(*args)
+      double_not_found_error(*args)
     end
 
-    def find_scenario_to_attempt(args)
-      matches = DoubleMatches.new(@scenarios).find_all_matches!(args)
+    def find_double_to_attempt(args)
+      matches = DoubleMatches.new(@doubles).find_all_matches!(args)
 
-      unless matches.exact_terminal_scenarios_to_attempt.empty?
-        return matches.exact_terminal_scenarios_to_attempt.first
+      unless matches.exact_terminal_doubles_to_attempt.empty?
+        return matches.exact_terminal_doubles_to_attempt.first
       end
 
-      unless matches.exact_non_terminal_scenarios_to_attempt.empty?
-        return matches.exact_non_terminal_scenarios_to_attempt.last
+      unless matches.exact_non_terminal_doubles_to_attempt.empty?
+        return matches.exact_non_terminal_doubles_to_attempt.last
       end
 
-      unless matches.wildcard_terminal_scenarios_to_attempt.empty?
-        return matches.wildcard_terminal_scenarios_to_attempt.first
+      unless matches.wildcard_terminal_doubles_to_attempt.empty?
+        return matches.wildcard_terminal_doubles_to_attempt.first
       end
 
-      unless matches.wildcard_non_terminal_scenarios_to_attempt.empty?
-        return matches.wildcard_non_terminal_scenarios_to_attempt.last
+      unless matches.wildcard_non_terminal_doubles_to_attempt.empty?
+        return matches.wildcard_non_terminal_doubles_to_attempt.last
       end
 
-      unless matches.matching_scenarios.empty?
+      unless matches.matching_doubles.empty?
         # This will raise a TimesCalledError
-        return matches.matching_scenarios.first
+        return matches.matching_doubles.first
       end
 
       return nil
     end
 
-    def scenario_not_found_error(*args)
+    def double_not_found_error(*args)
       message = "Unexpected method invocation #{Double.formatted_name(@method_name, args)}, expected\n"
-      message << Double.list_message_part(@scenarios)
+      message << Double.list_message_part(@doubles)
       raise Errors::DoubleNotFoundError, message
     end
 

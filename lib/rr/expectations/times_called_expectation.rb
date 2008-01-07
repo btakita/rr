@@ -1,11 +1,11 @@
 module RR
   module Expectations
     class TimesCalledExpectation #:nodoc:
-      attr_reader :scenario, :times_called
+      attr_reader :double, :times_called
       attr_accessor :matcher
 
-      def initialize(scenario, matcher=nil)
-        @scenario = scenario
+      def initialize(double, matcher=nil)
+        @double = double
         @matcher = matcher
         @times_called = 0
         @verify_backtrace = caller[1..-1]
@@ -48,7 +48,7 @@ module RR
       end
 
       def error_message
-        "#{scenario.formatted_name}\n#{@matcher.error_message(@times_called)}"
+        "#{double.formatted_name}\n#{@matcher.error_message(@times_called)}"
       end
     end
   end

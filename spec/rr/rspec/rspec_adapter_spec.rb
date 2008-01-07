@@ -32,9 +32,9 @@ module RR
 
         it "verifies the double_insertions" do
           double_insertion = RR::Space.double_insertion(@subject, @method_name)
-          scenario = RR::Space.scenario(double_insertion)
+          double = RR::Space.double(double_insertion)
 
-          scenario.once
+          double.once
 
           proc do
             @fixture.verify_mocks_for_rspec

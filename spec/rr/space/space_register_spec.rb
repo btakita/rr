@@ -1,7 +1,7 @@
 require "spec/spec_helper"
 
 module RR
-  describe Space, "#register_ordered_scenario" do
+  describe Space, "#register_ordered_double" do
     it_should_behave_like "RR::Space"
 
     before(:each) do
@@ -17,16 +17,16 @@ module RR
       Space.instance = @original_space
     end
 
-    it "adds the ordered scenario to the ordered_scenarios collection" do
-      scenario1 = @space.scenario(@double_insertion)
+    it "adds the ordered double to the ordered_doubles collection" do
+      double1 = @space.double(@double_insertion)
 
-      @space.ordered_scenarios.should == []
-      @space.register_ordered_scenario scenario1
-      @space.ordered_scenarios.should == [scenario1]
+      @space.ordered_doubles.should == []
+      @space.register_ordered_double double1
+      @space.ordered_doubles.should == [double1]
 
-      scenario2 = @space.scenario(@double_insertion)
-      @space.register_ordered_scenario scenario2
-      @space.ordered_scenarios.should == [scenario1, scenario2]
+      double2 = @space.double(@double_insertion)
+      @space.register_ordered_double double2
+      @space.ordered_doubles.should == [double1, double2]
     end
   end
 end

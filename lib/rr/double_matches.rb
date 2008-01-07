@@ -1,30 +1,30 @@
 module RR
 class DoubleMatches
-  attr_reader :matching_scenarios,
-              :exact_terminal_scenarios_to_attempt,
-              :exact_non_terminal_scenarios_to_attempt,
-              :wildcard_terminal_scenarios_to_attempt,
-              :wildcard_non_terminal_scenarios_to_attempt
-  def initialize(scenarios) #:nodoc:
-    @scenarios = scenarios
-    @matching_scenarios = []
-    @exact_terminal_scenarios_to_attempt = []
-    @exact_non_terminal_scenarios_to_attempt = []
-    @wildcard_terminal_scenarios_to_attempt = []
-    @wildcard_non_terminal_scenarios_to_attempt = []
+  attr_reader :matching_doubles,
+              :exact_terminal_doubles_to_attempt,
+              :exact_non_terminal_doubles_to_attempt,
+              :wildcard_terminal_doubles_to_attempt,
+              :wildcard_non_terminal_doubles_to_attempt
+  def initialize(doubles) #:nodoc:
+    @doubles = doubles
+    @matching_doubles = []
+    @exact_terminal_doubles_to_attempt = []
+    @exact_non_terminal_doubles_to_attempt = []
+    @wildcard_terminal_doubles_to_attempt = []
+    @wildcard_non_terminal_doubles_to_attempt = []
   end
 
   def find_all_matches!(args)
-    @scenarios.each do |scenario|
-      if scenario.exact_match?(*args)
-        matching_scenarios << scenario
-        if scenario.attempt?
-          exact_scenario_is_terminal_or_non_terminal scenario
+    @doubles.each do |double|
+      if double.exact_match?(*args)
+        matching_doubles << double
+        if double.attempt?
+          exact_double_is_terminal_or_non_terminal double
         end
-      elsif scenario.wildcard_match?(*args)
-        matching_scenarios << scenario
-        if scenario.attempt?
-          wildcard_scenario_is_terminal_or_non_terminal scenario
+      elsif double.wildcard_match?(*args)
+        matching_doubles << double
+        if double.attempt?
+          wildcard_double_is_terminal_or_non_terminal double
         end
       end
     end
@@ -32,19 +32,19 @@ class DoubleMatches
   end
 
   protected
-  def exact_scenario_is_terminal_or_non_terminal(scenario)
-    if scenario.terminal?
-      exact_terminal_scenarios_to_attempt << scenario
+  def exact_double_is_terminal_or_non_terminal(double)
+    if double.terminal?
+      exact_terminal_doubles_to_attempt << double
     else
-      exact_non_terminal_scenarios_to_attempt << scenario
+      exact_non_terminal_doubles_to_attempt << double
     end
   end
 
-  def wildcard_scenario_is_terminal_or_non_terminal(scenario)
-    if scenario.terminal?
-      wildcard_terminal_scenarios_to_attempt << scenario
+  def wildcard_double_is_terminal_or_non_terminal(double)
+    if double.terminal?
+      wildcard_terminal_doubles_to_attempt << double
     else
-      wildcard_non_terminal_scenarios_to_attempt << scenario
+      wildcard_non_terminal_doubles_to_attempt << double
     end
   end
 end

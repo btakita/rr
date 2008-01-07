@@ -15,15 +15,15 @@ module RR
       end
     end
 
-    attr_reader :double_insertions, :ordered_scenarios
+    attr_reader :double_insertions, :ordered_doubles
     attr_accessor :trim_backtrace
     def initialize
       @double_insertions = HashWithObjectIdKey.new
-      @ordered_scenarios = []
+      @ordered_doubles = []
       @trim_backtrace = false
     end
 
-    def scenario_method_proxy(creator, object, method_name=nil, &definition)
+    def double_method_proxy(creator, object, method_name=nil, &definition)
       if method_name && definition
         raise ArgumentError, "Cannot pass in a method name and a block"
       end
@@ -33,19 +33,19 @@ module RR
     end
 
     # Creates a DoubleCreator.
-    def scenario_creator
+    def double_creator
       DoubleCreator.new(self)
     end
 
     # Creates and registers a Double to be verified.
-    def scenario(double_insertion, definition = scenario_definition)
-      scenario = Double.new(self, double_insertion, definition)
-      scenario.definition.scenario = scenario
-      double_insertion.register_scenario scenario
-      scenario
+    def double(double_insertion, definition = double_definition)
+      double = Double.new(self, double_insertion, definition)
+      double.definition.double = double
+      double_insertion.register_double double
+      double
     end
 
-    def scenario_definition
+    def double_definition
       DoubleDefinition.new(self)
     end
 
@@ -64,25 +64,25 @@ module RR
     end
 
     # Registers the ordered Double to be verified.
-    def register_ordered_scenario(scenario)
-      @ordered_scenarios << scenario
+    def register_ordered_double(double)
+      @ordered_doubles << double
     end
 
     # Verifies that the passed in ordered Double is being called
     # in the correct position.
-    def verify_ordered_scenario(scenario)
-      unless scenario.terminal?
+    def verify_ordered_double(double)
+      unless double.terminal?
         raise Errors::DoubleOrderError,
               "Ordered Doubles cannot have a NonTerminal TimesCalledExpectation"
       end
-      unless @ordered_scenarios.first == scenario
-        message = Double.formatted_name(scenario.method_name, scenario.expected_arguments)
+      unless @ordered_doubles.first == double
+        message = Double.formatted_name(double.method_name, double.expected_arguments)
         message << " called out of order in list\n"
-        message << Double.list_message_part(@ordered_scenarios)
+        message << Double.list_message_part(@ordered_doubles)
         raise Errors::DoubleOrderError, message
       end
-      @ordered_scenarios.shift unless scenario.attempt?
-      scenario
+      @ordered_doubles.shift unless double.attempt?
+      double
     end
 
     # Verifies all the DoubleInjection objects have met their
@@ -97,7 +97,7 @@ module RR
 
     # Resets the registered Doubles and ordered Doubles
     def reset
-      reset_ordered_scenarios
+      reset_ordered_doubles
       reset_double_insertions
     end
 
@@ -117,8 +117,8 @@ module RR
 
     protected
     # Removes the ordered Doubles from the list
-    def reset_ordered_scenarios
-      @ordered_scenarios.clear
+    def reset_ordered_doubles
+      @ordered_doubles.clear
     end
 
     # Resets the registered Doubles for the next test run.

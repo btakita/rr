@@ -8,7 +8,7 @@ module RR
 
       before do
         @at_least = TimesCalledMatchers::AnyTimesMatcher.new
-        @expectation = TimesCalledExpectation.new(scenario, at_least)
+        @expectation = TimesCalledExpectation.new(double, at_least)
       end
       
       describe "#verify!" do

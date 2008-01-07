@@ -11,20 +11,20 @@ module RR
         @method_name = :foobar
       end
 
-      it "removes the ordered scenarios" do
+      it "removes the ordered doubles" do
         double1 = @space.double_insertion(@object1, :foobar1)
         double2 = @space.double_insertion(@object1, :foobar2)
 
-        scenario1 = @space.scenario(double1)
-        scenario2 = @space.scenario(double2)
+        double1 = @space.double(double1)
+        double2 = @space.double(double2)
 
-        scenario1.ordered
-        scenario2.ordered
+        double1.ordered
+        double2.ordered
 
-        @space.ordered_scenarios.should_not be_empty
+        @space.ordered_doubles.should_not be_empty
 
         @space.reset
-        @space.ordered_scenarios.should be_empty
+        @space.ordered_doubles.should be_empty
       end
 
       it "resets all double_insertions" do

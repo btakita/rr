@@ -9,9 +9,9 @@ module RR
         "#{method_name}(#{formatted_errors})"
       end
 
-      def list_message_part(scenarios)
-        scenarios.collect do |scenario|
-          "- #{formatted_name(scenario.method_name, scenario.expected_arguments)}"
+      def list_message_part(doubles)
+        doubles.collect do |double|
+          "- #{formatted_name(double.method_name, double.expected_arguments)}"
         end.join("\n")
       end
     end
@@ -218,7 +218,7 @@ module RR
     # exceeds the expected TimesCalledExpectation.
     def call(double_insertion, *args, &block)
       self.times_called_expectation.attempt! if definition.times_matcher
-      @space.verify_ordered_scenario(self) if ordered?
+      @space.verify_ordered_double(self) if ordered?
       yields!(block)
       return_value = call_implementation(double_insertion, *args, &block)
       return return_value unless definition.after_call_value
@@ -280,7 +280,7 @@ module RR
     end
 
     # Double#verify verifies the the TimesCalledExpectation
-    # is satisfied for this scenario. A TimesCalledError
+    # is satisfied for this double. A TimesCalledError
     # is raised if the TimesCalledExpectation is not met.
     def verify
       return true unless definition.times_matcher

@@ -7,8 +7,8 @@ describe DoubleDefinition, :shared => true do
     @object = Object.new
     add_original_method
     @double_insertion = @space.double_insertion(@object, :foobar)
-    @scenario = @space.scenario(@double_insertion)
-    @definition = @scenario.definition
+    @double = @space.double(@double_insertion)
+    @definition = @double.definition
   end
 
   def add_original_method
@@ -454,14 +454,14 @@ end
 describe DoubleDefinition, "#ordered", :shared => true do
   it_should_behave_like "RR::DoubleDefinition"
 
-  it "adds itself to the ordered scenarios list" do
+  it "adds itself to the ordered doubles list" do
     @definition.ordered
-    @space.ordered_scenarios.should include(@scenario)
+    @space.ordered_doubles.should include(@double)
   end
 
   it "does not double_insertion add itself" do
     @definition.ordered
-    @space.ordered_scenarios.should == [@scenario]
+    @space.ordered_doubles.should == [@double]
   end
 
   it "sets ordered? to true" do
@@ -469,7 +469,7 @@ describe DoubleDefinition, "#ordered", :shared => true do
   end
 
   it "raises error when there is no Double" do
-    @definition.scenario = nil
+    @definition.double = nil
     proc do
       @definition.ordered
     end.should raise_error(
@@ -684,9 +684,9 @@ describe DoubleDefinition, "#implemented_by_original_method" do
       end
     end
     double_insertion = @space.double_insertion(@object, :does_not_exist)
-    scenario = @space.scenario(double_insertion)
-    scenario.with_any_args
-    scenario.implemented_by_original_method
+    double = @space.double(double_insertion)
+    double.with_any_args
+    double.implemented_by_original_method
 
     return_value = @object.does_not_exist(1, 2)
     return_value.should == "method_missing for does_not_exist([1, 2])"

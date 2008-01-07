@@ -10,7 +10,7 @@ module RR
                   :implementation,
                   :after_call_value,
                   :yields_value,
-                  :scenario
+                  :double
     attr_reader   :block_callback_strategy
 
     def initialize(space)
@@ -157,9 +157,9 @@ module RR
         "Double Definitions must have a dedicated Double to be ordered. " <<
         "For example, using instance_of does not allow ordered to be used. " <<
         "proxy the class's #new method instead."
-      ) unless @scenario
+      ) unless @double
       @ordered = true
-      @space.ordered_scenarios << @scenario unless @space.ordered_scenarios.include?(@scenario)
+      @space.ordered_doubles << @double unless @space.ordered_doubles.include?(@double)
       install_method_callback returns
       self
     end

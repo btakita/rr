@@ -67,12 +67,12 @@ module RR
         end
 
         describe RRMethods, "#reset" do
-          it "#reset removes the ordered scenarios" do
-            removes_ordered_scenarios {reset}
+          it "#reset removes the ordered doubles" do
+            removes_ordered_doubles {reset}
           end
 
-          it "#rr_reset removes the ordered scenarios" do
-            removes_ordered_scenarios {rr_reset}
+          it "#rr_reset removes the ordered doubles" do
+            removes_ordered_doubles {rr_reset}
           end
 
           it "#reset resets all double_insertions" do
@@ -83,20 +83,20 @@ module RR
             resets_all_double_insertions {rr_reset}
           end
 
-          def removes_ordered_scenarios
+          def removes_ordered_doubles
             double1 = @space.double_insertion(@object1, :foobar1)
             double2 = @space.double_insertion(@object1, :foobar2)
 
-            scenario1 = @space.scenario(double1)
-            scenario2 = @space.scenario(double2)
+            double1 = @space.double(double1)
+            double2 = @space.double(double2)
 
-            scenario1.ordered
-            scenario2.ordered
+            double1.ordered
+            double2.ordered
 
-            @space.ordered_scenarios.should_not be_empty
+            @space.ordered_doubles.should_not be_empty
 
             yield
-            @space.ordered_scenarios.should be_empty
+            @space.ordered_doubles.should be_empty
           end
 
           def resets_all_double_insertions

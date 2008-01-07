@@ -1,7 +1,7 @@
 require "spec/spec_helper"
 
 module RR
-  describe Space, "#verify_ordered_scenario", :shared => true do
+  describe Space, "#verify_ordered_double", :shared => true do
     before do
       @space = Space.new
       @object = Object.new
@@ -10,14 +10,14 @@ module RR
     end
 
     it "raises an error when Double is NonTerminal" do
-      scenario = @space.scenario(@double_insertion)
-      @space.register_ordered_scenario(scenario)
+      double = @space.double(@double_insertion)
+      @space.register_ordered_double(double)
 
-      scenario.any_number_of_times
-      scenario.should_not be_terminal
+      double.any_number_of_times
+      double.should_not be_terminal
 
       proc do
-        @space.verify_ordered_scenario(scenario)
+        @space.verify_ordered_double(double)
       end.should raise_error(
       Errors::DoubleOrderError,
       "Ordered Doubles cannot have a NonTerminal TimesCalledExpectation"
@@ -127,42 +127,42 @@ module RR
       end
     end
 
-    describe "#verify_ordered_scenario where the passed in scenario is at the front of the queue" do
-      it_should_behave_like "RR::Space#verify_ordered_scenario"
+    describe "#verify_ordered_double where the passed in double is at the front of the queue" do
+      it_should_behave_like "RR::Space#verify_ordered_double"
 
-      it "keeps the scenario when times called is not verified" do
-        scenario = @space.scenario(@double_insertion)
-        @space.register_ordered_scenario(scenario)
+      it "keeps the double when times called is not verified" do
+        double = @space.double(@double_insertion)
+        @space.register_ordered_double(double)
 
-        scenario.twice
-        scenario.should be_attempt
+        double.twice
+        double.should be_attempt
 
-        @space.verify_ordered_scenario(scenario)
-        @space.ordered_scenarios.should include(scenario)
+        @space.verify_ordered_double(double)
+        @space.ordered_doubles.should include(double)
       end
 
-      it "removes the scenario when times called expectation should no longer be attempted" do
-        scenario = @space.scenario(@double_insertion)
-        @space.register_ordered_scenario(scenario)
+      it "removes the double when times called expectation should no longer be attempted" do
+        double = @space.double(@double_insertion)
+        @space.register_ordered_double(double)
 
-        scenario.with(1).once
+        double.with(1).once
         @object.foobar(1)
-        scenario.should_not be_attempt
+        double.should_not be_attempt
 
-        @space.verify_ordered_scenario(scenario)
-        @space.ordered_scenarios.should_not include(scenario)
+        @space.verify_ordered_double(double)
+        @space.ordered_doubles.should_not include(double)
       end
     end
 
-    describe "#verify_ordered_scenario where the passed in scenario is not at the front of the queue" do
-      it_should_behave_like "RR::Space#verify_ordered_scenario"
+    describe "#verify_ordered_double where the passed in double is not at the front of the queue" do
+      it_should_behave_like "RR::Space#verify_ordered_double"
 
       it "raises error" do
-        first_scenario = scenario
-        second_scenario = scenario
+        first_double = double
+        second_double = double
 
         proc do
-          @space.verify_ordered_scenario(second_scenario)
+          @space.verify_ordered_double(second_double)
         end.should raise_error(
         Errors::DoubleOrderError,
         "foobar() called out of order in list\n" <<
@@ -171,10 +171,10 @@ module RR
         )
       end
 
-      def scenario
-        scenario_definition = @space.scenario(@double_insertion).once
-        @space.register_ordered_scenario(scenario_definition.scenario)
-        scenario_definition.scenario
+      def double
+        double_definition = @space.double(@double_insertion).once
+        @space.register_ordered_double(double_definition.double)
+        double_definition.double
       end
     end
   end

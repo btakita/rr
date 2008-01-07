@@ -9,7 +9,7 @@ module Expectations
     before do
       @times = 3
       @at_least = TimesCalledMatchers::AtLeastMatcher.new(times)
-      @expectation = TimesCalledExpectation.new(scenario, at_least)
+      @expectation = TimesCalledExpectation.new(double, at_least)
     end
     
     describe "#verify!" do

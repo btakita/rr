@@ -9,7 +9,7 @@ module RR
       before do
         @times = 3
         @at_most = TimesCalledMatchers::AtMostMatcher.new(times)
-        @expectation = TimesCalledExpectation.new(scenario, at_most)
+        @expectation = TimesCalledExpectation.new(double, at_most)
       end
 
       describe "#verify!" do

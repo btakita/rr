@@ -28,11 +28,11 @@ module RR
         end
 
         it "creates a mock Double for method when passed a second argument" do
-          creates_scenario_with_method_name(mock(@subject, :foobar))
+          creates_double_with_method_name(mock(@subject, :foobar))
         end
 
         it "creates a mock Double for method when passed a second argument with rr_mock" do
-          creates_scenario_with_method_name(rr_mock(@subject, :foobar))
+          creates_double_with_method_name(rr_mock(@subject, :foobar))
         end
 
         it "raises error if passed a method name and a block" do
@@ -41,20 +41,20 @@ module RR
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 
-        def creates_scenario_with_method_name(scenario)
-          scenario.with(1, 2) {:baz}
-          scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          scenario.argument_expectation.expected_arguments.should == [1, 2]
+        def creates_double_with_method_name(double)
+          double.with(1, 2) {:baz}
+          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+          double.argument_expectation.expected_arguments.should == [1, 2]
 
           @subject.foobar(1, 2).should == :baz
         end
 
         def creates_mock_call_chain(creator)
-          scenario = creator.foobar(1, 2) {:baz}
-          scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          scenario.argument_expectation.expected_arguments.should == [1, 2]
+          double = creator.foobar(1, 2) {:baz}
+          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+          double.argument_expectation.expected_arguments.should == [1, 2]
 
           @subject.foobar(1, 2).should == :baz
         end
@@ -85,11 +85,11 @@ module RR
         end
 
         it "creates a stub Double for method when passed a second argument" do
-          creates_scenario_with_method_name(stub(@subject, :foobar))
+          creates_double_with_method_name(stub(@subject, :foobar))
         end
 
         it "#rr_stub creates a stub Double for method when passed a second argument" do
-          creates_scenario_with_method_name(rr_stub(@subject, :foobar))
+          creates_double_with_method_name(rr_stub(@subject, :foobar))
         end
 
         it "raises error if passed a method name and a block" do
@@ -98,17 +98,17 @@ module RR
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 
-        def creates_scenario_with_method_name(scenario)
-          scenario.with(1, 2) {:baz}
-          scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-          scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+        def creates_double_with_method_name(double)
+          double.with(1, 2) {:baz}
+          double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
           @subject.foobar(1, 2).should == :baz
         end
 
         def creates_stub_call_chain(creator)
-          scenario = creator.foobar(1, 2) {:baz}
-          scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-          scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+          double = creator.foobar(1, 2) {:baz}
+          double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
           @subject.foobar(1, 2).should == :baz
         end
       end
@@ -146,19 +146,19 @@ module RR
         end
 
         it "#proxy creates a mock Double for method when passed a second argument" do
-          creates_scenario_with_method_name(mock.proxy(@subject, :foobar))
+          creates_double_with_method_name(mock.proxy(@subject, :foobar))
         end
 
         it "#rr_proxy creates a mock Double for method when passed a second argument with rr_mock" do
-          creates_scenario_with_method_name(rr_proxy.mock(@subject, :foobar))
+          creates_double_with_method_name(rr_proxy.mock(@subject, :foobar))
         end
 
         it "#mock_proxy creates a mock Double for method when passed a second argument" do
-          creates_scenario_with_method_name(mock.proxy(@subject, :foobar))
+          creates_double_with_method_name(mock.proxy(@subject, :foobar))
         end
 
         it "#rr_mock_proxy creates a mock Double for method when passed a second argument with rr_mock" do
-          creates_scenario_with_method_name(rr_mock.proxy(@subject, :foobar))
+          creates_double_with_method_name(rr_mock.proxy(@subject, :foobar))
         end
 
         it "raises error if passed a method name and a block" do
@@ -167,20 +167,20 @@ module RR
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 
-        def creates_scenario_with_method_name(scenario)
-          scenario.with(1, 2)
-          scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          scenario.argument_expectation.expected_arguments.should == [1, 2]
+        def creates_double_with_method_name(double)
+          double.with(1, 2)
+          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+          double.argument_expectation.expected_arguments.should == [1, 2]
 
           @subject.foobar(1, 2).should == :original_value
         end
 
         def creates_mock_proxy_call_chain(creator)
-          scenario = creator.foobar(1, 2)
-          scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          scenario.argument_expectation.expected_arguments.should == [1, 2]
+          double = creator.foobar(1, 2)
+          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+          double.argument_expectation.expected_arguments.should == [1, 2]
 
           @subject.foobar(1, 2).should == :original_value
         end
@@ -211,11 +211,11 @@ module RR
         end
 
         it "#stub.proxy creates a stub Double for method when passed a second argument" do
-          creates_scenario_with_method_name(stub.proxy(@subject, :foobar))
+          creates_double_with_method_name(stub.proxy(@subject, :foobar))
         end
 
         it "#rr_stub.proxy creates a stub Double for method when passed a second argument with rr_stub" do
-          creates_scenario_with_method_name(rr_stub.proxy(@subject, :foobar))
+          creates_double_with_method_name(rr_stub.proxy(@subject, :foobar))
         end
 
         it "raises error if passed a method name and a block" do
@@ -224,17 +224,17 @@ module RR
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 
-        def creates_scenario_with_method_name(scenario)
-          scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-          scenario.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
+        def creates_double_with_method_name(double)
+          double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+          double.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
 
           @subject.foobar(:something).should == :original_value
         end
 
         def creates_stub_proxy_call_chain(creator)
-          scenario = creator.foobar
-          scenario.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-          scenario.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
+          double = creator.foobar
+          double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+          double.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
 
           @subject.foobar(1, 2).should == :original_value
         end
@@ -268,14 +268,14 @@ module RR
         end
 
         it "creates a mock Double for method when passed a second argument" do
-          creates_scenario_with_method_name(dont_allow(@subject, :foobar))
-          creates_scenario_with_method_name(rr_dont_allow(@subject, :foobar))
-          creates_scenario_with_method_name(dont_call(@subject, :foobar))
-          creates_scenario_with_method_name(rr_dont_call(@subject, :foobar))
-          creates_scenario_with_method_name(do_not_allow(@subject, :foobar))
-          creates_scenario_with_method_name(rr_do_not_allow(@subject, :foobar))
-          creates_scenario_with_method_name(dont_allow(@subject, :foobar))
-          creates_scenario_with_method_name(rr_dont_allow(@subject, :foobar))
+          creates_double_with_method_name(dont_allow(@subject, :foobar))
+          creates_double_with_method_name(rr_dont_allow(@subject, :foobar))
+          creates_double_with_method_name(dont_call(@subject, :foobar))
+          creates_double_with_method_name(rr_dont_call(@subject, :foobar))
+          creates_double_with_method_name(do_not_allow(@subject, :foobar))
+          creates_double_with_method_name(rr_do_not_allow(@subject, :foobar))
+          creates_double_with_method_name(dont_allow(@subject, :foobar))
+          creates_double_with_method_name(rr_dont_allow(@subject, :foobar))
         end
 
         it "raises error if passed a method name and a block" do
@@ -284,11 +284,11 @@ module RR
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 
-        def creates_scenario_with_method_name(scenario)
-          scenario.with(1, 2)
-          scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
-          scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          scenario.argument_expectation.expected_arguments.should == [1, 2]
+        def creates_double_with_method_name(double)
+          double.with(1, 2)
+          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
+          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+          double.argument_expectation.expected_arguments.should == [1, 2]
 
           proc do
             @subject.foobar(1, 2)
@@ -298,10 +298,10 @@ module RR
         end
 
         def creates_do_not_allow_call_chain(creator)
-          scenario = creator.foobar(1, 2)
-          scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
-          scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          scenario.argument_expectation.expected_arguments.should == [1, 2]
+          double = creator.foobar(1, 2)
+          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
+          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+          double.argument_expectation.expected_arguments.should == [1, 2]
 
           proc do
             @subject.foobar(1, 2)
@@ -329,11 +329,11 @@ module RR
         end
 
         it "creates a instance_of Double for method when passed a second argument" do
-          creates_scenario_with_method_name(instance_of.mock(@klass, :foobar))
+          creates_double_with_method_name(instance_of.mock(@klass, :foobar))
         end
 
         it "creates a instance_of Double for method when passed a second argument with rr_instance_of" do
-          creates_scenario_with_method_name(rr_instance_of.mock(@klass, :foobar))
+          creates_double_with_method_name(rr_instance_of.mock(@klass, :foobar))
         end
 
         it "raises error if passed a method name and a block" do
@@ -342,20 +342,20 @@ module RR
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 
-        def creates_scenario_with_method_name(scenario)
-          scenario.with(1, 2) {:baz}
-          scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          scenario.argument_expectation.expected_arguments.should == [1, 2]
+        def creates_double_with_method_name(double)
+          double.with(1, 2) {:baz}
+          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+          double.argument_expectation.expected_arguments.should == [1, 2]
 
           @klass.new.foobar(1, 2).should == :baz
         end
 
         def creates_instance_of_call_chain(creator)
-          scenario = creator.foobar(1, 2) {:baz}
-          scenario.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          scenario.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          scenario.argument_expectation.expected_arguments.should == [1, 2]
+          double = creator.foobar(1, 2) {:baz}
+          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+          double.argument_expectation.expected_arguments.should == [1, 2]
 
           @klass.new.foobar(1, 2).should == :baz
         end

@@ -8,7 +8,7 @@ module RR
 
       before do
         @matcher = TimesCalledMatchers::IntegerMatcher.new(2)
-        @expectation = TimesCalledExpectation.new(scenario, matcher)
+        @expectation = TimesCalledExpectation.new(double, matcher)
         @expected_line = __LINE__ - 1
       end
       

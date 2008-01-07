@@ -8,7 +8,7 @@ module RR
 
       before do
         @matcher = TimesCalledMatchers::ProcMatcher.new(proc {|value| value == 2})
-        @expectation = TimesCalledExpectation.new(scenario, matcher)
+        @expectation = TimesCalledExpectation.new(double, matcher)
       end
       
       describe "#verify" do

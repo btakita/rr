@@ -15,7 +15,7 @@ module RR
     before(:each) do
       @space = Space.new
       @subject = Object.new
-      @creator = space.scenario_creator
+      @creator = space.double_creator
       creator.mock
     end
 
@@ -27,13 +27,13 @@ module RR
 
       it "clears out all methods from proxy" do
         proxy_subclass = Class.new(DoubleMethodProxy) do
-          def i_should_be_a_scenario
+          def i_should_be_a_double
           end
         end
-        proxy_subclass.instance_methods.should include('i_should_be_a_scenario')
+        proxy_subclass.instance_methods.should include('i_should_be_a_double')
 
         proxy = proxy_subclass.new(space, creator, subject)
-        proxy.i_should_be_a_scenario.should be_instance_of(DoubleDefinition)
+        proxy.i_should_be_a_double.should be_instance_of(DoubleDefinition)
       end
     end
 
@@ -57,13 +57,13 @@ module RR
 
       it "clears out all methods from proxy" do
         proxy_subclass = Class.new(DoubleMethodProxy) do
-          def i_should_be_a_scenario
+          def i_should_be_a_double
           end
         end
-        proxy_subclass.instance_methods.should include('i_should_be_a_scenario')
+        proxy_subclass.instance_methods.should include('i_should_be_a_double')
 
         proxy_subclass.new(space, creator, subject) do |m|
-          m.i_should_be_a_scenario.should be_instance_of(DoubleDefinition)
+          m.i_should_be_a_double.should be_instance_of(DoubleDefinition)
         end
       end
     end
