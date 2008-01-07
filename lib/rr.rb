@@ -1,8 +1,8 @@
 dir = File.dirname(__FILE__)
 require "#{dir}/rr/errors/rr_error"
-require "#{dir}/rr/errors/scenario_definition_error"
-require "#{dir}/rr/errors/scenario_not_found_error"
-require "#{dir}/rr/errors/scenario_order_error"
+require "#{dir}/rr/errors/double_definition_error"
+require "#{dir}/rr/errors/double_not_found_error"
+require "#{dir}/rr/errors/double_order_error"
 require "#{dir}/rr/errors/argument_equality_error"
 require "#{dir}/rr/errors/times_called_error"
 
