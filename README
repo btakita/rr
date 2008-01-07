@@ -17,6 +17,19 @@ http://xunitpatterns.com/Test%20Double.html
 Currently RR implements mocks, stubs, and proxies. In the future, RR will
 support spies.
 
+== Using RR
+=== test/unit
+  class Test::Unit::TestCase
+    include RR::Adapters::TestUnit
+  end
+
+=== rspec
+  Spec::Runners.configure do |config|
+    config.mock_with :rr
+    # or if that doesn't work due to a version incompatibility
+    # config.mock_with RR::Adapters::Rspec
+  end
+
 == Syntax between RR and other double/mock frameworks
 === Terse Syntax
 One of the goals of RR is to make doubles more scannable.

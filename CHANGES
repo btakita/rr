@@ -1,3 +1,7 @@
+- Doc improvements
+- Cleanup
+- Finished renaming scenario to double
+
 * 0.4.2
 - Renamed DoubleInsertion to DoubleInjection to be consistent with Mocha terminology
 
