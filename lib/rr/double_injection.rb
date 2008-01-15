@@ -4,7 +4,7 @@ module RR
   # has Argument Expectations and Times called Expectations.
   class DoubleInjection
     MethodArguments = Struct.new(:arguments, :block)
-    attr_reader :space, :object, :method_name, :doubles
+    attr_reader :object, :method_name, :doubles
 
     def initialize(object, method_name)
       @object = object
