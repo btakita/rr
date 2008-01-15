@@ -8,6 +8,10 @@ module RR
       def ==(other)
         other.is_a?(self.class)
       end
+
+      def inspect
+        'anything'
+      end
     end
   end
 end

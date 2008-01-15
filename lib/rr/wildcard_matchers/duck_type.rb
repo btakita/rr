@@ -15,6 +15,13 @@ module RR
         return true
       end
 
+      def inspect
+        formatted_required_methods = required_methods.collect do |method_name|
+          method_name.inspect
+        end.join(', ')
+        "duck_type(#{formatted_required_methods})"
+      end
+
       def ==(other)
         return false unless other.is_a?(self.class)
         self.required_methods == other.required_methods

@@ -4,6 +4,10 @@ module RR
       def initialize
         @klass = ::Numeric
       end
+
+      def inspect
+        'numeric'
+      end
     end
   end
 end

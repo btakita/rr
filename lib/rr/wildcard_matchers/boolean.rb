@@ -9,6 +9,10 @@ module RR
         other.is_a?(self.class)
       end
 
+      def inspect
+        'boolean'
+      end
+
       protected
       def is_a_boolean?(subject)
         subject.is_a?(TrueClass) || subject.is_a?(FalseClass)
