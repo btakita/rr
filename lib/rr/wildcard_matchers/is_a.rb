@@ -19,6 +19,7 @@ module RR
         return false unless other.is_a?(self.class)
         self.klass == other.klass
       end
+      alias_method :eql?, :==
     end
   end
 end

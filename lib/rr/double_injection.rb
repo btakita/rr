@@ -67,7 +67,7 @@ module RR
     protected
     def define_implementation_placeholder
       me = self
-      meta.send(:define_method, placeholder_name) do |arguments|
+      meta.__send__(:define_method, placeholder_name) do |arguments|
         me.__send__(:call_method, arguments.arguments, arguments.block)
       end
     end

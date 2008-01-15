@@ -8,7 +8,10 @@ module RR
       end
 
       def exact_match?(*arguments)
-        @expected_arguments == arguments
+        return false unless arguments.length == @expected_arguments.length
+        arguments.each_with_index do |arg, index|
+          return false unless equality_match(@expected_arguments[index], arg)
+        end
       end
 
       def wildcard_match?(*arguments)
@@ -18,7 +21,7 @@ module RR
           if expected_argument.respond_to?(:wildcard_match?)
             return false unless expected_argument.wildcard_match?(arg)
           else
-            return false unless expected_argument == arg
+            return false unless equality_match(expected_argument, arg)
           end
         end
         return true
@@ -26,6 +29,11 @@ module RR
 
       def ==(other)
         @expected_arguments == other.expected_arguments
+      end
+
+      protected
+      def equality_match(arg1, arg2)
+        arg1.respond_to?(:__rr__eql?) ? arg1 == arg2 : arg1.eql?(arg2)
       end
     end
   end

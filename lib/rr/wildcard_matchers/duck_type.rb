@@ -26,6 +26,7 @@ module RR
         return false unless other.is_a?(self.class)
         self.required_methods == other.required_methods
       end
+      alias_method :eql?, :==
     end
   end
 end

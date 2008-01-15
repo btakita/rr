@@ -1,3 +1,5 @@
+- Fixed doubles for == and #eql? methods
+
 * 0.4.4
 - Doc improvements
 - Methods that are not alphabetic, such as ==, can be doubles
