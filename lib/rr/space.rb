@@ -27,7 +27,7 @@ module RR
       if method_name && definition
         raise ArgumentError, "Cannot pass in a method name and a block"
       end
-      proxy = DoubleMethodProxy.new(self, creator, object, &definition)
+      proxy = DoubleMethodProxy.new(creator, object, &definition)
       return proxy unless method_name
       proxy.__send__(method_name)
     end

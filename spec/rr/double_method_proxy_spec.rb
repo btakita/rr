@@ -22,7 +22,7 @@ module RR
     describe ".new without block" do
       it_should_behave_like "RR::DoubleMethodProxy initializes proxy with passed in creator"
       before do
-        @the_proxy = DoubleMethodProxy.new(space, creator, subject)
+        @the_proxy = DoubleMethodProxy.new(creator, subject)
       end
 
       it "clears out all methods from proxy" do
@@ -32,7 +32,7 @@ module RR
         end
         proxy_subclass.instance_methods.should include('i_should_be_a_double')
 
-        proxy = proxy_subclass.new(space, creator, subject)
+        proxy = proxy_subclass.new(creator, subject)
         proxy.i_should_be_a_double.should be_instance_of(DoubleDefinition)
       end
     end
@@ -40,7 +40,7 @@ module RR
     describe ".new with block" do
       it_should_behave_like "RR::DoubleMethodProxy initializes proxy with passed in creator"
       before do
-        @the_proxy = DoubleMethodProxy.new(space, creator, subject) do |b|
+        @the_proxy = DoubleMethodProxy.new(creator, subject) do |b|
           b.foobar(1, 2) {:one_two}
           b.foobar(1) {:one}
           b.foobar.with_any_args {:default}
@@ -62,7 +62,7 @@ module RR
         end
         proxy_subclass.instance_methods.should include('i_should_be_a_double')
 
-        proxy_subclass.new(space, creator, subject) do |m|
+        proxy_subclass.new(creator, subject) do |m|
           m.i_should_be_a_double.should be_instance_of(DoubleDefinition)
         end
       end

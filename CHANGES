@@ -1,3 +1,6 @@
+- Doc improvements
+- Methods that are symbols can be doubles
+
 * 0.4.3
 - Doc improvements
 - Cleanup

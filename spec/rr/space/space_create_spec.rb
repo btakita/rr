@@ -14,14 +14,6 @@ module RR
       proxy.should be_instance_of(DoubleMethodProxy)
     end
 
-    it "sets space to self" do
-      proxy = @space.double_method_proxy(@creator, @object)
-      class << proxy
-        attr_reader :space
-      end
-      proxy.space.should === @space
-    end
-
     it "sets creator to passed in creator" do
       proxy = @space.double_method_proxy(@creator, @object)
       class << proxy

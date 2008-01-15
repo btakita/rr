@@ -1,7 +1,6 @@
 module RR
   class DoubleMethodProxy
-    def initialize(space, creator, object, &block) #:nodoc:
-      @space = space
+    def initialize(creator, object, &block) #:nodoc:
       @creator = creator
       @object = object
       class << self
