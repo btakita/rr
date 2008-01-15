@@ -108,7 +108,8 @@ module RR
     end
 
     def double_not_found_error(*args)
-      message = "Unexpected method invocation #{Double.formatted_name(@method_name, args)}, expected\n"
+      message = "On object #{object},\n"
+      message << "unexpected method invocation #{Double.formatted_name(@method_name, args)}, expected\n"
       message << Double.list_message_part(@doubles)
       raise Errors::DoubleNotFoundError, message
     end

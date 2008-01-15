@@ -60,12 +60,18 @@ module RR
           double_2 = @space.double(@double_insertion)
           double_2.with(3)
 
-          proc {@object.foobar(:arg1, :arg2)}.should raise_error(
-          Errors::DoubleNotFoundError,
-          "Unexpected method invocation foobar(:arg1, :arg2), expected\n" <<
-          "- foobar(1, 2)\n" <<
-          "- foobar(3)"
-          )
+          error = nil
+          begin
+            @object.foobar(:arg1, :arg2)
+            viotated "Error should have been raised"
+          rescue Errors::DoubleNotFoundError => e
+            error = e
+          end
+          error.message.should include("On object #<Object")
+          expected_double_message_part = "unexpected method invocation foobar(:arg1, :arg2), expected\n" <<
+            "- foobar(1, 2)\n" <<
+            "- foobar(3)"
+          error.message.should include(expected_double_message_part)
         end
       end
 
