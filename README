@@ -186,6 +186,30 @@ Put double scenarios on instances of a Class.
     m.system("rake baz") {true}
   end
 
+=== Wildcard matchers
+==== anything
+  mock(object).foobar(1, anything)
+  object.foobar(1, :my_symbol)
+
+==== is_a
+  mock(object).foobar(is_a(Time))
+  object.foobar(Time.now)
+
+==== numeric
+  mock(object).foobar(numeric)
+  object.foobar(99)
+
+==== numeric
+  mock(object).foobar(boolean)
+  object.foobar(false)
+
+==== duck_type
+  mock(object).foobar(duck_type(:walk, :talk))
+  arg = Object.new
+  def arg.walk; 'waddle'; end
+  def arg.talk; 'quack'; end
+  object.foobar(arg)
+
 == Special Thanks To
 With any development effort, there are countless people who have contributed
 to making it possible. We all are standing on the shoulders of giants.
