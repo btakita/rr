@@ -200,21 +200,21 @@ module RR
     
     protected
     def setup_double(subject, method_name)
-      @double_insertion = @space.double_insertion(subject, method_name)
-      @double = @space.double(@double_insertion)
+      @double_injection = @space.double_injection(subject, method_name)
+      @double = @space.double(@double_injection)
       @definition = @double.definition
     end
 
     def setup_class_probing_instances(subject, method_name)
-      class_double = @space.double_insertion(subject, :new)
+      class_double = @space.double_injection(subject, :new)
       class_double = @space.double(class_double)
 
       instance_method_name = method_name
 
       @definition = @space.double_definition
       class_handler = proc do |return_value|
-        double_insertion = @space.double_insertion(return_value, instance_method_name)
-        @space.double(double_insertion, @definition)
+        double_injection = @space.double_injection(return_value, instance_method_name)
+        @space.double(double_injection, @definition)
         return_value
       end
 

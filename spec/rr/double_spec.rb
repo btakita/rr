@@ -2,15 +2,15 @@ require "spec/spec_helper"
 
 module RR
   describe Double do
-    attr_reader :space, :object, :double_insertion, :double
+    attr_reader :space, :object, :double_injection, :double
     before do
       @space = Space.new
       @object = Object.new
       def object.foobar(a, b)
         [b, a]
       end
-      @double_insertion = space.double_insertion(object, :foobar)
-      @double = space.double(double_insertion)
+      @double_injection = space.double_injection(object, :foobar)
+      @double = space.double(double_injection)
     end
 
     describe "#with" do
@@ -74,12 +74,12 @@ module RR
 
       it "sets up a Times Called Expectation with 0" do
         double.never
-        proc {double.call(double_insertion)}.should raise_error(Errors::TimesCalledError)
+        proc {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
         double.with_any_args.never
-        proc {double.call(double_insertion)}.should raise_error(Errors::TimesCalledError)
+        proc {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
       end
     end
 
@@ -90,8 +90,8 @@ module RR
 
       it "sets up a Times Called Expectation with 1" do
         double.once
-        double.call(double_insertion)
-        proc {double.call(double_insertion)}.should raise_error(Errors::TimesCalledError)
+        double.call(double_injection)
+        proc {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
@@ -107,9 +107,9 @@ module RR
 
       it "sets up a Times Called Expectation with 2" do
         double.twice
-        double.call(double_insertion)
-        double.call(double_insertion)
-        proc {double.call(double_insertion)}.should raise_error(Errors::TimesCalledError)
+        double.call(double_injection)
+        double.call(double_injection)
+        proc {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
@@ -141,10 +141,10 @@ module RR
 
       it "sets up a Times Called Expectation with 1" do
         double.at_most(2)
-        double.call(double_insertion)
-        double.call(double_insertion)
+        double.call(double_injection)
+        double.call(double_injection)
         proc do
-          double.call(double_insertion)
+          double.call(double_injection)
         end.should raise_error(
         Errors::TimesCalledError,
         "foobar()\nCalled 3 times.\nExpected at most 2 times."
@@ -164,10 +164,10 @@ module RR
 
       it "sets up a Times Called Expectation with passed in times" do
         double.times(3)
-        double.call(double_insertion)
-        double.call(double_insertion)
-        double.call(double_insertion)
-        proc {double.call(double_insertion)}.should raise_error(Errors::TimesCalledError)
+        double.call(double_injection)
+        double.call(double_injection)
+        double.call(double_injection)
+        proc {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
@@ -198,7 +198,7 @@ module RR
         space.ordered_doubles.should include(double)
       end
 
-      it "does not double_insertion add itself" do
+      it "does not double_injection add itself" do
         double.ordered
         double.ordered
         space.ordered_doubles.should == [double ]
@@ -259,7 +259,7 @@ module RR
           value
         end
 
-        actual_value = double.call(double_insertion)
+        actual_value = double.call(double_injection)
         actual_value.should === return_value
         actual_value.should == {:foo => :bar}
       end
@@ -270,7 +270,7 @@ module RR
           :after_call_value
         end
 
-        actual_value = double.call(double_insertion)
+        actual_value = double.call(double_injection)
         actual_value.should == :after_call_value
       end
 
@@ -299,17 +299,17 @@ module RR
 
       it "sets the value of the method when passed a block" do
         double.returns {:baz}
-        double.call(double_insertion).should == :baz
+        double.call(double_injection).should == :baz
       end
 
       it "sets the value of the method when passed an argument" do
         double.returns(:baz)
-        double.call(double_insertion).should == :baz
+        double.call(double_injection).should == :baz
       end
 
       it "returns false when passed false" do
         double.returns(false)
-        double.call(double_insertion).should == false
+        double.call(double_injection).should == false
       end
 
       it "raises an error when both argument and block is passed in" do
@@ -326,7 +326,7 @@ module RR
 
       it "sets the implementation to the passed in proc" do
         double.implemented_by(proc{:baz})
-        double.call(double_insertion).should == :baz
+        double.call(double_injection).should == :baz
       end
 
       it "sets the implementation to the passed in method" do
@@ -334,7 +334,7 @@ module RR
           [b, a]
         end
         double.implemented_by(object.method(:foobar))
-        double.call(double_insertion, 1, 2).should == [2, 1]
+        double.call(double_injection, 1, 2).should == [2, 1]
       end
     end
 
@@ -345,7 +345,7 @@ module RR
 
       it "sets the implementation to the original method" do
         double.implemented_by_original_method
-        double.call(double_insertion, 1, 2).should == [2, 1]
+        double.call(double_injection, 1, 2).should == [2, 1]
       end
 
       it "calls methods when respond_to? is true and methods does not contain original method" do
@@ -365,8 +365,8 @@ module RR
           end
         end
 
-        double_insertion = space.double_insertion(object, :foobar)
-        double = space.double(double_insertion)
+        double_injection = space.double_injection(object, :foobar)
+        double = space.double(double_injection)
         double.with_any_args
         double.implemented_by_original_method
 
@@ -379,8 +379,8 @@ module RR
             "method_missing for #{method_name}(#{args.inspect})"
           end
         end
-        double_insertion = space.double_insertion(object, :does_not_exist)
-        double = space.double(double_insertion)
+        double_injection = space.double_injection(object, :does_not_exist)
+        double = space.double(double_injection)
         double.with_any_args
         double.implemented_by_original_method
 
@@ -392,36 +392,36 @@ module RR
     describe "#call implemented by a proc" do
       it "calls the return proc when implemented by a proc" do
         double.returns {|arg| "returning #{arg}"}
-        double.call(double_insertion, :foobar).should == "returning foobar"
+        double.call(double_injection, :foobar).should == "returning foobar"
       end
 
       it "calls and returns the after_call when after_call is set" do
         double.returns {|arg| "returning #{arg}"}.after_call do |value|
           "#{value} after call"
         end
-        double.call(double_insertion, :foobar).should == "returning foobar after call"
+        double.call(double_injection, :foobar).should == "returning foobar after call"
       end
 
       it "returns nil when to returns is not set" do
-        double.call(double_insertion).should be_nil
+        double.call(double_injection).should be_nil
       end
 
       it "works when times_called is not set" do
         double.returns {:value}
-        double.call(double_insertion)
+        double.call(double_injection)
       end
 
       it "verifes the times_called does not exceed the TimesCalledExpectation" do
         double.times(2).returns {:value}
 
-        double.call(double_insertion, :foobar)
-        double.call(double_insertion, :foobar)
-        proc {double.call(double_insertion, :foobar)}.should raise_error(Errors::TimesCalledError)
+        double.call(double_injection, :foobar)
+        double.call(double_injection, :foobar)
+        proc {double.call(double_injection, :foobar)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "raises DoubleOrderError when ordered and called out of order" do
         double1 = double
-        double2 = space.double(double_insertion)
+        double2 = space.double(double_injection)
 
         double1.with(1).returns {:return_1}.ordered.once
         double2.with(2).returns {:return_2}.ordered.once
@@ -451,7 +451,7 @@ module RR
         end
 
         double.returns {:value}.ordered
-        double.call(double_insertion, :foobar)
+        double.call(double_injection, :foobar)
         verify_ordered_double_called.should be_true
         passed_in_double.should === double
       end
@@ -469,7 +469,7 @@ module RR
         end
 
         double.returns {:value}
-        double.call(double_insertion, :foobar)
+        double.call(double_injection, :foobar)
         verify_ordered_double_called.should be_false
       end
 
@@ -561,15 +561,15 @@ module RR
     describe "#attempt?" do
       it "returns true when TimesCalledExpectation#attempt? is true" do
         double.with(1, 2, 3).twice
-        double.call(double_insertion, 1, 2, 3)
+        double.call(double_injection, 1, 2, 3)
         double.times_called_expectation.should be_attempt
         double.should be_attempt
       end
 
       it "returns false when TimesCalledExpectation#attempt? is true" do
         double.with(1, 2, 3).twice
-        double.call(double_insertion, 1, 2, 3)
-        double.call(double_insertion, 1, 2, 3)
+        double.call(double_injection, 1, 2, 3)
+        double.call(double_injection, 1, 2, 3)
         double.times_called_expectation.should_not be_attempt
         double.should_not be_attempt
       end
@@ -586,18 +586,18 @@ module RR
         double.twice.returns {:return_value}
 
         proc {double.verify}.should raise_error(Errors::TimesCalledError)
-        double.call(double_insertion)
+        double.call(double_injection)
         proc {double.verify}.should raise_error(Errors::TimesCalledError)
-        double.call(double_insertion)
+        double.call(double_injection)
 
         proc {double.verify}.should_not raise_error
       end
 
       it "does not raise an error when there is no times called expectation" do
         proc {double.verify}.should_not raise_error
-        double.call(double_insertion)
+        double.call(double_injection)
         proc {double.verify}.should_not raise_error
-        double.call(double_insertion)
+        double.call(double_injection)
         proc {double.verify}.should_not raise_error
       end
     end
@@ -623,7 +623,7 @@ module RR
 
     describe "#method_name" do
       it "returns the DoubleInjection's method_name" do
-        double_insertion.method_name.should == :foobar
+        double_injection.method_name.should == :foobar
         double.method_name.should == :foobar
       end
     end

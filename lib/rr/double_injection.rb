@@ -1,13 +1,12 @@
 module RR
   # RR::DoubleInjection is the binding of an object and a method.
-  # A double_insertion has 0 to many Double objects. Each Double
+  # A double_injection has 0 to many Double objects. Each Double
   # has Argument Expectations and Times called Expectations.
   class DoubleInjection
     MethodArguments = Struct.new(:arguments, :block)
     attr_reader :space, :object, :method_name, :doubles
 
-    def initialize(space, object, method_name)
-      @space = space
+    def initialize(object, method_name)
       @object = object
       @method_name = method_name.to_sym
       if object_has_method?(method_name)
@@ -30,7 +29,7 @@ module RR
       returns_method = <<-METHOD
         def #{@method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
-          #{placeholder_name}(arguments)
+          __send__('#{placeholder_name}', arguments)
         end
       METHOD
       meta.class_eval(returns_method, __FILE__, __LINE__ - 5)
@@ -69,7 +68,7 @@ module RR
     def define_implementation_placeholder
       me = self
       meta.send(:define_method, placeholder_name) do |arguments|
-        me.send(:call_method, arguments.arguments, arguments.block)
+        me.__send__(:call_method, arguments.arguments, arguments.block)
       end
     end
 

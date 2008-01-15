@@ -6,8 +6,8 @@ describe DoubleDefinition, :shared => true do
     @space = Space.new
     @object = Object.new
     add_original_method
-    @double_insertion = @space.double_insertion(@object, :foobar)
-    @double = @space.double(@double_insertion)
+    @double_injection = @space.double_injection(@object, :foobar)
+    @double = @space.double(@double_injection)
     @definition = @double.definition
   end
 
@@ -459,7 +459,7 @@ describe DoubleDefinition, "#ordered", :shared => true do
     @space.ordered_doubles.should include(@double)
   end
 
-  it "does not double_insertion add itself" do
+  it "does not double_injection add itself" do
     @definition.ordered
     @space.ordered_doubles.should == [@double]
   end
@@ -683,8 +683,8 @@ describe DoubleDefinition, "#implemented_by_original_method" do
         "method_missing for #{method_name}(#{args.inspect})"
       end
     end
-    double_insertion = @space.double_insertion(@object, :does_not_exist)
-    double = @space.double(double_insertion)
+    double_injection = @space.double_injection(@object, :does_not_exist)
+    double = @space.double(double_injection)
     double.with_any_args
     double.implemented_by_original_method
 

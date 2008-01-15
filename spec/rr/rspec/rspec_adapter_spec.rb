@@ -12,12 +12,12 @@ module RR
           @method_name = :foobar
         end
 
-        it "resets the double_insertions" do
-          RR::Space.double_insertion(@subject, @method_name)
-          RR::Space.double_insertions.should_not be_empty
+        it "resets the double_injections" do
+          RR::Space.double_injection(@subject, @method_name)
+          RR::Space.double_injections.should_not be_empty
 
           @fixture.setup_mocks_for_rspec
-          RR::Space.double_insertions.should be_empty
+          RR::Space.double_injections.should be_empty
         end
       end
 
@@ -30,16 +30,16 @@ module RR
           @method_name = :foobar
         end
 
-        it "verifies the double_insertions" do
-          double_insertion = RR::Space.double_insertion(@subject, @method_name)
-          double = RR::Space.double(double_insertion)
+        it "verifies the double_injections" do
+          double_injection = RR::Space.double_injection(@subject, @method_name)
+          double = RR::Space.double(double_injection)
 
           double.once
 
           proc do
             @fixture.verify_mocks_for_rspec
           end.should raise_error(::RR::Errors::TimesCalledError)
-          RR::Space.double_insertions.should be_empty
+          RR::Space.double_injections.should be_empty
         end
       end
 
@@ -52,12 +52,12 @@ module RR
           @method_name = :foobar
         end
 
-        it "resets the double_insertions" do
-          RR::Space.double_insertion(@subject, @method_name)
-          RR::Space.double_insertions.should_not be_empty
+        it "resets the double_injections" do
+          RR::Space.double_injection(@subject, @method_name)
+          RR::Space.double_injections.should_not be_empty
 
           @fixture.teardown_mocks_for_rspec
-          RR::Space.double_insertions.should be_empty
+          RR::Space.double_injections.should be_empty
         end
       end
     end

@@ -20,12 +20,12 @@ module RR
       class << @space;
         self;
       end).class_eval do
-        define_method :double_insertion do |*args|
+        define_method :double_injection do |*args|
           create_double_args = args
         end
       end
 
-      Space.double_insertion(:foo, :bar)
+      Space.double_injection(:foo, :bar)
       create_double_args.should == [:foo, :bar]
     end
   end

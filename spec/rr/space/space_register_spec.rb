@@ -10,7 +10,7 @@ module RR
       Space.instance = @space
       @object = Object.new
       @method_name = :foobar
-      @double_insertion = @space.double_insertion(@object, @method_name)
+      @double_injection = @space.double_injection(@object, @method_name)
     end
 
     after(:each) do
@@ -18,13 +18,13 @@ module RR
     end
 
     it "adds the ordered double to the ordered_doubles collection" do
-      double1 = @space.double(@double_insertion)
+      double1 = @space.double(@double_injection)
 
       @space.ordered_doubles.should == []
       @space.register_ordered_double double1
       @space.ordered_doubles.should == [double1]
 
-      double2 = @space.double(@double_insertion)
+      double2 = @space.double(@double_injection)
       @space.register_ordered_double double2
       @space.ordered_doubles.should == [double1, double2]
     end

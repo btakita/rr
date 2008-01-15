@@ -48,7 +48,7 @@ module RR
         end
       end
 
-      it "creates double_insertions" do
+      it "creates double_injections" do
         subject.foobar(1, 2).should == :one_two
         subject.foobar(1).should == :one
         subject.foobar(:something).should == :default

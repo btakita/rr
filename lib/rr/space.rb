@@ -15,10 +15,10 @@ module RR
       end
     end
 
-    attr_reader :double_insertions, :ordered_doubles
+    attr_reader :double_injections, :ordered_doubles
     attr_accessor :trim_backtrace
     def initialize
-      @double_insertions = HashWithObjectIdKey.new
+      @double_injections = HashWithObjectIdKey.new
       @ordered_doubles = []
       @trim_backtrace = false
     end
@@ -38,10 +38,10 @@ module RR
     end
 
     # Creates and registers a Double to be verified.
-    def double(double_insertion, definition = double_definition)
-      double = Double.new(self, double_insertion, definition)
+    def double(double_injection, definition = double_definition)
+      double = Double.new(self, double_injection, definition)
       double.definition.double = double
-      double_insertion.register_double double
+      double_injection.register_double double
       double
     end
 
@@ -53,14 +53,14 @@ module RR
     # in object and method_name.
     # When a DoubleInjection is created, it binds the dispatcher to the
     # object.
-    def double_insertion(object, method_name)
-      double_insertion = @double_insertions[object][method_name.to_sym]
-      return double_insertion if double_insertion
+    def double_injection(object, method_name)
+      double_injection = @double_injections[object][method_name.to_sym]
+      return double_injection if double_injection
 
-      double_insertion = DoubleInjection.new(self, object, method_name.to_sym)
-      @double_insertions[object][method_name.to_sym] = double_insertion
-      double_insertion.bind
-      double_insertion
+      double_injection = DoubleInjection.new(object, method_name.to_sym)
+      @double_injections[object][method_name.to_sym] = double_injection
+      double_injection.bind
+      double_injection
     end
 
     # Registers the ordered Double to be verified.
@@ -88,7 +88,7 @@ module RR
     # Verifies all the DoubleInjection objects have met their
     # TimesCalledExpectations.
     def verify_doubles
-      @double_insertions.each do |object, method_double_map|
+      @double_injections.each do |object, method_double_map|
         method_double_map.keys.each do |method_name|
           verify_double(object, method_name)
         end
@@ -98,21 +98,21 @@ module RR
     # Resets the registered Doubles and ordered Doubles
     def reset
       reset_ordered_doubles
-      reset_double_insertions
+      reset_double_injections
     end
 
     # Verifies the DoubleInjection for the passed in object and method_name.
     def verify_double(object, method_name)
-      @double_insertions[object][method_name].verify
+      @double_injections[object][method_name].verify
     ensure
       reset_double object, method_name
     end
 
     # Resets the DoubleInjection for the passed in object and method_name.
     def reset_double(object, method_name)
-      double_insertion = @double_insertions[object].delete(method_name)
-      @double_insertions.delete(object) if @double_insertions[object].empty?
-      double_insertion.reset
+      double_injection = @double_injections[object].delete(method_name)
+      @double_injections.delete(object) if @double_injections[object].empty?
+      double_injection.reset
     end
 
     protected
@@ -122,8 +122,8 @@ module RR
     end
 
     # Resets the registered Doubles for the next test run.
-    def reset_double_insertions
-      @double_insertions.each do |object, method_double_map|
+    def reset_double_injections
+      @double_injections.each do |object, method_double_map|
         method_double_map.keys.each do |method_name|
           reset_double(object, method_name)
         end

@@ -12,8 +12,8 @@ module RR
       end
 
       it "removes the ordered doubles" do
-        double1 = @space.double_insertion(@object1, :foobar1)
-        double2 = @space.double_insertion(@object1, :foobar2)
+        double1 = @space.double_injection(@object1, :foobar1)
+        double2 = @space.double_injection(@object1, :foobar2)
 
         double1 = @space.double(double1)
         double2 = @space.double(double2)
@@ -27,8 +27,8 @@ module RR
         @space.ordered_doubles.should be_empty
       end
 
-      it "resets all double_insertions" do
-        double1 = @space.double_insertion(@object1, @method_name)
+      it "resets all double_injections" do
+        double1 = @space.double_injection(@object1, @method_name)
         double1_reset_calls = 0
         (
         class << double1;
@@ -38,7 +38,7 @@ module RR
             double1_reset_calls += 1
           end
         end
-        double2 = @space.double_insertion(@object2, @method_name)
+        double2 = @space.double_injection(@object2, @method_name)
         double2_reset_calls = 0
         (
         class << double2;
@@ -62,35 +62,35 @@ module RR
         @method_name = :foobar
       end
 
-      it "resets the double_insertions" do
-        double_insertion = @space.double_insertion(@object, @method_name)
-        @space.double_insertions[@object][@method_name].should === double_insertion
+      it "resets the double_injections" do
+        double_injection = @space.double_injection(@object, @method_name)
+        @space.double_injections[@object][@method_name].should === double_injection
         @object.methods.should include("__rr__#{@method_name}")
 
         @space.reset_double(@object, @method_name)
-        @space.double_insertions[@object][@method_name].should be_nil
+        @space.double_injections[@object][@method_name].should be_nil
         @object.methods.should_not include("__rr__#{@method_name}")
       end
 
-      it "removes the object from the double_insertions map when it has no double_insertions" do
-        double1 = @space.double_insertion(@object, :foobar1)
-        double2 = @space.double_insertion(@object, :foobar2)
+      it "removes the object from the double_injections map when it has no double_injections" do
+        double1 = @space.double_injection(@object, :foobar1)
+        double2 = @space.double_injection(@object, :foobar2)
 
-        @space.double_insertions.include?(@object).should == true
-        @space.double_insertions[@object][:foobar1].should_not be_nil
-        @space.double_insertions[@object][:foobar2].should_not be_nil
+        @space.double_injections.include?(@object).should == true
+        @space.double_injections[@object][:foobar1].should_not be_nil
+        @space.double_injections[@object][:foobar2].should_not be_nil
 
         @space.reset_double(@object, :foobar1)
-        @space.double_insertions.include?(@object).should == true
-        @space.double_insertions[@object][:foobar1].should be_nil
-        @space.double_insertions[@object][:foobar2].should_not be_nil
+        @space.double_injections.include?(@object).should == true
+        @space.double_injections[@object][:foobar1].should be_nil
+        @space.double_injections[@object][:foobar2].should_not be_nil
 
         @space.reset_double(@object, :foobar2)
-        @space.double_insertions.include?(@object).should == false
+        @space.double_injections.include?(@object).should == false
       end
     end
 
-    describe "#reset_double_insertions" do
+    describe "#reset_double_injections" do
       it_should_behave_like "RR::Space"
 
       before do
@@ -100,8 +100,8 @@ module RR
         @method_name = :foobar
       end
 
-      it "resets the double_insertion and removes it from the double_insertions list" do
-        double1 = @space.double_insertion(@object1, @method_name)
+      it "resets the double_injection and removes it from the double_injections list" do
+        double1 = @space.double_injection(@object1, @method_name)
         double1_reset_calls = 0
         (
         class << double1;
@@ -111,7 +111,7 @@ module RR
             double1_reset_calls += 1
           end
         end
-        double2 = @space.double_insertion(@object2, @method_name)
+        double2 = @space.double_injection(@object2, @method_name)
         double2_reset_calls = 0
         (
         class << double2;
@@ -122,7 +122,7 @@ module RR
           end
         end
 
-        @space.send(:reset_double_insertions)
+        @space.send(:reset_double_injections)
         double1_reset_calls.should == 1
         double2_reset_calls.should == 1
       end

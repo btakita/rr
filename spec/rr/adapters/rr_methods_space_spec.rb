@@ -20,16 +20,16 @@ module RR
         end
         
         describe RRMethods, "#verify" do
-          it "#verify verifies and deletes the double_insertions" do
-            verifies_all_double_insertions {verify}
+          it "#verify verifies and deletes the double_injections" do
+            verifies_all_double_injections {verify}
           end
 
-          it "#rr_verify verifies and deletes the double_insertions" do
-            verifies_all_double_insertions {rr_verify}
+          it "#rr_verify verifies and deletes the double_injections" do
+            verifies_all_double_injections {rr_verify}
           end
 
-          def verifies_all_double_insertions
-            double1 = @space.double_insertion(@object1, @method_name)
+          def verifies_all_double_injections
+            double1 = @space.double_injection(@object1, @method_name)
             double1_verify_calls = 0
             double1_reset_calls = 0
             (
@@ -43,7 +43,7 @@ module RR
                 double1_reset_calls += 1
               end
             end
-            double2 = @space.double_insertion(@object2, @method_name)
+            double2 = @space.double_injection(@object2, @method_name)
             double2_verify_calls = 0
             double2_reset_calls = 0
             (
@@ -75,17 +75,17 @@ module RR
             removes_ordered_doubles {rr_reset}
           end
 
-          it "#reset resets all double_insertions" do
-            resets_all_double_insertions {reset}
+          it "#reset resets all double_injections" do
+            resets_all_double_injections {reset}
           end
 
-          it "#rr_reset resets all double_insertions" do
-            resets_all_double_insertions {rr_reset}
+          it "#rr_reset resets all double_injections" do
+            resets_all_double_injections {rr_reset}
           end
 
           def removes_ordered_doubles
-            double1 = @space.double_insertion(@object1, :foobar1)
-            double2 = @space.double_insertion(@object1, :foobar2)
+            double1 = @space.double_injection(@object1, :foobar1)
+            double2 = @space.double_injection(@object1, :foobar2)
 
             double1 = @space.double(double1)
             double2 = @space.double(double2)
@@ -99,8 +99,8 @@ module RR
             @space.ordered_doubles.should be_empty
           end
 
-          def resets_all_double_insertions
-            double1 = @space.double_insertion(@object1, @method_name)
+          def resets_all_double_injections
+            double1 = @space.double_injection(@object1, @method_name)
             double1_reset_calls = 0
             (
             class << double1;
@@ -110,7 +110,7 @@ module RR
                 double1_reset_calls += 1
               end
             end
-            double2 = @space.double_insertion(@object2, @method_name)
+            double2 = @space.double_injection(@object2, @method_name)
             double2_reset_calls = 0
             (
             class << double2;

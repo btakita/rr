@@ -3,13 +3,13 @@ require "spec/spec_helper"
 module RR
   module Expectations
     describe TimesCalledExpectation, :shared => true do
-      attr_reader :space, :object, :method_name, :double_insertion, :double, :expectation
+      attr_reader :space, :object, :method_name, :double_injection, :double, :expectation
       before do
         @space = Space.new
         @object = Object.new
         @method_name = :foobar
-        @double_insertion = space.double_insertion(object, method_name)
-        @double = space.double(double_insertion)
+        @double_injection = space.double_injection(object, method_name)
+        @double = space.double(double_injection)
         double.with_any_args
       end
 
