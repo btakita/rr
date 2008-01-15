@@ -60,6 +60,15 @@ describe "RR mock:" do
       @obj.foobar(:failure)
     end.should raise_error( RR::Errors::DoubleNotFoundError )
   end
+
+  it "mocks methods without letters" do
+    mock(@obj) == 55
+    
+    @obj == 55
+    proc do
+      @obj == 99
+    end.should raise_error(RR::Errors::DoubleNotFoundError)
+  end
 end
 
 describe "RR proxy:" do
@@ -169,5 +178,10 @@ describe "RR stub:" do
       o.to_s {"The Date"}
     end
     Date.new.to_s.should == "The Date"
+  end
+
+  it "stubs methods without letters" do
+    stub(@obj).__send__(:==) {:equality}
+    (@obj == 55).should == :equality
   end
 end

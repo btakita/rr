@@ -1,5 +1,6 @@
+* 0.4.4
 - Doc improvements
-- Methods that are symbols can be doubles
+- Methods that are not alphabetic, such as ==, can be doubles
 
 * 0.4.3
 - Doc improvements
