@@ -1,3 +1,6 @@
+* 0.4.7
+- Improved error message
+
 * 0.4.6
 - Added Double#verbose and Double#verbose?
 
