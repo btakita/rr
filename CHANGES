@@ -1,3 +1,5 @@
+- Added Double#verbose and Double#verbose?
+
 * 0.4.5
 - Fixed doubles for == and #eql? methods
 
