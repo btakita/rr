@@ -202,6 +202,21 @@ module RR
       self
     end
 
+    # Double#verbose sets the Double to print out each method call it receives.
+    #
+    # Passing in a block sets the return value
+    def verbose(&block)
+      @verbose = true
+      @after_call_value = block
+      self
+    end
+
+    # Double#verbose? returns true when verbose has been called on it. It returns
+    # true when the double is set to print each method call it receives.
+    def verbose?
+      @verbose ? true : false
+    end
+
     # Double#returns accepts an argument value or a block.
     # It will raise an ArgumentError if both are passed in.
     #

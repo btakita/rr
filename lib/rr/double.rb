@@ -146,6 +146,19 @@ module RR
       definition.ordered?
     end
 
+    # Double#verbose sets the Double to print out each method call it receives.
+    #
+    # Passing in a block sets the return value
+    def verbose(&block)
+      definition.verbose(&block)
+    end
+
+    # Double#verbose? returns true when verbose has been called on it. It returns
+    # true when the double is set to print each method call it receives.
+    def verbose?
+      definition.verbose?
+    end
+
     # Double#yields sets the Double to invoke a passed in block when
     # the Double is called.
     # An Expection will be raised if no block is passed in when the
@@ -217,6 +230,9 @@ module RR
     # A TimesCalledError is raised when the times called
     # exceeds the expected TimesCalledExpectation.
     def call(double_injection, *args, &block)
+      if verbose?
+        puts Double.formatted_name(double_injection.method_name, args)
+      end
       self.times_called_expectation.attempt! if definition.times_matcher
       @space.verify_ordered_double(self) if ordered?
       yields!(block)

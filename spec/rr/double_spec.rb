@@ -291,6 +291,24 @@ module RR
       end
     end
 
+    describe "#verbose" do
+      it "returns DoubleDefinition" do
+        double.verbose.should === double.definition
+      end
+
+      it "sets #verbose? to true" do
+        double.should_not be_verbose
+        double.verbose
+        double.should be_verbose
+      end
+
+      it "sets return value when block passed in" do
+        (class << double; self; end).send(:define_method, :puts) {|value|}
+        double.with().verbose {:return_value}
+        object.foobar.should == :return_value
+      end
+    end
+
     describe "#returns" do
       it "returns DoubleDefinition" do
         double.returns {:baz}.should === double.definition
@@ -389,125 +407,150 @@ module RR
       end
     end
 
-    describe "#call implemented by a proc" do
-      it "calls the return proc when implemented by a proc" do
-        double.returns {|arg| "returning #{arg}"}
-        double.call(double_injection, :foobar).should == "returning foobar"
-      end
-
-      it "calls and returns the after_call when after_call is set" do
-        double.returns {|arg| "returning #{arg}"}.after_call do |value|
-          "#{value} after call"
-        end
-        double.call(double_injection, :foobar).should == "returning foobar after call"
-      end
-
-      it "returns nil when to returns is not set" do
-        double.call(double_injection).should be_nil
-      end
-
-      it "works when times_called is not set" do
-        double.returns {:value}
-        double.call(double_injection)
-      end
-
-      it "verifes the times_called does not exceed the TimesCalledExpectation" do
-        double.times(2).returns {:value}
-
-        double.call(double_injection, :foobar)
-        double.call(double_injection, :foobar)
-        proc {double.call(double_injection, :foobar)}.should raise_error(Errors::TimesCalledError)
-      end
-
-      it "raises DoubleOrderError when ordered and called out of order" do
-        double1 = double
-        double2 = space.double(double_injection)
-
-        double1.with(1).returns {:return_1}.ordered.once
-        double2.with(2).returns {:return_2}.ordered.once
-
-        proc do
-          object.foobar(2)
-        end.should raise_error(
-        Errors::DoubleOrderError,
-        "foobar(2) called out of order in list\n" <<
-        "- foobar(1)\n" <<
-        "- foobar(2)"
-        )
-      end
-
-      it "dispatches to Space#verify_ordered_double when ordered" do
-        verify_ordered_double_called = false
-        passed_in_double = nil
-        space.method(:verify_ordered_double).arity.should == 1
-        (
-        class << space;
-          self;
-        end).class_eval do
-          define_method :verify_ordered_double do |double|
-            passed_in_double = double
-            verify_ordered_double_called = true
+    describe "#call" do
+      describe "when verbose" do
+        it "prints the message call" do
+          double.verbose
+          output = nil
+          (class << double; self; end).send(:define_method, :puts) do |output|
+            output = output
           end
+          double.call(double_injection, 1, 2)
+          output.should == Double.formatted_name(:foobar, [1, 2])
         end
-
-        double.returns {:value}.ordered
-        double.call(double_injection, :foobar)
-        verify_ordered_double_called.should be_true
-        passed_in_double.should === double
       end
 
-      it "does not dispatche to Space#verify_ordered_double when not ordered" do
-        verify_ordered_double_called = false
-        space.method(:verify_ordered_double).arity.should == 1
-        (
-        class << space;
-          self;
-        end).class_eval do
-          define_method :verify_ordered_double do |double|
-            verify_ordered_double_called = true
+      describe "when not verbose" do
+        it "does not print the message call" do
+          output = nil
+          (class << double; self; end).send(:define_method, :puts) do |output|
+            output = output
           end
+          double.call(double_injection, 1, 2)
+          output.should be_nil
+        end
+      end
+
+      describe "when implemented by a proc" do
+        it "calls the return proc when implemented by a proc" do
+          double.returns {|arg| "returning #{arg}"}
+          double.call(double_injection, :foobar).should == "returning foobar"
         end
 
-        double.returns {:value}
-        double.call(double_injection, :foobar)
-        verify_ordered_double_called.should be_false
+        it "calls and returns the after_call when after_call is set" do
+          double.returns {|arg| "returning #{arg}"}.after_call do |value|
+            "#{value} after call"
+          end
+          double.call(double_injection, :foobar).should == "returning foobar after call"
+        end
+
+        it "returns nil when to returns is not set" do
+          double.call(double_injection).should be_nil
+        end
+
+        it "works when times_called is not set" do
+          double.returns {:value}
+          double.call(double_injection)
+        end
+
+        it "verifes the times_called does not exceed the TimesCalledExpectation" do
+          double.times(2).returns {:value}
+
+          double.call(double_injection, :foobar)
+          double.call(double_injection, :foobar)
+          proc {double.call(double_injection, :foobar)}.should raise_error(Errors::TimesCalledError)
+        end
+
+        it "raises DoubleOrderError when ordered and called out of order" do
+          double1 = double
+          double2 = space.double(double_injection)
+
+          double1.with(1).returns {:return_1}.ordered.once
+          double2.with(2).returns {:return_2}.ordered.once
+
+          proc do
+            object.foobar(2)
+          end.should raise_error(
+          Errors::DoubleOrderError,
+          "foobar(2) called out of order in list\n" <<
+          "- foobar(1)\n" <<
+          "- foobar(2)"
+          )
+        end
+
+        it "dispatches to Space#verify_ordered_double when ordered" do
+          verify_ordered_double_called = false
+          passed_in_double = nil
+          space.method(:verify_ordered_double).arity.should == 1
+          (
+          class << space;
+            self;
+          end).class_eval do
+            define_method :verify_ordered_double do |double|
+              passed_in_double = double
+              verify_ordered_double_called = true
+            end
+          end
+
+          double.returns {:value}.ordered
+          double.call(double_injection, :foobar)
+          verify_ordered_double_called.should be_true
+          passed_in_double.should === double
+        end
+
+        it "does not dispatche to Space#verify_ordered_double when not ordered" do
+          verify_ordered_double_called = false
+          space.method(:verify_ordered_double).arity.should == 1
+          (
+          class << space;
+            self;
+          end).class_eval do
+            define_method :verify_ordered_double do |double|
+              verify_ordered_double_called = true
+            end
+          end
+
+          double.returns {:value}
+          double.call(double_injection, :foobar)
+          verify_ordered_double_called.should be_false
+        end
+
+        it "does not add block argument if no block passed in" do
+          double.with(1, 2).returns {|*args| args}
+
+          args = object.foobar(1, 2)
+          args.should == [1, 2]
+        end
+
+        it "makes the block the last argument" do
+          double.with(1, 2).returns {|a, b, blk| blk}
+
+          block = object.foobar(1, 2) {|a, b| [b, a]}
+          block.call(3, 4).should == [4, 3]
+        end
+
+        it "raises ArgumentError when yields was called and no block passed in" do
+          double.with(1, 2).yields(55)
+
+          proc do
+            object.foobar(1, 2)
+          end.should raise_error(ArgumentError, "A Block must be passed into the method call when using yields")
+        end
       end
 
-      it "does not add block argument if no block passed in" do
-        double.with(1, 2).returns {|*args| args}
+      describe "when implemented by a method" do
+        it "sends block to the method" do
+          def object.foobar(a, b)
+            yield(a, b)
+          end
 
-        args = object.foobar(1, 2)
-        args.should == [1, 2]
-      end
+          double.with(1, 2).implemented_by(object.method(:foobar))
 
-      it "makes the block the last argument" do
-        double.with(1, 2).returns {|a, b, blk| blk}
-
-        block = object.foobar(1, 2) {|a, b| [b, a]}
-        block.call(3, 4).should == [4, 3]
-      end
-
-      it "raises ArgumentError when yields was called and no block passed in" do
-        double.with(1, 2).yields(55)
-
-        proc do
-          object.foobar(1, 2)
-        end.should raise_error(ArgumentError, "A Block must be passed into the method call when using yields")
+          object.foobar(1, 2) {|a, b| [b, a]}.should == [2, 1]
+        end
       end
     end
 
-    describe "#call implemented by a method" do
-      it "sends block to the method" do
-        def object.foobar(a, b)
-          yield(a, b)
-        end
-
-        double.with(1, 2).implemented_by(object.method(:foobar))
-
-        object.foobar(1, 2) {|a, b| [b, a]}.should == [2, 1]
-      end
-    end
-    
     describe "#exact_match?" do
       it "returns false when no expectation set" do
         double.should_not be_exact_match()
