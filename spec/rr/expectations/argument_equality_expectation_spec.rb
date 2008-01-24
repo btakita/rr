@@ -77,25 +77,40 @@ module RR
           @predicate3 = 'third'
         end
 
-        it "when mock.proxy ==, does not have infinite recursion" do
-          mock.proxy(@predicate1) == @predicate1
-          mock.proxy(@predicate2) == @predicate2
-          ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2).should == ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2)
+        describe "when mock.proxy ==" do
+          it "does not have infinite recursion" do
+            mock.proxy(@predicate1) == @predicate1
+            mock.proxy(@predicate2) == @predicate2
+            ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2).should == ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2)
 
-          mock.proxy(@predicate1) == @predicate1
-          mock.proxy(@predicate2) == @predicate3
-          ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2).should_not == ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate3)
+            mock.proxy(@predicate1) == @predicate1
+            mock.proxy(@predicate2) == @predicate3
+            ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2).should_not == ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate3)
+          end
+
+          it "matches Hashes properly (using ==)" do
+            mock.proxy(@predicate1) == {:foo => :bar}
+            @predicate1 == {:foo => :bar}
+          end
         end
 
-        it "when mock.proxy .eql?, does not have infinite recursion" do
-          mock.proxy(@predicate1).eql? @predicate1
-          mock.proxy(@predicate2).eql? @predicate2
-          ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2).should be_eql(ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2))
+        describe "when mock.proxy .eql?" do
+          it "does not have infinite recursion" do
+            mock.proxy(@predicate1).eql? @predicate1
+            mock.proxy(@predicate2).eql? @predicate2
+            ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2).should be_eql(ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2))
 
-          mock.proxy(@predicate1).eql? @predicate1
-          mock.proxy(@predicate2).eql? @predicate3
-          ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2).should_not be_eql(ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate3))
+            mock.proxy(@predicate1).eql? @predicate1
+            mock.proxy(@predicate2).eql? @predicate3
+            ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2).should_not be_eql(ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate3))
+          end
+
+          it "matches Hashes properly (using ==)" do
+            mock.proxy(@predicate1).eql?({:foo => :bar})
+            @predicate1.eql?({:foo => :bar})
+          end
         end
+
       end
     end
 

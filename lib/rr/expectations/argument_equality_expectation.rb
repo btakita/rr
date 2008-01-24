@@ -33,7 +33,7 @@ module RR
 
       protected
       def equality_match(arg1, arg2)
-        arg1.respond_to?(:__rr__eql?) ? arg1 == arg2 : arg1.eql?(arg2)
+        arg1.respond_to?(:'__rr__original_==') ? arg1.__send__(:'__rr__original_==', arg2) : arg1 == arg2
       end
     end
   end
