@@ -193,8 +193,8 @@ module RR
     # the passed in block.
     #
     # Passing in an argument causes Double to return the argument.
-    def returns(value=nil, &implementation)
-      definition.returns(value, &implementation)
+    def returns(*args, &implementation)
+      definition.returns(*args, &implementation)
     end
 
     # Double#implemented_by sets the implementation of the Double.

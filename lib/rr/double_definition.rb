@@ -120,7 +120,7 @@ module RR
 
     def returns(*args, &implementation)
       value = args.first
-      if value && implementation
+      if !args.empty? && implementation
         raise ArgumentError, "returns cannot accept both an argument and a block"
       end
       if implementation
