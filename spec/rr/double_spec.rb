@@ -482,10 +482,7 @@ module RR
           verify_ordered_double_called = false
           passed_in_double = nil
           space.method(:verify_ordered_double).arity.should == 1
-          (
-          class << space;
-            self;
-          end).class_eval do
+          (class << space; self; end).class_eval do
             define_method :verify_ordered_double do |double|
               passed_in_double = double
               verify_ordered_double_called = true
@@ -501,10 +498,7 @@ module RR
         it "does not dispatche to Space#verify_ordered_double when not ordered" do
           verify_ordered_double_called = false
           space.method(:verify_ordered_double).arity.should == 1
-          (
-          class << space;
-            self;
-          end).class_eval do
+          (class << space; self; end).class_eval do
             define_method :verify_ordered_double do |double|
               verify_ordered_double_called = true
             end
