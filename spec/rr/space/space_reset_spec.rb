@@ -122,7 +122,7 @@ module RR
           end
         end
 
-        @space.send(:reset_double_injections)
+        @space.__send__(:reset_double_injections)
         double1_reset_calls.should == 1
         double2_reset_calls.should == 1
       end

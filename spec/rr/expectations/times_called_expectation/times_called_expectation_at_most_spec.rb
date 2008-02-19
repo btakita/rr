@@ -37,9 +37,7 @@ module RR
 
         it "raises error before attempted more than expected times" do
           3.times {expectation.attempt}
-          proc {expectation.attempt}.should raise_error(
-          Errors::TimesCalledError
-          )
+          proc {expectation.attempt}.should raise_error( Errors::TimesCalledError )
         end
       end
 

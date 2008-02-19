@@ -10,7 +10,7 @@ module RR
       @object = object
       @method_name = method_name.to_sym
       if object_has_method?(method_name)
-        meta.send(:alias_method, original_method_name, method_name)
+        meta.__send__(:alias_method, original_method_name, method_name)
       end
       @doubles = []
     end
@@ -47,12 +47,12 @@ module RR
     # It binds the original method implementation on the object
     # if one exists.
     def reset
-      meta.send(:remove_method, placeholder_name)
+      meta.__send__(:remove_method, placeholder_name)
       if object_has_original_method?
-        meta.send(:alias_method, @method_name, original_method_name)
-        meta.send(:remove_method, original_method_name)
+        meta.__send__(:alias_method, @method_name, original_method_name)
+        meta.__send__(:remove_method, original_method_name)
       else
-        meta.send(:remove_method, @method_name)
+        meta.__send__(:remove_method, @method_name)
       end
     end
 

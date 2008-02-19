@@ -303,7 +303,7 @@ module RR
       end
 
       it "sets return value when block passed in" do
-        (class << double; self; end).send(:define_method, :puts) {|value|}
+        (class << double; self; end).__send__(:define_method, :puts) {|value|}
         double.with().verbose {:return_value}
         object.foobar.should == :return_value
       end
@@ -412,7 +412,7 @@ module RR
         it "prints the message call" do
           double.verbose
           output = nil
-          (class << double; self; end).send(:define_method, :puts) do |output|
+          (class << double; self; end).__send__(:define_method, :puts) do |output|
             output = output
           end
           double.call(double_injection, 1, 2)
@@ -423,7 +423,7 @@ module RR
       describe "when not verbose" do
         it "does not print the message call" do
           output = nil
-          (class << double; self; end).send(:define_method, :puts) do |output|
+          (class << double; self; end).__send__(:define_method, :puts) do |output|
             output = output
           end
           double.call(double_injection, 1, 2)
