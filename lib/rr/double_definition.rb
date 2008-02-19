@@ -172,11 +172,7 @@ module RR
     protected
     def install_method_callback(block)
       return unless block
-      case @block_callback_strategy
-      when :returns; returns(&block)
-      when :after_call; after_call(&block)
-      else raise "Unknown block_callback_strategy: #{@block_callback_strategy.inspect}"
-      end
+      __send__(@block_callback_strategy, &block)
     end
   end
 end
