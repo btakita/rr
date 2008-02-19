@@ -131,13 +131,13 @@ module RR
       self
     end
 
-    def implemented_by(implementation)
-      @implementation = implementation
+    def proxy
+      implemented_by ORIGINAL_METHOD
       self
     end
 
-    def proxy
-      implemented_by ORIGINAL_METHOD
+    def implemented_by(implementation)
+      @implementation = implementation
       self
     end
 
