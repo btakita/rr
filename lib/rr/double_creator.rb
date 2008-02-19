@@ -15,8 +15,7 @@ module RR
       @space = space
       @strategy = nil
       @proxy = false
-      @instance_of = nil
-      @instance_of_method_name = nil
+      @instance_of_called = nil
     end
     
     # This method sets the Double to have a mock strategy. A mock strategy
@@ -180,16 +179,16 @@ module RR
     #     projects[0..2]
     #   end
     def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
-      @instance_of = true
+      @instance_of_called = true
       return self if subject === NO_SUBJECT_ARG
       raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
       RR::Space.double_method_proxy(self, subject, method_name, &definition)
     end
 
-    def create!(subject, method_name, *args, &handler)
+    def create(subject, method_name, *args, &handler)
       @args = args
       @handler = handler
-      if @instance_of
+      if @instance_of_called
         setup_class_probing_instances(subject, method_name)
       else
         setup_double(subject, method_name)
