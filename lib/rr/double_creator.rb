@@ -46,7 +46,7 @@ module RR
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
     def mock(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
-      strategy_error! if @strategy
+      strategy_error if @strategy
       @strategy = :mock
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.double_method_proxy(self, subject, method_name, &definition)
@@ -81,7 +81,7 @@ module RR
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
     def stub(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
-      strategy_error! if @strategy
+      strategy_error if @strategy
       @strategy = :stub
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.double_method_proxy(self, subject, method_name, &definition)
@@ -104,8 +104,8 @@ module RR
     #      m.method3.with_no_args # Do not allow method3 with no arguments
     #    end
     def dont_allow(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
-      strategy_error! if @strategy
-      proxy_when_dont_allow_error! if @proxy
+      strategy_error if @strategy
+      proxy_when_dont_allow_error if @proxy
       @strategy = :dont_allow
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.double_method_proxy(self, subject, method_name, &definition)
@@ -160,7 +160,7 @@ module RR
     #     "My new return value"
     #   end
     def proxy(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
-      proxy_when_dont_allow_error! if @strategy == :dont_allow
+      proxy_when_dont_allow_error if @strategy == :dont_allow
       @proxy = true
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.double_method_proxy(self, subject, method_name, &definition)
@@ -193,7 +193,7 @@ module RR
       else
         setup_double(subject, method_name)
       end
-      transform!
+      transform
       @definition
     end
     
@@ -222,42 +222,42 @@ module RR
         [],
         class_handler
       )
-      builder.stub!
-      builder.proxy!
+      builder.stub
+      builder.proxy
     end
 
-    def transform!
+    def transform
       builder = DoubleDefinitionBuilder.new(@definition, @args, @handler)
 
       case @strategy
-      when :mock; builder.mock!
-      when :stub; builder.stub!
-      when :dont_allow; builder.dont_allow!
-      else no_strategy_error!
+      when :mock; builder.mock
+      when :stub; builder.stub
+      when :dont_allow; builder.dont_allow
+      else no_strategy_error
       end
       
       if @proxy
-        builder.proxy!
+        builder.proxy
       else
-        builder.reimplementation!
+        builder.reimplementation
       end
     end
 
-    def strategy_error!
+    def strategy_error
       raise(
         DoubleDefinitionError,
         "This Double already has a #{@strategy} strategy"
       )
     end
 
-    def no_strategy_error!
+    def no_strategy_error
       raise(
         DoubleDefinitionError,
         "This Double has no strategy"
       )
     end
 
-    def proxy_when_dont_allow_error!
+    def proxy_when_dont_allow_error
       raise(
         DoubleDefinitionError,
         "Doubles cannot be proxied when using dont_allow strategy"

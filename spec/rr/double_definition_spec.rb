@@ -20,7 +20,7 @@ module RR
 
   describe DoubleDefinition, " with returns block_callback_strategy", :shared => true do
     before do
-      @definition.returns_block_callback_strategy!
+      @definition.returns_block_callback_strategy
       create_definition
     end
   end
@@ -28,7 +28,7 @@ module RR
   describe DoubleDefinition, " with after_call block_callback_strategy", :shared => true do
     before do
       @definition.implemented_by_original_method
-      @definition.after_call_block_callback_strategy!
+      @definition.after_call_block_callback_strategy
       create_definition
     end
   end
@@ -794,7 +794,7 @@ module RR
     it_should_behave_like "RR::DoubleDefinition"
 
     it "sets the block_callback_strategy to :returns" do
-      @definition.returns_block_callback_strategy!
+      @definition.returns_block_callback_strategy
       @definition.block_callback_strategy.should == :returns
     end
   end
@@ -803,7 +803,7 @@ module RR
     it_should_behave_like "RR::DoubleDefinition"
 
     it "sets the block_callback_strategy to :after_call" do
-      @definition.after_call_block_callback_strategy!
+      @definition.after_call_block_callback_strategy
       @definition.block_callback_strategy.should == :after_call
     end
   end

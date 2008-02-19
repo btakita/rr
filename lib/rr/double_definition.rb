@@ -17,7 +17,7 @@ module RR
       @times_matcher = nil
       @after_call_value = nil
       @yields_value = nil
-      returns_block_callback_strategy!
+      returns_block_callback_strategy
     end
 
     def with(*args, &returns)
@@ -160,11 +160,11 @@ module RR
       argument_expectation.expected_arguments
     end
 
-    def returns_block_callback_strategy! # :nodoc:
+    def returns_block_callback_strategy # :nodoc:
       @block_callback_strategy = :returns
     end
 
-    def after_call_block_callback_strategy! # :nodoc:
+    def after_call_block_callback_strategy # :nodoc:
       @block_callback_strategy = :after_call
     end
 

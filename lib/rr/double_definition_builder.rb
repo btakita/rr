@@ -8,22 +8,22 @@ module RR
       @handler = handler
     end
     
-    def mock!
+    def mock
       @definition.with(*@args).once
     end
 
-    def stub!
+    def stub
       @definition.any_number_of_times
-      permissive_argument!
+      permissive_argument
     end
 
-    def dont_allow!
+    def dont_allow
       @definition.never
-      permissive_argument!
-      reimplementation!
+      permissive_argument
+      reimplementation
     end
 
-    def permissive_argument!
+    def permissive_argument
       if @args.empty?
         @definition.with_any_args
       else
@@ -31,12 +31,12 @@ module RR
       end
     end
 
-    def reimplementation!
+    def reimplementation
       @definition.returns(&@handler)
     end
     
-    def proxy!
-      @definition.after_call_block_callback_strategy!
+    def proxy
+      @definition.after_call_block_callback_strategy
       @definition.implemented_by_original_method
       @definition.after_call(&@handler) if @handler
     end
