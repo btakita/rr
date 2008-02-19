@@ -356,13 +356,13 @@ module RR
       end
     end
 
-    describe "#implemented_by_original_method" do
+    describe "#proxy" do
       it "returns the DoubleDefinition object" do
-        double.implemented_by_original_method.should === double.definition
+        double.proxy.should === double.definition
       end
 
       it "sets the implementation to the original method" do
-        double.implemented_by_original_method
+        double.proxy
         double.call(double_injection, 1, 2).should == [2, 1]
       end
 
@@ -386,7 +386,7 @@ module RR
         double_injection = space.double_injection(object, :foobar)
         double = space.double(double_injection)
         double.with_any_args
-        double.implemented_by_original_method
+        double.proxy
 
         object.foobar(1, 2).should == [2, 1]
       end
@@ -400,7 +400,7 @@ module RR
         double_injection = space.double_injection(object, :does_not_exist)
         double = space.double(double_injection)
         double.with_any_args
-        double.implemented_by_original_method
+        double.proxy
 
         return_value = object.does_not_exist(1, 2)
         return_value.should == "method_missing for does_not_exist([1, 2])"

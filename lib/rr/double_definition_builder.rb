@@ -37,7 +37,7 @@ module RR
     
     def proxy
       @definition.after_call_block_callback_strategy
-      @definition.implemented_by_original_method
+      @definition.proxy
       @definition.after_call(&@handler) if @handler
     end
   end

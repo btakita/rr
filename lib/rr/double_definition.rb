@@ -118,11 +118,12 @@ module RR
       @verbose ? true : false
     end
 
-    def returns(value=nil, &implementation)
+    def returns(*args, &implementation)
+      value = args.first
       if value && implementation
         raise ArgumentError, "returns cannot accept both an argument and a block"
       end
-      if value.nil?
+      if implementation
         implemented_by implementation
       else
         implemented_by proc {value}
@@ -135,7 +136,7 @@ module RR
       self
     end
 
-    def implemented_by_original_method
+    def proxy
       implemented_by ORIGINAL_METHOD
       self
     end

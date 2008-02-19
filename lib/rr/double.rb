@@ -210,7 +210,7 @@ module RR
       definition.implemented_by implementation
     end
 
-    # Double#implemented_by_original_method sets the implementation
+    # Double#proxy sets the implementation
     # of the Double to be the original method.
     # This is primarily used with proxy.
     #
@@ -218,10 +218,10 @@ module RR
     #   def obj.foobar
     #     yield(1)
     #   end
-    #   mock(obj).method_name.implemented_by_original_method
+    #   mock(obj).method_name.proxy
     #   obj.foobar {|arg| puts arg} # puts 1
-    def implemented_by_original_method
-      definition.implemented_by_original_method
+    def proxy
+      definition.proxy
     end
 
     # Double#call calls the Double's implementation. The return

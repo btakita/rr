@@ -27,7 +27,7 @@ module RR
 
   describe DoubleDefinition, " with after_call block_callback_strategy", :shared => true do
     before do
-      @definition.implemented_by_original_method
+      @definition.proxy
       @definition.after_call_block_callback_strategy
       create_definition
     end
@@ -665,15 +665,15 @@ module RR
     end
   end
 
-  describe DoubleDefinition, "#implemented_by_original_method" do
+  describe DoubleDefinition, "#proxy" do
     it_should_behave_like "RR::DoubleDefinition"
 
     it "returns the DoubleDefinition object" do
-      @definition.implemented_by_original_method.should === @definition
+      @definition.proxy.should === @definition
     end
 
     it "sets the implementation to the original method" do
-      @definition.implemented_by_original_method.with_any_args
+      @definition.proxy.with_any_args
       @object.foobar(1, 2).should == :original_return_value
     end
 
@@ -686,7 +686,7 @@ module RR
       double_injection = @space.double_injection(@object, :does_not_exist)
       double = @space.double(double_injection)
       double.with_any_args
-      double.implemented_by_original_method
+      double.proxy
 
       return_value = @object.does_not_exist(1, 2)
       return_value.should == "method_missing for does_not_exist([1, 2])"
