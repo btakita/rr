@@ -15,7 +15,7 @@ module RR
         @matcher.attempt?(@times_called)
       end
 
-      def attempt!
+      def attempt
         @times_called += 1
         verify_input_error unless @matcher.possible_match?(@times_called)
         return

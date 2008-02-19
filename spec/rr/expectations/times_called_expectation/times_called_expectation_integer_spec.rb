@@ -15,22 +15,22 @@ module RR
       describe "#verify" do
         it "returns true when times called exactly matches an integer" do
           expectation.verify.should == false
-          expectation.attempt!
+          expectation.attempt
           expectation.verify.should == false
-          expectation.attempt!
+          expectation.attempt
           expectation.verify.should == true
         end
       end
 
       describe "#verify! when passed an Integer (2)" do
         it "passes after attempt! called 2 times" do
-          expectation.attempt!
-          expectation.attempt!
+          expectation.attempt
+          expectation.attempt
           expectation.verify!
         end
 
         it "fails after attempt! called 1 time" do
-          expectation.attempt!
+          expectation.attempt
           proc {expectation.verify!}.should raise_error(
           Errors::TimesCalledError,
           "foobar()\nCalled 1 time.\nExpected 2 times."
@@ -38,10 +38,10 @@ module RR
         end
 
         it "can't be called when attempt! is called 3 times" do
-          expectation.attempt!
-          expectation.attempt!
+          expectation.attempt
+          expectation.attempt
           proc do
-            expectation.attempt!
+            expectation.attempt
           end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 2 times.")
         end
 
@@ -65,18 +65,18 @@ module RR
 
       describe "#attempt?" do
         it "returns true when attempted less than expected times" do
-          1.times {expectation.attempt!}
+          1.times {expectation.attempt}
           expectation.should be_attempt
         end
 
         it "returns false when attempted expected times" do
-          2.times {expectation.attempt!}
+          2.times {expectation.attempt}
           expectation.should_not be_attempt
         end
 
         it "raises error before attempted more than expected times" do
-          2.times {expectation.attempt!}
-          proc {expectation.attempt!}.should raise_error(
+          2.times {expectation.attempt}
+          proc {expectation.attempt}.should raise_error(
           Errors::TimesCalledError
           )
         end
@@ -84,10 +84,10 @@ module RR
 
       describe "#attempt! for an IntegerMatcher" do
         it "raises error when attempt! called more than the expected number of times" do
-          expectation.attempt!
-          expectation.attempt!
+          expectation.attempt
+          expectation.attempt
           proc do
-            expectation.attempt!
+            expectation.attempt
           end.should raise_error(Errors::TimesCalledError)
         end
       end

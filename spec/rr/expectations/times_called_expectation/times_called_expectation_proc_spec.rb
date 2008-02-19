@@ -14,48 +14,48 @@ module RR
       describe "#verify" do
         it "matches a block" do
           expectation.verify.should == false
-          expectation.attempt!
+          expectation.attempt
           expectation.verify.should == false
-          expectation.attempt!
+          expectation.attempt
           expectation.verify.should == true
-          expectation.attempt!
+          expectation.attempt
           expectation.verify.should == false
         end
       end
 
       describe "#verify! when passed a block (== 2 times)" do
         it "passes after attempt! called 2 times" do
-          expectation.attempt!
-          expectation.attempt!
+          expectation.attempt
+          expectation.attempt
           expectation.verify!
         end
 
         it "fails after attempt! called 1 time" do
-          expectation.attempt!
+          expectation.attempt
           proc {expectation.verify!}.should raise_error(Errors::TimesCalledError)
         end
 
         it "fails after attempt! called 3 times" do
-          expectation.attempt!
-          expectation.attempt!
-          expectation.attempt!
+          expectation.attempt
+          expectation.attempt
+          expectation.attempt
           proc {expectation.verify!}.should raise_error(Errors::TimesCalledError)
         end
       end
 
       describe "#attempt? with IntegerMatcher" do
         it "returns true when attempted less than expected times" do
-          1.times {expectation.attempt!}
+          1.times {expectation.attempt}
           expectation.should be_attempt
         end
 
         it "returns true when attempted expected times" do
-          2.times {expectation.attempt!}
+          2.times {expectation.attempt}
           expectation.should be_attempt
         end
 
         it "returns true when attempted more than expected times" do
-          3.times {expectation.attempt!}
+          3.times {expectation.attempt}
           expectation.should be_attempt
         end
       end

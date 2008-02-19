@@ -14,17 +14,17 @@ module Expectations
     
     describe "#verify!" do
       it "passes when times called > times" do
-        4.times {expectation.attempt!}
+        4.times {expectation.attempt}
         expectation.verify!
       end
 
       it "passes when times called == times" do
-        3.times {expectation.attempt!}
+        3.times {expectation.attempt}
         expectation.verify!
       end
 
       it "raises error when times called < times" do
-        expectation.attempt!
+        expectation.attempt
         proc do
           expectation.verify!
         end.should raise_error(
@@ -37,22 +37,22 @@ module Expectations
     describe "#attempt?" do
       it "always returns true" do
         expectation.should be_attempt
-        10.times {expectation.attempt!}
+        10.times {expectation.attempt}
         expectation.should be_attempt
       end
     end
 
     describe "#attempt!" do
       it "passes when times called more than times" do
-        4.times {expectation.attempt!}
+        4.times {expectation.attempt}
       end
 
       it "passes when times called == times" do
-        3.times {expectation.attempt!}
+        3.times {expectation.attempt}
       end
 
       it "passes when times called < times" do
-        expectation.attempt!
+        expectation.attempt
       end
     end
 

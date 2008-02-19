@@ -15,7 +15,7 @@ module RR
       describe "#attempt!" do
         it "raises error that includes the double" do
           proc do
-            expectation.attempt!
+            expectation.attempt
           end.should raise_error(
           Errors::TimesCalledError,
           "#{double.formatted_name}\n#{matcher.error_message(1)}"

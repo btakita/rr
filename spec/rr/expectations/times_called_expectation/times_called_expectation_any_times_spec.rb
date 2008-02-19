@@ -14,7 +14,7 @@ module RR
       describe "#verify!" do
         it "always passes" do
           expectation.verify!
-          10.times {expectation.attempt!}
+          10.times {expectation.attempt}
           expectation.verify!
         end
       end
@@ -22,14 +22,14 @@ module RR
       describe "#attempt?" do
         it "always returns true" do
           expectation.should be_attempt
-          10.times {expectation.attempt!}
+          10.times {expectation.attempt}
           expectation.should be_attempt
         end
       end
 
       describe "#attempt!" do
         it "always passes" do
-          10.times {expectation.attempt!}
+          10.times {expectation.attempt}
         end
       end
 

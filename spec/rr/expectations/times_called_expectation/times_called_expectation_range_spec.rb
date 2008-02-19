@@ -14,30 +14,30 @@ module RR
       describe "#verify" do
         it "returns true when times called falls within a range" do
           expectation.verify.should == false
-          expectation.attempt!
+          expectation.attempt
           expectation.verify.should == true
-          expectation.attempt!
+          expectation.attempt
           expectation.verify.should == true
         end
       end
 
       describe "#verify! when passed a Range (1..2)" do
         it "passes after attempt! called 1 time" do
-          expectation.attempt!
+          expectation.attempt
           expectation.verify!
         end
 
         it "passes after attempt! called 2 times" do
-          expectation.attempt!
-          expectation.attempt!
+          expectation.attempt
+          expectation.attempt
           expectation.verify!
         end
 
         it "can't be called when attempt! is called 3 times" do
-          expectation.attempt!
-          expectation.attempt!
+          expectation.attempt
+          expectation.attempt
           proc do
-            expectation.attempt!
+            expectation.attempt
           end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 1..2 times.")
         end
       end
@@ -48,15 +48,15 @@ module RR
         end
 
         it "returns false when attempted in range" do
-          expectation.attempt!
+          expectation.attempt
           expectation.should be_attempt
-          expectation.attempt!
+          expectation.attempt
           expectation.should be_attempt
         end
 
         it "raises error before attempted more than expected times" do
-          2.times {expectation.attempt!}
-          proc {expectation.attempt!}.should raise_error(
+          2.times {expectation.attempt}
+          proc {expectation.attempt}.should raise_error(
           Errors::TimesCalledError
           )
         end
@@ -64,9 +64,9 @@ module RR
 
       describe "#attempt! for a range expectation" do
         it "raises error when attempt! called more than range permits" do
-          expectation.attempt!
-          expectation.attempt!
-          raises_expectation_error {expectation.attempt!}
+          expectation.attempt
+          expectation.attempt
+          raises_expectation_error {expectation.attempt}
         end
       end
 
