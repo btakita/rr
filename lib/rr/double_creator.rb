@@ -14,7 +14,7 @@ module RR
     def initialize(space)
       @space = space
       @strategy = nil
-      @proxy = false
+      @proxy_strategy = false
       @instance_of_called = nil
     end
     
@@ -105,7 +105,7 @@ module RR
     #    end
     def dont_allow(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       verify_no_strategy
-      proxy_when_dont_allow_error if @proxy
+      proxy_when_dont_allow_error if @proxy_strategy
       @strategy = :dont_allow
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.double_method_proxy(self, subject, method_name, &definition)
@@ -161,7 +161,7 @@ module RR
     #   end
     def proxy(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
       proxy_when_dont_allow_error if @strategy == :dont_allow
-      @proxy = true
+      @proxy_strategy = true
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.double_method_proxy(self, subject, method_name, &definition)
     end
@@ -232,7 +232,7 @@ module RR
       verify_strategy
       builder.__send__(@strategy)
 
-      if @proxy
+      if @proxy_strategy
         builder.proxy
       else
         builder.reimplementation
