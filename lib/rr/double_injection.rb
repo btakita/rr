@@ -80,7 +80,7 @@ module RR
     end
 
     def find_double_to_attempt(args)
-      matches = DoubleMatches.new(@doubles).find_all_matches!(args)
+      matches = DoubleMatches.new(@doubles).find_all_matches(args)
 
       unless matches.exact_terminal_doubles_to_attempt.empty?
         return matches.exact_terminal_doubles_to_attempt.first

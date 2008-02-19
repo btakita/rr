@@ -14,7 +14,7 @@ class DoubleMatches
     @wildcard_non_terminal_doubles_to_attempt = []
   end
 
-  def find_all_matches!(args)
+  def find_all_matches(args)
     @doubles.each do |double|
       if double.exact_match?(*args)
         matching_doubles << double
