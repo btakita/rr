@@ -172,9 +172,9 @@ module RR
       end
 
       def double
-        double_definition = @space.double(@double_injection).once
-        @space.register_ordered_double(double_definition.double)
-        double_definition.double
+        double = @space.double(@double_injection).once
+        @space.register_ordered_double(double.double)
+        double.double
       end
     end
   end
