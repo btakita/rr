@@ -189,7 +189,7 @@ module RR
       @args = args
       @handler = handler
       if @instance_of_called
-        setup_class_probing_instances(subject, method_name)
+        setup_doubles_for_class_instances(subject, method_name)
       else
         setup_double(subject, method_name)
       end
@@ -204,7 +204,7 @@ module RR
       @definition = @double.definition
     end
 
-    def setup_class_probing_instances(subject, method_name)
+    def setup_doubles_for_class_instances(subject, method_name)
       class_double = @space.double_injection(subject, :new)
       class_double = @space.double(class_double)
 
