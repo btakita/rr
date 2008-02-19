@@ -46,7 +46,7 @@ module RR
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
     def mock(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
-      strategy_error if @strategy
+      verify_no_strategy
       @strategy = :mock
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.double_method_proxy(self, subject, method_name, &definition)
@@ -81,7 +81,7 @@ module RR
     #     method_name_2(arg_1, arg_2) {return_value_2}
     #   end
     def stub(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
-      strategy_error if @strategy
+      verify_no_strategy
       @strategy = :stub
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR::Space.double_method_proxy(self, subject, method_name, &definition)
@@ -104,7 +104,7 @@ module RR
     #      m.method3.with_no_args # Do not allow method3 with no arguments
     #    end
     def dont_allow(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
-      strategy_error if @strategy
+      verify_no_strategy
       proxy_when_dont_allow_error if @proxy
       @strategy = :dont_allow
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
@@ -229,13 +229,9 @@ module RR
     def transform
       builder = DoubleDefinitionBuilder.new(@definition, @args, @handler)
 
-      case @strategy
-      when :mock; builder.mock
-      when :stub; builder.stub
-      when :dont_allow; builder.dont_allow
-      else no_strategy_error
-      end
-      
+      verify_strategy
+      builder.__send__(@strategy)
+
       if @proxy
         builder.proxy
       else
@@ -243,11 +239,19 @@ module RR
       end
     end
 
-    def strategy_error
+    def verify_no_strategy
+      strategy_already_defined_error if @strategy
+    end
+
+    def strategy_already_defined_error
       raise(
         DoubleDefinitionError,
         "This Double already has a #{@strategy} strategy"
       )
+    end
+
+    def verify_strategy
+      no_strategy_error unless @strategy
     end
 
     def no_strategy_error
