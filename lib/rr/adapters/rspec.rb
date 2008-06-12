@@ -10,13 +10,13 @@ module RR
 
       include RRMethods
       def setup_mocks_for_rspec
-        rr_reset
+        RR.reset
       end
       def verify_mocks_for_rspec
-        rr_verify
+        RR.verify
       end
       def teardown_mocks_for_rspec
-        rr_reset
+        RR.reset
       end
     end
   end

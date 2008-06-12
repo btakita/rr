@@ -8,13 +8,13 @@ module RR
           alias_method :setup_without_rr, :setup
           def setup_with_rr
             setup_without_rr
-            rr_reset
+            RR.reset
           end
           alias_method :setup, :setup_with_rr
 
           alias_method :teardown_without_rr, :teardown
           def teardown_with_rr
-            rr_verify
+            RR.verify
             teardown_without_rr
           end
           alias_method :teardown, :teardown_with_rr
