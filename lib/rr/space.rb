@@ -94,6 +94,7 @@ module RR
         end
       end
     end
+    alias_method :verify, :verify_doubles
 
     # Resets the registered Doubles and ordered Doubles
     def reset
