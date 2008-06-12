@@ -220,9 +220,9 @@ to making it possible. We all are standing on the shoulders of giants.
 * Nick Kallen for documentation suggestion & bug reports
 * David Chelimsky for encouragement to make the RR framework, for developing
   the Rspec mock framework, and syntax ideas
-* Gerald Meszaros for his excellent book "xUnit Test Patterns"
+* Gerard Meszaros for his excellent book "xUnit Test Patterns"
 * Dan North for syntax ideas
-* Jim Weirich for developing Flexmock, the first Terse ruby mock framework
+* Jim Weirich for developing Flexmock, the first Terse ruby mock framework in Ruby
 * James Mead for developing Mocha
 * Aslak Hellesoy for Developing Rspec
 * Stephen Baker for Developing Rspec
