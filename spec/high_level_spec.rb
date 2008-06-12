@@ -174,14 +174,18 @@ describe "RR stub:" do
   end
 
   it "stubs instance_of" do
-    stub.instance_of(Date) do |o|
-      o.to_s {"The Date"}
+    stub.instance_of(HighLevelSpec) do |o|
+      o.to_s {"High Level Spec"}
     end
-    Date.new.to_s.should == "The Date"
+    HighLevelSpec.new.to_s.should == "High Level Spec"
   end
 
   it "stubs methods without letters" do
     stub(@obj).__send__(:==) {:equality}
     (@obj == 55).should == :equality
   end
+end
+
+class HighLevelSpec
+
 end
