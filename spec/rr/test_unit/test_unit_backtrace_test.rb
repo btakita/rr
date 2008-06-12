@@ -12,7 +12,7 @@ class TestUnitBacktraceTest < Test::Unit::TestCase
   end
 
   def test_trim_backtrace_is_set
-    assert RR::Space.trim_backtrace
+    assert RR.trim_backtrace
   end
 
   def test_backtrace_tweaking

@@ -3,7 +3,7 @@ module RR
     module TestUnit
       include RRMethods
       def self.included(mod)
-        RR::Space.trim_backtrace = true
+        RR.trim_backtrace = true
         mod.class_eval do
           alias_method :setup_without_rr, :setup
           def setup_with_rr

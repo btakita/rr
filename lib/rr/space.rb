@@ -8,7 +8,7 @@ module RR
         @instance ||= new
       end
       attr_writer :instance
-      
+
       protected
       def method_missing(method_name, *args, &block)
         instance.__send__(method_name, *args, &block)

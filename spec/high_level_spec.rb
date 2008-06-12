@@ -1,6 +1,9 @@
 dir = File.dirname(__FILE__)
 require "#{dir}/spec_helper"
 
+class HighLevelSpec
+end
+
 describe "RR" do
   before(:each) do
     @obj = Object.new
@@ -8,7 +11,7 @@ describe "RR" do
   end
 
   after(:each) do
-    RR::Space.instance.reset
+    RR.reset
   end
 
   describe "RR mock:" do
@@ -178,7 +181,4 @@ describe "RR" do
       (@obj == 55).should == :equality
     end
   end
-end
-
-class HighLevelSpec
 end

@@ -45,3 +45,12 @@ require "#{dir}/rr/adapters/rr_methods"
 
 require "#{dir}/rr/adapters/rspec"
 require "#{dir}/rr/adapters/test_unit"
+
+module RR
+  class << self
+    protected
+    def method_missing(method_name, *args, &block)
+      RR::Space.instance.__send__(method_name, *args, &block)
+    end
+  end  
+end

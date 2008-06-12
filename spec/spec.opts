@@ -11,3 +11,4 @@ mtime
 --timeout
 20
 --diff
+--backtrace

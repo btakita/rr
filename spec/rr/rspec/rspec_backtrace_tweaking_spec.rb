@@ -5,7 +5,7 @@ module RR
     describe Rspec do
       describe "#trim_backtrace" do
         it "does not set trim_backtrace" do
-          RR::Space.trim_backtrace.should == false
+          RR.trim_backtrace.should == false
         end
       end
 
