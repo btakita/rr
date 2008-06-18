@@ -41,7 +41,7 @@ module RR
       #     method_name_2(arg_1, arg_2) {return_value_2}
       #   end
       def mock(subject=DoubleDefinitionCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
-        creator = RR::Space.double_definition_creator
+        creator = RR::Space.instance.double_definition_creator
         creator.mock(subject, method_name, &definition)
       end
 
@@ -75,7 +75,7 @@ module RR
       #     method_name_2(arg_1, arg_2) {return_value_2}
       #   end
       def stub(subject=DoubleDefinitionCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
-        creator = RR::Space.double_definition_creator
+        creator = RR::Space.instance.double_definition_creator
         creator.stub(subject, method_name, &definition)
       end
 
@@ -125,7 +125,7 @@ module RR
       #     "My new return value"
       #   end
       def proxy(subject=DoubleDefinitionCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
-        creator = RR::Space.double_definition_creator
+        creator = RR::Space.instance.double_definition_creator
         creator.proxy(subject, method_name, &definition)
       end
 
@@ -146,7 +146,7 @@ module RR
       #      m.method3.with_no_args # Do not allow method3 with no arguments
       #    end
       def dont_allow(subject=DoubleDefinitionCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
-        creator = RR::Space.double_definition_creator
+        creator = RR::Space.instance.double_definition_creator
         creator.dont_allow(subject, method_name, &definition)
       end
       alias_method :do_not_allow, :dont_allow
@@ -165,7 +165,7 @@ module RR
       #     projects[0..2]
       #   end
       def instance_of(subject=DoubleDefinitionCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
-        creator = RR::Space.double_definition_creator
+        creator = RR::Space.instance.double_definition_creator
         creator.instance_of(subject, method_name, &definition)
       end
 
