@@ -9,7 +9,7 @@ module RR
       @space = space
       @core_strategy = nil
       @using_proxy_strategy = false
-      @instance_of_called = nil
+      @using_instance_of_strategy = nil
     end
     
     def mock(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
@@ -46,7 +46,7 @@ module RR
         raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
       end
       add_strategy(subject, method_name, definition) do
-        @instance_of_called = true
+        @using_instance_of_strategy = true
         return self if subject === NO_SUBJECT_ARG
       end
     end
@@ -54,7 +54,7 @@ module RR
     def create(subject, method_name, *args, &handler)
       @args = args
       @handler = handler
-      if @instance_of_called
+      if @using_instance_of_strategy
         setup_doubles_for_class_instances(subject, method_name)
       else
         setup_double(subject, method_name)
