@@ -42,10 +42,10 @@ Here is RR compared to other mock frameworks:
   User.should_receive(:find).with('42') {jane} # Rspec using return value blocks
   mock(User).find('42') {jane} # RR
 
-=== No mock objects
+=== No "pure" mock object
 RR is an opinionated framework. RR does not create a mock object for you,
 like other frameworks. Instead, RR utilizes a technique known as
-"partial mocking".
+"double injection".
 
   my_object = MyClass.new
   mock(my_object).hello
@@ -53,6 +53,10 @@ like other frameworks. Instead, RR utilizes a technique known as
 Compare this with doing a mock in mocha:
   my_mocked_object = mock()
   my_mocked_object.expects(:hello)
+
+If you wish to use objects for the sole purpose of being a mock, you can
+do so by creating an empty object.
+  mock(my_mock_object = Object.new).hello
 
 === No should_receive or expects method
 RR uses method_missing to set your method expectation. This means you do not
