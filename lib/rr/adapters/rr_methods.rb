@@ -165,7 +165,7 @@ module RR
       #     projects[0..2]
       #   end
       def instance_of(subject=DoubleDefinitionCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
-        creator = RR::Space.instance.double_definition_creator
+        creator = RR::Space.double_definition_creator
         creator.instance_of(subject, method_name, &definition)
       end
 

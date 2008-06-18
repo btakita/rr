@@ -7,30 +7,30 @@ module RR
 
     def initialize(space)
       @space = space
-      @strategy = nil
+      @core_strategy = nil
       @using_proxy_strategy = false
       @instance_of_called = nil
     end
     
     def mock(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
       add_strategy(subject, method_name, definition) do
-        verify_no_strategy
-        @strategy = :mock
+        verify_no_core_strategy
+        @core_strategy = :mock
       end
     end
 
     def stub(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
       add_strategy(subject, method_name, definition) do
-        verify_no_strategy
-        @strategy = :stub
+        verify_no_core_strategy
+        @core_strategy = :stub
       end
     end
 
     def dont_allow(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
       add_strategy(subject, method_name, definition) do
-        verify_no_strategy
+        verify_no_core_strategy
         proxy_when_dont_allow_error if @using_proxy_strategy
-        @strategy = :dont_allow
+        @core_strategy = :dont_allow
       end
     end
     alias_method :do_not_allow, :dont_allow
@@ -39,7 +39,7 @@ module RR
 
     def proxy(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
       add_strategy(subject, method_name, definition) do
-        proxy_when_dont_allow_error if @strategy == :dont_allow
+        proxy_when_dont_allow_error if @core_strategy == :dont_allow
         @using_proxy_strategy = true
       end
     end
@@ -114,7 +114,7 @@ module RR
       builder = DoubleDefinitionBuilder.new(@definition, @args, @handler)
 
       verify_strategy
-      builder.__send__(@strategy)
+      builder.__send__(@core_strategy)
 
       if @using_proxy_strategy
         builder.proxy
@@ -123,19 +123,19 @@ module RR
       end
     end
 
-    def verify_no_strategy
-      strategy_already_defined_error if @strategy
+    def verify_no_core_strategy
+      strategy_already_defined_error if @core_strategy
     end
 
     def strategy_already_defined_error
       raise(
         DoubleDefinitionError,
-        "This Double already has a #{@strategy} strategy"
+        "This Double already has a #{@core_strategy} strategy"
       )
     end
 
     def verify_strategy
-      no_strategy_error unless @strategy
+      no_strategy_error unless @core_strategy
     end
 
     def no_strategy_error
