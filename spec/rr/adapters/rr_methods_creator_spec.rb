@@ -15,8 +15,8 @@ module RR
           end
         end
 
-        it "returns a DoubleCreator when passed no arguments" do
-          mock.should be_instance_of(DoubleCreator)
+        it "returns a DoubleDefinitionCreator when passed no arguments" do
+          mock.should be_instance_of(DoubleDefinitionCreator)
         end
 
         it "sets up the RR mock call chain" do
@@ -72,8 +72,8 @@ module RR
           end
         end
 
-        it "returns a DoubleCreator when passed no arguments" do
-          stub.should be_instance_of(DoubleCreator)
+        it "returns a DoubleDefinitionCreator when passed no arguments" do
+          stub.should be_instance_of(DoubleDefinitionCreator)
         end
 
         it "sets up the RR stub call chain" do
@@ -125,8 +125,8 @@ module RR
           end
         end
 
-        it "#proxy returns a DoubleCreator when passed no arguments" do
-          proxy.should be_instance_of(DoubleCreator)
+        it "#proxy returns a DoubleDefinitionCreator when passed no arguments" do
+          proxy.should be_instance_of(DoubleDefinitionCreator)
         end
 
         it "#proxy sets up the RR proxy call chain" do
@@ -198,8 +198,8 @@ module RR
           end
         end
 
-        it "returns a DoubleCreator when passed no arguments" do
-          stub.proxy.should be_instance_of(DoubleCreator)
+        it "returns a DoubleDefinitionCreator when passed no arguments" do
+          stub.proxy.should be_instance_of(DoubleDefinitionCreator)
         end
 
         it "sets up the RR proxy call chain" do
@@ -252,8 +252,8 @@ module RR
           end
         end
 
-        it "returns a DoubleCreator when passed no arguments" do
-          do_not_allow.should be_instance_of(DoubleCreator)
+        it "returns a DoubleDefinitionCreator when passed no arguments" do
+          do_not_allow.should be_instance_of(DoubleDefinitionCreator)
         end
 
         it "sets up the RR do_not_allow call chain" do
@@ -311,13 +311,13 @@ module RR
         end
       end
 
-      describe DoubleCreator, "#instance_of and #mock" do
+      describe DoubleDefinitionCreator, "#instance_of and #mock" do
         before do
           @klass = Class.new
         end
 
-        it "returns a DoubleCreator when passed no arguments" do
-          instance_of.instance_of.should be_instance_of(DoubleCreator)
+        it "returns a DoubleDefinitionCreator when passed no arguments" do
+          instance_of.instance_of.should be_instance_of(DoubleDefinitionCreator)
         end
 
         it "sets up the RR instance_of call chain" do

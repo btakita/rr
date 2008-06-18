@@ -10,9 +10,9 @@ require "#{dir}/rr/space"
 require "#{dir}/rr/double_injection"
 require "#{dir}/rr/hash_with_object_id_key"
 
-require "#{dir}/rr/double_method_proxy"
+require "#{dir}/rr/double_definition_creator_proxy"
 
-require "#{dir}/rr/double_creator"
+require "#{dir}/rr/double_definition_creator"
 
 require "#{dir}/rr/double"
 require "#{dir}/rr/double_definition"

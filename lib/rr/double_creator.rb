@@ -1,11 +1,11 @@
 module RR
-  # RR::DoubleCreator provides a strategies to create a Double.
+  # RR::DoubleDefinitionCreator provides a strategies to create a Double.
   # The strategies are:
   # * mock
   # * stub
   # * proxy
   # * dont_allow
-  class DoubleCreator
+  class DoubleDefinitionCreator
     NO_SUBJECT_ARG = Object.new
 
     attr_reader :space
@@ -28,7 +28,7 @@ module RR
     #   or
     #   proxy.mock(subject).method_name_1
     #
-    # When passed the subject, a DoubleMethodProxy is returned. Passing
+    # When passed the subject, a DoubleDefinitionCreatorProxy is returned. Passing
     # a method with arguments to the proxy will set up expectations that
     # the a call to the subject's method with the arguments will happen.
     #   mock(subject).method_name_1 {return_value_1}
@@ -49,7 +49,7 @@ module RR
       verify_no_strategy
       @strategy = :mock
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
-      RR.double_method_proxy(self, subject, method_name, &definition)
+      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
     end
 
     # This method sets the Double to have a stub strategy. A stub strategy
@@ -62,7 +62,7 @@ module RR
     #   or
     #   proxy.stub(subject).method_name_1
     #
-    # When passed the subject, a DoubleMethodProxy is returned. Passing
+    # When passed the subject, a DoubleDefinitionCreatorProxy is returned. Passing
     # a method with arguments to the proxy will set up expectations that
     # the a call to the subject's method with the arguments will happen,
     # and return the prescribed value.
@@ -84,7 +84,7 @@ module RR
       verify_no_strategy
       @strategy = :stub
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
-      RR.double_method_proxy(self, subject, method_name, &definition)
+      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
     end
 
     # This method sets the Double to have a dont_allow strategy.
@@ -108,7 +108,7 @@ module RR
       proxy_when_dont_allow_error if @using_proxy_strategy
       @strategy = :dont_allow
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
-      RR.double_method_proxy(self, subject, method_name, &definition)
+      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
     end
     alias_method :do_not_allow, :dont_allow
     alias_method :dont_call, :dont_allow
@@ -163,7 +163,7 @@ module RR
       proxy_when_dont_allow_error if @strategy == :dont_allow
       @using_proxy_strategy = true
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
-      RR.double_method_proxy(self, subject, method_name, &definition)
+      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
     end
     alias_method :probe, :proxy
 
@@ -182,7 +182,7 @@ module RR
       @instance_of_called = true
       return self if subject === NO_SUBJECT_ARG
       raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
-      RR.double_method_proxy(self, subject, method_name, &definition)
+      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
     end
 
     def create(subject, method_name, *args, &handler)
