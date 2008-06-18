@@ -1,11 +1,5 @@
 module RR
-  # RR::DoubleDefinitionCreator provides a strategies to create a Double.
-  # The strategies are:
-  # * mock
-  # * stub
-  # * proxy
-  # * dont_allow
-  class DoubleDefinitionCreator
+  class DoubleDefinitionCreator # :nodoc
     NO_SUBJECT_ARG = Object.new
 
     attr_reader :space
@@ -18,92 +12,21 @@ module RR
       @instance_of_called = nil
     end
     
-    # This method sets the Double to have a mock strategy. A mock strategy
-    # sets the default state of the Double to expect the method call
-    # with arguments exactly one time. The Double's expectations can be
-    # changed.
-    #
-    # This method can be chained with proxy.
-    #   mock.proxy(subject).method_name_1
-    #   or
-    #   proxy.mock(subject).method_name_1
-    #
-    # When passed the subject, a DoubleDefinitionCreatorProxy is returned. Passing
-    # a method with arguments to the proxy will set up expectations that
-    # the a call to the subject's method with the arguments will happen.
-    #   mock(subject).method_name_1 {return_value_1}
-    #   mock(subject).method_name_2(arg1, arg2) {return_value_2}
-    #
-    # When passed the subject and the method_name, this method returns
-    # a mock Double with the method already set.
-    #
-    #   mock(subject, :method_name_1) {return_value_1}
-    #   mock(subject, :method_name_2).with(arg1, arg2) {return_value_2}
-    #
-    # mock also takes a block for definitions.
-    #   mock(subject) do
-    #     method_name_1 {return_value_1}
-    #     method_name_2(arg_1, arg_2) {return_value_2}
-    #   end
-    def mock(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
+    def mock(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
       verify_no_strategy
       @strategy = :mock
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR.double_definition_creator_proxy(self, subject, method_name, &definition)
     end
 
-    # This method sets the Double to have a stub strategy. A stub strategy
-    # sets the default state of the Double to expect the method call
-    # with any arguments any number of times. The Double's
-    # expectations can be changed.
-    #
-    # This method can be chained with proxy.
-    #   stub.proxy(subject).method_name_1
-    #   or
-    #   proxy.stub(subject).method_name_1
-    #
-    # When passed the subject, a DoubleDefinitionCreatorProxy is returned. Passing
-    # a method with arguments to the proxy will set up expectations that
-    # the a call to the subject's method with the arguments will happen,
-    # and return the prescribed value.
-    #   stub(subject).method_name_1 {return_value_1}
-    #   stub(subject).method_name_2(arg_1, arg_2) {return_value_2}
-    #
-    # When passed the subject and the method_name, this method returns
-    # a stub Double with the method already set.
-    #
-    #   mock(subject, :method_name_1) {return_value_1}
-    #   mock(subject, :method_name_2).with(arg1, arg2) {return_value_2}
-    #
-    # stub also takes a block for definitions.
-    #   stub(subject) do
-    #     method_name_1 {return_value_1}
-    #     method_name_2(arg_1, arg_2) {return_value_2}
-    #   end
-    def stub(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
+    def stub(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
       verify_no_strategy
       @strategy = :stub
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
       RR.double_definition_creator_proxy(self, subject, method_name, &definition)
     end
 
-    # This method sets the Double to have a dont_allow strategy.
-    # A dont_allow strategy sets the default state of the Double
-    # to expect never to be called. The Double's expectations can be
-    # changed.
-    #
-    # The following example sets the expectation that subject.method_name
-    # will never be called with arg1 and arg2.
-    #
-    #   dont_allow(subject).method_name(arg1, arg2)
-    #
-    # dont_allow also supports a block sytnax.
-    #    dont_allow(subject) do |m|
-    #      m.method1 # Do not allow method1 with any arguments
-    #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
-    #      m.method3.with_no_args # Do not allow method3 with no arguments
-    #    end
-    def dont_allow(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
+    def dont_allow(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
       verify_no_strategy
       proxy_when_dont_allow_error if @using_proxy_strategy
       @strategy = :dont_allow
@@ -114,52 +37,7 @@ module RR
     alias_method :dont_call, :dont_allow
     alias_method :do_not_call, :dont_allow
 
-    # This method add proxy capabilities to the Double. proxy can be called
-    # with mock or stub.
-    #
-    #   mock.proxy(controller.template).render(:partial => "my/socks")
-    #
-    #   stub.proxy(controller.template).render(:partial => "my/socks") do |html|
-    #     html.should include("My socks are wet")
-    #     html
-    #   end
-    #
-    #   mock.proxy(controller.template).render(:partial => "my/socks") do |html|
-    #     html.should include("My socks are wet")
-    #     "My new return value"
-    #   end
-    #
-    # mock.proxy also takes a block for definitions.
-    #   mock.proxy(subject) do
-    #     render(:partial => "my/socks")
-    #
-    #     render(:partial => "my/socks") do |html|
-    #       html.should include("My socks are wet")
-    #       html
-    #     end
-    #
-    #     render(:partial => "my/socks") do |html|
-    #       html.should include("My socks are wet")
-    #       html
-    #     end
-    #
-    #     render(:partial => "my/socks") do |html|
-    #       html.should include("My socks are wet")
-    #       "My new return value"
-    #     end
-    #   end
-    #
-    # Passing a block to the Double (after the method name and arguments)
-    # allows you to intercept the return value.
-    # The return value can be modified, validated, and/or overridden by
-    # passing in a block. The return value of the block will replace
-    # the actual return value.
-    #
-    #   mock.proxy(controller.template).render(:partial => "my/socks") do |html|
-    #     html.should include("My socks are wet")
-    #     "My new return value"
-    #   end
-    def proxy(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
+    def proxy(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
       proxy_when_dont_allow_error if @strategy == :dont_allow
       @using_proxy_strategy = true
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
@@ -167,18 +45,7 @@ module RR
     end
     alias_method :probe, :proxy
 
-    # Calling instance_of will cause all instances of the passed in Class
-    # to have the Double defined.
-    #
-    # The following example mocks all User's valid? method and return false. 
-    #   mock.instance_of(User).valid? {false}
-    #
-    # The following example mocks and proxies User#projects and returns the
-    # first 3 projects.
-    #   mock.instance_of(User).projects do |projects|
-    #     projects[0..2]
-    #   end
-    def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition)
+    def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
       @instance_of_called = true
       return self if subject === NO_SUBJECT_ARG
       raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
