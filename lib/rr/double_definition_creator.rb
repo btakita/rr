@@ -14,23 +14,19 @@ module RR
     
     def mock(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
       add_strategy(subject, method_name, definition) do
-        verify_no_core_strategy
-        @core_strategy = :mock
+        set_core_strategy :mock
       end
     end
 
     def stub(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
       add_strategy(subject, method_name, definition) do
-        verify_no_core_strategy
-        @core_strategy = :stub
+        set_core_strategy :stub
       end
     end
 
     def dont_allow(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
       add_strategy(subject, method_name, definition) do
-        verify_no_core_strategy
-        proxy_when_dont_allow_error if @using_proxy_strategy
-        @core_strategy = :dont_allow
+        set_core_strategy :dont_allow
       end
     end
     alias_method :do_not_allow, :dont_allow
@@ -80,6 +76,12 @@ module RR
       else
         space.double_definition_creator_proxy(self, subject, &definition)
       end
+    end
+
+    def set_core_strategy(strategy)
+      verify_no_core_strategy
+      @core_strategy = strategy
+      proxy_when_dont_allow_error if strategy == :dont_allow && @using_proxy_strategy
     end
 
     def setup_double(subject, method_name)
