@@ -23,13 +23,8 @@ module RR
       @trim_backtrace = false
     end
 
-    def double_definition_creator_proxy(creator, object, method_name=nil, &definition)
-      if method_name && definition
-        raise ArgumentError, "Cannot pass in a method name and a block"
-      end
-      proxy = DoubleDefinitionCreatorProxy.new(creator, object, &definition)
-      return proxy unless method_name
-      proxy.__send__(method_name)
+    def double_definition_creator_proxy(creator, object, &definition)
+      DoubleDefinitionCreatorProxy.new(creator, object, &definition)
     end
 
     # Creates a DoubleDefinitionCreator.

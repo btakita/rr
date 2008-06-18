@@ -21,12 +21,6 @@ module RR
       end
       proxy.creator.should === @creator
     end
-
-    it "raises error if passed a method name and a block" do
-      proc do
-        @space.double_definition_creator_proxy(@creator, @object, :foobar) {}
-      end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-    end
   end
 
   describe Space, "#double_definition_creator_proxy with a Mock strategy" do
@@ -35,12 +29,6 @@ module RR
     before do
       @creator = @space.double_definition_creator
       @creator.mock
-    end
-
-    it "creates a mock Double for method when passed a second argument" do
-      @space.double_definition_creator_proxy(@creator, @object, :foobar).with(1) {:baz}
-      @object.foobar(1).should == :baz
-      proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
     end
 
     it "uses block definition when passed a block" do
@@ -58,12 +46,6 @@ module RR
     before do
       @creator = @space.double_definition_creator
       @creator.stub
-    end
-
-    it "creates a stub Double for method when passed a second argument" do
-      @space.double_definition_creator_proxy(@creator, @object, :foobar).with(1) {:baz}
-      @object.foobar(1).should == :baz
-      @object.foobar(1).should == :baz
     end
 
     it "uses block definition when passed a block" do
@@ -89,12 +71,6 @@ module RR
       end
     end
 
-    it "creates a mock proxy Double for method when passed a second argument" do
-      @space.double_definition_creator_proxy(@creator, @object, :foobar).with(1)
-      @object.foobar(1).should == :original_foobar
-      proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
-    end
-
     it "uses block definition when passed a block" do
       @space.double_definition_creator_proxy(@creator, @object) do |c|
         c.foobar(1)
@@ -115,12 +91,6 @@ module RR
       end
     end
 
-    it "creates a stub proxy Double for method when passed a second argument" do
-      @space.double_definition_creator_proxy(@creator, @object, :foobar)
-      @object.foobar(1).should == :original_foobar
-      @object.foobar(1).should == :original_foobar
-    end
-
     it "uses block definition when passed a block" do
       @space.double_definition_creator_proxy(@creator, @object) do |c|
         c.foobar(1)
@@ -136,11 +106,6 @@ module RR
     before do
       @creator = @space.double_definition_creator
       @creator.dont_allow
-    end
-
-    it "creates a do not allow Double for method when passed a second argument" do
-      @space.double_definition_creator_proxy(@creator, @object, :foobar).with(1)
-      proc {@object.foobar(1)}.should raise_error(Errors::TimesCalledError)
     end
 
     it "uses block definition when passed a block" do

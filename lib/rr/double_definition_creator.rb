@@ -13,43 +13,46 @@ module RR
     end
     
     def mock(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
-      verify_no_strategy
-      @strategy = :mock
-      return self if subject.__id__ === NO_SUBJECT_ARG.__id__
-      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
+      add_strategy(subject, method_name, definition) do
+        verify_no_strategy
+        @strategy = :mock
+      end
     end
 
     def stub(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
-      verify_no_strategy
-      @strategy = :stub
-      return self if subject.__id__ === NO_SUBJECT_ARG.__id__
-      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
+      add_strategy(subject, method_name, definition) do
+        verify_no_strategy
+        @strategy = :stub
+      end
     end
 
     def dont_allow(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
-      verify_no_strategy
-      proxy_when_dont_allow_error if @using_proxy_strategy
-      @strategy = :dont_allow
-      return self if subject.__id__ === NO_SUBJECT_ARG.__id__
-      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
+      add_strategy(subject, method_name, definition) do
+        verify_no_strategy
+        proxy_when_dont_allow_error if @using_proxy_strategy
+        @strategy = :dont_allow
+      end
     end
     alias_method :do_not_allow, :dont_allow
     alias_method :dont_call, :dont_allow
     alias_method :do_not_call, :dont_allow
 
     def proxy(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
-      proxy_when_dont_allow_error if @strategy == :dont_allow
-      @using_proxy_strategy = true
-      return self if subject.__id__ === NO_SUBJECT_ARG.__id__
-      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
+      add_strategy(subject, method_name, definition) do
+        proxy_when_dont_allow_error if @strategy == :dont_allow
+        @using_proxy_strategy = true
+      end
     end
     alias_method :probe, :proxy
 
     def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
-      @instance_of_called = true
-      return self if subject === NO_SUBJECT_ARG
-      raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
-      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
+      if subject != NO_SUBJECT_ARG && !subject.is_a?(Class)
+        raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
+      end
+      add_strategy(subject, method_name, definition) do
+        @instance_of_called = true
+        return self if subject === NO_SUBJECT_ARG
+      end
     end
 
     def create(subject, method_name, *args, &handler)
@@ -65,6 +68,20 @@ module RR
     end
     
     protected
+    def add_strategy(subject, method_name, definition)
+      if method_name && definition
+        raise ArgumentError, "Cannot pass in a method name and a block"
+      end
+      yield
+      if subject.__id__ === NO_SUBJECT_ARG.__id__
+        self
+      elsif method_name
+        create subject, method_name, &definition
+      else
+        space.double_definition_creator_proxy(self, subject, &definition)
+      end
+    end
+
     def setup_double(subject, method_name)
       @double_injection = @space.double_injection(subject, method_name)
       @double = @space.double(@double_injection)
