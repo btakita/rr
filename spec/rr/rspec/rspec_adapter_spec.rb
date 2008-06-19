@@ -32,7 +32,7 @@ module RR
 
         it "verifies the double_injections" do
           double_injection = RR.double_injection(@subject, @method_name)
-          double = RR.double(double_injection)
+          double = RR::Double.new(double_injection)
 
           double.once
 

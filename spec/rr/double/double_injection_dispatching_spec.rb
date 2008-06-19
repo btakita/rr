@@ -22,7 +22,7 @@ module RR
               yield(a, b)
             end
           end
-          double = @space.double(@double_injection)
+          double = Double.new(@double_injection)
           double.with(1, 2).implemented_by(method_fixture.method(:method_with_block))
           @object.foobar(1, 2) {|a, b| [b, a]}.should == [2, 1]
         end
@@ -30,11 +30,11 @@ module RR
 
       describe "where there are no doubles with duplicate ArgumentExpectations" do
         it "dispatches to Double that have an exact match" do
-          double1_with_exact_match = @space.double(@double_injection)
+          double1_with_exact_match = Double.new(@double_injection)
           double1_with_exact_match.with(:exact_match_1).returns {:return_1}
-          double_with_no_match = @space.double(@double_injection)
+          double_with_no_match = Double.new(@double_injection)
           double_with_no_match.with("nothing that matches").returns {:no_match}
-          double2_with_exact_match = @space.double(@double_injection)
+          double2_with_exact_match = Double.new(@double_injection)
           double2_with_exact_match.with(:exact_match_2).returns {:return_2}
 
           @object.foobar(:exact_match_1).should == :return_1
@@ -42,9 +42,9 @@ module RR
         end
 
         it "dispatches to Double that have a wildcard match" do
-          double_with_wildcard_match = @space.double(@double_injection)
+          double_with_wildcard_match = Double.new(@double_injection)
           double_with_wildcard_match.with_any_args.returns {:wild_card_value}
-          double_with_no_match = @space.double(@double_injection)
+          double_with_no_match = Double.new(@double_injection)
           double_with_no_match.with("nothing that matches").returns {:no_match}
 
           @object.foobar(:wildcard_match_1).should == :wild_card_value
@@ -54,10 +54,10 @@ module RR
 
       describe "where there are doubles" do
         it "raises DoubleNotFoundError error when arguments do not match a double" do
-          double_1 = @space.double(@double_injection)
+          double_1 = Double.new(@double_injection)
           double_1.with(1, 2)
 
-          double_2 = @space.double(@double_injection)
+          double_2 = Double.new(@double_injection)
           double_2.with(3)
 
           error = nil
@@ -109,7 +109,7 @@ module RR
         end
 
         def double(*arguments, &return_value)
-          double = @space.double(@double_injection)
+          double = Double.new(@double_injection)
           double.with(*arguments).any_number_of_times.returns(&return_value)
           double.should_not be_terminal
           double
@@ -151,7 +151,7 @@ module RR
         end
 
         def double(*arguments, &return_value)
-          double = @space.double(@double_injection)
+          double = Double.new(@double_injection)
           double.with(*arguments).once.returns(&return_value)
           double.should be_terminal
           double
@@ -193,7 +193,7 @@ module RR
         end
 
         def double(&return_value)
-          double = @space.double(@double_injection)
+          double = Double.new(@double_injection)
           double.with_any_args.once.returns(&return_value)
           double.should be_terminal
           double
@@ -207,7 +207,7 @@ module RR
       end
 
       it "executes the block" do
-        double = @space.double(@double_injection)
+        double = Double.new(@double_injection)
         double.with(1, 2) {:return_value}
         @object.foobar!(1, 2).should == :return_value
       end
@@ -219,7 +219,7 @@ module RR
       end
 
       it "executes the block" do
-        double = @space.double(@double_injection)
+        double = Double.new(@double_injection)
         double.with(1, 2) {:return_value}
         @object.foobar?(1, 2).should == :return_value
       end

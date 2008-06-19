@@ -17,13 +17,15 @@ module RR
     end
 
     attr_reader :times_called, :double_injection, :definition
+    include Space::Reader
 
-    def initialize(space, double_injection, definition)
-      @space = space
+    def initialize(double_injection, definition = DoubleDefinition.new)
       @double_injection = double_injection
       @definition = definition
       @times_called = 0
       @times_called_expectation = Expectations::TimesCalledExpectation.new(self)
+      definition.double = self
+      double_injection.register_double self
     end
 
     # Double#with sets the expectation that the Double will receive
@@ -234,7 +236,7 @@ module RR
         puts Double.formatted_name(double_injection.method_name, args)
       end
       self.times_called_expectation.attempt if definition.times_matcher
-      @space.verify_ordered_double(self) if ordered?
+      space.verify_ordered_double(self) if ordered?
       yields!(block)
       return_value = call_implementation(double_injection, *args, &block)
       return return_value unless definition.after_call_value

@@ -87,8 +87,8 @@ module RR
             double1 = @space.double_injection(@object1, :foobar1)
             double2 = @space.double_injection(@object1, :foobar2)
 
-            double1 = @space.double(double1)
-            double2 = @space.double(double2)
+            double1 = Double.new(double1)
+            double2 = Double.new(double2)
 
             double1.ordered
             double2.ordered

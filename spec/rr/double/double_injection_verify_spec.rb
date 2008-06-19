@@ -2,8 +2,9 @@ require "spec/spec_helper"
 
 module RR
   describe DoubleInjection, "#verify" do
+    it_should_behave_like "Swapped Space"
     before do
-      @space = Space.new
+      @space = Space.instance
       @object = Object.new
       @method_name = :foobar
       @object.methods.should_not include(@method_name.to_s)
@@ -11,7 +12,7 @@ module RR
     end
 
     it "verifies each double was met" do
-      double = Double.new(@space, @double_injection, DoubleDefinition.new)
+      double = Double.new(@double_injection, DoubleDefinition.new)
       @double_injection.register_double double
 
       double.with(1).once.returns {nil}

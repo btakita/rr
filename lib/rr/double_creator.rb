@@ -200,20 +200,20 @@ module RR
     protected
     def setup_double(subject, method_name)
       @double_injection = @space.double_injection(subject, method_name)
-      @double = @space.double(@double_injection)
+      @double = Double.new(@double_injection)
       @definition = @double.definition
     end
 
     def setup_doubles_for_class_instances(subject, method_name)
       class_double = @space.double_injection(subject, :new)
-      class_double = @space.double(class_double)
+      class_double = Double.new(class_double)
 
       instance_method_name = method_name
 
       @definition = DoubleDefinition.new
       class_handler = proc do |return_value|
         double_injection = @space.double_injection(return_value, instance_method_name)
-        @space.double(double_injection, @definition)
+        Double.new(double_injection, @definition)
         return_value
       end
 

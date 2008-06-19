@@ -11,7 +11,13 @@ module RR
         [b, a]
       end
       @double_injection = space.double_injection(object, :foobar)
-      @double = space.double(double_injection)
+      @double = Double.new(double_injection)
+    end
+
+    describe "#initialize" do
+      it "registers self with associated DoubleInjection" do
+        double_injection.doubles.should include(double)
+      end
     end
 
     describe "#with" do
@@ -385,7 +391,7 @@ module RR
         end
 
         double_injection = space.double_injection(object, :foobar)
-        double = space.double(double_injection)
+        double = Double.new(double_injection)
         double.with_any_args
         double.proxy
 
@@ -399,7 +405,7 @@ module RR
           end
         end
         double_injection = space.double_injection(object, :does_not_exist)
-        double = space.double(double_injection)
+        double = Double.new(double_injection)
         double.with_any_args
         double.proxy
 
@@ -464,7 +470,7 @@ module RR
 
         it "raises DoubleOrderError when ordered and called out of order" do
           double1 = double
-          double2 = space.double(double_injection)
+          double2 = Double.new(double_injection)
 
           double1.with(1).returns {:return_1}.ordered.once
           double2.with(2).returns {:return_2}.ordered.once

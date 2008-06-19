@@ -35,12 +35,12 @@ module RR
     end
 
     # Creates and registers a Double to be verified.
-    def double(double_injection, definition = DoubleDefinition.new)
-      double = Double.new(self, double_injection, definition)
-      double.definition.double = double
-      double_injection.register_double double
-      double
-    end
+#    def double(double_injection, definition = DoubleDefinition.new)
+#      double = Double.new(double_injection, definition)
+#      double.definition.double = double
+#      double_injection.register_double double
+#      double
+#    end
 
     # Reuses or creates, if none exists, a DoubleInjection for the passed
     # in object and method_name.

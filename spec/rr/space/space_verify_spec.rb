@@ -10,7 +10,7 @@ module RR
     end
 
     it "raises an error when Double is NonTerminal" do
-      double = @space.double(@double_injection)
+      double = Double.new(@double_injection)
       @space.register_ordered_double(double)
 
       double.any_number_of_times
@@ -131,7 +131,7 @@ module RR
       it_should_behave_like "RR::Space#verify_ordered_double"
 
       it "keeps the double when times called is not verified" do
-        double = @space.double(@double_injection)
+        double = Double.new(@double_injection)
         @space.register_ordered_double(double)
 
         double.twice
@@ -142,7 +142,7 @@ module RR
       end
 
       it "removes the double when times called expectation should no longer be attempted" do
-        double = @space.double(@double_injection)
+        double = Double.new(@double_injection)
         @space.register_ordered_double(double)
 
         double.with(1).once
@@ -172,7 +172,7 @@ module RR
       end
 
       def double
-        double = @space.double(@double_injection).once
+        double = Double.new(@double_injection).once
         @space.register_ordered_double(double.double)
         double.double
       end

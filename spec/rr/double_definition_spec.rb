@@ -23,7 +23,7 @@ module RR
       @object = Object.new
       add_original_method
       @double_injection = Space.instance.double_injection(@object, :foobar)
-      @double = Space.instance.double(@double_injection)
+      @double = Double.new(@double_injection)
       @definition = @double.definition
     end
 
@@ -694,7 +694,7 @@ module RR
           end
         end
         double_injection = Space.instance.double_injection(@object, :does_not_exist)
-        double = Space.instance.double(double_injection)
+        double = Double.new(double_injection)
         double.with_any_args
         double.proxy
 

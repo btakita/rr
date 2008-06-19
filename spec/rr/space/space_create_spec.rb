@@ -35,7 +35,7 @@ module RR
         @doubles
       end
 
-      double = @space.double(double_injection)
+      double = Double.new(double_injection)
       double_injection.doubles.should include(double)
     end
   end

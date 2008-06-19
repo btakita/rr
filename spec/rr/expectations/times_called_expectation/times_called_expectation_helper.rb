@@ -9,7 +9,7 @@ module RR
         @object = Object.new
         @method_name = :foobar
         @double_injection = space.double_injection(object, method_name)
-        @double = space.double(double_injection)
+        @double = Double.new(double_injection)
         double.with_any_args
       end
 
