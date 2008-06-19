@@ -36,7 +36,7 @@ module RR
 
           double.once
 
-          proc do
+          lambda do
             @fixture.verify_mocks_for_rspec
           end.should raise_error(::RR::Errors::TimesCalledError)
           RR.double_injections.should be_empty

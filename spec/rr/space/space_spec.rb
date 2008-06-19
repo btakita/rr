@@ -298,7 +298,7 @@ module RR
             raise "An Error"
           end
         end
-        proc {@space.verify_double(@object, @method_name)}.should raise_error
+        lambda {@space.verify_double(@object, @method_name)}.should raise_error
         verify_called.should be_true
 
         @space.double_injections[@object][@method_name].should be_nil
@@ -322,7 +322,7 @@ module RR
             double.any_number_of_times
             double.should_not be_terminal
 
-            proc do
+            lambda do
               @space.verify_ordered_double(double)
             end.should raise_error(
             Errors::DoubleOrderError,
@@ -364,7 +364,7 @@ module RR
           first_double = double
           second_double = double
 
-          proc do
+          lambda do
             @space.verify_ordered_double(second_double)
           end.should raise_error(
             Errors::DoubleOrderError,

@@ -81,12 +81,12 @@ module RR
 
       it "sets up a Times Called Expectation with 0" do
         double.never
-        proc {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
+        lambda {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
         double.with_any_args.never
-        proc {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
+        lambda {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
       end
     end
 
@@ -98,7 +98,7 @@ module RR
       it "sets up a Times Called Expectation with 1" do
         double.once
         double.call(double_injection)
-        proc {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
+        lambda {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
@@ -116,7 +116,7 @@ module RR
         double.twice
         double.call(double_injection)
         double.call(double_injection)
-        proc {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
+        lambda {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
@@ -150,7 +150,7 @@ module RR
         double.at_most(2)
         double.call(double_injection)
         double.call(double_injection)
-        proc do
+        lambda do
           double.call(double_injection)
         end.should raise_error(
         Errors::TimesCalledError,
@@ -174,7 +174,7 @@ module RR
         double.call(double_injection)
         double.call(double_injection)
         double.call(double_injection)
-        proc {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
+        lambda {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
@@ -292,7 +292,7 @@ module RR
       end
 
       it "raises an error when not passed a block" do
-        proc do
+        lambda do
           double.after_call
         end.should raise_error(ArgumentError, "after_call expects a block")
       end
@@ -338,7 +338,7 @@ module RR
       end
 
       it "raises an error when both argument and block is passed in" do
-        proc do
+        lambda do
           double.returns(:baz) {:another}
         end.should raise_error(ArgumentError, "returns cannot accept both an argument and a block")
       end
@@ -346,11 +346,11 @@ module RR
 
     describe "#implemented_by" do
       it "returns the DoubleDefinition" do
-        double.implemented_by(proc{:baz}).should === double.definition
+        double.implemented_by(lambda{:baz}).should === double.definition
       end
 
-      it "sets the implementation to the passed in proc" do
-        double.implemented_by(proc{:baz})
+      it "sets the implementation to the passed in lambda" do
+        double.implemented_by(lambda{:baz})
         double.call(double_injection).should == :baz
       end
 
@@ -438,8 +438,8 @@ module RR
         end
       end
 
-      describe "when implemented by a proc" do
-        it "calls the return proc when implemented by a proc" do
+      describe "when implemented by a lambda" do
+        it "calls the return lambda when implemented by a lambda" do
           double.returns {|arg| "returning #{arg}"}
           double.call(double_injection, :foobar).should == "returning foobar"
         end
@@ -465,7 +465,7 @@ module RR
 
           double.call(double_injection, :foobar)
           double.call(double_injection, :foobar)
-          proc {double.call(double_injection, :foobar)}.should raise_error(Errors::TimesCalledError)
+          lambda {double.call(double_injection, :foobar)}.should raise_error(Errors::TimesCalledError)
         end
 
         it "raises DoubleOrderError when ordered and called out of order" do
@@ -475,7 +475,7 @@ module RR
           double1.with(1).returns {:return_1}.ordered.once
           double2.with(2).returns {:return_2}.ordered.once
 
-          proc do
+          lambda do
             object.foobar(2)
           end.should raise_error(
           Errors::DoubleOrderError,
@@ -533,7 +533,7 @@ module RR
         it "raises ArgumentError when yields was called and no block passed in" do
           double.with(1, 2).yields(55)
 
-          proc do
+          lambda do
             object.foobar(1, 2)
           end.should raise_error(ArgumentError, "A Block must be passed into the method call when using yields")
         end
@@ -629,20 +629,20 @@ module RR
       it "verifies that times called expectation was met" do
         double.twice.returns {:return_value}
 
-        proc {double.verify}.should raise_error(Errors::TimesCalledError)
+        lambda {double.verify}.should raise_error(Errors::TimesCalledError)
         double.call(double_injection)
-        proc {double.verify}.should raise_error(Errors::TimesCalledError)
+        lambda {double.verify}.should raise_error(Errors::TimesCalledError)
         double.call(double_injection)
 
-        proc {double.verify}.should_not raise_error
+        lambda {double.verify}.should_not raise_error
       end
 
       it "does not raise an error when there is no times called expectation" do
-        proc {double.verify}.should_not raise_error
+        lambda {double.verify}.should_not raise_error
         double.call(double_injection)
-        proc {double.verify}.should_not raise_error
+        lambda {double.verify}.should_not raise_error
         double.call(double_injection)
-        proc {double.verify}.should_not raise_error
+        lambda {double.verify}.should_not raise_error
       end
     end
 

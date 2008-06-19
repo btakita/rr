@@ -40,14 +40,14 @@ module RR
 
         describe "when passed a ProcMatcher" do
           it "returns the passed in argument" do
-            matcher = ProcMatcher.new(proc {|other| other == 5})
+            matcher = ProcMatcher.new(lambda {|other| other == 5})
             TimesCalledMatcher.create(matcher).should === matcher
           end
         end
 
         describe "when passed a Lambda" do
           it "returns ProcMatcher" do
-            value = proc {|other| other == 5}
+            value = lambda {|other| other == 5}
             TimesCalledMatcher.create(value).should == ProcMatcher.new(value)
           end
         end
@@ -75,7 +75,7 @@ module RR
         describe "when passed an unsupported type" do
           it "raises an ArgumentError" do
             matcher = Object.new
-            proc do
+            lambda do
               TimesCalledMatcher.create(matcher)
             end.should raise_error(ArgumentError, "There is no TimesCalledMatcher for #{matcher.inspect}.")
           end

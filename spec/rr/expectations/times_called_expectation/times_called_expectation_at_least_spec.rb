@@ -25,7 +25,7 @@ module Expectations
 
       it "raises error when times called < times" do
         expectation.attempt
-        proc do
+        lambda do
           expectation.verify!
         end.should raise_error(
         RR::Errors::TimesCalledError,

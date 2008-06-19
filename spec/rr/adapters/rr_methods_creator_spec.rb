@@ -36,7 +36,7 @@ module RR
         end
 
         it "raises error if passed a method name and a block" do
-          proc do
+          lambda do
             mock(@object, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
@@ -93,7 +93,7 @@ module RR
         end
 
         it "raises error if passed a method name and a block" do
-          proc do
+          lambda do
             stub(@object, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
@@ -162,7 +162,7 @@ module RR
         end
 
         it "raises error if passed a method name and a block" do
-          proc do
+          lambda do
             mock.proxy(@object, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
@@ -219,7 +219,7 @@ module RR
         end
 
         it "raises error if passed a method name and a block" do
-          proc do
+          lambda do
             stub.proxy(@object, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
@@ -279,7 +279,7 @@ module RR
         end
 
         it "raises error if passed a method name and a block" do
-          proc do
+          lambda do
             do_not_allow(@object, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
@@ -290,7 +290,7 @@ module RR
           double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
           double.argument_expectation.expected_arguments.should == [1, 2]
 
-          proc do
+          lambda do
             @subject.foobar(1, 2)
           end.should raise_error(Errors::TimesCalledError)
           reset
@@ -303,7 +303,7 @@ module RR
           double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
           double.argument_expectation.expected_arguments.should == [1, 2]
 
-          proc do
+          lambda do
             @subject.foobar(1, 2)
           end.should raise_error(Errors::TimesCalledError)
           reset
@@ -337,7 +337,7 @@ module RR
         end
 
         it "raises error if passed a method name and a block" do
-          proc do
+          lambda do
             instance_of.mock(@klass, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end

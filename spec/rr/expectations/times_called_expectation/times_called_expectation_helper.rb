@@ -14,7 +14,7 @@ module RR
       end
 
       def raises_expectation_error(&block)
-        proc {block.call}.should raise_error(Errors::TimesCalledError)
+        lambda {block.call}.should raise_error(Errors::TimesCalledError)
       end
     end
   end

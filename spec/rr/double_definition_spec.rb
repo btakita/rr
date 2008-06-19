@@ -182,12 +182,12 @@ module RR
       it "sets up a Times Called Expectation with 0" do
         @definition.with_any_args
         @definition.never
-        proc {@object.foobar}.should raise_error(Errors::TimesCalledError)
+        lambda {@object.foobar}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets return value when block passed in" do
         @definition.with_any_args.never
-        proc {@object.foobar}.should raise_error(Errors::TimesCalledError)
+        lambda {@object.foobar}.should raise_error(Errors::TimesCalledError)
       end
     end
 
@@ -199,7 +199,7 @@ module RR
           end
 
           it "sets up a Times Called Expectation with 1" do
-            proc {@object.foobar}.should raise_error(Errors::TimesCalledError)
+            lambda {@object.foobar}.should raise_error(Errors::TimesCalledError)
           end
         end
       end
@@ -244,7 +244,7 @@ module RR
 
           it "sets up a Times Called Expectation with 2" do
             @definition.twice.with_any_args
-            proc {@object.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+            lambda {@object.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
           end
         end
       end
@@ -334,7 +334,7 @@ module RR
           end
 
           it "sets up a Times Called Expectation with 1" do
-            proc do
+            lambda do
               @object.foobar
             end.should raise_error(
             Errors::TimesCalledError,
@@ -384,7 +384,7 @@ module RR
           end
 
           it "sets up a Times Called Expectation with passed in times" do
-            proc {@object.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+            lambda {@object.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
           end
         end
       end
@@ -486,7 +486,7 @@ module RR
 
           it "raises error when there is no Double" do
             @definition.double = nil
-            proc do
+            lambda do
               @definition.ordered
             end.should raise_error(
               Errors::DoubleDefinitionError,
@@ -624,7 +624,7 @@ module RR
       end
 
       it "raises an error when not passed a block" do
-        proc do
+        lambda do
           @definition.after_call
         end.should raise_error(ArgumentError, "after_call expects a block")
       end
@@ -652,7 +652,7 @@ module RR
       end
 
       it "raises an error when both argument and block is passed in" do
-        proc do
+        lambda do
           @definition.returns(:baz) {:another}
         end.should raise_error(ArgumentError, "returns cannot accept both an argument and a block")
       end
@@ -660,11 +660,11 @@ module RR
 
     describe "#implemented_by" do
       it "returns the DoubleDefinition" do
-        @definition.implemented_by(proc{:baz}).should === @definition
+        @definition.implemented_by(lambda{:baz}).should === @definition
       end
 
-      it "sets the implementation to the passed in proc" do
-        @definition.implemented_by(proc{:baz}).with_no_args
+      it "sets the implementation to the passed in lambda" do
+        @definition.implemented_by(lambda{:baz}).with_no_args
         @object.foobar.should == :baz
       end
 

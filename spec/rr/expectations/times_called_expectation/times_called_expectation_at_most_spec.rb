@@ -37,14 +37,14 @@ module RR
 
         it "raises error before attempted more than expected times" do
           3.times {expectation.attempt}
-          proc {expectation.attempt}.should raise_error( Errors::TimesCalledError )
+          lambda {expectation.attempt}.should raise_error( Errors::TimesCalledError )
         end
       end
 
       describe "#attempt!" do
         it "fails when times called more than times" do
           3.times {expectation.attempt}
-          proc do
+          lambda do
             expectation.attempt
           end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 4 times.\nExpected at most 3 times.")
         end

@@ -31,7 +31,7 @@ module RR
 
         it "fails after attempt! called 1 time" do
           expectation.attempt
-          proc {expectation.verify!}.should raise_error(
+          lambda {expectation.verify!}.should raise_error(
           Errors::TimesCalledError,
           "foobar()\nCalled 1 time.\nExpected 2 times."
           )
@@ -40,7 +40,7 @@ module RR
         it "can't be called when attempt! is called 3 times" do
           expectation.attempt
           expectation.attempt
-          proc do
+          lambda do
             expectation.attempt
           end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 2 times.")
         end
@@ -57,7 +57,7 @@ module RR
         end
 
         it "has an error message that includes the number of times called and expected number of times" do
-          proc do
+          lambda do
             expectation.verify!
           end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 0 times.\nExpected 2 times.")
         end
@@ -76,7 +76,7 @@ module RR
 
         it "raises error before attempted more than expected times" do
           2.times {expectation.attempt}
-          proc {expectation.attempt}.should raise_error(
+          lambda {expectation.attempt}.should raise_error(
           Errors::TimesCalledError
           )
         end
@@ -86,7 +86,7 @@ module RR
         it "raises error when attempt! called more than the expected number of times" do
           expectation.attempt
           expectation.attempt
-          proc do
+          lambda do
             expectation.attempt
           end.should raise_error(Errors::TimesCalledError)
         end

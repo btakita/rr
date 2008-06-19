@@ -27,7 +27,7 @@ module RR
 
       @double_injection.reset
       @object.methods.should_not include(@method_name.to_s)
-      proc {@object.foobar}.should raise_error(NoMethodError)
+      lambda {@object.foobar}.should raise_error(NoMethodError)
     end
   end
 

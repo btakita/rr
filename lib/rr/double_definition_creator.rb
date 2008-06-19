@@ -96,7 +96,7 @@ module RR
       instance_method_name = method_name
 
       @definition = DoubleDefinition.new
-      class_handler = proc do |return_value|
+      class_handler = lambda do |return_value|
         double_injection = space.double_injection(return_value, instance_method_name)
         Double.new(double_injection, @definition)
         return_value

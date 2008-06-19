@@ -18,7 +18,7 @@ describe "RR" do
     it "mocks via inline call" do
       mock(@obj).to_s {"a value"}
       @obj.to_s.should == "a value"
-      proc {@obj.to_s}.should raise_error(RR::Errors::TimesCalledError)
+      lambda {@obj.to_s}.should raise_error(RR::Errors::TimesCalledError)
     end
 
     it "allows ordering" do
@@ -27,7 +27,7 @@ describe "RR" do
       @obj.to_s.should == "value 1"
       @obj.to_s.should == "value 2"
       @obj.to_s.should == "value 2"
-      proc {@obj.to_s}.should raise_error(RR::Errors::TimesCalledError)
+      lambda {@obj.to_s}.should raise_error(RR::Errors::TimesCalledError)
     end
 
     it "mocks via block" do
@@ -56,7 +56,7 @@ describe "RR" do
         "My String",
         "Tabcola"
       ).should == "value 1"
-      proc do
+      lambda do
         @obj.foobar(:failure)
       end.should raise_error( RR::Errors::DoubleNotFoundError )
     end
@@ -65,7 +65,7 @@ describe "RR" do
       mock(@obj) == 55
 
       @obj == 55
-      proc do
+      lambda do
         @obj == 99
       end.should raise_error(RR::Errors::DoubleNotFoundError)
     end
@@ -76,7 +76,7 @@ describe "RR" do
       expected_to_s_value = @obj.to_s
       mock.proxy(@obj).to_s
       @obj.to_s.should == expected_to_s_value
-      proc {@obj.to_s}.should raise_error
+      lambda {@obj.to_s}.should raise_error
     end
 
     it "proxy allows ordering" do
@@ -89,7 +89,7 @@ describe "RR" do
       @obj.to_s(:foo).should == "Original to_s with arg foo"
       @obj.to_s(:bar).should == "Original to_s with arg bar"
       @obj.to_s(:bar).should == "Original to_s with arg bar"
-      proc {@obj.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
+      lambda {@obj.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
     end
 
     it "proxy allows ordering" do
@@ -102,7 +102,7 @@ describe "RR" do
       @obj.to_s(:foo).should == "Original to_s with arg foo"
       @obj.to_s(:bar).should == "Original to_s with arg bar"
       @obj.to_s(:bar).should == "Original to_s with arg bar"
-      proc {@obj.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
+      lambda {@obj.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
     end
 
     it "proxies via block" do
@@ -119,10 +119,10 @@ describe "RR" do
         c.foobar_2
       end
       @obj.foobar_1(1).should == :original_value_1
-      proc {@obj.foobar_1(:blah)}.should raise_error
+      lambda {@obj.foobar_1(:blah)}.should raise_error
 
       @obj.foobar_2.should == :original_value_2
-      proc {@obj.foobar_2(:blah)}.should raise_error
+      lambda {@obj.foobar_2(:blah)}.should raise_error
     end
 
     it "proxies via block" do
@@ -139,10 +139,10 @@ describe "RR" do
         c.foobar_2
       end
       @obj.foobar_1(1).should == :original_value_1
-      proc {@obj.foobar_1(:blah)}.should raise_error
+      lambda {@obj.foobar_1(:blah)}.should raise_error
 
       @obj.foobar_2.should == :original_value_2
-      proc {@obj.foobar_2(:blah)}.should raise_error
+      lambda {@obj.foobar_2(:blah)}.should raise_error
     end
   end
 

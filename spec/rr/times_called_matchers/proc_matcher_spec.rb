@@ -5,7 +5,7 @@ module RR
     describe ProcMatcher do
       attr_reader :matcher, :times
       before do
-        @times = proc {|other| other == 3}
+        @times = lambda {|other| other == 3}
         @matcher = ProcMatcher.new(times)
       end
       
@@ -18,12 +18,12 @@ module RR
       end
 
       describe "#matches?" do
-        it "returns false when proc returns false" do
+        it "returns false when lambda returns false" do
           times.call(2).should be_false
           matcher.should_not be_matches(2)
         end
 
-        it "returns true when proc returns true" do
+        it "returns true when lambda returns true" do
           times.call(3).should be_true
           matcher.should be_matches(3)
         end

@@ -7,7 +7,7 @@ module RR
       attr_reader :matcher
 
       before do
-        @matcher = TimesCalledMatchers::ProcMatcher.new(proc {|value| value == 2})
+        @matcher = TimesCalledMatchers::ProcMatcher.new(lambda {|value| value == 2})
         @expectation = TimesCalledExpectation.new(double, matcher)
       end
       
@@ -32,14 +32,14 @@ module RR
 
         it "fails after attempt! called 1 time" do
           expectation.attempt
-          proc {expectation.verify!}.should raise_error(Errors::TimesCalledError)
+          lambda {expectation.verify!}.should raise_error(Errors::TimesCalledError)
         end
 
         it "fails after attempt! called 3 times" do
           expectation.attempt
           expectation.attempt
           expectation.attempt
-          proc {expectation.verify!}.should raise_error(Errors::TimesCalledError)
+          lambda {expectation.verify!}.should raise_error(Errors::TimesCalledError)
         end
       end
 
@@ -60,7 +60,7 @@ module RR
         end
       end
 
-      describe "#attempt! for a proc expectation" do
+      describe "#attempt! for a lambda expectation" do
         it "lets everything pass" do
           @object.foobar
           @object.foobar

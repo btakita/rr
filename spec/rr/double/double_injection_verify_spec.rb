@@ -16,9 +16,9 @@ module RR
       @double_injection.register_double double
 
       double.with(1).once.returns {nil}
-      proc {@double_injection.verify}.should raise_error(Errors::TimesCalledError)
+      lambda {@double_injection.verify}.should raise_error(Errors::TimesCalledError)
       @object.foobar(1)
-      proc {@double_injection.verify}.should_not raise_error
+      lambda {@double_injection.verify}.should_not raise_error
     end
   end
 end

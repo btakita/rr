@@ -36,7 +36,7 @@ module RR
         it "can't be called when attempt! is called 3 times" do
           expectation.attempt
           expectation.attempt
-          proc do
+          lambda do
             expectation.attempt
           end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 1..2 times.")
         end
@@ -56,7 +56,7 @@ module RR
 
         it "raises error before attempted more than expected times" do
           2.times {expectation.attempt}
-          proc {expectation.attempt}.should raise_error(
+          lambda {expectation.attempt}.should raise_error(
           Errors::TimesCalledError
           )
         end

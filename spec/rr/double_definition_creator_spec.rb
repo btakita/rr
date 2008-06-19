@@ -17,14 +17,14 @@ module RR
     end
 
     it "raises error if passed a method name and a block" do
-      proc do
+      lambda do
         creator.__send__(method_name, subject, :foobar) {}
       end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
     end
 
     it "raises error when using mock strategy" do
       creator.mock
-      proc do
+      lambda do
         creator.__send__(method_name)
       end.should raise_error(
       Errors::DoubleDefinitionError,
@@ -34,7 +34,7 @@ module RR
 
     it "raises error when using stub strategy" do
       creator.stub
-      proc do
+      lambda do
         creator.__send__(method_name)
       end.should raise_error(
       Errors::DoubleDefinitionError,
@@ -44,7 +44,7 @@ module RR
 
     it "raises error when using dont_allow strategy" do
       creator.dont_allow
-      proc do
+      lambda do
         creator.__send__(method_name)
       end.should raise_error(
         Errors::DoubleDefinitionError,
@@ -104,7 +104,7 @@ module RR
 
       context "when passed method_name and block" do
         it "raises error" do
-          proc do
+          lambda do
             @creator.mock(@object, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
@@ -149,7 +149,7 @@ module RR
 
       context "when passed method_name and block" do
         it "raises error" do
-          proc do
+          lambda do
             @creator.stub(@object, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
@@ -165,7 +165,7 @@ module RR
 
       it "raises error when proxied" do
         creator.proxy
-        proc do
+        lambda do
           creator.dont_allow
         end.should raise_error(
         Errors::DoubleDefinitionError,
@@ -212,7 +212,7 @@ module RR
           double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
           double.argument_expectation.expected_arguments.should == [1, 2]
 
-          proc do
+          lambda do
             subject.foobar(1, 2)
           end.should raise_error(Errors::TimesCalledError)
           reset
@@ -226,7 +226,7 @@ module RR
         double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
         double.argument_expectation.expected_arguments.should == [1, 2]
 
-        proc do
+        lambda do
           subject.foobar(1, 2)
         end.should raise_error(Errors::TimesCalledError)
         reset
@@ -235,7 +235,7 @@ module RR
 
       context "when passed method_name and block" do
         it "raises error" do
-          proc do
+          lambda do
             @creator.dont_allow(@object, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
@@ -253,7 +253,7 @@ module RR
 
       it "raises error when using dont_allow strategy" do
         creator.dont_allow
-        proc do
+        lambda do
           creator.proxy
         end.should raise_error(
         Errors::DoubleDefinitionError,
@@ -309,7 +309,7 @@ module RR
 
       context "when passed method_name and block" do
         it "raises error" do
-          proc do
+          lambda do
             @creator.proxy(@object, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
@@ -318,7 +318,7 @@ module RR
 
     describe "#instance_of" do
       it "raises an error when not passed a class" do
-        proc do
+        lambda do
           creator.instance_of(Object.new)
         end.should raise_error(ArgumentError, "instance_of only accepts class objects")
       end
@@ -344,7 +344,7 @@ module RR
 
       it "raises error" do
         klass = Class.new
-        proc do
+        lambda do
           @creator.instance_of(klass, :foobar) {}
         end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
       end
@@ -352,7 +352,7 @@ module RR
 
     describe "#create using no strategy" do
       it "raises error" do
-        proc do
+        lambda do
           creator.create(subject, :foobar, 1, 2)
         end.should raise_error(
         Errors::DoubleDefinitionError,
@@ -371,7 +371,7 @@ module RR
 
         subject.foobar(1, 2).should == :baz
         subject.foobar(1, 2).should == :baz
-        proc {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+        lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
       end
     end
 
@@ -402,20 +402,20 @@ module RR
 
       it "sets expectation for method to never be called with any arguments when on arguments passed in" do
         creator.create(subject, :foobar)
-        proc {subject.foobar}.should raise_error(Errors::TimesCalledError)
-        proc {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+        lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
+        lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets expectation for method to never be called with passed in arguments" do
         creator.create(subject, :foobar, 1, 2)
-        proc {subject.foobar}.should raise_error(Errors::DoubleNotFoundError)
-        proc {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+        lambda {subject.foobar}.should raise_error(Errors::DoubleNotFoundError)
+        lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets expectation for method to never be called with no arguments when with_no_args is set" do
         creator.create(subject, :foobar).with_no_args
-        proc {subject.foobar}.should raise_error(Errors::TimesCalledError)
-        proc {subject.foobar(1, 2)}.should raise_error(Errors::DoubleNotFoundError)
+        lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
+        lambda {subject.foobar(1, 2)}.should raise_error(Errors::DoubleNotFoundError)
       end
     end
 
@@ -432,7 +432,7 @@ module RR
         creator.create(subject, :foobar, 1, 2).twice
         subject.foobar(1, 2).should == :baz
         subject.foobar(1, 2).should == :baz
-        proc {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+        lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
       end
 
       it "sets after_call on the double when passed a block" do
@@ -462,7 +462,7 @@ module RR
           :baz
         end
         creator.create(subject, :foobar, 1, 2)
-        proc do
+        lambda do
           subject.foobar
         end.should raise_error(Errors::DoubleNotFoundError)
       end
