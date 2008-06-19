@@ -1,32 +1,100 @@
 require "spec/spec_helper"
 
 module RR
-  describe Space, " class" do
-    it_should_behave_like "RR::Space"
+  describe Space do
+    it_should_behave_like "Swapped Space"
 
-    before(:each) do
-      @original_space = Space.instance
-      @space = Space.new
-      Space.instance = @space
+    describe ".method_missing" do
+      before(:each) do
+        @original_space = Space.instance
+        @space = Space.new
+        Space.instance = @space
+      end
+
+      after(:each) do
+        Space.instance = @original_space
+      end
+
+      it "proxies to a singleton instance of Space" do
+        create_double_args = nil
+        (class << @space; self; end).class_eval do
+          define_method :double_injection do |*args|
+            create_double_args = args
+          end
+        end
+
+        Space.double_injection(:foo, :bar)
+        create_double_args.should == [:foo, :bar]
+      end
     end
 
-    after(:each) do
-      Space.instance = @original_space
-    end
+    describe "#double_injection" do
+      before do
+        @space = Space.new
+      end
 
-    it "proxies to a singleton instance of Space" do
-      create_double_args = nil
-      (
-      class << @space;
-        self;
-      end).class_eval do
-        define_method :double_injection do |*args|
-          create_double_args = args
+      it "creates a new double_injection when existing object == but not === with the same method name" do
+        object1 = []
+        object2 = []
+        (object1 === object2).should be_true
+        object1.__id__.should_not == object2.__id__
+
+        double1 = @space.double_injection(object1, :foobar)
+        double2 = @space.double_injection(object2, :foobar)
+
+        double1.should_not == double2
+      end
+
+      context "when double_injection does not exist" do
+        before do
+          @object = Object.new
+          def @object.foobar(*args)
+            :original_foobar
+          end
+          @method_name = :foobar
+        end
+
+        it "returns double_injection and adds double_injection to double_injection list when method_name is a symbol" do
+          double_injection = @space.double_injection(@object, @method_name)
+          @space.double_injection(@object, @method_name).should === double_injection
+          double_injection.object.should === @object
+          double_injection.method_name.should === @method_name
+        end
+
+        it "returns double_injection and adds double_injection to double_injection list when method_name is a string" do
+          double_injection = @space.double_injection(@object, 'foobar')
+          @space.double_injection(@object, @method_name).should === double_injection
+          double_injection.object.should === @object
+          double_injection.method_name.should === @method_name
+        end
+
+        it "overrides the method when passing a block" do
+          double_injection = @space.double_injection(@object, @method_name)
+          @object.methods.should include("__rr__#{@method_name}")
         end
       end
 
-      Space.double_injection(:foo, :bar)
-      create_double_args.should == [:foo, :bar]
+      context "when double_injection exists" do
+        before do
+          @object = Object.new
+          def @object.foobar(*args)
+            :original_foobar
+          end
+          @method_name = :foobar
+        end
+
+        it "returns the existing double_injection" do
+          original_foobar_method = @object.method(:foobar)
+          double_injection = @space.double_injection(@object, 'foobar')
+
+          double_injection.object_has_original_method?.should be_true
+
+          @space.double_injection(@object, 'foobar').should === double_injection
+
+          double_injection.reset
+          @object.foobar.should == :original_foobar
+        end
+      end
     end
   end
 end
