@@ -190,7 +190,7 @@ Put double scenarios on instances of a Class.
     m.system("rake baz") {true}
   end
 
-=== Wildcard matchers
+=== Argument Wildcard matchers
 ==== anything
   mock(object).foobar(1, anything)
   object.foobar(1, :my_symbol)
@@ -203,7 +203,7 @@ Put double scenarios on instances of a Class.
   mock(object).foobar(numeric)
   object.foobar(99)
 
-==== numeric
+==== boolean
   mock(object).foobar(boolean)
   object.foobar(false)
 
@@ -213,6 +213,10 @@ Put double scenarios on instances of a Class.
   def arg.walk; 'waddle'; end
   def arg.talk; 'quack'; end
   object.foobar(arg)
+
+=== Invocation Amount Wildcard Matchers
+==== any_times
+  mock(object).method_name(anything).times(any_times) {return_value}
 
 == Special Thanks To
 With any development effort, there are countless people who have contributed
