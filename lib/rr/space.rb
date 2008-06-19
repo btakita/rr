@@ -1,7 +1,5 @@
 module RR
-  # RR::Space is a Dependency Injection http://en.wikipedia.org/wiki/Dependency_injection
-  # and global state object for the RR framework. The RR::Space.instance
-  # is a singleton that holds the state.
+  # RR::Space.instance is the global state object for the RR framework.
   class Space
     module Reader
       def space
