@@ -367,10 +367,10 @@ module RR
           proc do
             @space.verify_ordered_double(second_double)
           end.should raise_error(
-          Errors::DoubleOrderError,
-          "foobar() called out of order in list\n" <<
-          "- foobar()\n" <<
-          "- foobar()"
+            Errors::DoubleOrderError,
+            "foobar() called out of order in list\n" <<
+            "- foobar()\n" <<
+            "- foobar()"
           )
         end
 

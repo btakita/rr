@@ -145,7 +145,7 @@ module RR
 
           @object.foobar(:exact_match)
           @object.foobar(:exact_match)
-          proc do
+          lambda do
             @object.foobar(:exact_match)
           end.should raise_error(Errors::TimesCalledError)
         end
@@ -187,7 +187,7 @@ module RR
 
           @object.foobar(:anything)
           @object.foobar(:anything)
-          proc do
+          lambda do
             @object.foobar(:anything)
           end.should raise_error(Errors::TimesCalledError)
         end

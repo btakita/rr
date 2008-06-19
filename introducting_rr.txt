@@ -79,7 +79,7 @@ ArticlesController#edit action:
   my_article = articles(:my_article)
   user.can_edit?(my_article).should == false
 
-  proc do
+  lambda do
     post :edit, :id => my_article.id, :body => "Hello everybody"
   end.should raise_error(SecurityTrangressionError)
 </pre>
@@ -91,7 +91,7 @@ ArticlesController#edit action:
   my_article = articles(:my_article)
   mock.probe(user).can_edit? {false}
 
-  proc do
+  lambda do
     post :edit, :id => my_article.id, :body => "Hello everybody"
   end.should raise_error(SecurityTrangressionError)
 </pre>
