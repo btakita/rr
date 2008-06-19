@@ -12,10 +12,12 @@ module RR
 
   describe DoubleDefinitionCreatorProxy do
     attr_reader :space, :subject, :creator, :the_proxy
+    it_should_behave_like "Swapped Space"
+
     before(:each) do
-      @space = Space.new
+      @space = Space.instance
       @subject = Object.new
-      @creator = space.double_definition_creator
+      @creator = DoubleDefinitionCreator.new
       creator.mock
     end
 

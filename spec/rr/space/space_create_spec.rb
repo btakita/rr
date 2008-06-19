@@ -8,7 +8,7 @@ module RR
     before do
       @space = Space.instance
       @object = Object.new
-      @creator = @space.double_definition_creator
+      @creator = DoubleDefinitionCreator.new
     end
 
     it "sets the space" do

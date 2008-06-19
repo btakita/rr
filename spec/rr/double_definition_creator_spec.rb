@@ -55,10 +55,11 @@ module RR
 
   describe DoubleDefinitionCreator do
     attr_reader :creator, :subject, :space, :method_name
+    it_should_behave_like "Swapped Space"
     before(:each) do
-      @space = Space.new
+      @space = Space.instance
       @subject = Object.new
-      @creator = DoubleDefinitionCreator.new(space)
+      @creator = DoubleDefinitionCreator.new
     end
 
     describe "#mock" do

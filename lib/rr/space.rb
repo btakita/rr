@@ -29,11 +29,6 @@ module RR
       @trim_backtrace = false
     end
 
-    # Creates a DoubleDefinitionCreator.
-    def double_definition_creator
-      DoubleDefinitionCreator.new(self)
-    end
-
     # Reuses or creates, if none exists, a DoubleInjection for the passed
     # in object and method_name.
     # When a DoubleInjection is created, it binds the dispatcher to the

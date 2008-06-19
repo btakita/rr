@@ -2,11 +2,10 @@ module RR
   class DoubleDefinitionCreator # :nodoc
     NO_SUBJECT_ARG = Object.new
 
-    attr_reader :space
+    include Space::Reader
     include Errors
 
-    def initialize(space)
-      @space = space
+    def initialize
       @core_strategy = nil
       @using_proxy_strategy = false
       @using_instance_of_strategy = nil
@@ -85,20 +84,20 @@ module RR
     end
 
     def setup_double(subject, method_name)
-      @double_injection = @space.double_injection(subject, method_name)
+      @double_injection = space.double_injection(subject, method_name)
       @double = Double.new(@double_injection)
       @definition = @double.definition
     end
 
     def setup_doubles_for_class_instances(subject, method_name)
-      class_double = @space.double_injection(subject, :new)
+      class_double = space.double_injection(subject, :new)
       class_double = Double.new(class_double)
 
       instance_method_name = method_name
 
       @definition = DoubleDefinition.new
       class_handler = proc do |return_value|
-        double_injection = @space.double_injection(return_value, instance_method_name)
+        double_injection = space.double_injection(return_value, instance_method_name)
         Double.new(double_injection, @definition)
         return_value
       end
