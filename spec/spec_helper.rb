@@ -7,3 +7,14 @@ require "#{dir}/rr/adapters/rr_methods_spec_helper"
 Spec::Runner.configure do |config|
   config.mock_with RR::Adapters::Rspec
 end
+
+describe "Swapped Space", :shared => true do
+  before do
+    @original_space = RR::Space.instance
+    RR::Space.instance = RR::Space.new
+  end
+
+  after(:each) do
+    RR::Space.instance = @original_space
+  end
+end

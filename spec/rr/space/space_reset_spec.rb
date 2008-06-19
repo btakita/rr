@@ -5,7 +5,7 @@ module RR
     it_should_behave_like "RR::Space"
     describe "#reset" do
       before do
-        @space = Space.new
+        @space = Space.instance
         @object1 = Object.new
         @object2 = Object.new
         @method_name = :foobar

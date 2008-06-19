@@ -210,7 +210,7 @@ module RR
 
       instance_method_name = method_name
 
-      @definition = @space.double_definition
+      @definition = DoubleDefinition.new
       class_handler = proc do |return_value|
         double_injection = @space.double_injection(return_value, instance_method_name)
         @space.double(double_injection, @definition)

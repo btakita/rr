@@ -10,8 +10,9 @@ module RR
                   :double
     attr_reader   :block_callback_strategy
 
-    def initialize(space)
-      @space = space
+    include Space::Reader
+
+    def initialize
       @implementation = nil
       @argument_expectation = nil
       @times_matcher = nil
@@ -87,7 +88,7 @@ module RR
         "proxy the class's #new method instead."
       ) unless @double
       @ordered = true
-      @space.ordered_doubles << @double unless @space.ordered_doubles.include?(@double)
+      space.ordered_doubles << @double unless space.ordered_doubles.include?(@double)
       install_method_callback returns
       self
     end

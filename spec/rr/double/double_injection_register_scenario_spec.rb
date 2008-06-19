@@ -14,7 +14,7 @@ module RR
     end
 
     it "adds the double to the doubles list" do
-      double = Double.new(@space, @double_injection, @space.double_definition)
+      double = Double.new(@space, @double_injection, DoubleDefinition.new)
 
       @double_injection.doubles.should_not include(double)
       @double_injection.register_double double

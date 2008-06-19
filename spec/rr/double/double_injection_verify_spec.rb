@@ -11,7 +11,7 @@ module RR
     end
 
     it "verifies each double was met" do
-      double = Double.new(@space, @double_injection, @space.double_definition)
+      double = Double.new(@space, @double_injection, DoubleDefinition.new)
       @double_injection.register_double double
 
       double.with(1).once.returns {nil}

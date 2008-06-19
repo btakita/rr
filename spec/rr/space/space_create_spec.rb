@@ -2,10 +2,11 @@ require "spec/spec_helper"
 
 module RR
   describe Space, "#double_definition_creator" do
+    it_should_behave_like "Swapped Space"
     it_should_behave_like "RR::Space"
 
     before do
-      @space = Space.new
+      @space = Space.instance
       @object = Object.new
       @creator = @space.double_definition_creator
     end

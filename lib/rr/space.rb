@@ -3,6 +3,12 @@ module RR
   # and global state object for the RR framework. The RR::Space.instance
   # is a singleton that holds the state.
   class Space
+    module Reader
+      def space
+        RR::Space.instance
+      end
+    end
+
     class << self
       def instance
         @instance ||= new
@@ -29,15 +35,11 @@ module RR
     end
 
     # Creates and registers a Double to be verified.
-    def double(double_injection, definition = double_definition)
+    def double(double_injection, definition = DoubleDefinition.new)
       double = Double.new(self, double_injection, definition)
       double.definition.double = double
       double_injection.register_double double
       double
-    end
-
-    def double_definition
-      DoubleDefinition.new(self)
     end
 
     # Reuses or creates, if none exists, a DoubleInjection for the passed

@@ -2,9 +2,10 @@ require "spec/spec_helper"
 
 module RR
   describe Double do
+    it_should_behave_like "Swapped Space"
     attr_reader :space, :object, :double_injection, :double
     before do
-      @space = Space.new
+      @space = Space.instance
       @object = Object.new
       def object.foobar(a, b)
         [b, a]
