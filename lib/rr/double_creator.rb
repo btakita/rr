@@ -49,7 +49,7 @@ module RR
       verify_no_strategy
       @strategy = :mock
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
-      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
+      DoubleDefinitionCreatorProxy.new(self, subject, method_name, &definition)
     end
 
     # This method sets the Double to have a stub strategy. A stub strategy
@@ -84,7 +84,7 @@ module RR
       verify_no_strategy
       @strategy = :stub
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
-      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
+      DoubleDefinitionCreatorProxy.new(self, subject, method_name, &definition)
     end
 
     # This method sets the Double to have a dont_allow strategy.
@@ -108,7 +108,7 @@ module RR
       proxy_when_dont_allow_error if @using_proxy_strategy
       @strategy = :dont_allow
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
-      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
+      DoubleDefinitionCreatorProxy.new(self, subject, method_name, &definition)
     end
     alias_method :do_not_allow, :dont_allow
     alias_method :dont_call, :dont_allow
@@ -163,7 +163,7 @@ module RR
       proxy_when_dont_allow_error if @strategy == :dont_allow
       @using_proxy_strategy = true
       return self if subject.__id__ === NO_SUBJECT_ARG.__id__
-      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
+      DoubleDefinitionCreatorProxy.new(self, subject, method_name, &definition)
     end
     alias_method :probe, :proxy
 
@@ -182,7 +182,7 @@ module RR
       @instance_of_called = true
       return self if subject === NO_SUBJECT_ARG
       raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
-      RR.double_definition_creator_proxy(self, subject, method_name, &definition)
+      DoubleDefinitionCreatorProxy.new(self, subject, method_name, &definition)
     end
 
     def create(subject, method_name, *args, &handler)

@@ -23,10 +23,6 @@ module RR
       @trim_backtrace = false
     end
 
-    def double_definition_creator_proxy(creator, object, &definition)
-      DoubleDefinitionCreatorProxy.new(creator, object, &definition)
-    end
-
     # Creates a DoubleDefinitionCreator.
     def double_definition_creator
       DoubleDefinitionCreator.new(self)

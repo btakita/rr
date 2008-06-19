@@ -74,7 +74,7 @@ module RR
       elsif method_name
         create subject, method_name, &definition
       else
-        space.double_definition_creator_proxy(self, subject, &definition)
+        DoubleDefinitionCreatorProxy.new(self, subject, &definition)
       end
     end
 
