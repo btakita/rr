@@ -12,6 +12,7 @@ describe "Swapped Space", :shared => true do
   before do
     @original_space = RR::Space.instance
     RR::Space.instance = RR::Space.new
+    @space = RR::Space.instance
   end
 
   after(:each) do
