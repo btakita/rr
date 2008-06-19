@@ -202,5 +202,26 @@ module RR
         double2_reset_calls.should == 1
       end
     end
+    
+    describe "#register_ordered_double" do
+      before(:each) do
+        @object = Object.new
+        @method_name = :foobar
+        @double_injection = @space.double_injection(@object, @method_name)
+      end
+
+      it "adds the ordered double to the ordered_doubles collection" do
+        double1 = Double.new(@double_injection)
+
+        @space.ordered_doubles.should == []
+        @space.register_ordered_double double1
+        @space.ordered_doubles.should == [double1]
+
+        double2 = Double.new(@double_injection)
+        @space.register_ordered_double double2
+        @space.ordered_doubles.should == [double1, double2]
+      end
+    end
   end
+
 end
