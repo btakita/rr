@@ -1,4 +1,5 @@
 - DoubleDefinitionCreatorProxy does not undef #object_id
+- Fixed rdoc pointer to README
 
 * 0.4.9
 - Proxying from RR module to RR::Space.instance
