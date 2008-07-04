@@ -1,3 +1,5 @@
+- DoubleDefinitionCreatorProxy does not undef #object_id
+
 * 0.4.9
 - Proxying from RR module to RR::Space.instance
 

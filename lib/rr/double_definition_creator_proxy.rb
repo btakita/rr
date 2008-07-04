@@ -5,7 +5,9 @@ module RR
       @object = object
       class << self
         instance_methods.each do |m|
-          undef_method m unless m =~ /^__/
+          unless m =~ /^_/ || m.to_s == 'object_id'
+            undef_method m
+          end
         end
 
         def method_missing(method_name, *args, &block)
