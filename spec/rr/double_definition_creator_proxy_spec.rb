@@ -58,7 +58,7 @@ module RR
           end
         end
 
-        send "initializes proxy with passed in creator"
+        # send "initializes proxy with passed in creator"
 
         it "creates double_injections" do
           subject.foobar(1, 2).should == :one_two

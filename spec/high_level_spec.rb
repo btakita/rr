@@ -30,6 +30,21 @@ describe "RR" do
       lambda {@obj.to_s}.should raise_error(RR::Errors::TimesCalledError)
     end
     
+    it 'allows terse chaining' do
+      mock(@obj).first(1).mock.second(2).mock.third(3) { 4 }
+      @obj.first(1).second(2).third(3).should == 4
+    end
+    
+    it 'allows branched chaining' do
+      mock(@obj).first.mock do |expect|
+        expect.branch1.mock.branch11 { 11 }
+        expect.branch2.mock.branch22 { 22 }
+      end
+      o = @obj.first
+      o.branch1.branch11.should == 11
+      o.branch2.branch22.should == 22
+    end
+    
     it 'allows chained ordering' do
       mock(@obj).to_s {"value 1"}.then.to_s {"value 2"}.twice.then.to_s {"value 3"}.once
       @obj.to_s.should == "value 1"

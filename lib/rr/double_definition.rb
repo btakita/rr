@@ -133,6 +133,11 @@ module RR
       end
       self
     end
+    
+    def mock(&block)
+      returns object = Object.new
+      DoubleDefinitionCreator.new.mock(object, &block)
+    end
 
     def proxy
       implemented_by ORIGINAL_METHOD
