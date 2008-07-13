@@ -23,10 +23,19 @@ describe "RR" do
 
     it "allows ordering" do
       mock(@obj).to_s {"value 1"}.ordered
-      mock(@obj).to_s {"value 2"}.twice.ordered
+      mock(@obj).to_s {"value 2"}.twice
       @obj.to_s.should == "value 1"
       @obj.to_s.should == "value 2"
       @obj.to_s.should == "value 2"
+      lambda {@obj.to_s}.should raise_error(RR::Errors::TimesCalledError)
+    end
+    
+    it 'allows chained ordering' do
+      mock(@obj).to_s {"value 1"}.then.to_s {"value 2"}.twice.then.to_s {"value 3"}.once
+      @obj.to_s.should == "value 1"
+      @obj.to_s.should == "value 2"
+      @obj.to_s.should == "value 2"
+      @obj.to_s.should == "value 3"
       lambda {@obj.to_s}.should raise_error(RR::Errors::TimesCalledError)
     end
 
