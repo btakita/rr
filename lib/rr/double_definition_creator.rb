@@ -85,17 +85,17 @@ module RR
 
     def setup_double(subject, method_name)
       @double_injection = space.double_injection(subject, method_name)
-      @double = Double.new(@double_injection)
+      @double = Double.new(@double_injection, DoubleDefinition.new(DoubleDefinitionCreatorProxy.new(self, subject)))
       @definition = @double.definition
     end
 
     def setup_doubles_for_class_instances(subject, method_name)
       class_double = space.double_injection(subject, :new)
-      class_double = Double.new(class_double)
+      class_double = Double.new(class_double, DoubleDefinition.new(DoubleDefinitionCreatorProxy.new(self, subject)))
 
       instance_method_name = method_name
 
-      @definition = DoubleDefinition.new
+      @definition = DoubleDefinition.new(DoubleDefinitionCreatorProxy.new(self, subject))
       class_handler = lambda do |return_value|
         double_injection = space.double_injection(return_value, instance_method_name)
         Double.new(double_injection, @definition)

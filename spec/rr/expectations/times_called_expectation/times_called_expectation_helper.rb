@@ -1,4 +1,4 @@
-require "spec/spec_helper"
+# require "spec/spec_helper"
 
 module RR
   module Expectations

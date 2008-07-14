@@ -1,4 +1,4 @@
-require "spec/spec_helper"
+require File.join(File.dirname(__FILE__) + "/../spec_helper")
 
 module RR
   describe Double do
@@ -472,8 +472,8 @@ module RR
           double1 = double
           double2 = Double.new(double_injection)
 
-          double1.with(1).returns {:return_1}.ordered.once
-          double2.with(2).returns {:return_2}.ordered.once
+          double1.with(1).returns {:return_1}.once.ordered
+          double2.with(2).returns {:return_2}.once.ordered
 
           lambda do
             object.foobar(2)
