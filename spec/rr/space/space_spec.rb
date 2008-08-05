@@ -295,7 +295,9 @@ module RR
           space.verify_doubles(object1)
 
           double1_verify_calls.should == 1
+          double1_reset_calls.should == 1
           double2_verify_calls.should == 0
+          double2_reset_calls.should == 0
         end
       end
 
@@ -337,8 +339,58 @@ module RR
           space.verify_doubles(object1, object2)
 
           double1_verify_calls.should == 1
+          double1_reset_calls.should == 1
           double2_verify_calls.should == 1
+          double2_reset_calls.should == 1
           double3_verify_calls.should == 0
+          double3_reset_calls.should == 0
+        end
+      end
+
+      context "when passed an object that does not have a DoubleInjection" do
+        it "does not raise an error" do
+          double1_verify_calls = 0
+          double1_reset_calls = 0
+          (class << double1; self; end).class_eval do
+            define_method(:verify) do
+              double1_verify_calls += 1
+            end
+            define_method(:reset) do
+              double1_reset_calls += 1
+            end
+          end
+
+          double2_verify_calls = 0
+          double2_reset_calls = 0
+          (class << double2; self; end).class_eval do
+            define_method(:verify) do
+              double2_verify_calls += 1
+            end
+            define_method(:reset) do
+              double2_reset_calls += 1
+            end
+          end
+
+          double3_verify_calls = 0
+          double3_reset_calls = 0
+          (class << double3; self; end).class_eval do
+            define_method(:verify) do
+              double3_verify_calls += 1
+            end
+            define_method(:reset) do
+              double3_reset_calls += 1
+            end
+          end
+
+          no_double_injection_object = Object.new
+          space.verify_doubles(no_double_injection_object)
+
+          double1_verify_calls.should == 0
+          double1_reset_calls.should == 0
+          double2_verify_calls.should == 0
+          double2_reset_calls.should == 0
+          double3_verify_calls.should == 0
+          double3_reset_calls.should == 0
         end
       end
     end
