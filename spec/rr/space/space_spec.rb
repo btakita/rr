@@ -3,6 +3,7 @@ require "spec/spec_helper"
 module RR
   describe Space do
     it_should_behave_like "Swapped Space"
+    attr_reader :space
 
     describe ".method_missing" do
       it "proxies to a singleton instance of Space" do
@@ -202,7 +203,7 @@ module RR
         double2_reset_calls.should == 1
       end
     end
-    
+
     describe "#register_ordered_double" do
       before(:each) do
         @object = Object.new
@@ -224,41 +225,121 @@ module RR
     end
 
     describe "#verify_doubles" do
+      attr_reader :object1, :object2, :object3, :double1, :double2, :double3
       before do
         @object1 = Object.new
         @object2 = Object.new
+        @object3 = Object.new
         @method_name = :foobar
+        @double1 = @space.double_injection(@object1, @method_name)
+        @double2 = @space.double_injection(@object2, @method_name)
+        @double3 = @space.double_injection(@object3, @method_name)
       end
 
-      it "verifies and deletes the double_injections" do
-        double1 = @space.double_injection(@object1, @method_name)
-        double1_verify_calls = 0
-        double1_reset_calls = 0
-        (class << double1; self; end).class_eval do
-          define_method(:verify) do ||
-            double1_verify_calls += 1
+      context "when passed no arguments" do
+        it "verifies and deletes the double_injections" do
+          double1_verify_calls = 0
+          double1_reset_calls = 0
+          (class << double1; self; end).class_eval do
+            define_method(:verify) do
+              double1_verify_calls += 1
+            end
+            define_method(:reset) do
+              double1_reset_calls += 1
+            end
           end
-          define_method(:reset) do ||
-            double1_reset_calls += 1
-          end
-        end
-        double2 = @space.double_injection(@object2, @method_name)
-        double2_verify_calls = 0
-        double2_reset_calls = 0
-        (class << double2; self; end).class_eval do
-          define_method(:verify) do ||
-            double2_verify_calls += 1
-          end
-          define_method(:reset) do ||
-            double2_reset_calls += 1
-          end
-        end
 
-        @space.verify_doubles
-        double1_verify_calls.should == 1
-        double2_verify_calls.should == 1
-        double1_reset_calls.should == 1
-        double1_reset_calls.should == 1
+          double2_verify_calls = 0
+          double2_reset_calls = 0
+          (class << double2; self; end).class_eval do
+            define_method(:verify) do
+              double2_verify_calls += 1
+            end
+            define_method(:reset) do
+              double2_reset_calls += 1
+            end
+          end
+
+          @space.verify_doubles
+          double1_verify_calls.should == 1
+          double2_verify_calls.should == 1
+          double1_reset_calls.should == 1
+          double1_reset_calls.should == 1
+        end
+      end
+
+      context "when passed an Object that has at least one DoubleInjection" do
+        it "verifies all Doubles injected into the Object" do
+          double1_verify_calls = 0
+          double1_reset_calls = 0
+          (class << double1; self; end).class_eval do
+            define_method(:verify) do
+              double1_verify_calls += 1
+            end
+            define_method(:reset) do
+              double1_reset_calls += 1
+            end
+          end
+
+          double2_verify_calls = 0
+          double2_reset_calls = 0
+          (class << double2; self; end).class_eval do
+            define_method(:verify) do
+              double2_verify_calls += 1
+            end
+            define_method(:reset) do
+              double2_reset_calls += 1
+            end
+          end
+
+          space.verify_doubles(object1)
+
+          double1_verify_calls.should == 1
+          double2_verify_calls.should == 0
+        end
+      end
+
+      context "when passed multiple Objects with at least one DoubleInjection" do
+        it "verifies the Doubles injected into all of the Objects" do
+          double1_verify_calls = 0
+          double1_reset_calls = 0
+          (class << double1; self; end).class_eval do
+            define_method(:verify) do
+              double1_verify_calls += 1
+            end
+            define_method(:reset) do
+              double1_reset_calls += 1
+            end
+          end
+
+          double2_verify_calls = 0
+          double2_reset_calls = 0
+          (class << double2; self; end).class_eval do
+            define_method(:verify) do
+              double2_verify_calls += 1
+            end
+            define_method(:reset) do
+              double2_reset_calls += 1
+            end
+          end
+
+          double3_verify_calls = 0
+          double3_reset_calls = 0
+          (class << double3; self; end).class_eval do
+            define_method(:verify) do
+              double3_verify_calls += 1
+            end
+            define_method(:reset) do
+              double3_reset_calls += 1
+            end
+          end
+
+          space.verify_doubles(object1, object2)
+
+          double1_verify_calls.should == 1
+          double2_verify_calls.should == 1
+          double3_verify_calls.should == 0
+        end
       end
     end
 
@@ -275,7 +356,7 @@ module RR
 
         verify_calls = 0
         (class << double_injection; self; end).class_eval do
-          define_method(:verify) do ||
+          define_method(:verify) do
             verify_calls += 1
           end
         end
@@ -293,7 +374,7 @@ module RR
 
         verify_called = true
         (class << double_injection; self; end).class_eval do
-          define_method(:verify) do ||
+          define_method(:verify) do
             verify_called = true
             raise "An Error"
           end
@@ -382,5 +463,4 @@ module RR
       end
     end
   end
-
 end

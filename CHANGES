@@ -1,3 +1,5 @@
+- Space#verify_doubles can take one or more objects with DoubleInjections to be verified 
+
 * 0.4.10
 - DoubleDefinitionCreatorProxy does not undef #object_id
 - Fixed rdoc pointer to README
