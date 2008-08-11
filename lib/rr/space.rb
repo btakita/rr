@@ -65,9 +65,10 @@ module RR
 
     # Verifies all the DoubleInjection objects have met their
     # TimesCalledExpectations.
-    def verify_doubles
-      @double_injections.each do |object, method_double_map|
-        method_double_map.keys.each do |method_name|
+    def verify_doubles(*objects)
+      objects = @double_injections.keys if objects.empty?
+      objects.each do |object|
+        @double_injections[object].keys.each do |method_name|
           verify_double(object, method_name)
         end
       end
