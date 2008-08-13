@@ -1,3 +1,5 @@
+- Fix conflict with Mocha overriding Object#verify
+
 * 0.5.0
 - Method chaining Doubles (Patch by Nick Kallen)
 - Chained ordered expectations (Patch by Nick Kallen)

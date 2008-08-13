@@ -48,8 +48,17 @@ require "#{dir}/rr/adapters/test_unit"
 
 module RR
   class << self
+    (RR::Space.instance_methods - Object.instance_methods).each do |method_name|
+      returns_method = <<-METHOD
+        def #{method_name}(*args, &block)
+          RR::Space.instance.__send__(:#{method_name}, *args, &block)
+        end
+      METHOD
+      class_eval(returns_method, __FILE__, __LINE__ - 4)
+    end
+
     def method_missing(method_name, *args, &block)
       RR::Space.instance.__send__(method_name, *args, &block)
     end
-  end  
+  end
 end
