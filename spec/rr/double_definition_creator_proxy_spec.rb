@@ -1,4 +1,4 @@
-require "spec/spec_helper"
+require File.join(File.dirname(__FILE__) + "/../spec_helper")
 
 module RR
   describe DoubleDefinitionCreatorProxy do
@@ -58,7 +58,7 @@ module RR
           end
         end
 
-        send "initializes proxy with passed in creator"
+        # send "initializes proxy with passed in creator"
 
         it "creates double_injections" do
           subject.foobar(1, 2).should == :one_two

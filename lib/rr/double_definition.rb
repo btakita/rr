@@ -12,12 +12,13 @@ module RR
 
     include Space::Reader
 
-    def initialize
+    def initialize(creator_proxy = nil)
       @implementation = nil
       @argument_expectation = nil
       @times_matcher = nil
       @after_call_value = nil
       @yields_value = nil
+      @creator_proxy = creator_proxy
       returns_block_callback_strategy
     end
 
@@ -90,8 +91,9 @@ module RR
       @ordered = true
       space.ordered_doubles << @double unless space.ordered_doubles.include?(@double)
       install_method_callback returns
-      self
+      @creator_proxy
     end
+    alias_method :then, :ordered
 
     def ordered?
       @ordered
@@ -130,6 +132,11 @@ module RR
         implemented_by lambda {value}
       end
       self
+    end
+    
+    def mock(&block)
+      returns object = Object.new
+      DoubleDefinitionCreator.new.mock(object, &block)
     end
 
     def proxy
