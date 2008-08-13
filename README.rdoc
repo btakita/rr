@@ -190,6 +190,11 @@ Put double scenarios on instances of a Class.
     m.system("rake baz") {true}
   end
 
+=== Double Graphs
+
+  stub(object).foo.stub.bar {:baz}
+  object.foo.bar # :baz
+
 === Argument Wildcard matchers
 ==== anything
   mock(object).foobar(1, anything)
