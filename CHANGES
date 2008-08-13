@@ -1,3 +1,4 @@
+* 0.5.0
 - Method chaining Doubles (Patch by Nick Kallen)
 - Chained ordered expectations (Patch by Nick Kallen)
 - Space#verify_doubles can take one or more objects with DoubleInjections to be verified
