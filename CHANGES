@@ -1,5 +1,6 @@
 - Method chaining Doubles (Patch by Nick Kallen)
 - Chained ordered expectations (Patch by Nick Kallen)
+- Space#verify_doubles can take one or more objects with DoubleInjections to be verified
 
 * 0.4.10
 - DoubleDefinitionCreatorProxy does not undef #object_id
