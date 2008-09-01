@@ -1,4 +1,4 @@
-require "spec/spec_helper"
+require File.expand_path("#{File.dirname(__FILE__)}/../spec_helper")
 
 module RR
   describe DoubleDefinition, " with returns block_callback_strategy", :shared => true do

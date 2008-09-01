@@ -1,4 +1,4 @@
-require "spec/spec_helper"
+require File.expand_path("#{File.dirname(__FILE__)}/../spec_helper")
 
 module RR
   describe DoubleDefinitionCreator, " strategy definition", :shared => true do
