@@ -220,7 +220,7 @@ Put double scenarios on instances of a Class.
   object.foobar(arg)
 
 ==== Ranges
-  mock(object).foobar([1..10])
+  mock(object).foobar(1..10)
   object.foobar(5)
 
 ==== Regexps
