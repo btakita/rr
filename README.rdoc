@@ -219,6 +219,22 @@ Put double scenarios on instances of a Class.
   def arg.talk; 'quack'; end
   object.foobar(arg)
 
+==== Ranges
+  mock(object).foobar([1..10])
+  object.foobar(5)
+
+==== Regexps
+  mock(object).foobar(/on/)
+  object.foobar("ruby on rails")
+
+==== hash_including
+  mock(object).foobar(hash_including(:red => "#FF0000", :blue => "#0000FF"))
+  object.foobar({:red => "#FF0000", :blue => "#0000FF", :green => "#00FF00"})
+
+==== satisfy
+  mock(object).foobar(satisfy {|arg| arg.length == 2})
+  object.foobar("xy")
+
 === Invocation Amount Wildcard Matchers
 ==== any_times
   mock(object).method_name(anything).times(any_times) {return_value}

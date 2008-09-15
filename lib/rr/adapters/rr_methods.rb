@@ -210,7 +210,7 @@ module RR
       end
 
       # Sets up a DuckType wildcard ArgumentEqualityExpectation
-      # that succeeds when passed the argument implements the methods.
+      # that succeeds when the passed argument implements the methods.
       #   arg = Object.new
       #   def arg.foo; end
       #   def arg.bar; end
@@ -218,6 +218,25 @@ module RR
       #   object.method_name(arg) # passes
       def duck_type(*args)
         RR::WildcardMatchers::DuckType.new(*args)
+      end
+      
+      # Sets up a HashIncluding wildcard ArgumentEqualityExpectation
+      # that succeeds when the passed argument contains at least those keys
+      # and values of the expectation.
+      #   mock(object).method_name(hash_including(:foo => 1)) {return_value}
+      #   object.method_name({:foo => 1, :bar => 2) # passes
+      def hash_including(expected_hash)
+        RR::WildcardMatchers::HashIncluding.new(expected_hash)
+      end
+
+      # Sets up a Satisfy wildcard ArgumentEqualityExpectation
+      # that succeeds when the passed argument causes the expectation's
+      # proc to return true.
+      #   mock(object).method_name(satisfy {|arg| arg == :foo}) {return_value}
+      #   object.method_name(:foo) # passes
+      def satisfy(expectation_proc=nil, &block)
+        expectation_proc ||= block
+        RR::WildcardMatchers::Satisfy.new(expectation_proc)
       end
 
       instance_methods.each do |name|
