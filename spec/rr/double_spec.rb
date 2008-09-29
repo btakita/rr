@@ -274,11 +274,11 @@ module RR
       it "receives the return value in the after_call callback" do
         return_value = :returns_value
         double.returns(return_value).after_call do |value|
-          :after_call_value
+          :after_call_proc
         end
 
         actual_value = double.call(double_injection)
-        actual_value.should == :after_call_value
+        actual_value.should == :after_call_proc
       end
 
       it "allows after_call to mock the return value" do

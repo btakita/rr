@@ -5,7 +5,7 @@ module RR
       attr_accessor :argument_expectation,
                     :times_matcher,
                     :implementation,
-                    :after_call_value,
+                    :after_call_proc,
                     :yields_value,
                     :double
       attr_reader   :block_callback_strategy
@@ -16,7 +16,7 @@ module RR
         @implementation = nil
         @argument_expectation = nil
         @times_matcher = nil
-        @after_call_value = nil
+        @after_call_proc = nil
         @yields_value = nil
         @creator_proxy = creator_proxy
         returns_block_callback_strategy
@@ -105,15 +105,15 @@ module RR
         self
       end
 
-      def after_call(&block)
-        raise ArgumentError, "after_call expects a block" unless block
-        @after_call_value = block
+      def after_call(&after_call_proc)
+        raise ArgumentError, "after_call expects a block" unless after_call_proc
+        @after_call_proc = after_call_proc
         self
       end
 
-      def verbose(&block)
+      def verbose(&after_call_proc)
         @verbose = true
-        @after_call_value = block
+        @after_call_proc = after_call_proc
         self
       end
 
