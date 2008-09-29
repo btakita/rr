@@ -40,7 +40,7 @@ module RR
       #     method_name_1 {return_value_1}
       #     method_name_2(arg_1, arg_2) {return_value_2}
       #   end
-      def mock(subject=DoubleDefinitionCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+      def mock(subject=DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition)
         creator = DoubleDefinitionCreator.new
         creator.mock(subject, method_name, &definition)
       end
@@ -74,7 +74,7 @@ module RR
       #     method_name_1 {return_value_1}
       #     method_name_2(arg_1, arg_2) {return_value_2}
       #   end
-      def stub(subject=DoubleDefinitionCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+      def stub(subject=DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition)
         creator = DoubleDefinitionCreator.new
         creator.stub(subject, method_name, &definition)
       end
@@ -124,7 +124,7 @@ module RR
       #     html.should include("My socks are wet")
       #     "My new return value"
       #   end
-      def proxy(subject=DoubleDefinitionCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+      def proxy(subject=DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition)
         creator = DoubleDefinitionCreator.new
         creator.proxy(subject, method_name, &definition)
       end
@@ -145,7 +145,7 @@ module RR
       #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
       #      m.method3.with_no_args # Do not allow method3 with no arguments
       #    end
-      def dont_allow(subject=DoubleDefinitionCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+      def dont_allow(subject=DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition)
         creator = DoubleDefinitionCreator.new
         creator.dont_allow(subject, method_name, &definition)
       end
@@ -164,7 +164,7 @@ module RR
       #   mock.instance_of(User).projects do |projects|
       #     projects[0..2]
       #   end
-      def instance_of(subject=DoubleDefinitionCreator::NO_SUBJECT_ARG, method_name=nil, &definition)
+      def instance_of(subject=DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition)
         creator = DoubleDefinitionCreator.new
         creator.instance_of(subject, method_name, &definition)
       end
