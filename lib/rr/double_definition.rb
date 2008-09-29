@@ -1,8 +1,7 @@
 module RR
   class DoubleDefinition #:nodoc:
     ORIGINAL_METHOD = Object.new
-    attr_accessor :times_called,
-                  :argument_expectation,
+    attr_accessor :argument_expectation,
                   :times_matcher,
                   :implementation,
                   :after_call_value,
