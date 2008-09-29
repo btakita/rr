@@ -1,5 +1,5 @@
 module RR
-  module Doubles
+  module DoubleDefinitions
     class DoubleDefinitionBuilder #:nodoc:
       attr_reader :definition
 

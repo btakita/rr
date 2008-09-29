@@ -1,5 +1,5 @@
 module RR
-  module Doubles
+  module DoubleDefinitions
     class DoubleDefinition #:nodoc:
       ORIGINAL_METHOD = Object.new
       attr_accessor :argument_expectation,

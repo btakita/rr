@@ -1,5 +1,5 @@
 module RR
-  module Doubles
+  module DoubleDefinitions
     class DoubleDefinitionCreator # :nodoc
       NO_SUBJECT = Object.new
 

@@ -1,5 +1,5 @@
 module RR
-  module Doubles
+  module DoubleDefinitions
     class DoubleDefinitionCreatorProxy
       def initialize(creator, object, &block) #:nodoc:
         @creator = creator
