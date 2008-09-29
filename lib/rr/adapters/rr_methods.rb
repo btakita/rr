@@ -40,9 +40,9 @@ module RR
       #     method_name_1 {return_value_1}
       #     method_name_2(arg_1, arg_2) {return_value_2}
       #   end
-      def mock(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition)
+      def mock(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
         creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.mock(subject, method_name, &definition)
+        creator.mock(subject, method_name, &definition_eval_block)
       end
 
 
@@ -74,9 +74,9 @@ module RR
       #     method_name_1 {return_value_1}
       #     method_name_2(arg_1, arg_2) {return_value_2}
       #   end
-      def stub(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition)
+      def stub(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
         creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.stub(subject, method_name, &definition)
+        creator.stub(subject, method_name, &definition_eval_block)
       end
 
       # This method add proxy capabilities to the Double. proxy can be called
@@ -124,9 +124,9 @@ module RR
       #     html.should include("My socks are wet")
       #     "My new return value"
       #   end
-      def proxy(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition)
+      def proxy(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
         creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.proxy(subject, method_name, &definition)
+        creator.proxy(subject, method_name, &definition_eval_block)
       end
 
       # This method sets the Double to have a dont_allow strategy.
@@ -145,9 +145,9 @@ module RR
       #      m.method2(arg1, arg2) # Do not allow method2 with arguments arg1 and arg2
       #      m.method3.with_no_args # Do not allow method3 with no arguments
       #    end
-      def dont_allow(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition)
+      def dont_allow(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
         creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.dont_allow(subject, method_name, &definition)
+        creator.dont_allow(subject, method_name, &definition_eval_block)
       end
       alias_method :do_not_allow, :dont_allow
       alias_method :dont_call, :dont_allow
@@ -164,9 +164,9 @@ module RR
       #   mock.instance_of(User).projects do |projects|
       #     projects[0..2]
       #   end
-      def instance_of(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition)
+      def instance_of(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
         creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.instance_of(subject, method_name, &definition)
+        creator.instance_of(subject, method_name, &definition_eval_block)
       end
 
       # Returns a AnyTimesMatcher. This is meant to be passed in as an argument
