@@ -22,21 +22,21 @@ module RR
         returns_block_callback_strategy
       end
 
-      def with(*args, &returns)
+      def with(*args, &return_value_block)
         @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
-        install_method_callback returns
+        install_method_callback return_value_block
         self
       end
 
-      def with_any_args(&returns)
+      def with_any_args(&return_value_block)
         @argument_expectation = Expectations::AnyArgumentExpectation.new
-        install_method_callback returns
+        install_method_callback return_value_block
         self
       end
 
-      def with_no_args(&returns)
+      def with_no_args(&return_value_block)
         @argument_expectation = Expectations::ArgumentEqualityExpectation.new()
-        install_method_callback returns
+        install_method_callback return_value_block
         self
       end
 
@@ -45,43 +45,43 @@ module RR
         self
       end
 
-      def once(&returns)
+      def once(&return_value_block)
         @times_matcher = TimesCalledMatchers::IntegerMatcher.new(1)
-        install_method_callback returns
+        install_method_callback return_value_block
         self
       end
 
-      def twice(&returns)
+      def twice(&return_value_block)
         @times_matcher = TimesCalledMatchers::IntegerMatcher.new(2)
-        install_method_callback returns
+        install_method_callback return_value_block
         self
       end
 
-      def at_least(number, &returns)
+      def at_least(number, &return_value_block)
         @times_matcher = TimesCalledMatchers::AtLeastMatcher.new(number)
-        install_method_callback returns
+        install_method_callback return_value_block
         self
       end
 
-      def at_most(number, &returns)
+      def at_most(number, &return_value_block)
         @times_matcher = TimesCalledMatchers::AtMostMatcher.new(number)
-        install_method_callback returns
+        install_method_callback return_value_block
         self
       end
 
-      def any_number_of_times(&returns)
+      def any_number_of_times(&return_value_block)
         @times_matcher = TimesCalledMatchers::AnyTimesMatcher.new
-        install_method_callback returns
+        install_method_callback return_value_block
         self
       end
 
-      def times(matcher_value, &returns)
+      def times(matcher_value, &return_value_block)
         @times_matcher = TimesCalledMatchers::TimesCalledMatcher.create(matcher_value)
-        install_method_callback returns
+        install_method_callback return_value_block
         self
       end
 
-      def ordered(&returns)
+      def ordered(&return_value_block)
         raise(
           Errors::DoubleDefinitionError,
           "Double Definitions must have a dedicated Double to be ordered. " <<
@@ -90,7 +90,7 @@ module RR
         ) unless @double
         @ordered = true
         space.ordered_doubles << @double unless space.ordered_doubles.include?(@double)
-        install_method_callback returns
+        install_method_callback return_value_block
         @creator_proxy
       end
       alias_method :then, :ordered
@@ -99,9 +99,9 @@ module RR
         @ordered
       end
 
-      def yields(*args, &returns)
+      def yields(*args, &return_value_block)
         @yields_value = args
-        install_method_callback returns
+        install_method_callback return_value_block
         self
       end
 
@@ -134,9 +134,9 @@ module RR
         self
       end
 
-      def mock(&block)
+      def mock(&definition_eval_block)
         returns object = Object.new
-        DoubleDefinitionCreator.new.mock(object, &block)
+        DoubleDefinitionCreator.new.mock(object, &definition_eval_block)
       end
 
       def proxy
