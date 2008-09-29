@@ -235,12 +235,11 @@ module RR
       if verbose?
         puts Double.formatted_name(double_injection.method_name, args)
       end
-      self.times_called_expectation.attempt if definition.times_matcher
+      times_called_expectation.attempt if definition.times_matcher
       space.verify_ordered_double(self) if ordered?
       yields!(block)
       return_value = call_implementation(double_injection, *args, &block)
-      return return_value unless definition.after_call_value
-      definition.after_call_value.call(return_value)
+      definition.after_call_proc ? definition.after_call_proc.call(return_value) : return_value
     end
 
     def yields!(block)
