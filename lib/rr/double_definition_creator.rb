@@ -68,7 +68,7 @@ module RR
         raise ArgumentError, "Cannot pass in a method name and a block"
       end
       yield
-      if no_subject?
+      if no_subject?(subject)
         self
       elsif method_name
         create subject, method_name, &definition
@@ -77,7 +77,7 @@ module RR
       end
     end
 
-    def no_subject?
+    def no_subject?(subject)
       subject.__id__ === NO_SUBJECT.__id__
     end
 
