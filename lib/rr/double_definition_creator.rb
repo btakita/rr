@@ -1,6 +1,6 @@
 module RR
   class DoubleDefinitionCreator # :nodoc
-    NO_SUBJECT_ARG = Object.new
+    NO_SUBJECT = Object.new
 
     include Space::Reader
     include Errors
@@ -11,19 +11,19 @@ module RR
       @using_instance_of_strategy = nil
     end
     
-    def mock(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
+    def mock(subject=NO_SUBJECT, method_name=nil, &definition) # :nodoc
       add_strategy(subject, method_name, definition) do
         set_core_strategy :mock
       end
     end
 
-    def stub(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
+    def stub(subject=NO_SUBJECT, method_name=nil, &definition) # :nodoc
       add_strategy(subject, method_name, definition) do
         set_core_strategy :stub
       end
     end
 
-    def dont_allow(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
+    def dont_allow(subject=NO_SUBJECT, method_name=nil, &definition) # :nodoc
       add_strategy(subject, method_name, definition) do
         set_core_strategy :dont_allow
       end
@@ -32,7 +32,7 @@ module RR
     alias_method :dont_call, :dont_allow
     alias_method :do_not_call, :dont_allow
 
-    def proxy(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
+    def proxy(subject=NO_SUBJECT, method_name=nil, &definition) # :nodoc
       add_strategy(subject, method_name, definition) do
         proxy_when_dont_allow_error if @core_strategy == :dont_allow
         @using_proxy_strategy = true
@@ -40,13 +40,13 @@ module RR
     end
     alias_method :probe, :proxy
 
-    def instance_of(subject=NO_SUBJECT_ARG, method_name=nil, &definition) # :nodoc
-      if subject != NO_SUBJECT_ARG && !subject.is_a?(Class)
+    def instance_of(subject=NO_SUBJECT, method_name=nil, &definition) # :nodoc
+      if subject != NO_SUBJECT && !subject.is_a?(Class)
         raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
       end
       add_strategy(subject, method_name, definition) do
         @using_instance_of_strategy = true
-        return self if subject === NO_SUBJECT_ARG
+        return self if subject === NO_SUBJECT
       end
     end
 
@@ -68,13 +68,17 @@ module RR
         raise ArgumentError, "Cannot pass in a method name and a block"
       end
       yield
-      if subject.__id__ === NO_SUBJECT_ARG.__id__
+      if no_subject?
         self
       elsif method_name
         create subject, method_name, &definition
       else
         DoubleDefinitionCreatorProxy.new(self, subject, &definition)
       end
+    end
+
+    def no_subject?
+      subject.__id__ === NO_SUBJECT.__id__
     end
 
     def set_core_strategy(strategy)
