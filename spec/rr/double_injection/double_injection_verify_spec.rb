@@ -1,7 +1,7 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../../../spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
 module RR
-  module Doubles
+  module DoubleDefinitions
     describe DoubleInjection, "#verify" do
       it_should_behave_like "Swapped Space"
       before do

@@ -15,8 +15,8 @@ module RR
           end
         end
 
-        it "returns a Doubles::DoubleDefinitionCreator when passed no arguments" do
-          mock.should be_instance_of(Doubles::DoubleDefinitionCreator)
+        it "returns a DoubleDefinitions::DoubleDefinitionCreator when passed no arguments" do
+          mock.should be_instance_of(DoubleDefinitions::DoubleDefinitionCreator)
         end
 
         it "sets up the RR mock call chain" do
@@ -72,8 +72,8 @@ module RR
           end
         end
 
-        it "returns a Doubles::DoubleDefinitionCreator when passed no arguments" do
-          stub.should be_instance_of(Doubles::DoubleDefinitionCreator)
+        it "returns a DoubleDefinitions::DoubleDefinitionCreator when passed no arguments" do
+          stub.should be_instance_of(DoubleDefinitions::DoubleDefinitionCreator)
         end
 
         it "sets up the RR stub call chain" do
@@ -125,8 +125,8 @@ module RR
           end
         end
 
-        it "#proxy returns a Doubles::DoubleDefinitionCreator when passed no arguments" do
-          proxy.should be_instance_of(Doubles::DoubleDefinitionCreator)
+        it "#proxy returns a DoubleDefinitions::DoubleDefinitionCreator when passed no arguments" do
+          proxy.should be_instance_of(DoubleDefinitions::DoubleDefinitionCreator)
         end
 
         it "#proxy sets up the RR proxy call chain" do
@@ -198,8 +198,8 @@ module RR
           end
         end
 
-        it "returns a Doubles::DoubleDefinitionCreator when passed no arguments" do
-          stub.proxy.should be_instance_of(Doubles::DoubleDefinitionCreator)
+        it "returns a DoubleDefinitions::DoubleDefinitionCreator when passed no arguments" do
+          stub.proxy.should be_instance_of(DoubleDefinitions::DoubleDefinitionCreator)
         end
 
         it "sets up the RR proxy call chain" do
@@ -252,8 +252,8 @@ module RR
           end
         end
 
-        it "returns a Doubles::DoubleDefinitionCreator when passed no arguments" do
-          do_not_allow.should be_instance_of(Doubles::DoubleDefinitionCreator)
+        it "returns a DoubleDefinitions::DoubleDefinitionCreator when passed no arguments" do
+          do_not_allow.should be_instance_of(DoubleDefinitions::DoubleDefinitionCreator)
         end
 
         it "sets up the RR do_not_allow call chain" do

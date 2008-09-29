@@ -1,7 +1,7 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
 module RR
-  module Doubles
+  module DoubleDefinitions
     describe DoubleDefinitionCreatorProxy do
       attr_reader :space, :subject, :creator, :the_proxy
       it_should_behave_like "Swapped Space"

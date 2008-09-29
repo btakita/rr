@@ -7,17 +7,17 @@ require "#{dir}/rr/errors/argument_equality_error"
 require "#{dir}/rr/errors/times_called_error"
 
 require "#{dir}/rr/space"
-require "#{dir}/rr/doubles/double_injection"
+require "#{dir}/rr/double_injection"
 require "#{dir}/rr/hash_with_object_id_key"
 
-require "#{dir}/rr/doubles/double_definition_creator_proxy"
+require "#{dir}/rr/double_definitions/double_definition_creator_proxy"
 
-require "#{dir}/rr/doubles/double_definition_creator"
+require "#{dir}/rr/double_definitions/double_definition_creator"
 
-require "#{dir}/rr/doubles/double"
-require "#{dir}/rr/doubles/double_definition"
-require "#{dir}/rr/doubles/double_definition_builder"
-require "#{dir}/rr/doubles/double_matches"
+require "#{dir}/rr/double"
+require "#{dir}/rr/double_definitions/double_definition"
+require "#{dir}/rr/double_definitions/double_definition_builder"
+require "#{dir}/rr/double_matches"
 
 require "#{dir}/rr/expectations/argument_equality_expectation"
 require "#{dir}/rr/expectations/any_argument_expectation"
@@ -61,6 +61,4 @@ module RR
       RR::Space.instance.__send__(method_name, *args, &block)
     end
   end
-
-  Double = Doubles::Double
 end
