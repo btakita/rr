@@ -27,15 +27,15 @@ module RR
       @trim_backtrace = false
     end
 
-    # Reuses or creates, if none exists, a DoubleInjection for the passed
+    # Reuses or creates, if none exists, a Doubles::DoubleInjection for the passed
     # in object and method_name.
-    # When a DoubleInjection is created, it binds the dispatcher to the
+    # When a Doubles::DoubleInjection is created, it binds the dispatcher to the
     # object.
     def double_injection(object, method_name)
       double_injection = @double_injections[object][method_name.to_sym]
       return double_injection if double_injection
 
-      double_injection = DoubleInjection.new(object, method_name.to_sym)
+      double_injection = Doubles::DoubleInjection.new(object, method_name.to_sym)
       @double_injections[object][method_name.to_sym] = double_injection
       double_injection.bind
       double_injection
@@ -63,7 +63,7 @@ module RR
       double
     end
 
-    # Verifies all the DoubleInjection objects have met their
+    # Verifies all the Doubles::DoubleInjection objects have met their
     # TimesCalledExpectations.
     def verify_doubles(*objects)
       objects = @double_injections.keys if objects.empty?
@@ -81,14 +81,14 @@ module RR
       reset_double_injections
     end
 
-    # Verifies the DoubleInjection for the passed in object and method_name.
+    # Verifies the Doubles::DoubleInjection for the passed in object and method_name.
     def verify_double(object, method_name)
       @double_injections[object][method_name].verify
     ensure
       reset_double object, method_name
     end
 
-    # Resets the DoubleInjection for the passed in object and method_name.
+    # Resets the Doubles::DoubleInjection for the passed in object and method_name.
     def reset_double(object, method_name)
       double_injection = @double_injections[object].delete(method_name)
       @double_injections.delete(object) if @double_injections[object].empty?

@@ -15,8 +15,8 @@ module RR
           end
         end
 
-        it "returns a DoubleDefinitionCreator when passed no arguments" do
-          mock.should be_instance_of(DoubleDefinitionCreator)
+        it "returns a Doubles::DoubleDefinitionCreator when passed no arguments" do
+          mock.should be_instance_of(Doubles::DoubleDefinitionCreator)
         end
 
         it "sets up the RR mock call chain" do
@@ -72,8 +72,8 @@ module RR
           end
         end
 
-        it "returns a DoubleDefinitionCreator when passed no arguments" do
-          stub.should be_instance_of(DoubleDefinitionCreator)
+        it "returns a Doubles::DoubleDefinitionCreator when passed no arguments" do
+          stub.should be_instance_of(Doubles::DoubleDefinitionCreator)
         end
 
         it "sets up the RR stub call chain" do
@@ -125,8 +125,8 @@ module RR
           end
         end
 
-        it "#proxy returns a DoubleDefinitionCreator when passed no arguments" do
-          proxy.should be_instance_of(DoubleDefinitionCreator)
+        it "#proxy returns a Doubles::DoubleDefinitionCreator when passed no arguments" do
+          proxy.should be_instance_of(Doubles::DoubleDefinitionCreator)
         end
 
         it "#proxy sets up the RR proxy call chain" do
@@ -198,8 +198,8 @@ module RR
           end
         end
 
-        it "returns a DoubleDefinitionCreator when passed no arguments" do
-          stub.proxy.should be_instance_of(DoubleDefinitionCreator)
+        it "returns a Doubles::DoubleDefinitionCreator when passed no arguments" do
+          stub.proxy.should be_instance_of(Doubles::DoubleDefinitionCreator)
         end
 
         it "sets up the RR proxy call chain" do
@@ -252,8 +252,8 @@ module RR
           end
         end
 
-        it "returns a DoubleDefinitionCreator when passed no arguments" do
-          do_not_allow.should be_instance_of(DoubleDefinitionCreator)
+        it "returns a Doubles::DoubleDefinitionCreator when passed no arguments" do
+          do_not_allow.should be_instance_of(Doubles::DoubleDefinitionCreator)
         end
 
         it "sets up the RR do_not_allow call chain" do
@@ -308,56 +308,6 @@ module RR
           end.should raise_error(Errors::TimesCalledError)
           reset
           nil
-        end
-      end
-
-      describe DoubleDefinitionCreator, "#instance_of and #mock" do
-        before do
-          @klass = Class.new
-        end
-
-        it "returns a DoubleDefinitionCreator when passed no arguments" do
-          instance_of.instance_of.should be_instance_of(DoubleDefinitionCreator)
-        end
-
-        it "sets up the RR instance_of call chain" do
-          creates_instance_of_call_chain(instance_of.mock(@klass))
-        end
-
-        it "#rr_instance_of sets up the RR instance_of call chain" do
-          creates_instance_of_call_chain(rr_instance_of.mock(@klass))
-        end
-
-        it "creates a instance_of Double for method when passed a second argument" do
-          creates_double_with_method_name(instance_of.mock(@klass, :foobar))
-        end
-
-        it "creates a instance_of Double for method when passed a second argument with rr_instance_of" do
-          creates_double_with_method_name(rr_instance_of.mock(@klass, :foobar))
-        end
-
-        it "raises error if passed a method name and a block" do
-          lambda do
-            instance_of.mock(@klass, :foobar) {}
-          end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-        end
-
-        def creates_double_with_method_name(double)
-          double.with(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          @klass.new.foobar(1, 2).should == :baz
-        end
-
-        def creates_instance_of_call_chain(creator)
-          double = creator.foobar(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          @klass.new.foobar(1, 2).should == :baz
         end
       end
     end
