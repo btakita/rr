@@ -28,12 +28,19 @@ module RR
       end
 
       describe "#exact_match?" do
-        it "returns true when all arguments exactly match" do
-          expectation.should be_exact_match(1, 2, 3)
-          expectation.should_not be_exact_match(1, 2)
-          expectation.should_not be_exact_match(1)
-          expectation.should_not be_exact_match()
-          expectation.should_not be_exact_match("does not match")
+        context "when all arguments exactly match" do
+          it "returns true" do
+            expectation.should be_exact_match(1, 2, 3)
+          end
+        end
+
+        context "when all arguments do not exactly match" do
+          it "returns false" do
+            expectation.should_not be_exact_match(1, 2)
+            expectation.should_not be_exact_match(1)
+            expectation.should_not be_exact_match()
+            expectation.should_not be_exact_match("does not match")
+          end
         end
       end
 
@@ -61,7 +68,7 @@ module RR
             expectation.should_not be_wildcard_match()
             expectation.should_not be_wildcard_match(Object.new, Object.new)
           end
-        end        
+        end
       end
 
       describe "Functional spec" do
