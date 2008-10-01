@@ -3,15 +3,21 @@ require File.expand_path("#{File.dirname(__FILE__)}/../spec_helper")
 module RR
   describe Double do
     it_should_behave_like "Swapped Space"
-    attr_reader :space, :object, :double_injection, :double
+    attr_reader :space, :subject, :double_injection, :definition, :definition_creator, :double
     before do
       @space = Space.instance
-      @object = Object.new
-      def object.foobar(a, b)
+      @subject = Object.new
+      def subject.foobar(a, b)
         [b, a]
       end
-      @double_injection = space.double_injection(object, :foobar)
-      @double = Double.new(double_injection)
+      @double_injection = create_double_injection
+      @definition_creator = DoubleDefinitions::DoubleDefinitionCreator.new
+      @definition = DoubleDefinitions::DoubleDefinition.new(definition_creator, subject)
+      @double = Double.new(double_injection, definition)
+    end
+
+    def create_double_injection
+      space.double_injection(subject, :foobar)
     end
 
     describe "#initialize" do
@@ -33,7 +39,7 @@ module RR
 
       it "sets return value when block passed in" do
         double.with(1) {:return_value}
-        object.foobar(1).should == :return_value
+        subject.foobar(1).should == :return_value
       end
     end
 
@@ -52,7 +58,7 @@ module RR
       end
 
       it "sets return value when block passed in" do
-        object.foobar(:anything).should == :return_value
+        subject.foobar(:anything).should == :return_value
       end
     end
 
@@ -70,7 +76,7 @@ module RR
       end
 
       it "sets return value when block passed in" do
-        object.foobar().should == :return_value
+        subject.foobar().should == :return_value
       end
     end
 
@@ -103,7 +109,7 @@ module RR
 
       it "sets return value when block passed in" do
         double.with_any_args.once {:return_value}
-        object.foobar.should == :return_value
+        subject.foobar.should == :return_value
       end
     end
 
@@ -121,7 +127,7 @@ module RR
 
       it "sets return value when block passed in" do
         double.with_any_args.twice {:return_value}
-        object.foobar.should == :return_value
+        subject.foobar.should == :return_value
       end
     end
 
@@ -137,7 +143,7 @@ module RR
 
       it "sets return value when block passed in" do
         double.with_any_args.at_least(2) {:return_value}
-        object.foobar.should == :return_value
+        subject.foobar.should == :return_value
       end
     end
 
@@ -160,7 +166,7 @@ module RR
 
       it "sets return value when block passed in" do
         double.with_any_args.at_most(2) {:return_value}
-        object.foobar.should == :return_value
+        subject.foobar.should == :return_value
       end
     end
 
@@ -179,7 +185,7 @@ module RR
 
       it "sets return value when block passed in" do
         double.with_any_args.times(3) {:return_value}
-        object.foobar.should == :return_value
+        subject.foobar.should == :return_value
       end
     end
 
@@ -195,7 +201,7 @@ module RR
 
       it "sets return value when block passed in" do
         double.with_any_args.any_number_of_times {:return_value}
-        object.foobar.should == :return_value
+        subject.foobar.should == :return_value
       end
     end
 
@@ -218,7 +224,7 @@ module RR
 
       it "sets return value when block passed in" do
         double.with_any_args.once.ordered {:return_value}
-        object.foobar.should == :return_value
+        subject.foobar.should == :return_value
       end
     end
 
@@ -236,7 +242,7 @@ module RR
       it "yields the passed in argument to the call block when there is no returns value set" do
         double.with_any_args.yields(:baz)
         passed_in_block_arg = nil
-        object.foobar {|arg| passed_in_block_arg = arg}.should == nil
+        subject.foobar {|arg| passed_in_block_arg = arg}.should == nil
         passed_in_block_arg.should == :baz
       end
 
@@ -244,13 +250,13 @@ module RR
         double.with_any_args.yields(:baz).returns(:return_value)
 
         passed_in_block_arg = nil
-        object.foobar {|arg| passed_in_block_arg = arg}.should == :return_value
+        subject.foobar {|arg| passed_in_block_arg = arg}.should == :return_value
         passed_in_block_arg.should == :baz
       end
 
       it "sets return value when block passed in" do
         double.with_any_args.yields {:return_value}
-        object.foobar {}.should == :return_value
+        subject.foobar {}.should == :return_value
       end
     end
 
@@ -288,7 +294,7 @@ module RR
           value
         end
 
-        object.foobar.inner_method(1).should == :baz
+        subject.foobar.inner_method(1).should == :baz
       end
 
       it "raises an error when not passed a block" do
@@ -312,7 +318,7 @@ module RR
       it "sets return value when block passed in" do
         (class << double; self; end).__send__(:define_method, :puts) {|value|}
         double.with().verbose {:return_value}
-        object.foobar.should == :return_value
+        subject.foobar.should == :return_value
       end
     end
 
@@ -355,16 +361,16 @@ module RR
       end
 
       it "sets the implementation to the passed in method" do
-        def object.foobar(a, b)
+        def subject.foobar(a, b)
           [b, a]
         end
-        double.implemented_by(object.method(:foobar))
+        double.implemented_by(subject.method(:foobar))
         double.call(double_injection, 1, 2).should == [2, 1]
       end
     end
 
     describe "#proxy" do
-      it "returns the DoubleDefinition object" do
+      it "returns the DoubleDefinition subject" do
         double.proxy.should === double.definition
       end
 
@@ -373,44 +379,49 @@ module RR
         double.call(double_injection, 1, 2).should == [2, 1]
       end
 
-      it "calls methods when respond_to? is true and methods does not contain original method" do
-        method_name = nil
-        class << object
-          def methods
-            []
+      context "when respond_to? is true and methods does not contain original method" do
+        it "calls methods" do
+          method_name = nil
+          class << subject
+            def methods
+              []
+            end
+            def method(name)
+              raise "We should not be here"
+            end
+            def respond_to?(name)
+              true
+            end
+            def method_missing(method_name, *args, &block)
+              raise "We should not be here"
+            end
           end
-          def method(name)
-            raise "We should not be here"
-          end
-          def respond_to?(name)
-            true
-          end
-          def method_missing(method_name, *args, &block)
-            raise "We should not be here"
-          end
-        end
 
-        double_injection = space.double_injection(object, :foobar)
-        double = Double.new(double_injection)
-        double.with_any_args
-        double.proxy
+          double.with_any_args
+          double.proxy
 
-        object.foobar(1, 2).should == [2, 1]
+          subject.foobar(1, 2).should == [2, 1]
+        end        
       end
 
-      it "calls method when original_method does not exist" do
-        class << object
-          def method_missing(method_name, *args, &block)
-            "method_missing for #{method_name}(#{args.inspect})"
-          end
+      context "when original_method does not exist" do
+        def create_double_injection
+          space.double_injection(subject, :does_not_exist)
         end
-        double_injection = space.double_injection(object, :does_not_exist)
-        double = Double.new(double_injection)
-        double.with_any_args
-        double.proxy
 
-        return_value = object.does_not_exist(1, 2)
-        return_value.should == "method_missing for does_not_exist([1, 2])"
+        it "calls method" do
+          class << subject
+            def method_missing(method_name, *args, &block)
+              "method_missing for #{method_name}(#{args.inspect})"
+            end
+          end
+
+          double.with_any_args
+          double.proxy
+
+          return_value = subject.does_not_exist(1, 2)
+          return_value.should == "method_missing for does_not_exist([1, 2])"
+        end
       end
     end
 
@@ -470,13 +481,13 @@ module RR
 
         it "raises DoubleOrderError when ordered and called out of order" do
           double1 = double
-          double2 = Double.new(double_injection)
+          double2 = Double.new(double_injection, DoubleDefinitions::DoubleDefinition.new(definition_creator, subject))
 
           double1.with(1).returns {:return_1}.once.ordered
           double2.with(2).returns {:return_2}.once.ordered
 
           lambda do
-            object.foobar(2)
+            subject.foobar(2)
           end.should raise_error(
           Errors::DoubleOrderError,
           "foobar(2) called out of order in list\n" <<
@@ -519,14 +530,14 @@ module RR
         it "does not add block argument if no block passed in" do
           double.with(1, 2).returns {|*args| args}
 
-          args = object.foobar(1, 2)
+          args = subject.foobar(1, 2)
           args.should == [1, 2]
         end
 
         it "makes the block the last argument" do
           double.with(1, 2).returns {|a, b, blk| blk}
 
-          block = object.foobar(1, 2) {|a, b| [b, a]}
+          block = subject.foobar(1, 2) {|a, b| [b, a]}
           block.call(3, 4).should == [4, 3]
         end
 
@@ -534,20 +545,20 @@ module RR
           double.with(1, 2).yields(55)
 
           lambda do
-            object.foobar(1, 2)
+            subject.foobar(1, 2)
           end.should raise_error(ArgumentError, "A Block must be passed into the method call when using yields")
         end
       end
 
       describe "when implemented by a method" do
         it "sends block to the method" do
-          def object.foobar(a, b)
+          def subject.foobar(a, b)
             yield(a, b)
           end
 
-          double.with(1, 2).implemented_by(object.method(:foobar))
+          double.with(1, 2).implemented_by(subject.method(:foobar))
 
-          object.foobar(1, 2) {|a, b| [b, a]}.should == [2, 1]
+          subject.foobar(1, 2) {|a, b| [b, a]}.should == [2, 1]
         end
       end
     end

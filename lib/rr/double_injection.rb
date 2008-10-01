@@ -1,19 +1,19 @@
 module RR
-  # RR::DoubleInjection is the binding of an object and a method.
+  # RR::DoubleInjection is the binding of an subject and a method.
   # A double_injection has 0 to many Double objects. Each Double
   # has Argument Expectations and Times called Expectations.
   class DoubleInjection
     MethodArguments = Struct.new(:arguments, :block)
-    attr_reader :object, :method_name, :doubles
+    attr_reader :subject, :method_name, :doubles
 
-    def initialize(object, method_name)
-      @object = object
+    def initialize(subject, method_name)
+      @subject = subject
       @method_name = method_name.to_sym
       if object_has_method?(method_name)
         begin
           meta.__send__(:alias_method, original_method_name, method_name)
         rescue NameError => e
-          object.send(method_name)
+          subject.send(method_name)
           meta.__send__(:alias_method, original_method_name, method_name)
         end
       end
@@ -49,7 +49,7 @@ module RR
     end
 
     # RR::DoubleInjection#reset removes the injected dispatcher method.
-    # It binds the original method implementation on the object
+    # It binds the original method implementation on the subject
     # if one exists.
     def reset
       meta.__send__(:remove_method, placeholder_name)
@@ -62,7 +62,7 @@ module RR
     end
 
     def call_original_method(*args, &block)
-      @object.__send__(original_method_name, *args, &block)
+      @subject.__send__(original_method_name, *args, &block)
     end
 
     def object_has_original_method?
@@ -112,7 +112,7 @@ module RR
     end
 
     def double_not_found_error(*args)
-      message = "On object #{object},\n"
+      message = "On subject #{subject},\n"
       message << "unexpected method invocation in the next line followed by the expected invocations\n"
       message << "  #{Double.formatted_name(@method_name, args)}\n"
       message << Double.list_message_part(@doubles)
@@ -128,11 +128,11 @@ module RR
     end
 
     def object_has_method?(method_name)
-      @object.methods.include?(method_name.to_s) || @object.respond_to?(method_name)
+      @subject.methods.include?(method_name.to_s) || @subject.respond_to?(method_name)
     end
 
     def meta
-      (class << @object; self; end)
+      (class << @subject; self; end)
     end
   end
 end

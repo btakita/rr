@@ -2,23 +2,28 @@ module RR
   module DoubleDefinitions
     class DoubleDefinition #:nodoc:
       ORIGINAL_METHOD = Object.new
-      attr_accessor :argument_expectation,
-                    :times_matcher,
-                    :implementation,
-                    :after_call_proc,
-                    :yields_value,
-                    :double
-      attr_reader   :block_callback_strategy
+      attr_accessor(
+        :argument_expectation,
+        :times_matcher,
+        :implementation,
+        :after_call_proc,
+        :yields_value,
+        :double,
+        :double_definition_creator,
+        :subject
+      )
+      attr_reader :block_callback_strategy
 
       include Space::Reader
 
-      def initialize(creator_proxy = nil)
+      def initialize(double_definition_creator, subject)
         @implementation = nil
         @argument_expectation = nil
         @times_matcher = nil
         @after_call_proc = nil
         @yields_value = nil
-        @creator_proxy = creator_proxy
+        @double_definition_creator = double_definition_creator
+        @subject = subject
         returns_block_callback_strategy
       end
 
@@ -89,9 +94,9 @@ module RR
           "proxy the class's #new method instead."
         ) unless @double
         @ordered = true
-        space.ordered_doubles << @double unless space.ordered_doubles.include?(@double)
+        space.register_ordered_double(@double)
         install_method_callback return_value_block
-        @creator_proxy
+        DoubleDefinitionCreatorProxy.new(double_definition_creator, subject)
       end
       alias_method :then, :ordered
 
@@ -135,8 +140,8 @@ module RR
       end
 
       def mock(&definition_eval_block)
-        returns object = Object.new
-        DoubleDefinitionCreator.new.mock(object, &definition_eval_block)
+        returns subject = Object.new
+        DoubleDefinitionCreator.new.mock(subject, &definition_eval_block)
       end
 
       def proxy

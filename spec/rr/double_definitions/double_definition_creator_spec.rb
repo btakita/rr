@@ -110,7 +110,7 @@ module RR
         context "when passed method_name and block" do
           it "raises error" do
             lambda do
-              @creator.mock(@object, :foobar) {}
+              @creator.mock(@subject, :foobar) {}
             end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
           end
         end
@@ -155,7 +155,7 @@ module RR
         context "when passed method_name and block" do
           it "raises error" do
             lambda do
-              @creator.stub(@object, :foobar) {}
+              @creator.stub(@subject, :foobar) {}
             end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
           end
         end
@@ -241,7 +241,7 @@ module RR
         context "when passed method_name and block" do
           it "raises error" do
             lambda do
-              @creator.dont_allow(@object, :foobar) {}
+              @creator.dont_allow(@subject, :foobar) {}
             end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
           end
         end
@@ -315,7 +315,7 @@ module RR
         context "when passed method_name and block" do
           it "raises error" do
             lambda do
-              @creator.proxy(@object, :foobar) {}
+              @creator.proxy(@subject, :foobar) {}
             end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
           end
         end

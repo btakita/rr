@@ -1,5 +1,5 @@
 module RR
-  # RR::Space.instance is the global state object for the RR framework.
+  # RR::Space.instance is the global state subject for the RR framework.
   class Space
     module Reader
       def space
@@ -28,22 +28,22 @@ module RR
     end
 
     # Reuses or creates, if none exists, a DoubleInjection for the passed
-    # in object and method_name.
+    # in subject and method_name.
     # When a DoubleInjection is created, it binds the dispatcher to the
-    # object.
-    def double_injection(object, method_name)
-      double_injection = @double_injections[object][method_name.to_sym]
+    # subject.
+    def double_injection(subject, method_name)
+      double_injection = @double_injections[subject][method_name.to_sym]
       return double_injection if double_injection
 
-      double_injection = DoubleInjection.new(object, method_name.to_sym)
-      @double_injections[object][method_name.to_sym] = double_injection
+      double_injection = DoubleInjection.new(subject, method_name.to_sym)
+      @double_injections[subject][method_name.to_sym] = double_injection
       double_injection.bind
       double_injection
     end
 
     # Registers the ordered Double to be verified.
     def register_ordered_double(double)
-      @ordered_doubles << double
+      @ordered_doubles << double unless ordered_doubles.include?(double)
     end
 
     # Verifies that the passed in ordered Double is being called
@@ -67,9 +67,9 @@ module RR
     # TimesCalledExpectations.
     def verify_doubles(*objects)
       objects = @double_injections.keys if objects.empty?
-      objects.each do |object|
-        @double_injections[object].keys.each do |method_name|
-          verify_double(object, method_name)
+      objects.each do |subject|
+        @double_injections[subject].keys.each do |method_name|
+          verify_double(subject, method_name)
         end
       end
     end
@@ -81,17 +81,17 @@ module RR
       reset_double_injections
     end
 
-    # Verifies the DoubleInjection for the passed in object and method_name.
-    def verify_double(object, method_name)
-      @double_injections[object][method_name].verify
+    # Verifies the DoubleInjection for the passed in subject and method_name.
+    def verify_double(subject, method_name)
+      @double_injections[subject][method_name].verify
     ensure
-      reset_double object, method_name
+      reset_double subject, method_name
     end
 
-    # Resets the DoubleInjection for the passed in object and method_name.
-    def reset_double(object, method_name)
-      double_injection = @double_injections[object].delete(method_name)
-      @double_injections.delete(object) if @double_injections[object].empty?
+    # Resets the DoubleInjection for the passed in subject and method_name.
+    def reset_double(subject, method_name)
+      double_injection = @double_injections[subject].delete(method_name)
+      @double_injections.delete(subject) if @double_injections[subject].empty?
       double_injection.reset
     end
 
@@ -103,9 +103,9 @@ module RR
 
     # Resets the registered Doubles for the next test run.
     def reset_double_injections
-      @double_injections.each do |object, method_double_map|
+      @double_injections.each do |subject, method_double_map|
         method_double_map.keys.each do |method_name|
-          reset_double(object, method_name)
+          reset_double(subject, method_name)
         end
       end
     end    

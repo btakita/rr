@@ -19,7 +19,7 @@ module RR
     attr_reader :times_called, :double_injection, :definition
     include Space::Reader
 
-    def initialize(double_injection, definition = DoubleDefinitions::DoubleDefinition.new)
+    def initialize(double_injection, definition)
       @double_injection = double_injection
       @definition = definition
       @times_called = 0
@@ -259,7 +259,7 @@ module RR
         if double_injection.object_has_original_method?
           return double_injection.call_original_method(*args, &block)
         else
-          return double_injection.object.__send__(
+          return double_injection.subject.__send__(
             :method_missing,
             method_name,
             *args,
