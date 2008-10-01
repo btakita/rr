@@ -2,7 +2,7 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
 module RR
   module Expectations
-    describe ArgumentEqualityExpectation, "with regexp matcher" do
+    describe ArgumentEqualityExpectation do
       context "with Regexp matcher" do
         attr_reader :expectation
 
@@ -22,18 +22,17 @@ module RR
               expectation.should_not be_exact_match(/def/)
             end
           end
+        end
 
-          context "when not passed a Regexp matcher" do
-            it "returns false" do
-              expectation.should_not be_exact_match("abc")
-              expectation.should_not be_exact_match(:hello)
-              expectation.should_not be_exact_match(1)
-              expectation.should_not be_exact_match(nil)
-              expectation.should_not be_exact_match(true)
-              expectation.should_not be_exact_match()
-            end
+        context "when not passed a Regexp matcher" do
+          it "returns false" do
+            expectation.should_not be_exact_match("abc")
+            expectation.should_not be_exact_match(:hello)
+            expectation.should_not be_exact_match(1)
+            expectation.should_not be_exact_match(nil)
+            expectation.should_not be_exact_match(true)
+            expectation.should_not be_exact_match()
           end
-
         end
 
         describe "#wildcard_match?" do
@@ -62,25 +61,6 @@ module RR
           context "when passed-in String does not match the Regexp" do
             it "returns false" do
               expectation.should_not be_wildcard_match("no match here")
-            end
-          end
-
-          context "when passed-in argument is an exact match" do
-            it "returns true" do
-              expectation.should be_wildcard_match(/abc/)
-            end
-          end
-
-          context "when passed-in argument is not an exact match" do
-            it "returns false" do
-              expectation.should_not be_wildcard_match(/def/)
-            end
-          end
-
-          context "when not passed correct number of arguments" do
-            it "returns false" do
-              expectation.should_not be_wildcard_match()
-              expectation.should_not be_wildcard_match('abc', 'abc')
             end
           end
         end

@@ -40,19 +40,6 @@ module RR
               expectation.should_not be_wildcard_match(:not_a_numeric)
             end
           end
-
-          context "when passed-in argument is an exact match" do
-            it "returns true" do
-              expectation.should be_wildcard_match(numeric)
-            end
-          end
-
-          context "when not passed correct number of arguments" do
-            it "returns false" do
-              expectation.should_not be_wildcard_match()
-              expectation.should_not be_wildcard_match(1, 2)
-            end
-          end
         end
       end
     end
