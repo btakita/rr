@@ -37,7 +37,7 @@ module RR
 
         it "raises error if passed a method name and a block" do
           lambda do
-            mock(@object, :foobar) {}
+            mock(@subject, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 
@@ -94,7 +94,7 @@ module RR
 
         it "raises error if passed a method name and a block" do
           lambda do
-            stub(@object, :foobar) {}
+            stub(@subject, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 
@@ -163,7 +163,7 @@ module RR
 
         it "raises error if passed a method name and a block" do
           lambda do
-            mock.proxy(@object, :foobar) {}
+            mock.proxy(@subject, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 
@@ -220,7 +220,7 @@ module RR
 
         it "raises error if passed a method name and a block" do
           lambda do
-            stub.proxy(@object, :foobar) {}
+            stub.proxy(@subject, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 
@@ -280,7 +280,7 @@ module RR
 
         it "raises error if passed a method name and a block" do
           lambda do
-            do_not_allow(@object, :foobar) {}
+            do_not_allow(@subject, :foobar) {}
           end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
 

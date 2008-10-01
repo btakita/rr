@@ -2,11 +2,12 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
 module RR
   describe DoubleInjection do
+    attr_reader :subject, :method_name, :double_injection
     class << self
       define_method("sets up object and method_name") do
         it "sets up object and method_name" do
-          @double_injection.object.should === @object
-          @double_injection.method_name.should == @method_name.to_sym
+          double_injection.subject.should === subject
+          double_injection.method_name.should == method_name.to_sym
         end
       end
     end
@@ -16,10 +17,10 @@ module RR
         send("sets up object and method_name")
 
         before do
-          @object = Object.new
+          @subject = Object.new
           @method_name = :foobar
-          @object.methods.should_not include(@method_name.to_s)
-          @double_injection = DoubleInjection.new(@object, @method_name)
+          subject.methods.should_not include(method_name.to_s)
+          @double_injection = DoubleInjection.new(subject, method_name)
         end
       end
 
@@ -27,10 +28,10 @@ module RR
         send("sets up object and method_name")
 
         before do
-          @object = Object.new
+          @subject = Object.new
           @method_name = 'foobar'
-          @object.methods.should_not include(@method_name)
-          @double_injection = DoubleInjection.new(@object, @method_name)
+          subject.methods.should_not include(method_name)
+          @double_injection = DoubleInjection.new(subject, method_name)
         end
       end
 
@@ -38,14 +39,14 @@ module RR
         send("sets up object and method_name")
 
         before do
-          @object = Object.new
+          @subject = Object.new
           @method_name = :foobar
-          @object.methods.should_not include(@method_name.to_s)
-          @double_injection = DoubleInjection.new(@object, @method_name)
+          subject.methods.should_not include(method_name.to_s)
+          @double_injection = DoubleInjection.new(subject, method_name)
         end
 
         it "object does not have original method" do
-          @double_injection.object_has_original_method?.should be_false
+          double_injection.object_has_original_method?.should be_false
         end
       end
 
@@ -53,14 +54,14 @@ module RR
         send("sets up object and method_name")
 
         before do
-          @object = Object.new
+          @subject = Object.new
           @method_name = :to_s
-          @object.methods.should include(@method_name.to_s)
-          @double_injection = DoubleInjection.new(@object, @method_name)
+          subject.methods.should include(method_name.to_s)
+          @double_injection = DoubleInjection.new(subject, method_name)
         end
 
         it "has a original_method" do
-          @double_injection.object_has_original_method?.should be_true
+          double_injection.object_has_original_method?.should be_true
         end
       end
 
@@ -68,9 +69,9 @@ module RR
         send("sets up object and method_name")
 
         before do
-          @object = Object.new
+          @subject = Object.new
           @method_name = '=='
-          @double_injection = DoubleInjection.new(@object, @method_name)
+          @double_injection = DoubleInjection.new(subject, method_name)
         end
       end
     end

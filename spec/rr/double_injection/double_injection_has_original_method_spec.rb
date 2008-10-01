@@ -3,9 +3,9 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 module RR
   describe DoubleInjection, "#object_has_original_method?" do
     before do
-      @object = Object.new
+      @subject = Object.new
       @method_name = :to_s
-      @double_injection = DoubleInjection.new(@object, @method_name)
+      @double_injection = DoubleInjection.new(@subject, @method_name)
       class << @double_injection
         public :original_method_name
       end
@@ -18,10 +18,10 @@ module RR
 
     it "returns true when respond_to is true and methods include method" do
       @double_injection.bind
-      def @object.methods
+      def @subject.methods
         [:__rr_original_to_s]
       end
-      def @object.respond_to?(value)
+      def @subject.respond_to?(value)
         true
       end
 
@@ -30,10 +30,10 @@ module RR
 
     it "returns true when respond_to is true and methods do not include method" do
       @double_injection.bind
-      def @object.methods
+      def @subject.methods
         []
       end
-      def @object.respond_to?(value)
+      def @subject.respond_to?(value)
         true
       end
 
@@ -42,10 +42,10 @@ module RR
 
     it "returns false when respond_to is false and methods do not include method" do
       @double_injection.bind
-      def @object.methods
+      def @subject.methods
         []
       end
-      def @object.respond_to?(value)
+      def @subject.respond_to?(value)
         false
       end
 

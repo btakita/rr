@@ -3,13 +3,17 @@
 module RR
   module Expectations
     describe TimesCalledExpectation, :shared => true do
-      attr_reader :space, :object, :method_name, :double_injection, :double, :expectation
+      attr_reader :space, :subject, :method_name, :double_injection, :double, :double_definition
       before do
         @space = Space.new
-        @object = Object.new
+        @subject = Object.new
         @method_name = :foobar
-        @double_injection = space.double_injection(object, method_name)
-        @double = Double.new(double_injection)
+        @double_injection = space.double_injection(subject, method_name)
+        @double_definition = DoubleDefinitions::DoubleDefinition.new(
+          DoubleDefinitions::DoubleDefinitionCreator.new,
+          subject
+        )
+        @double = new_double(double_injection)
         double.with_any_args
       end
 

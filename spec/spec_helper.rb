@@ -18,3 +18,12 @@ describe "Swapped Space", :shared => true do
     RR::Space.instance = @original_space
   end
 end
+
+module Spec::Example::ExampleMethods
+  def new_double(double_injection=double_injection, double_definition=RR::DoubleDefinitions::DoubleDefinition.new(creator = RR::DoubleDefinitions::DoubleDefinitionCreator.new, subject))
+    RR::Double.new(
+      double_injection,
+      double_definition
+    )
+  end
+end
