@@ -46,19 +46,6 @@ module RR
               expectation.should_not be_wildcard_match(:not_a_string)
             end
           end
-
-          context "when passed-in argument is an exact match" do
-            it "returns true" do
-              expectation.should be_wildcard_match(is_a(String))
-            end
-          end
-
-          context "when not passed correct number of arguments" do
-            it "returns false" do
-              expectation.should_not be_wildcard_match()
-              expectation.should_not be_wildcard_match("one", "two")
-            end
-          end
         end
       end
     end

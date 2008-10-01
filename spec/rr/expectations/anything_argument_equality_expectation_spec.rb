@@ -28,23 +28,6 @@ module RR
             end
           end
         end
-
-        describe "#wildcard_match?" do
-          context "when passed a String" do
-            context "when passed correct number of arguments" do
-              it "returns true" do
-                expectation.should be_wildcard_match(Object.new)
-              end
-            end
-
-            context "when not passed correct number of arguments" do
-              it "returns false" do
-                expectation.should_not be_wildcard_match()
-                expectation.should_not be_wildcard_match(Object.new, Object.new)
-              end
-            end
-          end
-        end
       end
     end
   end

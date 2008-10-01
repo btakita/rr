@@ -38,19 +38,30 @@ module RR
       end
 
       describe "#wildcard_match?" do
-        it "returns false when not exact match" do
-          expectation = ArgumentEqualityExpectation.new(1)
-          expectation.should_not be_wildcard_match(1, 2, 3)
-          expectation.should_not be_wildcard_match("whatever")
-          expectation.should_not be_wildcard_match("whatever", "else")
+        context "when not an exact match" do
+          it "returns false" do
+            expectation = ArgumentEqualityExpectation.new(1)
+            expectation.should_not be_wildcard_match(1, 2, 3)
+            expectation.should_not be_wildcard_match("whatever")
+            expectation.should_not be_wildcard_match("whatever", "else")
+          end
         end
 
-        it "returns true when exact match" do
-          expectation = ArgumentEqualityExpectation.new(1, 2)
-          expectation.should be_wildcard_match(1, 2)
-          expectation.should_not be_wildcard_match(1)
-          expectation.should_not be_wildcard_match("whatever", "else")
+        context "when an exact match" do
+          it "returns true" do
+            expectation = ArgumentEqualityExpectation.new(1, 2)
+            expectation.should be_wildcard_match(1, 2)
+            expectation.should_not be_wildcard_match(1)
+            expectation.should_not be_wildcard_match("whatever", "else")
+          end
         end
+
+        context "when not passed correct number of arguments" do
+          it "returns false" do
+            expectation.should_not be_wildcard_match()
+            expectation.should_not be_wildcard_match(Object.new, Object.new)
+          end
+        end        
       end
 
       describe "Functional spec" do
@@ -113,6 +124,5 @@ module RR
 
       end
     end
-
   end
 end
