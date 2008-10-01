@@ -2,46 +2,59 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
 module RR
   module Expectations
-    describe ArgumentEqualityExpectation, "with numeric argument" do
-      attr_reader :expectation
+    describe ArgumentEqualityExpectation do
+      context "with numeric matcher" do
+        attr_reader :expectation
 
-      before do
-        @expectation = ArgumentEqualityExpectation.new(numeric)
-      end
-
-      describe "#exact_match?" do
-        it "returns true when passed in an IsA module" do
-          expectation.should be_exact_match(WildcardMatchers::Numeric.new)
+        before do
+          @expectation = ArgumentEqualityExpectation.new(numeric)
         end
 
-        it "returns false otherwise" do
-          expectation.should_not be_exact_match("hello")
-          expectation.should_not be_exact_match(:hello)
-          expectation.should_not be_exact_match(1)
-          expectation.should_not be_exact_match(nil)
-          expectation.should_not be_exact_match()
-        end
-      end
+        describe "#exact_match?" do
+          context "when passed a Numeric matcher" do
+            it "returns true" do
+              expectation.should be_exact_match(WildcardMatchers::Numeric.new)
+            end
+          end
 
-      describe "#wildcard_match?" do
-        it "returns true when passed a Numeric" do
-          expectation.should be_wildcard_match(99)
-        end
-
-        it "returns false when not passed a Numeric" do
-          expectation.should_not be_wildcard_match(:not_a_numeric)
-        end
-
-        it "returns true when an exact match" do
-          expectation.should be_wildcard_match(numeric)
+          context "when not passed a Numeric matcher" do
+            it "returns false" do
+              expectation.should_not be_exact_match("hello")
+              expectation.should_not be_exact_match(:hello)
+              expectation.should_not be_exact_match(1)
+              expectation.should_not be_exact_match(nil)
+              expectation.should_not be_exact_match()
+            end
+          end
         end
 
-        it "returns false when not passed correct number of arguments" do
-          expectation.should_not be_wildcard_match()
-          expectation.should_not be_wildcard_match(1, 2)
+        describe "#wildcard_match?" do
+          context "when passed a Numeric" do
+            it "returns true" do
+              expectation.should be_wildcard_match(99)
+            end
+          end
+
+          context "when not passed a Numeric" do
+            it "returns false" do
+              expectation.should_not be_wildcard_match(:not_a_numeric)
+            end
+          end
+
+          context "when passed-in argument is an exact match" do
+            it "returns true" do
+              expectation.should be_wildcard_match(numeric)
+            end
+          end
+
+          context "when not passed correct number of arguments" do
+            it "returns false" do
+              expectation.should_not be_wildcard_match()
+              expectation.should_not be_wildcard_match(1, 2)
+            end
+          end
         end
       end
     end
-
   end
 end

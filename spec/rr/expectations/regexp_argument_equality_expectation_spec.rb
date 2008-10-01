@@ -11,22 +11,29 @@ module RR
         end
 
         describe "#exact_match?" do
-          it "returns true when passed in an Regexp matcher with the same argument list" do
-            expectation.should be_exact_match(/abc/)
+          context "when passed a Regexp matcher with the same argument list" do
+            it "returns true" do
+              expectation.should be_exact_match(/abc/)
+            end
           end
 
-          it "returns false when passed in an Regexp matcher with a different argument list" do
-            expectation.should_not be_exact_match(/def/)
+          context "when passed a Regexp matcher with a different argument list" do
+            it "returns false" do
+              expectation.should_not be_exact_match(/def/)
+            end
           end
 
-          it "returns false otherwise" do
-            expectation.should_not be_exact_match("abc")
-            expectation.should_not be_exact_match(:hello)
-            expectation.should_not be_exact_match(1)
-            expectation.should_not be_exact_match(nil)
-            expectation.should_not be_exact_match(true)
-            expectation.should_not be_exact_match()
+          context "when not passed a Regexp matcher" do
+            it "returns false" do
+              expectation.should_not be_exact_match("abc")
+              expectation.should_not be_exact_match(:hello)
+              expectation.should_not be_exact_match(1)
+              expectation.should_not be_exact_match(nil)
+              expectation.should_not be_exact_match(true)
+              expectation.should_not be_exact_match()
+            end
           end
+
         end
 
         describe "#wildcard_match?" do
@@ -46,25 +53,35 @@ module RR
             expectation = ArgumentEqualityExpectation.new(/abc/)
           end
 
-          it "returns true when string matches the regexp" do
-            expectation.should be_wildcard_match("Tabcola")
+          context "when passed-in String matches the Regexp" do
+            it "returns true" do
+              expectation.should be_wildcard_match("Tabcola")
+            end
           end
 
-          it "returns false when string does not match the regexp" do
-            expectation.should_not be_wildcard_match("no match here")
+          context "when passed-in String does not match the Regexp" do
+            it "returns false" do
+              expectation.should_not be_wildcard_match("no match here")
+            end
           end
 
-          it "returns true when an exact match" do
-            expectation.should be_wildcard_match(/abc/)
+          context "when passed-in argument is an exact match" do
+            it "returns true" do
+              expectation.should be_wildcard_match(/abc/)
+            end
           end
 
-          it "returns false when not an exact match" do
-            expectation.should_not be_wildcard_match(/def/)
+          context "when passed-in argument is not an exact match" do
+            it "returns false" do
+              expectation.should_not be_wildcard_match(/def/)
+            end
           end
 
-          it "returns false when not passed correct number of arguments" do
-            expectation.should_not be_wildcard_match()
-            expectation.should_not be_wildcard_match('abc', 'abc')
+          context "when not passed correct number of arguments" do
+            it "returns false" do
+              expectation.should_not be_wildcard_match()
+              expectation.should_not be_wildcard_match('abc', 'abc')
+            end
           end
         end
       end

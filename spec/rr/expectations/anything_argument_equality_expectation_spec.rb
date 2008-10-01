@@ -9,28 +9,40 @@ module RR
           @expectation = ArgumentEqualityExpectation.new(anything)
         end
 
-        describe "#exact_match? with anything argument" do
-          it "returns true when passed in an Anything module" do
-            expectation.should be_exact_match(WildcardMatchers::Anything.new)
-          end
+        describe "#exact_match?" do
+          context "with anything argument" do
+            context "when passed an Anything matcher" do
+              it "returns true" do
+                expectation.should be_exact_match(WildcardMatchers::Anything.new)
+              end
+            end
 
-          it "returns false otherwise" do
-            expectation.should_not be_exact_match("hello")
-            expectation.should_not be_exact_match(:hello)
-            expectation.should_not be_exact_match(1)
-            expectation.should_not be_exact_match(nil)
-            expectation.should_not be_exact_match()
+            context "when not passed an Anything matcher" do
+              it "returns false" do
+                expectation.should_not be_exact_match("hello")
+                expectation.should_not be_exact_match(:hello)
+                expectation.should_not be_exact_match(1)
+                expectation.should_not be_exact_match(nil)
+                expectation.should_not be_exact_match()
+              end
+            end
           end
         end
 
-        describe "#wildcard_match? with is_a String argument" do
-          it "returns true when passed correct number of arguments" do
-            expectation.should be_wildcard_match(Object.new)
-          end
+        describe "#wildcard_match?" do
+          context "when passed a String" do
+            context "when passed correct number of arguments" do
+              it "returns true" do
+                expectation.should be_wildcard_match(Object.new)
+              end
+            end
 
-          it "returns false when not passed correct number of arguments" do
-            expectation.should_not be_wildcard_match()
-            expectation.should_not be_wildcard_match(Object.new, Object.new)
+            context "when not passed correct number of arguments" do
+              it "returns false" do
+                expectation.should_not be_wildcard_match()
+                expectation.should_not be_wildcard_match(Object.new, Object.new)
+              end
+            end
           end
         end
       end
