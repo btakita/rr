@@ -12,6 +12,7 @@ module RR
         arguments.each_with_index do |arg, index|
           return false unless equality_match(@expected_arguments[index], arg)
         end
+        true
       end
 
       def wildcard_match?(*arguments)
@@ -24,7 +25,7 @@ module RR
             return false unless equality_match(expected_argument, arg)
           end
         end
-        return true
+        true
       end
 
       def ==(other)
