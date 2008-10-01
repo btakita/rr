@@ -11,39 +11,53 @@ module RR
         end
 
         describe "#exact_match?" do
-          it "returns true when passed in an IsA module" do
-            expectation.should be_exact_match(WildcardMatchers::IsA.new(String))
+          context "when passed an IsA matcher with the same Module argument" do
+            it "returns true" do
+              expectation.should be_exact_match(WildcardMatchers::IsA.new(String))
+            end
           end
 
-          it "returns false when passed in an IsA object with a different module" do
-            expectation.should_not be_exact_match(WildcardMatchers::IsA.new(Integer))
+          context "when passed an IsA matcher with a different module" do
+            it "returns false" do
+              expectation.should_not be_exact_match(WildcardMatchers::IsA.new(Integer))
+            end
           end
 
-          it "returns false otherwise" do
-            expectation.should_not be_exact_match("hello")
-            expectation.should_not be_exact_match(:hello)
-            expectation.should_not be_exact_match(1)
-            expectation.should_not be_exact_match(nil)
-            expectation.should_not be_exact_match()
+          context "when not passed an IsA matcher" do
+            it "returns false otherwise" do
+              expectation.should_not be_exact_match("hello")
+              expectation.should_not be_exact_match(:hello)
+              expectation.should_not be_exact_match(1)
+              expectation.should_not be_exact_match(nil)
+              expectation.should_not be_exact_match()
+            end
           end
         end
 
         describe "#wildcard_match?" do
-          it "returns true when passed a String" do
-            expectation.should be_wildcard_match("Hello")
+          context "when passed an instance of the expected Module" do
+            it "returns true" do
+              expectation.should be_wildcard_match("Hello")
+            end
           end
 
-          it "returns false when not passed a String" do
-            expectation.should_not be_wildcard_match(:not_a_string)
+          context "when not passed an instance of the expected Module" do
+            it "returns false" do
+              expectation.should_not be_wildcard_match(:not_a_string)
+            end
           end
 
-          it "returns true when an exact match" do
-            expectation.should be_wildcard_match(is_a(String))
+          context "when passed-in argument is an exact match" do
+            it "returns true" do
+              expectation.should be_wildcard_match(is_a(String))
+            end
           end
 
-          it "returns false when not passed correct number of arguments" do
-            expectation.should_not be_wildcard_match()
-            expectation.should_not be_wildcard_match("one", "two")
+          context "when not passed correct number of arguments" do
+            it "returns false" do
+              expectation.should_not be_wildcard_match()
+              expectation.should_not be_wildcard_match("one", "two")
+            end
           end
         end
       end

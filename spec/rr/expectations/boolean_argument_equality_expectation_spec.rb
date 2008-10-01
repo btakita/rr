@@ -11,17 +11,21 @@ module RR
         end
 
         describe "#exact_match?" do
-          it "returns true when passed in an IsA module" do
-            expectation.should be_exact_match(WildcardMatchers::Boolean.new)
+          context "when passed a Boolean matcher" do
+            it "returns true" do
+              expectation.should be_exact_match(WildcardMatchers::Boolean.new)
+            end            
           end
 
-          it "returns false otherwise" do
-            expectation.should_not be_exact_match("hello")
-            expectation.should_not be_exact_match(:hello)
-            expectation.should_not be_exact_match(1)
-            expectation.should_not be_exact_match(nil)
-            expectation.should_not be_exact_match(true)
-            expectation.should_not be_exact_match()
+          context "when not passed a Boolean matcher" do
+            it "returns false" do
+              expectation.should_not be_exact_match("hello")
+              expectation.should_not be_exact_match(:hello)
+              expectation.should_not be_exact_match(1)
+              expectation.should_not be_exact_match(nil)
+              expectation.should_not be_exact_match(true)
+              expectation.should_not be_exact_match()
+            end
           end
         end
 
@@ -30,22 +34,30 @@ module RR
             expectation = ArgumentEqualityExpectation.new(boolean)
           end
 
-          it "returns true when passed a Boolean" do
-            expectation.should be_wildcard_match(true)
-            expectation.should be_wildcard_match(false)
+          context "when passed a Boolean" do
+            it "returns true" do
+              expectation.should be_wildcard_match(true)
+              expectation.should be_wildcard_match(false)
+            end
           end
 
-          it "returns false when not passed a Boolean" do
-            expectation.should_not be_wildcard_match(:not_a_boolean)
+          context "when not passed a Boolean" do
+            it "returns false" do
+              expectation.should_not be_wildcard_match(:not_a_boolean)
+            end
           end
 
-          it "returns true when an exact match" do
-            expectation.should be_wildcard_match(boolean)
+          context "when an exact match" do
+            it "returns true" do
+              expectation.should be_wildcard_match(boolean)
+            end
           end
 
-          it "returns false when not passed correct number of arguments" do
-            expectation.should_not be_wildcard_match()
-            expectation.should_not be_wildcard_match(true, false)
+          context "when not passed correct number of arguments" do
+            it "returns false" do
+              expectation.should_not be_wildcard_match()
+              expectation.should_not be_wildcard_match(true, false)
+            end
           end
         end
       end
