@@ -6,8 +6,6 @@ module RR
     attr_reader :space, :subject, :method_name, :double_injection
 
     before do
-      @space = Space.new
-      Space.instance = space
       @subject = Object.new
     end
 

@@ -4,8 +4,8 @@ module RR
   module Expectations
     describe TimesCalledExpectation, :shared => true do
       attr_reader :space, :subject, :method_name, :double_injection, :double, :double_definition
+      it_should_behave_like "Swapped Space"
       before do
-        @space = Space.new
         @subject = Object.new
         @method_name = :foobar
         @double_injection = space.double_injection(subject, method_name)
