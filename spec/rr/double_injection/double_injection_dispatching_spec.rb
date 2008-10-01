@@ -3,8 +3,8 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 module RR
   describe DoubleInjection do
     attr_reader :space, :subject, :double_injection
+    it_should_behave_like "Swapped Space"
     before do
-      @space = Space.new
       @subject = Object.new
       subject.methods.should_not include(method_name.to_s)
       @double_injection = space.double_injection(subject, method_name)

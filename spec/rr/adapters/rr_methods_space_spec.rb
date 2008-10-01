@@ -5,21 +5,15 @@ module RR
     describe RRMethods, " Space interactions" do
       describe RRMethods, " space example" do
         attr_reader :space, :subject_1, :subject_2, :method_name
+        it_should_behave_like "Swapped Space"
         it_should_behave_like "RR::Adapters::RRMethods"
         before do
-          @old_space = Space.instance
-
-          @space = Space.new
-          Space.instance = @space
+          @space = Space.instance
           @subject_1 = Object.new
           @subject_2 = Object.new
           @method_name = :foobar
         end
 
-        after do
-          Space.instance = @old_space
-        end
-        
         describe RRMethods, "#verify" do
           it "#verify verifies and deletes the double_injections" do
             verifies_all_double_injections {verify}
