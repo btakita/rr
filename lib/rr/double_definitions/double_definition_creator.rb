@@ -107,7 +107,7 @@ module RR
           return_value
         end
 
-        builder = DoubleDefinitionBuilder.new(
+        builder = Builders::Builder.new(
           class_double.definition,
           [],
           class_handler
@@ -117,7 +117,7 @@ module RR
       end
 
       def transform
-        builder = DoubleDefinitionBuilder.new(@definition, @args, @handler)
+        builder = Builders::Builder.new(@definition, @args, @handler)
 
         verify_strategy
         builder.__send__(@core_strategy)
