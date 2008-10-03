@@ -45,7 +45,6 @@ module RR
         end
         add_strategy(subject, method_name, definition_eval_block) do
           builder.use_instance_of_strategy
-          return self if subject === NO_SUBJECT
         end
       end
 
