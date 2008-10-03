@@ -22,7 +22,7 @@ module RR
           @definition
         end
 
-        def set_core_strategy(strategy)
+        def core_strategy=(strategy)
           verify_no_core_strategy
           @core_strategy = strategy
           proxy_when_dont_allow_error if strategy == :dont_allow && @using_proxy_strategy
@@ -68,7 +68,7 @@ module RR
           end
 
           instance_of_subject_builder = Builders::Builder.new(creator)
-          instance_of_subject_builder.set_core_strategy(:stub)
+          instance_of_subject_builder.core_strategy = :stub
           instance_of_subject_builder.use_proxy_strategy
           instance_of_subject_builder.build(subject, :new, [], class_handler)
         end        
