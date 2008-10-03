@@ -15,6 +15,7 @@ module RR
 
         def build(subject, method_name, args, handler)
           @subject, @method_name, @args, @handler = subject, method_name, args, handler
+          @definition = DoubleDefinition.new(creator, subject)
           setup_double
           verify_strategy
           send(@core_strategy)
@@ -48,7 +49,6 @@ module RR
 
         protected
         def setup_double
-          @definition = DoubleDefinition.new(creator, subject)
           if using_instance_of_strategy?
             setup_doubles_instances_of_subject(method_name)
           else
