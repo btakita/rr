@@ -26,6 +26,7 @@ module RR
           verify_no_core_strategy
           @core_strategy = strategy
           proxy_when_dont_allow_error if strategy == :dont_allow && @using_proxy_strategy
+          strategy
         end
 
         def use_proxy_strategy
