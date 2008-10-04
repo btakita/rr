@@ -19,18 +19,18 @@ module RR
         verify_strategy
         verification_strategy.call(definition, args, handler)
         using_proxy_strategy?? proxy : reimplementation
-        @definition
+        definition
       end
 
       def verification_strategy=(verification_strategy)
         verify_no_verification_strategy
         @verification_strategy = verification_strategy
-        proxy_when_dont_allow_error if verification_strategy.is_a?(Strategies::DontAllow) && @using_proxy_strategy
+        proxy_when_dont_allow_error if verification_strategy.is_a?(Strategies::Verification::DontAllow) && @using_proxy_strategy
         verification_strategy
       end
 
       def use_proxy_strategy
-        proxy_when_dont_allow_error if verification_strategy.is_a?(Strategies::DontAllow)
+        proxy_when_dont_allow_error if verification_strategy.is_a?(Strategies::Verification::DontAllow)
         @using_proxy_strategy = true
       end
 
@@ -68,17 +68,9 @@ module RR
         end
 
         instance_of_subject_builder = Builder.new(creator)
-        instance_of_subject_builder.verification_strategy = Strategies::Stub.new
+        instance_of_subject_builder.verification_strategy = Strategies::Verification::Stub.new
         instance_of_subject_builder.use_proxy_strategy
         instance_of_subject_builder.build(subject, :new, [], class_handler)
-      end
-
-      def permissive_argument
-        if @args.empty?
-          @definition.with_any_args
-        else
-          @definition.with(*@args)
-        end
       end
 
       def reimplementation
