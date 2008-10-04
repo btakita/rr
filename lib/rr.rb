@@ -23,6 +23,8 @@ require "#{dir}/rr/double_definitions/strategies/verification/stub"
 require "#{dir}/rr/double_definitions/strategies/verification/dont_allow"
 require "#{dir}/rr/double_definitions/strategies/implementation/reimplementation"
 require "#{dir}/rr/double_definitions/strategies/implementation/proxy"
+require "#{dir}/rr/double_definitions/strategies/scope/instance"
+require "#{dir}/rr/double_definitions/strategies/scope/instance_of_class"
 require "#{dir}/rr/double_matches"
 
 require "#{dir}/rr/expectations/argument_equality_expectation"

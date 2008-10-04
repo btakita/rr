@@ -2,9 +2,11 @@ module RR
   module DoubleDefinitions
     module Strategies
       class Strategy
-        attr_reader :definition, :args, :handler
-        def call(definition, args, handler)
-          @definition, @args, @handler = definition, args, handler
+        attr_reader :definition, :method_name, :args, :handler
+        include Space::Reader
+        
+        def call(definition, method_name, args, handler)
+          @definition, @method_name, @args, @handler = definition, method_name, args, handler
           do_call
         end
 
@@ -26,7 +28,15 @@ module RR
         end
 
         def reimplementation
-          definition.returns(&@handler)
+          definition.returns(&handler)
+        end
+
+        def subject
+          definition.subject
+        end
+
+        def double_definition_creator
+          definition.double_definition_creator
         end
       end
     end
