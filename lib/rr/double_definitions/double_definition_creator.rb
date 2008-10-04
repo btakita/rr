@@ -12,19 +12,19 @@ module RR
 
       def mock(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
         add_strategy(subject, method_name, definition_eval_block) do
-          builder.core_strategy = :mock
+          builder.verification_strategy = Strategies::Mock.new
         end
       end
 
       def stub(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
         add_strategy(subject, method_name, definition_eval_block) do
-          builder.core_strategy = :stub
+          builder.verification_strategy = Strategies::Stub.new
         end
       end
 
       def dont_allow(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
         add_strategy(subject, method_name, definition_eval_block) do
-          builder.core_strategy = :dont_allow
+          builder.verification_strategy = Strategies::DontAllow.new
         end
       end
       alias_method :do_not_allow, :dont_allow
