@@ -7,7 +7,6 @@ module RR
 
       def initialize(double_definition_creator)
         @double_definition_creator = double_definition_creator
-        @using_instance_of_strategy = nil
         @verification_strategy = nil
         @implementation_strategy = Strategies::Implementation::Reimplementation.new
         @scope_strategy = Strategies::Scope::Instance.new
