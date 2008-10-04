@@ -15,10 +15,9 @@ module RR
               return_value
             end
 
-            instance_of_subject_builder = Builder.new(double_definition_creator)
-            instance_of_subject_builder.verification_strategy = Strategies::Verification::Stub.new
-            instance_of_subject_builder.implementation_strategy = Strategies::Implementation::Proxy.new
-            instance_of_subject_builder.build(subject, :new, [], class_handler)
+            instance_of_subject_creator = DoubleDefinitionCreator.new
+            instance_of_subject_creator.stub.proxy
+            instance_of_subject_creator.create(subject, :new, &class_handler)
           end
         end
       end

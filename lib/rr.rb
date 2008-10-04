@@ -16,7 +16,6 @@ require "#{dir}/rr/double_definitions/double_definition_creator"
 
 require "#{dir}/rr/double"
 require "#{dir}/rr/double_definitions/double_definition"
-require "#{dir}/rr/double_definitions/builder"
 require "#{dir}/rr/double_definitions/strategies/strategy"
 require "#{dir}/rr/double_definitions/strategies/verification/mock"
 require "#{dir}/rr/double_definitions/strategies/verification/stub"
