@@ -1,7 +1,7 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinitionCreator # :nodoc
-      attr_reader :builder, :subject, :method_name, :args, :handler, :definition, :verification_strategy, :implementation_strategy, :scope_strategy
+      attr_reader :subject, :method_name, :args, :handler, :definition, :verification_strategy, :implementation_strategy, :scope_strategy
       NO_SUBJECT = Object.new
 
       include Space::Reader
