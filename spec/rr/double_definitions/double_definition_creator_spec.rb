@@ -59,14 +59,11 @@ module RR
 
         context "when passed a second argument" do
           it "creates a mock Double for method" do
-            creates_double_with_method_name( creator.mock(subject, :foobar) )
-          end
-
-          def creates_double_with_method_name(double)
-            double.with(1, 2) {:baz}
-            double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-            double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-            double.argument_expectation.expected_arguments.should == [1, 2]
+            double_definition = creator.mock(subject, :foobar)
+            double_definition.with(1, 2) {:baz}
+            double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+            double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+            double_definition.argument_expectation.expected_arguments.should == [1, 2]
 
             subject.foobar(1, 2).should == :baz
           end
@@ -82,13 +79,10 @@ module RR
 
         context "when passed a second argument" do
           it "creates a stub Double for method when passed a second argument" do
-            creates_double_with_method_name(creator.stub(subject, :foobar))
-          end
-
-          def creates_double_with_method_name(double)
-            double.with(1, 2) {:baz}
-            double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-            double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+            double_definition = creator.stub(subject, :foobar)
+            double_definition.with(1, 2) {:baz}
+            double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+            double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
             subject.foobar(1, 2).should == :baz
           end
         end
@@ -110,26 +104,11 @@ module RR
 
         context "when passed a second argument_expectation" do
           it "creates a mock Double for method" do
-            creates_double_with_method_name(creator.dont_allow(subject, :foobar))
-          end
-
-          it "creates a mock Double for method" do
-            creates_double_with_method_name(creator.dont_call(subject, :foobar))
-          end
-
-          it "creates a mock Double for method" do
-            creates_double_with_method_name(creator.do_not_allow(subject, :foobar))
-          end
-
-          it "creates a mock Double for method" do
-            creates_double_with_method_name(creator.dont_allow(subject, :foobar))
-          end
-
-          def creates_double_with_method_name(double)
-            double.with(1, 2)
-            double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
-            double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-            double.argument_expectation.expected_arguments.should == [1, 2]
+            double_definition = creator.dont_allow(subject, :foobar)
+            double_definition.with(1, 2)
+            double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
+            double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+            double_definition.argument_expectation.expected_arguments.should == [1, 2]
 
             lambda do
               subject.foobar(1, 2)
@@ -158,18 +137,10 @@ module RR
 
         context "when passed a second argument" do
           it "creates a proxy Double for method" do
-            double = creator.stub.proxy(subject, :foobar)
-            double.with(1, 2) {:baz}
-            double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-            double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-            subject.foobar(1, 2).should == :baz
-          end
-
-          it "creates a proxy Double for method" do
-            double = creator.stub.proxy(subject, :foobar)
-            double.with(1, 2) {:baz}
-            double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-            double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+            double_definition = creator.stub.proxy(subject, :foobar)
+            double_definition.with(1, 2) {:baz}
+            double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+            double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
             subject.foobar(1, 2).should == :baz
           end
         end
@@ -185,10 +156,10 @@ module RR
         context "when passed a second argument" do
           it "creates a proxy Double for method" do
             klass = Class.new
-            double = creator.stub.instance_of(klass, :foobar)
-            double.with(1, 2) {:baz}
-            double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-            double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+            double_definition = creator.stub.instance_of(klass, :foobar)
+            double_definition.with(1, 2) {:baz}
+            double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+            double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
             klass.new.foobar(1, 2).should == :baz
           end
         end
@@ -199,31 +170,22 @@ module RR
           @klass = Class.new
         end
 
-        it "returns a DoubleDefinitionCreator when passed no arguments" do
-          instance_of.instance_of.should be_instance_of(DoubleDefinitionCreator)
+        context "when passed no arguments" do
+          it "returns a DoubleDefinitionCreator" do
+            instance_of.instance_of.should be_instance_of(DoubleDefinitionCreator)
+          end
         end
 
-        it "creates a instance_of Double for method when passed a second argument" do
-          creates_double_with_method_name(instance_of.mock(@klass, :foobar))
-        end
+        context "when passed a second argument" do
+          it "creates a instance_of Double for method" do
+            double_definition = instance_of.mock(@klass, :foobar)
+            double_definition.with(1, 2) {:baz}
+            double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+            double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+            double_definition.argument_expectation.expected_arguments.should == [1, 2]
 
-        it "creates a instance_of Double for method when passed a second argument with rr_instance_of" do
-          creates_double_with_method_name(rr_instance_of.mock(@klass, :foobar))
-        end
-
-        it "raises error if passed a method name and a block" do
-          lambda do
-            instance_of.mock(@klass, :foobar) {}
-          end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-        end
-
-        def creates_double_with_method_name(double)
-          double.with(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          @klass.new.foobar(1, 2).should == :baz
+            @klass.new.foobar(1, 2).should == :baz
+          end
         end
       end
 
