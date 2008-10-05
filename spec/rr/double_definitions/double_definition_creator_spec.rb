@@ -24,45 +24,20 @@ module RR
                 end
               end
 
-              context "when passed Kernel" do
-                it "returns a DoubleDefinitionCreatorProxy" do
-                  double = call_strategy(Kernel).foobar
-                  double.should be_instance_of(DoubleDefinition)
-                end
-              end
-
               context "when passed a method name and a block" do
-                it "raises error" do
+                it "raises an ArgumentError" do
                   lambda do
                     call_strategy(subject, :foobar) {}
                   end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
                 end
               end
 
-              context "when using mock strategy" do
-                it "raises error" do
+              context "when already using an ImplementationStrategy" do
+                it "raises a DoubleDefinitionError" do
                   creator.mock
                   lambda do
                     call_strategy
                   end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a mock strategy")
-                end
-              end
-
-              context "when using stub strategy" do
-                it "raises error" do
-                  creator.stub
-                  lambda do
-                    call_strategy
-                  end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a stub strategy")
-                end
-              end
-
-              context "when using dont_allow strategy" do
-                it "raises error" do
-                  creator.dont_allow
-                  lambda do
-                    call_strategy
-                  end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a dont_allow strategy")
                 end
               end
             end
