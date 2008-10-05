@@ -57,15 +57,13 @@ module RR
           @strategy_method_name = :mock
         end
 
-        context "when passed a second argument" do
+        context "when passed a method_name argument" do
           it "creates a mock Double for method" do
-            double_definition = creator.mock(subject, :foobar)
-            double_definition.with(1, 2) {:baz}
+            double_definition = creator.mock(subject, :foobar).returns {:baz}
             double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
             double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-            double_definition.argument_expectation.expected_arguments.should == [1, 2]
-
-            subject.foobar(1, 2).should == :baz
+            double_definition.argument_expectation.expected_arguments.should == []
+            subject.foobar.should == :baz
           end
         end
       end
@@ -77,13 +75,12 @@ module RR
           @strategy_method_name = :stub
         end
 
-        context "when passed a second argument" do
-          it "creates a stub Double for method when passed a second argument" do
-            double_definition = creator.stub(subject, :foobar)
-            double_definition.with(1, 2) {:baz}
+        context "when passed a method_name argument" do
+          it "creates a stub Double for method when passed a method_name argument" do
+            double_definition = creator.stub(subject, :foobar).returns {:baz}
             double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-            double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-            subject.foobar(1, 2).should == :baz
+            double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
+            subject.foobar.should == :baz
           end
         end
       end
@@ -102,19 +99,16 @@ module RR
           end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
         end
 
-        context "when passed a second argument_expectation" do
+        context "when passed a method_name argument_expectation" do
           it "creates a mock Double for method" do
             double_definition = creator.dont_allow(subject, :foobar)
-            double_definition.with(1, 2)
             double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
-            double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-            double_definition.argument_expectation.expected_arguments.should == [1, 2]
+            double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
 
             lambda do
-              subject.foobar(1, 2)
+              subject.foobar
             end.should raise_error(Errors::TimesCalledError)
-            reset
-            nil
+            RR.reset
           end
         end
       end
@@ -135,13 +129,12 @@ module RR
           end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
         end
 
-        context "when passed a second argument" do
+        context "when passed a method_name argument" do
           it "creates a proxy Double for method" do
-            double_definition = creator.stub.proxy(subject, :foobar)
-            double_definition.with(1, 2) {:baz}
+            double_definition = creator.stub.proxy(subject, :foobar).after_call {:baz}
             double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-            double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-            subject.foobar(1, 2).should == :baz
+            double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
+            subject.foobar.should == :baz
           end
         end
       end
@@ -153,14 +146,13 @@ module RR
           end.should raise_error(ArgumentError, "instance_of only accepts class objects")
         end
 
-        context "when passed a second argument" do
+        context "when passed a method_name argument" do
           it "creates a proxy Double for method" do
             klass = Class.new
-            double_definition = creator.stub.instance_of(klass, :foobar)
-            double_definition.with(1, 2) {:baz}
+            double_definition = creator.stub.instance_of(klass, :foobar).returns {:baz}
             double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-            double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-            klass.new.foobar(1, 2).should == :baz
+            double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
+            klass.new.foobar.should == :baz
           end
         end
       end
@@ -176,7 +168,7 @@ module RR
           end
         end
 
-        context "when passed a second argument" do
+        context "when passed a method_name argument" do
           it "creates a instance_of Double for method" do
             double_definition = instance_of.mock(@klass, :foobar)
             double_definition.with(1, 2) {:baz}
