@@ -244,10 +244,11 @@ module RR
 
     def yields!(block)
       if definition.yields_value
-        unless block
+        if block
+          block.call(*definition.yields_value)
+        else
           raise ArgumentError, "A Block must be passed into the method call when using yields"
         end
-        block.call(*definition.yields_value)
       end
     end
     protected :yields!
