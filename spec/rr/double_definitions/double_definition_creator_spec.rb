@@ -48,7 +48,6 @@ module RR
       attr_reader :creator, :subject, :space, :strategy_method_name
       it_should_behave_like "Swapped Space"
       before(:each) do
-        @space = Space.instance
         @subject = Object.new
         @creator = DoubleDefinitionCreator.new
       end

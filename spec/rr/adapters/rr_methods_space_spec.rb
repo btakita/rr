@@ -8,7 +8,6 @@ module RR
         it_should_behave_like "Swapped Space"
         it_should_behave_like "RR::Adapters::RRMethods"
         before do
-          @space = Space.instance
           @subject_1 = Object.new
           @subject_2 = Object.new
           @method_name = :foobar

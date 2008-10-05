@@ -5,7 +5,6 @@ module RR
     it_should_behave_like "Swapped Space"
     attr_reader :space, :subject, :double_injection, :definition, :definition_creator, :double
     before do
-      @space = Space.instance
       @subject = Object.new
       def subject.foobar(a, b)
         [b, a]
