@@ -5,52 +5,72 @@ module RR
     describe DoubleDefinitionCreator do
       class << self
         define_method("DoubleDefinitionCreator strategy definition") do
-          describe DoubleDefinitionCreator, " strategy definition" do
-            it "returns self when passing no args" do
-              creator.__send__(method_name).should === creator
-            end
+          describe DoubleDefinitionCreator do
+            describe "strategy definition" do
+              def call_strategy(*args, &block)
+                creator.__send__(strategy_method_name, *args, &block)
+              end
 
-            it "returns a DoubleDefinitionCreatorProxy when passed a subject" do
-              double = creator.__send__(method_name, subject).foobar
-              double.should be_instance_of(DoubleDefinition)
-            end
+              context "when passing no args" do
+                it "returns self" do
+                  call_strategy.should === creator
+                end
+              end
 
-            it "returns a DoubleDefinitionCreatorProxy when passed Kernel" do
-              double = creator.__send__(method_name, Kernel).foobar
-              double.should be_instance_of(DoubleDefinition)
-            end
+              context "when passed a subject" do
+                it "returns a DoubleDefinitionCreatorProxy" do
+                  double = call_strategy(subject).foobar
+                  double.should be_instance_of(DoubleDefinition)
+                end
+              end
 
-            it "raises error if passed a method name and a block" do
-              lambda do
-                creator.__send__(method_name, subject, :foobar) {}
-              end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-            end
+              context "when passed Kernel" do
+                it "returns a DoubleDefinitionCreatorProxy" do
+                  double = call_strategy(Kernel).foobar
+                  double.should be_instance_of(DoubleDefinition)
+                end
+              end
 
-            it "raises error when using mock strategy" do
-              creator.mock
-              lambda do
-                creator.__send__(method_name)
-              end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a mock strategy")
-            end
+              context "when passed a method name and a block" do
+                it "raises error" do
+                  lambda do
+                    call_strategy(subject, :foobar) {}
+                  end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
+                end
+              end
 
-            it "raises error when using stub strategy" do
-              creator.stub
-              lambda do
-                creator.__send__(method_name)
-              end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a stub strategy")
-            end
+              context "when using mock strategy" do
+                it "raises error" do
+                  creator.mock
+                  lambda do
+                    call_strategy
+                  end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a mock strategy")
+                end
+              end
 
-            it "raises error when using dont_allow strategy" do
-              creator.dont_allow
-              lambda do
-                creator.__send__(method_name)
-              end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a dont_allow strategy")
+              context "when using stub strategy" do
+                it "raises error" do
+                  creator.stub
+                  lambda do
+                    call_strategy
+                  end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a stub strategy")
+                end
+              end
+
+              context "when using dont_allow strategy" do
+                it "raises error" do
+                  creator.dont_allow
+                  lambda do
+                    call_strategy
+                  end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a dont_allow strategy")
+                end
+              end
             end
           end
         end
       end
 
-      attr_reader :creator, :subject, :space, :method_name
+      attr_reader :creator, :subject, :space, :strategy_method_name
       it_should_behave_like "Swapped Space"
       before(:each) do
         @space = Space.instance
@@ -62,7 +82,7 @@ module RR
         send("DoubleDefinitionCreator strategy definition")
 
         before do
-          @method_name = :mock
+          @strategy_method_name = :mock
         end
 
         it "sets up the RR mock call chain" do
@@ -98,7 +118,7 @@ module RR
           end
         end
 
-        context "when passed method_name and block" do
+        context "when passed strategy_method_name and block" do
           it "raises error" do
             lambda do
               @creator.mock(@subject, :foobar) {}
@@ -111,7 +131,7 @@ module RR
         send("DoubleDefinitionCreator strategy definition")
 
         before do
-          @method_name = :stub
+          @strategy_method_name = :stub
         end
 
         it "sets up the RR stub call chain" do
@@ -143,7 +163,7 @@ module RR
           subject.foobar(1, 2).should == :baz
         end
 
-        context "when passed method_name and block" do
+        context "when passed strategy_method_name and block" do
           it "raises error" do
             lambda do
               @creator.stub(@subject, :foobar) {}
@@ -156,7 +176,7 @@ module RR
         send("DoubleDefinitionCreator strategy definition")
 
         before do
-          @method_name = :dont_allow
+          @strategy_method_name = :dont_allow
         end
 
         it "raises error when proxied" do
@@ -226,7 +246,7 @@ module RR
           nil
         end
 
-        context "when passed method_name and block" do
+        context "when passed strategy_method_name and block" do
           it "raises error" do
             lambda do
               @creator.dont_allow(@subject, :foobar) {}
@@ -297,7 +317,7 @@ module RR
           double.block_callback_strategy.should == :after_call
         end
 
-        context "when passed method_name and block" do
+        context "when passed strategy_method_name and block" do
           it "raises error" do
             lambda do
               @creator.proxy(@subject, :foobar) {}
