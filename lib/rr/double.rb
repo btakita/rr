@@ -220,10 +220,10 @@ module RR
     #   def obj.foobar
     #     yield(1)
     #   end
-    #   mock(obj).method_name.proxy
+    #   mock(obj).method_name.implemented_by_original_method
     #   obj.foobar {|arg| puts arg} # puts 1
-    def proxy
-      definition.proxy
+    def implemented_by_original_method
+      definition.implemented_by_original_method
     end
 
     # Double#call calls the Double's implementation. The return

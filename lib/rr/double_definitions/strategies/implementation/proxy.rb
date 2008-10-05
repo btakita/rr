@@ -9,7 +9,7 @@ module RR
 
           protected
           def do_call
-            definition.proxy
+            definition.implemented_by_original_method
             definition.after_call(&handler) if handler
           end
         end
