@@ -59,7 +59,7 @@ module RR
           if no_subject?(subject)
             self
           elsif method_name
-            create(subject, method_name, &definition_eval_block)
+            create(subject, method_name)
           else
             DoubleDefinitionCreatorProxy.new(self, subject, &definition_eval_block)
           end
