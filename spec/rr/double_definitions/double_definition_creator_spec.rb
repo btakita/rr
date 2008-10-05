@@ -4,7 +4,7 @@ module RR
   module DoubleDefinitions
     describe DoubleDefinitionCreator do
       class << self
-        define_method("DoubleDefinitionCreator strategy definition") do
+        define_method("DoubleDefinitionCreator normal strategy definition") do
           describe "strategy definition" do
             def call_strategy(*args, &block)
               creator.__send__(strategy_method_name, *args, &block)
@@ -22,8 +22,8 @@ module RR
                 double.should be_instance_of(DoubleDefinition)
               end
             end
-
-            context "when passed a method name and a block" do
+            
+            context "when passed a method name and a definition_eval_block" do
               it "raises an ArgumentError" do
                 lambda do
                   call_strategy(subject, :foobar) {}
@@ -37,6 +37,54 @@ module RR
                 lambda do
                   call_strategy
                 end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a mock strategy")
+              end
+            end
+          end
+        end
+
+        define_method("DoubleDefinitionCreator ! strategy definition") do
+          describe "strategy definition" do
+            attr_reader :strategy_method_name
+            def call_strategy(*args, &definition_eval_block)
+              creator.__send__(strategy_method_name, *args, &definition_eval_block)
+            end
+
+            context "when not passed a method_name argument" do
+              it "returns a DoubleDefinitionCreatorProxy" do
+                call_strategy.should respond_to(:__subject__)
+              end
+
+              context "when passed a definition_eval_block argument" do
+                it "calls the definition_eval_block and passes in the DoubleDefinitionCreatorProxy" do
+                  passed_in_proxy = nil
+                  proxy = call_strategy do |proxy|
+                    passed_in_proxy = proxy
+                  end
+
+                  passed_in_proxy.should == proxy
+                end
+              end
+            end
+
+            context "when passed a method_name argument" do
+              it "returns a DoubleDefinition" do
+                double_definition = call_strategy(:foobar)
+                double_definition.class.should == DoubleDefinition
+              end
+
+              describe "the returned DoubleDefinition" do
+                it "has #subject set to an anonymous Object" do
+                  double_definition = call_strategy(:foobar)
+                  double_definition.subject.class.should == Object
+                end
+              end
+            end
+
+            context "when passed a method name and a definition_eval_block" do
+              it "raises an ArgumentError" do
+                lambda do
+                  call_strategy(:foobar) {}
+                end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
               end
             end
           end
@@ -55,7 +103,7 @@ module RR
           @strategy_method_name = :mock
         end
         
-        send("DoubleDefinitionCreator strategy definition")
+        send("DoubleDefinitionCreator normal strategy definition")
 
         context "when passed a method_name argument" do
           it "creates a mock Double for method" do
@@ -68,12 +116,27 @@ module RR
         end
       end
 
+      describe "#mock!" do
+        before do
+          @strategy_method_name = :mock!
+        end
+
+        send("DoubleDefinitionCreator ! strategy definition")
+
+        context "when passed a method_name argument" do
+          it "sets #verification_strategy to Mock" do
+            creator.mock!(:foobar)
+            creator.verification_strategy.class.should == Strategies::Verification::Mock
+          end
+        end
+      end
+
       describe "#stub" do
         before do
           @strategy_method_name = :stub
         end
         
-        send("DoubleDefinitionCreator strategy definition")
+        send("DoubleDefinitionCreator normal strategy definition")
 
         context "when passed a method_name argument" do
           it "creates a stub Double for method when passed a method_name argument" do
@@ -85,12 +148,27 @@ module RR
         end
       end
 
+      describe "#stub!" do
+        before do
+          @strategy_method_name = :stub!
+        end
+
+        send("DoubleDefinitionCreator ! strategy definition")
+
+        context "when passed a method_name argument" do
+          it "sets #verification_strategy to Stub" do
+            creator.stub!(:foobar)
+            creator.verification_strategy.class.should == Strategies::Verification::Stub
+          end
+        end
+      end
+
       describe "#dont_allow" do
         before do
           @strategy_method_name = :dont_allow
         end
         
-        send("DoubleDefinitionCreator strategy definition")
+        send("DoubleDefinitionCreator normal strategy definition")
 
         it "raises error when proxied" do
           creator.proxy
@@ -109,6 +187,21 @@ module RR
               subject.foobar
             end.should raise_error(Errors::TimesCalledError)
             RR.reset
+          end
+        end
+      end
+
+      describe "#dont_allow!" do
+        before do
+          @strategy_method_name = :dont_allow!
+        end
+
+        send("DoubleDefinitionCreator ! strategy definition")
+
+        context "when passed a method_name argument" do
+          it "sets #verification_strategy to DontAllow" do
+            creator.dont_allow!(:foobar)
+            creator.verification_strategy.class.should == Strategies::Verification::DontAllow
           end
         end
       end
