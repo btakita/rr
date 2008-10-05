@@ -24,16 +24,18 @@ module RR
     end
 
     describe "#double_injection" do
-      it "creates a new double_injection when existing subject == but not === with the same method name" do
-        subject_1 = []
-        subject_2 = []
-        (subject_1 === subject_2).should be_true
-        subject_1.__id__.should_not == subject_2.__id__
+      context "when existing subject == but not === with the same method name" do
+        it "creates a new DoubleInjection" do
+          subject_1 = []
+          subject_2 = []
+          (subject_1 === subject_2).should be_true
+          subject_1.__id__.should_not == subject_2.__id__
 
-        double_1 = space.double_injection(subject_1, :foobar)
-        double_2 = space.double_injection(subject_2, :foobar)
+          double_1 = space.double_injection(subject_1, :foobar)
+          double_2 = space.double_injection(subject_2, :foobar)
 
-        double_1.should_not == double_2
+          double_1.should_not == double_2
+        end
       end
 
       context "when double_injection does not exist" do
@@ -44,18 +46,22 @@ module RR
           @method_name = :foobar
         end
 
-        it "returns double_injection and adds double_injection to double_injection list when method_name is a symbol" do
-          @double_injection = space.double_injection(subject, method_name)
-          space.double_injection(subject, method_name).should === double_injection
-          double_injection.subject.should === subject
-          double_injection.method_name.should === method_name
+        context "when method_name is a symbol" do
+          it "returns double_injection and adds double_injection to double_injection list" do
+            @double_injection = space.double_injection(subject, method_name)
+            space.double_injection(subject, method_name).should === double_injection
+            double_injection.subject.should === subject
+            double_injection.method_name.should === method_name
+          end
         end
 
-        it "returns double_injection and adds double_injection to double_injection list when method_name is a string" do
-          @double_injection = space.double_injection(subject, 'foobar')
-          space.double_injection(subject, method_name).should === double_injection
-          double_injection.subject.should === subject
-          double_injection.method_name.should === method_name
+        context "when method_name is a string" do
+          it "returns double_injection and adds double_injection to double_injection list" do
+            @double_injection = space.double_injection(subject, 'foobar')
+            space.double_injection(subject, method_name).should === double_injection
+            double_injection.subject.should === subject
+            double_injection.method_name.should === method_name
+          end
         end
 
         it "overrides the method when passing a block" do
@@ -155,21 +161,23 @@ module RR
         subject.methods.should_not include("__rr__#{method_name}")
       end
 
-      it "removes the subject from the double_injections map when it has no double_injections" do
-        double_1 = space.double_injection(subject, :foobar1)
-        double_2 = space.double_injection(subject, :foobar2)
+      context "when it has no double_injections" do
+        it "removes the subject from the double_injections map" do
+          double_1 = space.double_injection(subject, :foobar1)
+          double_2 = space.double_injection(subject, :foobar2)
 
-        space.double_injections.include?(subject).should == true
-        space.double_injections[subject][:foobar1].should_not be_nil
-        space.double_injections[subject][:foobar2].should_not be_nil
+          space.double_injections.include?(subject).should == true
+          space.double_injections[subject][:foobar1].should_not be_nil
+          space.double_injections[subject][:foobar2].should_not be_nil
 
-        space.reset_double(subject, :foobar1)
-        space.double_injections.include?(subject).should == true
-        space.double_injections[subject][:foobar1].should be_nil
-        space.double_injections[subject][:foobar2].should_not be_nil
+          space.reset_double(subject, :foobar1)
+          space.double_injections.include?(subject).should == true
+          space.double_injections[subject][:foobar1].should be_nil
+          space.double_injections[subject][:foobar2].should_not be_nil
 
-        space.reset_double(subject, :foobar2)
-        space.double_injections.include?(subject).should == false
+          space.reset_double(subject, :foobar2)
+          space.double_injections.include?(subject).should == false
+        end
       end
     end
 
@@ -416,23 +424,25 @@ module RR
         subject.methods.should_not include("__rr__#{method_name}")
       end
 
-      it "deletes the double_injection when verifying the double_injection raises an error" do
-        @double_injection = space.double_injection(subject, method_name)
-        space.double_injections[subject][method_name].should === double_injection
-        subject.methods.should include("__rr__#{method_name}")
+      context "when verifying the double_injection raises an error" do
+        it "deletes the double_injection" do
+          @double_injection = space.double_injection(subject, method_name)
+          space.double_injections[subject][method_name].should === double_injection
+          subject.methods.should include("__rr__#{method_name}")
 
-        verify_called = true
-        (class << double_injection; self; end).class_eval do
-          define_method(:verify) do
-            verify_called = true
-            raise "An Error"
+          verify_called = true
+          (class << double_injection; self; end).class_eval do
+            define_method(:verify) do
+              verify_called = true
+              raise "An Error"
+            end
           end
-        end
-        lambda {space.verify_double(subject, method_name)}.should raise_error
-        verify_called.should be_true
+          lambda {space.verify_double(subject, method_name)}.should raise_error
+          verify_called.should be_true
 
-        space.double_injections[subject][method_name].should be_nil
-        subject.methods.should_not include("__rr__#{method_name}")
+          space.double_injections[subject][method_name].should be_nil
+          subject.methods.should_not include("__rr__#{method_name}")
+        end
       end
     end
 
