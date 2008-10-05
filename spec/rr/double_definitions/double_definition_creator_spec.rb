@@ -92,14 +92,6 @@ module RR
             subject.foobar(1, 2).should == :baz
           end
         end
-
-        context "when passed strategy_method_name and block" do
-          it "raises error" do
-            lambda do
-              @creator.mock(@subject, :foobar) {}
-            end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-          end
-        end
       end
 
       describe "#stub" do
@@ -136,14 +128,6 @@ module RR
           double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
           double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
           subject.foobar(1, 2).should == :baz
-        end
-
-        context "when passed strategy_method_name and block" do
-          it "raises error" do
-            lambda do
-              @creator.stub(@subject, :foobar) {}
-            end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-          end
         end
       end
 
@@ -220,14 +204,6 @@ module RR
           reset
           nil
         end
-
-        context "when passed strategy_method_name and block" do
-          it "raises error" do
-            lambda do
-              @creator.dont_allow(@subject, :foobar) {}
-            end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-          end
-        end
       end
 
       describe "(#proxy or #proxy) and #stub" do
@@ -291,14 +267,6 @@ module RR
           args.should == [:original_implementation_value]
           double.block_callback_strategy.should == :after_call
         end
-
-        context "when passed strategy_method_name and block" do
-          it "raises error" do
-            lambda do
-              @creator.proxy(@subject, :foobar) {}
-            end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-          end
-        end
       end
 
       describe "#instance_of" do
@@ -325,13 +293,6 @@ module RR
             double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
             klass.new.foobar(1, 2).should == :baz
           end
-        end
-
-        it "raises error" do
-          klass = Class.new
-          lambda do
-            @creator.instance_of(klass, :foobar) {}
-          end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
         end
       end
 
