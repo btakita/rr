@@ -51,11 +51,11 @@ module RR
       end
 
       describe "#mock" do
-        send("DoubleDefinitionCreator strategy definition")
-
         before do
           @strategy_method_name = :mock
         end
+        
+        send("DoubleDefinitionCreator strategy definition")
 
         context "when passed a method_name argument" do
           it "creates a mock Double for method" do
@@ -69,11 +69,11 @@ module RR
       end
 
       describe "#stub" do
-        send("DoubleDefinitionCreator strategy definition")
-
         before do
           @strategy_method_name = :stub
         end
+        
+        send("DoubleDefinitionCreator strategy definition")
 
         context "when passed a method_name argument" do
           it "creates a stub Double for method when passed a method_name argument" do
@@ -86,11 +86,11 @@ module RR
       end
 
       describe "#dont_allow" do
-        send("DoubleDefinitionCreator strategy definition")
-
         before do
           @strategy_method_name = :dont_allow
         end
+        
+        send("DoubleDefinitionCreator strategy definition")
 
         it "raises error when proxied" do
           creator.proxy
