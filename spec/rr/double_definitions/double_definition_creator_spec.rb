@@ -45,7 +45,7 @@ module RR
                 call_strategy
               end.should raise_error(RR::Errors::DoubleDefinitionError, "This Double already has a mock strategy")
             end
-          end          
+          end
         end
 
         describe "#stub" do
