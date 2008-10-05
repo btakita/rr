@@ -287,60 +287,106 @@ module RR
               creator.stub
             end
 
-            it "stubs the subject without any args" do
-              creator.create(subject, :foobar) {:baz}
-              subject.foobar.should == :baz
+            context "when not passed a block" do
+              it "returns nil" do
+                creator.create(subject, :foobar)
+                subject.foobar.should be_nil
+              end
             end
 
-            it "stubs the subject mapping passed in args with the output" do
-              creator.create(subject, :foobar, 1, 2) {:one_two}
-              creator.create(subject, :foobar, 1) {:one}
-              creator.create(subject, :foobar) {:nothing}
-              subject.foobar.should == :nothing
-              subject.foobar(1).should == :one
-              subject.foobar(1, 2).should == :one_two
+            context "when passed a block" do
+              describe "#subject.method_name being called" do
+                it "returns the return value of the block" do
+                  creator.create(subject, :foobar) {:baz}
+                  subject.foobar.should == :baz
+                end
+              end
+            end
+
+            context "when not passed args" do
+              describe "#subject.method_name being called with any arguments" do
+                it "invokes the implementation of the Stub" do
+                  creator.create(subject, :foobar) {:baz}
+                  subject.foobar(1, 2).should == :baz
+                  subject.foobar().should == :baz
+                  subject.foobar([]).should == :baz
+                end
+              end
+            end
+
+            context "when passed args" do
+              describe "#subject.method_name being called with the passed-in arguments" do
+                it "invokes the implementation of the Stub" do
+                  creator.create(subject, :foobar, 1, 2) {:baz}
+                  subject.foobar(1, 2).should == :baz
+                end
+              end
+
+              describe "#subject.method_name being called with different arguments" do
+                it "raises a DoubleNotFoundError" do
+                  creator.create(subject, :foobar, 1, 2) {:baz}
+                  lambda do
+                    subject.foobar
+                  end.should raise_error(Errors::DoubleNotFoundError)
+                end
+              end
             end
           end
 
           context "when #implementation_strategy is a Proxy" do
             before do
+              def subject.foobar(*args)
+                :original_return_value
+              end
               creator.stub
               creator.proxy
             end
 
-            it "sets up a double with passed in arguments" do
-              def subject.foobar(*args)
-                :baz
-              end
-              creator.create(subject, :foobar, 1, 2)
-              lambda do
-                subject.foobar
-              end.should raise_error(Errors::DoubleNotFoundError)
-            end
-
-            it "sets expectations on the subject while calling the original method" do
-              def subject.foobar(*args)
-                :baz
-              end
-              creator.create(subject, :foobar, 1, 2) {:new_value}
-              10.times do
-                subject.foobar(1, 2).should == :new_value
+            context "when not passed a block" do
+              describe "#subject.method_name being called" do
+                it "invokes the original implementanion" do
+                  creator.create(subject, :foobar)
+                  subject.foobar.should == :original_return_value
+                end
               end
             end
 
-            it "sets after_call on the double when passed a block" do
-              real_value = Object.new
-              (class << subject; self; end).class_eval do
-                define_method(:foobar) {real_value}
-              end
-              creator.create(subject, :foobar, 1, 2) do |value|
-                mock(value).a_method {99}
-                value
+            context "when passed a block" do
+              describe "#subject.method_name being called" do
+                it "invokes the original implementanion and invokes the block with the return value of the original implementanion" do
+                  passed_in_value = nil
+                  creator.create(subject, :foobar) do |original_return_value|
+                    passed_in_value = original_return_value
+                  end
+                  subject.foobar
+                  passed_in_value.should == :original_return_value
+                end
+
+                it "returns the return value of the block" do
+                  creator.create(subject, :foobar) do |original_return_value|
+                    :new_return_value
+                  end
+                  subject.foobar.should == :new_return_value
+                end
+              end              
+            end
+
+            context "when passed args" do
+              describe "#subject.method_name being called with the passed-in arguments" do
+                it "invokes the implementation of the Stub" do
+                  creator.create(subject, :foobar, 1, 2) {:baz}
+                  subject.foobar(1, 2).should == :baz
+                end
               end
 
-              return_value = subject.foobar(1, 2)
-              return_value.should === return_value
-              return_value.a_method.should == 99
+              describe "#subject.method_name being called with different arguments" do
+                it "raises a DoubleNotFoundError" do
+                  creator.create(subject, :foobar, 1, 2) {:baz}
+                  lambda do
+                    subject.foobar
+                  end.should raise_error(Errors::DoubleNotFoundError)
+                end
+              end
             end
           end
         end
@@ -350,22 +396,30 @@ module RR
             creator.dont_allow
           end
 
-          it "sets expectation for method to never be called with any arguments when on arguments passed in" do
-            creator.create(subject, :foobar)
-            lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
-            lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+          context "when not passed args" do
+            describe "#subject.method_name being called with any arguments" do
+              it "raises a TimesCalledError" do
+                creator.create(subject, :foobar)
+                lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
+                lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+              end
+            end
           end
 
-          it "sets expectation for method to never be called with passed in arguments" do
-            creator.create(subject, :foobar, 1, 2)
-            lambda {subject.foobar}.should raise_error(Errors::DoubleNotFoundError)
-            lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
-          end
+          context "when passed args" do
+            describe "#subject.method_name being called with the passed-in arguments" do
+              it "raises a TimesCalledError" do
+                creator.create(subject, :foobar, 1, 2)
+                lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+              end
+            end
 
-          it "sets expectation for method to never be called with no arguments when with_no_args is set" do
-            creator.create(subject, :foobar).with_no_args
-            lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
-            lambda {subject.foobar(1, 2)}.should raise_error(Errors::DoubleNotFoundError)
+            describe "#subject.method_name being called with different arguments" do
+              it "raises a DoubleNotFoundError" do
+                creator.create(subject, :foobar, 1, 2)
+                lambda {subject.foobar()}.should raise_error(Errors::DoubleNotFoundError)
+              end
+            end
           end
         end
       end
