@@ -24,7 +24,6 @@ module RR
         @yields_value = nil
         @double_definition_creator = double_definition_creator
         @subject = subject
-        returns_block_callback_strategy
       end
 
       def with(*args, &return_value_block)
@@ -169,18 +168,15 @@ module RR
         argument_expectation.expected_arguments
       end
 
-      def returns_block_callback_strategy # :nodoc:
-        @block_callback_strategy = :returns
-      end
-
-      def after_call_block_callback_strategy # :nodoc:
-        @block_callback_strategy = :after_call
-      end
-
       protected
       def install_method_callback(block)
         return unless block
-        __send__(@block_callback_strategy, &block)
+        case double_definition_creator.implementation_strategy
+        when Strategies::Implementation::Reimplementation
+          returns(&block)
+        when Strategies::Implementation::Proxy
+          after_call(&block)
+        end
       end
     end    
   end

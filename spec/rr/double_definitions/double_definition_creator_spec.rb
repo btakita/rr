@@ -64,11 +64,6 @@ module RR
           creates_mock_call_chain(creator.mock(subject))
         end
 
-        it "sets up the DoubleDefinition to be in returns block_callback_strategy" do
-          double = creator.mock(subject, :foobar)
-          double.block_callback_strategy.should == :returns
-        end
-
         def creates_mock_call_chain(creator)
           double = creator.foobar(1, 2) {:baz}
           double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
@@ -103,11 +98,6 @@ module RR
 
         it "sets up the RR stub call chain" do
           creates_stub_call_chain(creator.stub(subject))
-        end
-
-        it "sets up the DoubleDefinition to be in returns block_callback_strategy" do
-          double = creator.stub(subject, :foobar)
-          double.block_callback_strategy.should == :returns
         end
 
         context "when passed a second argument" do
@@ -252,20 +242,6 @@ module RR
             double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
             subject.foobar(1, 2).should == :baz
           end
-        end
-
-        it "sets up the DoubleDefinition to be in after_call block_callback_strategy" do
-          def subject.foobar
-            :original_implementation_value
-          end
-
-          args = nil
-          double = creator.stub.proxy(subject, :foobar).with() do |*args|
-            args = args
-          end
-          subject.foobar
-          args.should == [:original_implementation_value]
-          double.block_callback_strategy.should == :after_call
         end
       end
 

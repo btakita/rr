@@ -5,17 +5,18 @@ module RR
     describe DoubleDefinition do
       attr_reader :subject, :double_injection, :double, :definition
       class << self
-        define_method("DoubleDefinition with returns block_callback_strategy") do
+        define_method("DoubleDefinition where #double_definition_creator is a Reimplementation") do
           before do
-            definition.returns_block_callback_strategy
+            definition.double_definition_creator.implementation_strategy.class.should == Strategies::Implementation::Reimplementation
             create_definition
           end
         end
 
-        define_method("DoubleDefinition with after_call block_callback_strategy") do
+        define_method("DoubleDefinition where #double_definition_creator is a Proxy") do
           before do
             definition.proxy
-            definition.after_call_block_callback_strategy
+            definition.double_definition_creator.proxy
+            definition.double_definition_creator.implementation_strategy.class.should == Strategies::Implementation::Proxy
             create_definition
           end
         end
@@ -63,7 +64,7 @@ module RR
         end
 
         context "with returns block_callback_strategy" do
-          send "DoubleDefinition with returns block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
           send "#with"
 
           it "sets return value when block passed in" do
@@ -73,7 +74,7 @@ module RR
         end
 
         context "with after_call block_callback_strategy" do
-          send "DoubleDefinition with after_call block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Proxy"
           send "#with"
 
           it "sets return value when block passed in" do
@@ -108,7 +109,7 @@ module RR
         end
 
         describe "with returns block_callback_strategy" do
-          send "DoubleDefinition with returns block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
           send "#with_any_args"
 
           it "sets return value when block passed in" do
@@ -118,7 +119,7 @@ module RR
         end
 
         describe "with after_call block_callback_strategy" do
-          send "DoubleDefinition with after_call block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Proxy"
           send "#with_any_args"
 
           it "sets return value when block passed in" do
@@ -158,7 +159,7 @@ module RR
         end
 
         context "with returns block_callback_strategy" do
-          send "DoubleDefinition with returns block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
           send "#with_no_args"
 
           it "sets return value when block passed in" do
@@ -168,7 +169,7 @@ module RR
         end
 
         context "with after_call block_callback_strategy" do
-          send "DoubleDefinition with after_call block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Proxy"
           send "#with_no_args"
 
           it "sets return value when block passed in" do
@@ -219,7 +220,7 @@ module RR
         end
 
         context "with returns block_callback_strategy" do
-          send "DoubleDefinition with returns block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
           send "#once"
 
           it "sets return value when block passed in" do
@@ -229,7 +230,7 @@ module RR
         end
 
         context "with after_call block_callback_strategy" do
-          send "DoubleDefinition with after_call block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Proxy"
           send "#once"
 
           it "sets return value when block passed in" do
@@ -265,7 +266,7 @@ module RR
         end
 
         context "with returns block_callback_strategy" do
-          send "DoubleDefinition with returns block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
           send "#twice"
 
           it "sets return value when block passed in" do
@@ -275,7 +276,7 @@ module RR
         end
 
         context "with after_call block_callback_strategy" do
-          send "DoubleDefinition with after_call block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Proxy"
           send "#twice"
 
           it "sets return value when block passed in" do
@@ -310,7 +311,7 @@ module RR
         end
 
         context "with returns block_callback_strategy" do
-          send "DoubleDefinition with returns block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
           send "#at_least"
 
           it "sets return value when block passed in" do
@@ -320,7 +321,7 @@ module RR
         end
 
         context "with after_call block_callback_strategy" do
-          send "DoubleDefinition with after_call block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Proxy"
           send "#at_least"
 
           it "sets return value when block passed in" do
@@ -357,7 +358,7 @@ module RR
         end
 
         context "with returns block_callback_strategy" do
-          send "DoubleDefinition with returns block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
           send "#at_most"
 
           it "sets return value when block passed in" do
@@ -367,7 +368,7 @@ module RR
         end
 
         context "with after_call block_callback_strategy" do
-          send "DoubleDefinition with after_call block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Proxy"
           send "#at_most"
 
           it "sets return value when block passed in" do
@@ -403,7 +404,7 @@ module RR
         end
 
         context "with returns block_callback_strategy" do
-          send "DoubleDefinition with returns block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
           send "#times"
 
           it "sets return value when block passed in" do
@@ -413,7 +414,7 @@ module RR
         end
 
         context "with after_call block_callback_strategy" do
-          send "DoubleDefinition with after_call block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Proxy"
           send "#times"
 
           it "sets return value when block passed in" do
@@ -448,7 +449,7 @@ module RR
         end
 
         context "with returns block_callback_strategy" do
-          send "DoubleDefinition with returns block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
           send "#any_number_of_times"
 
           it "sets return value when block passed in" do
@@ -458,7 +459,7 @@ module RR
         end
 
         context "with after_call block_callback_strategy" do
-          send "DoubleDefinition with after_call block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Proxy"
           send "#any_number_of_times"
 
           it "sets return value when block passed in" do
@@ -510,7 +511,7 @@ module RR
         end
 
         context "with returns block_callback_strategy" do
-          send "DoubleDefinition with returns block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
           send "#ordered"
 
           it "sets return value when block passed in" do
@@ -520,7 +521,7 @@ module RR
         end
 
         context "with after_call block_callback_strategy" do
-          send "DoubleDefinition with after_call block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Proxy"
           send "#ordered"
 
           it "sets return value when block passed in" do
@@ -565,7 +566,7 @@ module RR
         end
 
         context "with returns block_callback_strategy" do
-          send "DoubleDefinition with returns block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
           send "#yields"
 
           it "sets return value when block passed in" do
@@ -577,7 +578,7 @@ module RR
         end
 
         context "with after_call block_callback_strategy" do
-          send "DoubleDefinition with after_call block_callback_strategy"
+          send "DoubleDefinition where #double_definition_creator is a Proxy"
           send "#yields"
 
           it "sets return value when block passed in" do
@@ -782,26 +783,6 @@ module RR
         it "returns an empty array when there is no argument expectation" do
           definition.argument_expectation.should be_nil
           definition.expected_arguments.should == []
-        end
-      end
-
-      describe "#block_callback_strategy" do
-        it "defaults to :returns" do
-          definition.block_callback_strategy.should == :returns
-        end
-      end
-
-      describe "#returns_block_callback_strategy!" do
-        it "sets the block_callback_strategy to :returns" do
-          definition.returns_block_callback_strategy
-          definition.block_callback_strategy.should == :returns
-        end
-      end
-
-      describe "#after_call_block_callback_strategy!" do
-        it "sets the block_callback_strategy to :after_call" do
-          definition.after_call_block_callback_strategy
-          definition.block_callback_strategy.should == :after_call
         end
       end
 
