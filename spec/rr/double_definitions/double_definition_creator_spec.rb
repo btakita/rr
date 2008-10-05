@@ -45,7 +45,7 @@ module RR
         end
       end
 
-      attr_reader :creator, :subject, :space, :strategy_method_name
+      attr_reader :creator, :subject, :strategy_method_name
       it_should_behave_like "Swapped Space"
       before(:each) do
         @subject = Object.new
