@@ -7,25 +7,24 @@ module RR
       include Space::Reader
 
       def initialize
-        @core_strategy = nil
         @builder = Builders::Builder.new(self)
       end
 
       def mock(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
         add_strategy(subject, method_name, definition_eval_block) do
-          builder.set_core_strategy :mock
+          builder.core_strategy = :mock
         end
       end
 
       def stub(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
         add_strategy(subject, method_name, definition_eval_block) do
-          builder.set_core_strategy :stub
+          builder.core_strategy = :stub
         end
       end
 
       def dont_allow(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
         add_strategy(subject, method_name, definition_eval_block) do
-          builder.set_core_strategy :dont_allow
+          builder.core_strategy = :dont_allow
         end
       end
       alias_method :do_not_allow, :dont_allow
