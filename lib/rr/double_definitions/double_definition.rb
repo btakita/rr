@@ -139,11 +139,6 @@ module RR
         self
       end
 
-      def mock(&definition_eval_block)
-        returns subject = Object.new
-        DoubleDefinitionCreator.new.mock(subject, &definition_eval_block)
-      end
-
       def proxy
         implemented_by ORIGINAL_METHOD
         self

@@ -17,6 +17,14 @@ module RR
         end
         yield(self) if block_given?
       end
+
+      def __subject__
+        @subject
+      end
+
+      def __creator__
+        @creator
+      end
     end    
   end
 end

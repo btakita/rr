@@ -4,8 +4,9 @@ class HighLevelSpec
 end
 
 describe "RR" do
+  attr_reader :subject
   before(:each) do
-    @obj = Object.new
+    @subject = Object.new
     extend RR::Adapters::RRMethods
   end
 
@@ -15,55 +16,57 @@ describe "RR" do
 
   describe "RR mock:" do
     it "mocks via inline call" do
-      mock(@obj).to_s {"a value"}
-      @obj.to_s.should == "a value"
-      lambda {@obj.to_s}.should raise_error(RR::Errors::TimesCalledError)
+      mock(subject).to_s {"a value"}
+      subject.to_s.should == "a value"
+      lambda {subject.to_s}.should raise_error(RR::Errors::TimesCalledError)
     end
 
     it "allows ordering" do
-      mock(@obj).to_s {"value 1"}.ordered
-      mock(@obj).to_s {"value 2"}.twice
-      @obj.to_s.should == "value 1"
-      @obj.to_s.should == "value 2"
-      @obj.to_s.should == "value 2"
-      lambda {@obj.to_s}.should raise_error(RR::Errors::TimesCalledError)
+      mock(subject).to_s {"value 1"}.ordered
+      mock(subject).to_s {"value 2"}.twice
+      subject.to_s.should == "value 1"
+      subject.to_s.should == "value 2"
+      subject.to_s.should == "value 2"
+      lambda {subject.to_s}.should raise_error(RR::Errors::TimesCalledError)
     end
     
     it 'allows terse chaining' do
-      mock(@obj).first(1).mock.second(2).mock.third(3) { 4 }
-      @obj.first(1).second(2).third(3).should == 4
+      mock(subject).first(1) {mock(Object.new).second(2) {mock(Object.new).third(3) {4}}}
+      subject.first(1).second(2).third(3).should == 4
     end
     
     it 'allows branched chaining' do
-      mock(@obj).first.mock do |expect|
-        expect.branch1.mock.branch11 { 11 }
-        expect.branch2.mock.branch22 { 22 }
+      mock(subject).first do
+        mock(Object.new) do |expect|
+          expect.branch1 {mock(Object.new).branch11 {11}}
+          expect.branch2 {mock(Object.new).branch22 {22}}
+        end
       end
-      o = @obj.first
+      o = subject.first
       o.branch1.branch11.should == 11
       o.branch2.branch22.should == 22
     end
     
     it 'allows chained ordering' do
-      mock(@obj).to_s {"value 1"}.then.to_s {"value 2"}.twice.then.to_s {"value 3"}.once
-      @obj.to_s.should == "value 1"
-      @obj.to_s.should == "value 2"
-      @obj.to_s.should == "value 2"
-      @obj.to_s.should == "value 3"
-      lambda {@obj.to_s}.should raise_error(RR::Errors::TimesCalledError)
+      mock(subject).to_s {"value 1"}.then.to_s {"value 2"}.twice.then.to_s {"value 3"}.once
+      subject.to_s.should == "value 1"
+      subject.to_s.should == "value 2"
+      subject.to_s.should == "value 2"
+      subject.to_s.should == "value 3"
+      lambda {subject.to_s}.should raise_error(RR::Errors::TimesCalledError)
     end
 
     it "mocks via block" do
-      mock @obj do |c|
+      mock subject do |c|
         c.to_s {"a value"}
         c.to_sym {:crazy}
       end
-      @obj.to_s.should == "a value"
-      @obj.to_sym.should == :crazy
+      subject.to_s.should == "a value"
+      subject.to_sym.should == :crazy
     end
 
     it "has wildcard matchers" do
-      mock(@obj).foobar(
+      mock(subject).foobar(
         is_a(String),
         anything,
         numeric,
@@ -71,7 +74,7 @@ describe "RR" do
         duck_type(:to_s),
         /abc/
       ) {"value 1"}.twice
-      @obj.foobar(
+      subject.foobar(
         'hello',
         Object.new,
         99,
@@ -80,116 +83,116 @@ describe "RR" do
         "Tabcola"
       ).should == "value 1"
       lambda do
-        @obj.foobar(:failure)
+        subject.foobar(:failure)
       end.should raise_error( RR::Errors::DoubleNotFoundError )
     end
 
     it "mocks methods without letters" do
-      mock(@obj) == 55
+      mock(subject) == 55
 
-      @obj == 55
+      subject == 55
       lambda do
-        @obj == 99
+        subject == 99
       end.should raise_error(RR::Errors::DoubleNotFoundError)
     end
   end
 
   describe "RR proxy:" do
     it "proxies via inline call" do
-      expected_to_s_value = @obj.to_s
-      mock.proxy(@obj).to_s
-      @obj.to_s.should == expected_to_s_value
-      lambda {@obj.to_s}.should raise_error
+      expected_to_s_value = subject.to_s
+      mock.proxy(subject).to_s
+      subject.to_s.should == expected_to_s_value
+      lambda {subject.to_s}.should raise_error
     end
 
     it "proxy allows ordering" do
-      def @obj.to_s(arg)
+      def subject.to_s(arg)
         "Original to_s with arg #{arg}"
       end
-      mock.proxy(@obj).to_s(:foo).ordered
-      mock.proxy(@obj).to_s(:bar).twice.ordered
+      mock.proxy(subject).to_s(:foo).ordered
+      mock.proxy(subject).to_s(:bar).twice.ordered
 
-      @obj.to_s(:foo).should == "Original to_s with arg foo"
-      @obj.to_s(:bar).should == "Original to_s with arg bar"
-      @obj.to_s(:bar).should == "Original to_s with arg bar"
-      lambda {@obj.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
+      subject.to_s(:foo).should == "Original to_s with arg foo"
+      subject.to_s(:bar).should == "Original to_s with arg bar"
+      subject.to_s(:bar).should == "Original to_s with arg bar"
+      lambda {subject.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
     end
 
     it "proxy allows ordering" do
-      def @obj.to_s(arg)
+      def subject.to_s(arg)
         "Original to_s with arg #{arg}"
       end
-      mock.proxy(@obj).to_s(:foo).ordered
-      mock.proxy(@obj).to_s(:bar).twice.ordered
+      mock.proxy(subject).to_s(:foo).ordered
+      mock.proxy(subject).to_s(:bar).twice.ordered
 
-      @obj.to_s(:foo).should == "Original to_s with arg foo"
-      @obj.to_s(:bar).should == "Original to_s with arg bar"
-      @obj.to_s(:bar).should == "Original to_s with arg bar"
-      lambda {@obj.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
+      subject.to_s(:foo).should == "Original to_s with arg foo"
+      subject.to_s(:bar).should == "Original to_s with arg bar"
+      subject.to_s(:bar).should == "Original to_s with arg bar"
+      lambda {subject.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
     end
 
     it "proxies via block" do
-      def @obj.foobar_1(*args)
+      def subject.foobar_1(*args)
         :original_value_1
       end
 
-      def @obj.foobar_2
+      def subject.foobar_2
         :original_value_2
       end
 
-      mock.proxy @obj do |c|
+      mock.proxy subject do |c|
         c.foobar_1(1)
         c.foobar_2
       end
-      @obj.foobar_1(1).should == :original_value_1
-      lambda {@obj.foobar_1(:blah)}.should raise_error
+      subject.foobar_1(1).should == :original_value_1
+      lambda {subject.foobar_1(:blah)}.should raise_error
 
-      @obj.foobar_2.should == :original_value_2
-      lambda {@obj.foobar_2(:blah)}.should raise_error
+      subject.foobar_2.should == :original_value_2
+      lambda {subject.foobar_2(:blah)}.should raise_error
     end
 
     it "proxies via block" do
-      def @obj.foobar_1(*args)
+      def subject.foobar_1(*args)
         :original_value_1
       end
 
-      def @obj.foobar_2
+      def subject.foobar_2
         :original_value_2
       end
 
-      mock.proxy @obj do |c|
+      mock.proxy subject do |c|
         c.foobar_1(1)
         c.foobar_2
       end
-      @obj.foobar_1(1).should == :original_value_1
-      lambda {@obj.foobar_1(:blah)}.should raise_error
+      subject.foobar_1(1).should == :original_value_1
+      lambda {subject.foobar_1(:blah)}.should raise_error
 
-      @obj.foobar_2.should == :original_value_2
-      lambda {@obj.foobar_2(:blah)}.should raise_error
+      subject.foobar_2.should == :original_value_2
+      lambda {subject.foobar_2(:blah)}.should raise_error
     end
   end
 
   describe "RR stub:" do
     it "stubs via inline call" do
-      stub(@obj).to_s {"a value"}
-      @obj.to_s.should == "a value"
+      stub(subject).to_s {"a value"}
+      subject.to_s.should == "a value"
     end
 
     it "allows ordering" do
-      stub(@obj).to_s {"value 1"}.once.ordered
-      stub(@obj).to_s {"value 2"}.once.ordered
+      stub(subject).to_s {"value 1"}.once.ordered
+      stub(subject).to_s {"value 2"}.once.ordered
 
-      @obj.to_s.should == "value 1"
-      @obj.to_s.should == "value 2"
+      subject.to_s.should == "value 1"
+      subject.to_s.should == "value 2"
     end
 
     it "stubs via block" do
-      stub @obj do |d|
+      stub subject do |d|
         d.to_s {"a value"}
         d.to_sym {:crazy}
       end
-      @obj.to_s.should == "a value"
-      @obj.to_sym.should == :crazy
+      subject.to_s.should == "a value"
+      subject.to_sym.should == :crazy
     end
 
     it "stubs instance_of" do
@@ -200,8 +203,8 @@ describe "RR" do
     end
 
     it "stubs methods without letters" do
-      stub(@obj).__send__(:==) {:equality}
-      (@obj == 55).should == :equality
+      stub(subject).__send__(:==) {:equality}
+      (subject == 55).should == :equality
     end
   end
 end
