@@ -254,34 +254,8 @@ module RR
 
     def call_implementation(double_injection, *args, &block)
       return nil unless implementation
-
-      return_value = if implementation === DoubleDefinitions::DoubleDefinition::ORIGINAL_METHOD
-        if double_injection.object_has_original_method?
-          double_injection.call_original_method(*args, &block)
-        else
-          double_injection.subject.__send__(
-            :method_missing,
-            method_name,
-            *args,
-            &block
-          )
-        end
-      else
-        if implementation.is_a?(Method)
-          implementation.call(*args, &block)
-        else
-          args << block if block
-          implementation.call(*args)
-        end
-      end
-      case return_value
-      when DoubleDefinitions::DoubleDefinition
-        return_value.subject
-      when DoubleDefinitions::DoubleDefinitionCreatorProxy
-        return_value.__subject__
-      else
-        return_value
-      end
+      return_value = extract_return_value(double_injection, *args, &block)
+      extract_subject_from_return_value(return_value)
     end
     protected :call_implementation
 
@@ -357,6 +331,40 @@ module RR
 
     def formatted_name
       self.class.formatted_name(method_name, expected_arguments)
+    end
+
+    protected
+    def extract_return_value(double_injection, *args, &block)
+      if implementation === DoubleDefinitions::DoubleDefinition::ORIGINAL_METHOD
+        if double_injection.object_has_original_method?
+          double_injection.call_original_method(*args, &block)
+        else
+          double_injection.subject.__send__(
+            :method_missing,
+            method_name,
+            *args,
+            &block
+          )
+        end
+      else
+        if implementation.is_a?(Method)
+          implementation.call(*args, &block)
+        else
+          args << block if block
+          implementation.call(*args)
+        end
+      end
+    end
+
+    def extract_subject_from_return_value(return_value)
+      case return_value
+      when DoubleDefinitions::DoubleDefinition
+        return_value.subject
+      when DoubleDefinitions::DoubleDefinitionCreatorProxy
+        return_value.__subject__
+      else
+        return_value
+      end
     end
   end
 end
