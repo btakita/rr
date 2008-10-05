@@ -1,32 +1,33 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinitionCreator # :nodoc
+      attr_reader :builder
       NO_SUBJECT = Object.new
 
       include Space::Reader
-      include Errors
 
       def initialize
         @core_strategy = nil
         @using_proxy_strategy = false
         @using_instance_of_strategy = nil
+        @builder = Builders::Builder.new
       end
 
       def mock(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
         add_strategy(subject, method_name, definition_eval_block) do
-          set_core_strategy :mock
+          builder.set_core_strategy :mock
         end
       end
 
       def stub(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
         add_strategy(subject, method_name, definition_eval_block) do
-          set_core_strategy :stub
+          builder.set_core_strategy :stub
         end
       end
 
       def dont_allow(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
         add_strategy(subject, method_name, definition_eval_block) do
-          set_core_strategy :dont_allow
+          builder.set_core_strategy :dont_allow
         end
       end
       alias_method :do_not_allow, :dont_allow
@@ -35,8 +36,7 @@ module RR
 
       def proxy(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
         add_strategy(subject, method_name, definition_eval_block) do
-          proxy_when_dont_allow_error if @core_strategy == :dont_allow
-          @using_proxy_strategy = true
+          builder.using_proxy_strategy
         end
       end
       alias_method :probe, :proxy
@@ -59,7 +59,7 @@ module RR
         else
           setup_double(subject, method_name)
         end
-        transform
+        builder.build(@definition, @args, @handler)
         @definition
       end
 
@@ -82,12 +82,6 @@ module RR
         subject.__id__ === NO_SUBJECT.__id__
       end
 
-      def set_core_strategy(strategy)
-        verify_no_core_strategy
-        @core_strategy = strategy
-        proxy_when_dont_allow_error if strategy == :dont_allow && @using_proxy_strategy
-      end
-
       def setup_double(subject, method_name)
         @double_injection = space.double_injection(subject, method_name)
         @double = Double.new(@double_injection, DoubleDefinition.new(self, subject))
@@ -107,56 +101,11 @@ module RR
           return_value
         end
 
-        builder = Builders::Builder.new(
-          class_double.definition,
-          [],
-          class_handler
-        )
-        builder.stub
-        builder.proxy
+        builder = Builders::Builder.new
+        builder.set_core_strategy(:stub)
+        builder.using_proxy_strategy
+        builder.build(class_double.definition, [], class_handler)
       end
-
-      def transform
-        builder = Builders::Builder.new(@definition, @args, @handler)
-
-        verify_strategy
-        builder.__send__(@core_strategy)
-
-        if @using_proxy_strategy
-          builder.proxy
-        else
-          builder.reimplementation
-        end
-      end
-
-      def verify_no_core_strategy
-        strategy_already_defined_error if @core_strategy
-      end
-
-      def strategy_already_defined_error
-        raise(
-          DoubleDefinitionError,
-          "This Double already has a #{@core_strategy} strategy"
-        )
-      end
-
-      def verify_strategy
-        no_strategy_error unless @core_strategy
-      end
-
-      def no_strategy_error
-        raise(
-          DoubleDefinitionError,
-          "This Double has no strategy"
-        )
-      end
-
-      def proxy_when_dont_allow_error
-        raise(
-          DoubleDefinitionError,
-          "Doubles cannot be proxied when using dont_allow strategy"
-        )
-      end
-    end    
+    end
   end
 end
