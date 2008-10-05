@@ -13,15 +13,13 @@ module RR
       end
 
       describe "#verify" do
-        it "#verify verifies and deletes the double_injections" do
-          verifies_all_double_injections {verify}
+        it "aliases #rr_verify" do
+          RRMethods.instance_method("verify").should == RRMethods.instance_method("rr_verify")
         end
+      end
 
-        it "#rr_verify verifies and deletes the double_injections" do
-          verifies_all_double_injections {rr_verify}
-        end
-
-        def verifies_all_double_injections
+      describe "#rr_verify" do
+        it "verifies and deletes the double_injections" do
           double_1 = space.double_injection(subject_1, method_name)
           double_1_verify_calls = 0
           double_1_reset_calls = 0
@@ -51,7 +49,7 @@ module RR
             end
           end
 
-          yield
+          rr_verify
           double_1_verify_calls.should == 1
           double_2_verify_calls.should == 1
           double_1_reset_calls.should == 1
@@ -60,23 +58,13 @@ module RR
       end
 
       describe "#reset" do
-        it "#reset removes the ordered doubles" do
-          removes_ordered_doubles {reset}
+        it "aliases #rr_reset" do
+          RRMethods.instance_method("reset").should == RRMethods.instance_method("rr_reset")
         end
+      end
 
-        it "#rr_reset removes the ordered doubles" do
-          removes_ordered_doubles {rr_reset}
-        end
-
-        it "#reset resets all double_injections" do
-          resets_all_double_injections {reset}
-        end
-
-        it "#rr_reset resets all double_injections" do
-          resets_all_double_injections {rr_reset}
-        end
-
-        def removes_ordered_doubles
+      describe "#rr_reset" do
+        it "removes the ordered doubles" do
           double_1 = new_double(
             space.double_injection(subject_1, :foobar1),
             RR::DoubleDefinitions::DoubleDefinition.new(creator = RR::DoubleDefinitions::DoubleDefinitionCreator.new, subject_1)
@@ -91,11 +79,11 @@ module RR
 
           space.ordered_doubles.should_not be_empty
 
-          yield
+          rr_reset
           space.ordered_doubles.should be_empty
         end
 
-        def resets_all_double_injections
+        it "resets all double_injections" do
           double_1 = space.double_injection(subject_1, method_name)
           double_1_reset_calls = 0
           (
@@ -117,7 +105,7 @@ module RR
             end
           end
 
-          yield
+          rr_reset
           double_1_reset_calls.should == 1
           double_2_reset_calls.should == 1
         end
