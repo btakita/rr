@@ -16,7 +16,7 @@ module RR
         def build(subject, method_name, args, handler)
           @subject, @method_name, @args, @handler = subject, method_name, args, handler
           @definition = DoubleDefinition.new(creator, subject)
-          setup_double
+          create_double
           verify_strategy
           send(@core_strategy)
           using_proxy_strategy?? proxy : reimplementation
@@ -48,20 +48,20 @@ module RR
         end
 
         protected
-        def setup_double
+        def create_double
           if using_instance_of_strategy?
-            setup_doubles_instances_of_subject(method_name)
+            create_doubles_for_instances_of_subject(method_name)
           else
-            setup_double_for_subject(method_name)
+            create_double_for_subject(method_name)
           end
         end
 
-        def setup_double_for_subject(method_name)
+        def create_double_for_subject(method_name)
           double_injection = space.double_injection(subject, method_name)
           Double.new(double_injection, definition)
         end
 
-        def setup_doubles_instances_of_subject(instance_method_name)
+        def create_doubles_for_instances_of_subject(instance_method_name)
           class_handler = lambda do |return_value|
             double_injection = space.double_injection(return_value, instance_method_name)
             Double.new(double_injection, definition)
