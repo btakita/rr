@@ -184,6 +184,6 @@ module RR
       def implementation_strategy
         double_definition_creator.implementation_strategy
       end
-    end    
+    end
   end
 end

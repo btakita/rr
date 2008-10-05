@@ -7,7 +7,6 @@ module RR
       it_should_behave_like "Swapped Space"
 
       before(:each) do
-        @space = Space.instance
         @subject = Object.new
         @creator = DoubleDefinitionCreator.new
         creator.mock

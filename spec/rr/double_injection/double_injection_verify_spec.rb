@@ -6,7 +6,6 @@ module RR
       it_should_behave_like "Swapped Space"
       attr_reader :space, :subject, :method_name, :double_injection
       before do
-        @space = Space.instance
         @subject = Object.new
         @method_name = :foobar
         subject.methods.should_not include(method_name.to_s)
