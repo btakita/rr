@@ -33,7 +33,7 @@ module RR
 
       def proxy(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
         add_strategy(subject, method_name, definition_eval_block) do
-          builder.use_proxy_strategy
+          builder.implementation_strategy = Strategies::Implementation::Proxy.new
         end
       end
       alias_method :probe, :proxy
