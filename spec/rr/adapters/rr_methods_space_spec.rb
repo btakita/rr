@@ -2,8 +2,8 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
 module RR
   module Adapters
-    describe RRMethods, " Space interactions" do
-      describe RRMethods, " space example" do
+    describe RRMethods do
+      describe "Space interactions" do
         attr_reader :space, :subject_1, :subject_2, :method_name
         it_should_behave_like "Swapped Space"
         it_should_behave_like "RR::Adapters::RRMethods"
@@ -13,7 +13,7 @@ module RR
           @method_name = :foobar
         end
 
-        describe RRMethods, "#verify" do
+        describe "#verify" do
           it "#verify verifies and deletes the double_injections" do
             verifies_all_double_injections {verify}
           end
@@ -60,7 +60,7 @@ module RR
           end
         end
 
-        describe RRMethods, "#reset" do
+        describe "#reset" do
           it "#reset removes the ordered doubles" do
             removes_ordered_doubles {reset}
           end
@@ -86,7 +86,7 @@ module RR
               space.double_injection(subject_2, :foobar2),
               RR::DoubleDefinitions::DoubleDefinition.new(creator = RR::DoubleDefinitions::DoubleDefinitionCreator.new, subject_2)
             )
- 
+
             double_1.ordered
             double_2.ordered
 
@@ -125,7 +125,5 @@ module RR
         end
       end
     end
-
-
   end
 end
