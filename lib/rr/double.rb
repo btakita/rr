@@ -333,11 +333,13 @@ module RR
           )
         end
       else
-        if implementation.is_a?(Method)
-          implementation.call(*args, &block)
-        elsif implementation
-          args << block if block
-          implementation.call(*args)
+        if implementation
+          if implementation.is_a?(Method)
+            implementation.call(*args, &block)
+          else
+            args << block if block
+            implementation.call(*args)
+          end
         else
           nil
         end
