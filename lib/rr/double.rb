@@ -255,24 +255,32 @@ module RR
     def call_implementation(double_injection, *args, &block)
       return nil unless implementation
 
-      if implementation === DoubleDefinitions::DoubleDefinition::ORIGINAL_METHOD
+      return_value = if implementation === DoubleDefinitions::DoubleDefinition::ORIGINAL_METHOD
         if double_injection.object_has_original_method?
-          return double_injection.call_original_method(*args, &block)
+          double_injection.call_original_method(*args, &block)
         else
-          return double_injection.subject.__send__(
+          double_injection.subject.__send__(
             :method_missing,
             method_name,
             *args,
             &block
           )
         end
-      end
-
-      if implementation.is_a?(Method)
-        return implementation.call(*args, &block)
       else
-        args << block if block
-        return implementation.call(*args)
+        if implementation.is_a?(Method)
+          implementation.call(*args, &block)
+        else
+          args << block if block
+          implementation.call(*args)
+        end
+      end
+      case return_value
+      when DoubleDefinitions::DoubleDefinition
+        return_value.subject
+      when DoubleDefinitions::DoubleDefinitionCreatorProxy
+        return_value.__subject__
+      else
+        return_value
       end
     end
     protected :call_implementation
