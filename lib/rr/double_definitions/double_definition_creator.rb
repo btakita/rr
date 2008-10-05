@@ -40,7 +40,7 @@ module RR
       alias_method :probe, :proxy
 
       def instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
-        if subject != NO_SUBJECT && !subject.is_a?(Class)
+        if !no_subject?(subject) && !subject.is_a?(Class)
           raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
         end
         add_strategy(subject, method_name, definition_eval_block) do
