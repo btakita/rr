@@ -1,12 +1,12 @@
 module RR
   module DoubleDefinitions
     class Builder #:nodoc:
-      attr_reader :creator, :subject, :method_name, :args, :handler, :definition, :verification_strategy, :implementation_strategy, :scope_strategy
+      attr_reader :double_definition_creator, :subject, :method_name, :args, :handler, :definition, :verification_strategy, :implementation_strategy, :scope_strategy
       include Errors
       include Space::Reader
 
-      def initialize(creator)
-        @creator = creator
+      def initialize(double_definition_creator)
+        @double_definition_creator = double_definition_creator
         @using_instance_of_strategy = nil
         @verification_strategy = nil
         @implementation_strategy = Strategies::Implementation::Reimplementation.new
@@ -15,7 +15,7 @@ module RR
 
       def build(subject, method_name, args, handler)
         @subject, @method_name, @args, @handler = subject, method_name, args, handler
-        @definition = DoubleDefinition.new(creator, subject)
+        @definition = DoubleDefinition.new(double_definition_creator, subject)
         verification_strategy ? verification_strategy.call(definition, method_name, args, handler) : no_strategy_error
         implementation_strategy.call(definition, method_name, args, handler)
         scope_strategy.call(definition, method_name, args, handler)
