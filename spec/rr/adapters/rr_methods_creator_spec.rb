@@ -3,311 +3,145 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 module RR
   module Adapters
     describe RRMethods do
-      describe "#mock" do
-        it_should_behave_like "RR::Adapters::RRMethods"
+      attr_reader :subject
+      before(:each) do
+        @subject = Object.new
+      end
 
-        before do
-          @subject = Object.new
-          class << @subject
-            def foobar(*args)
-              :original_value
+      after(:each) do
+        RR.reset
+      end
+
+      describe "normal strategy definitions" do
+        attr_reader :strategy_method_name
+        def call_strategy(*args, &block)
+          __send__(strategy_method_name, *args, &block)
+        end
+
+        describe "#mock" do
+          before do
+            @strategy_method_name = :mock
+          end
+
+          send("normal strategy definition")
+
+          context "when passing no args" do
+            it "returns a DoubleDefinitionCreator" do
+              call_strategy.class.should == DoubleDefinitions::DoubleDefinitionCreator
+            end
+          end
+
+          context "when passed a method_name argument" do
+            it "creates a mock Double for method" do
+              double_definition = mock(subject, :foobar).returns {:baz}
+              double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+              double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+              double_definition.argument_expectation.expected_arguments.should == []
+              subject.foobar.should == :baz
             end
           end
         end
 
-        it "returns a DoubleDefinitions::DoubleDefinitionCreator when passed no arguments" do
-          mock.should be_instance_of(DoubleDefinitions::DoubleDefinitionCreator)
+        describe "#stub" do
+          before do
+            @strategy_method_name = :stub
+          end
+
+          send("normal strategy definition")
+
+          context "when passing no args" do
+            it "returns a DoubleDefinitionCreator" do
+              call_strategy.class.should == DoubleDefinitions::DoubleDefinitionCreator
+            end
+          end
+
+          context "when passed a method_name argument" do
+            it "creates a stub Double for method when passed a method_name argument" do
+              double_definition = stub(subject, :foobar).returns {:baz}
+              double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+              double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
+              subject.foobar.should == :baz
+            end
+          end
         end
 
-        it "sets up the RR mock call chain" do
-          creates_mock_call_chain(mock(@subject))
-        end
+        describe "#dont_allow" do
+          before do
+            @strategy_method_name = :dont_allow
+          end
 
-        it "#rr_mock sets up the RR mock call chain" do
-          creates_mock_call_chain(rr_mock(@subject))
-        end
+          send("normal strategy definition")
 
-        it "creates a mock Double for method when passed a second argument" do
-          creates_double_with_method_name(mock(@subject, :foobar))
-        end
+          context "when passing no args" do
+            it "returns a DoubleDefinitionCreator" do
+              call_strategy.class.should == DoubleDefinitions::DoubleDefinitionCreator
+            end
+          end
 
-        it "creates a mock Double for method when passed a second argument with rr_mock" do
-          creates_double_with_method_name(rr_mock(@subject, :foobar))
-        end
+          context "when passed a method_name argument_expectation" do
+            it "creates a mock Double for method" do
+              double_definition = dont_allow(subject, :foobar)
+              double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
+              double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
 
-        it "raises error if passed a method name and a block" do
-          lambda do
-            mock(@subject, :foobar) {}
-          end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-        end
-
-        def creates_double_with_method_name(double)
-          double.with(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          @subject.foobar(1, 2).should == :baz
-        end
-
-        def creates_mock_call_chain(creator)
-          double = creator.foobar(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          @subject.foobar(1, 2).should == :baz
+              lambda do
+                subject.foobar
+              end.should raise_error(Errors::TimesCalledError)
+              RR.reset
+            end
+          end
         end
       end
 
-      describe "#stub" do
-        it_should_behave_like "RR::Adapters::RRMethods"
+      describe "! strategy definitions" do
+        attr_reader :strategy_method_name
+        def call_strategy(*args, &definition_eval_block)
+          __send__(strategy_method_name, *args, &definition_eval_block)
+        end
 
-        before do
-          @subject = Object.new
-          class << @subject
-            def foobar(*args)
-              :original_value
+        describe "#mock!" do
+          before do
+            @strategy_method_name = :mock!
+          end
+
+          send("! strategy definition")
+
+          context "when passed a method_name argument" do
+            it "sets #verification_strategy to Mock" do
+              proxy = mock!(:foobar)
+              proxy.double_definition_creator.verification_strategy.class.should == RR::DoubleDefinitions::Strategies::Verification::Mock
             end
           end
         end
 
-        it "returns a DoubleDefinitions::DoubleDefinitionCreator when passed no arguments" do
-          stub.should be_instance_of(DoubleDefinitions::DoubleDefinitionCreator)
-        end
+        describe "#stub!" do
+          before do
+            @strategy_method_name = :stub!
+          end
 
-        it "sets up the RR stub call chain" do
-          creates_stub_call_chain(stub(@subject))
-        end
+          send("! strategy definition")
 
-        it "#rr_stub sets up the RR stub call chain" do
-          creates_stub_call_chain(rr_stub(@subject))
-        end
-
-        it "creates a stub Double for method when passed a second argument" do
-          creates_double_with_method_name(stub(@subject, :foobar))
-        end
-
-        it "#rr_stub creates a stub Double for method when passed a second argument" do
-          creates_double_with_method_name(rr_stub(@subject, :foobar))
-        end
-
-        it "raises error if passed a method name and a block" do
-          lambda do
-            stub(@subject, :foobar) {}
-          end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-        end
-
-        def creates_double_with_method_name(double)
-          double.with(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          @subject.foobar(1, 2).should == :baz
-        end
-
-        def creates_stub_call_chain(creator)
-          double = creator.foobar(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          @subject.foobar(1, 2).should == :baz
-        end
-      end
-
-      describe "#proxy and #mock" do
-        it_should_behave_like "RR::Adapters::RRMethods"
-
-        before do
-          @subject = Object.new
-          class << @subject
-            def foobar(*args)
-              :original_value
+          context "when passed a method_name argument" do
+            it "sets #verification_strategy to Stub" do
+              proxy = stub!(:foobar)
+              proxy.double_definition_creator.verification_strategy.class.should == RR::DoubleDefinitions::Strategies::Verification::Stub
             end
           end
         end
 
-        it "#proxy returns a DoubleDefinitions::DoubleDefinitionCreator when passed no arguments" do
-          proxy.should be_instance_of(DoubleDefinitions::DoubleDefinitionCreator)
-        end
+        describe "#dont_allow!" do
+          before do
+            @strategy_method_name = :dont_allow!
+          end
 
-        it "#proxy sets up the RR proxy call chain" do
-          creates_mock_proxy_call_chain(mock.proxy(@subject))
-        end
+          send("! strategy definition")
 
-        it "#rr_proxy sets up the RR proxy call chain" do
-          creates_mock_proxy_call_chain(rr_mock.proxy(@subject))
-        end
-
-        it "#mock_proxy sets up the RR proxy call chain" do
-          creates_mock_proxy_call_chain(mock.proxy(@subject))
-        end
-
-        it "#rr_mock_proxy sets up the RR proxy call chain with rr_proxy" do
-          creates_mock_proxy_call_chain(rr_mock.proxy(@subject))
-        end
-
-        it "#proxy creates a mock Double for method when passed a second argument" do
-          creates_double_with_method_name(mock.proxy(@subject, :foobar))
-        end
-
-        it "#rr_proxy creates a mock Double for method when passed a second argument with rr_mock" do
-          creates_double_with_method_name(rr_proxy.mock(@subject, :foobar))
-        end
-
-        it "#mock_proxy creates a mock Double for method when passed a second argument" do
-          creates_double_with_method_name(mock.proxy(@subject, :foobar))
-        end
-
-        it "#rr_mock_proxy creates a mock Double for method when passed a second argument with rr_mock" do
-          creates_double_with_method_name(rr_mock.proxy(@subject, :foobar))
-        end
-
-        it "raises error if passed a method name and a block" do
-          lambda do
-            mock.proxy(@subject, :foobar) {}
-          end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-        end
-
-        def creates_double_with_method_name(double)
-          double.with(1, 2)
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          @subject.foobar(1, 2).should == :original_value
-        end
-
-        def creates_mock_proxy_call_chain(creator)
-          double = creator.foobar(1, 2)
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          @subject.foobar(1, 2).should == :original_value
-        end
-      end
-
-      describe "#stub and #proxy" do
-        it_should_behave_like "RR::Adapters::RRMethods"
-
-        before do
-          @subject = Object.new
-          class << @subject
-            def foobar(*args)
-              :original_value
+          context "when passed a method_name argument" do
+            it "sets #verification_strategy to DontAllow" do
+              proxy = dont_allow!(:foobar)
+              proxy.double_definition_creator.verification_strategy.class.should == RR::DoubleDefinitions::Strategies::Verification::DontAllow
             end
           end
-        end
-
-        it "returns a DoubleDefinitions::DoubleDefinitionCreator when passed no arguments" do
-          stub.proxy.should be_instance_of(DoubleDefinitions::DoubleDefinitionCreator)
-        end
-
-        it "sets up the RR proxy call chain" do
-          creates_stub_proxy_call_chain(stub.proxy(@subject))
-        end
-
-        it "sets up the RR proxy call chain" do
-          creates_stub_proxy_call_chain(rr_stub.proxy(@subject))
-        end
-
-        it "#stub.proxy creates a stub Double for method when passed a second argument" do
-          creates_double_with_method_name(stub.proxy(@subject, :foobar))
-        end
-
-        it "#rr_stub.proxy creates a stub Double for method when passed a second argument with rr_stub" do
-          creates_double_with_method_name(rr_stub.proxy(@subject, :foobar))
-        end
-
-        it "raises error if passed a method name and a block" do
-          lambda do
-            stub.proxy(@subject, :foobar) {}
-          end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-        end
-
-        def creates_double_with_method_name(double)
-          double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-          double.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
-
-          @subject.foobar(:something).should == :original_value
-        end
-
-        def creates_stub_proxy_call_chain(creator)
-          double = creator.foobar
-          double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-          double.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
-
-          @subject.foobar(1, 2).should == :original_value
-        end
-      end
-
-      describe "#do_not_allow" do
-        it_should_behave_like "RR::Adapters::RRMethods"
-
-        before do
-          @subject = Object.new
-          class << @subject
-            def foobar(*args)
-              :original_value
-            end
-          end
-        end
-
-        it "returns a DoubleDefinitions::DoubleDefinitionCreator when passed no arguments" do
-          do_not_allow.should be_instance_of(DoubleDefinitions::DoubleDefinitionCreator)
-        end
-
-        it "sets up the RR do_not_allow call chain" do
-          creates_do_not_allow_call_chain(dont_allow(@subject))
-          creates_do_not_allow_call_chain(rr_dont_allow(@subject))
-          creates_do_not_allow_call_chain(dont_call(@subject))
-          creates_do_not_allow_call_chain(rr_dont_call(@subject))
-          creates_do_not_allow_call_chain(do_not_allow(@subject))
-          creates_do_not_allow_call_chain(rr_do_not_allow(@subject))
-          creates_do_not_allow_call_chain(dont_allow(@subject))
-          creates_do_not_allow_call_chain(rr_dont_allow(@subject))
-        end
-
-        it "creates a mock Double for method when passed a second argument" do
-          creates_double_with_method_name(dont_allow(@subject, :foobar))
-          creates_double_with_method_name(rr_dont_allow(@subject, :foobar))
-          creates_double_with_method_name(dont_call(@subject, :foobar))
-          creates_double_with_method_name(rr_dont_call(@subject, :foobar))
-          creates_double_with_method_name(do_not_allow(@subject, :foobar))
-          creates_double_with_method_name(rr_do_not_allow(@subject, :foobar))
-          creates_double_with_method_name(dont_allow(@subject, :foobar))
-          creates_double_with_method_name(rr_dont_allow(@subject, :foobar))
-        end
-
-        it "raises error if passed a method name and a block" do
-          lambda do
-            do_not_allow(@subject, :foobar) {}
-          end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-        end
-
-        def creates_double_with_method_name(double)
-          double.with(1, 2)
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          lambda do
-            @subject.foobar(1, 2)
-          end.should raise_error(Errors::TimesCalledError)
-          reset
-          nil
-        end
-
-        def creates_do_not_allow_call_chain(creator)
-          double = creator.foobar(1, 2)
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          lambda do
-            @subject.foobar(1, 2)
-          end.should raise_error(Errors::TimesCalledError)
-          reset
-          nil
         end
       end
     end

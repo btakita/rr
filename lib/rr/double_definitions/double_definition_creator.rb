@@ -45,6 +45,9 @@ module RR
         def dont_allow!(method_name=nil, &definition_eval_block)
           dont_allow(Object.new, method_name, &definition_eval_block)
         end
+        alias_method :do_not_allow!, :dont_allow!
+        alias_method :dont_call!, :dont_allow!
+        alias_method :do_not_call!, :dont_allow!
 
         def proxy(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
           add_strategy(subject, method_name, definition_eval_block) do
