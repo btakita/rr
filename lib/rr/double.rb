@@ -212,20 +212,6 @@ module RR
       definition.implemented_by implementation
     end
 
-    # Double#proxy sets the implementation
-    # of the Double to be the original method.
-    # This is primarily used with proxy.
-    #
-    #   obj = Object.new
-    #   def obj.foobar
-    #     yield(1)
-    #   end
-    #   mock(obj).method_name.implemented_by_original_method
-    #   obj.foobar {|arg| puts arg} # puts 1
-    def implemented_by_original_method
-      definition.implemented_by_original_method
-    end
-
     # Double#call calls the Double's implementation. The return
     # value of the implementation is returned.
     #
@@ -254,8 +240,7 @@ module RR
     protected :yields!
 
     def call_implementation(double_injection, *args, &block)
-      return nil unless implementation
-      return_value = extract_return_value(double_injection, *args, &block)
+      return_value = do_call_implementation_and_get_return_value(double_injection, *args, &block)
       extract_subject_from_return_value(return_value)
     end
     protected :call_implementation
@@ -335,8 +320,8 @@ module RR
     end
 
     protected
-    def extract_return_value(double_injection, *args, &block)
-      if implementation === DoubleDefinitions::DoubleDefinition::ORIGINAL_METHOD
+    def do_call_implementation_and_get_return_value(double_injection, *args, &block)
+      if definition.implementation_is_original_method?
         if double_injection.object_has_original_method?
           double_injection.call_original_method(*args, &block)
         else
@@ -350,9 +335,11 @@ module RR
       else
         if implementation.is_a?(Method)
           implementation.call(*args, &block)
-        else
+        elsif implementation
           args << block if block
           implementation.call(*args)
+        else
+          nil
         end
       end
     end

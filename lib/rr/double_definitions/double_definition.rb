@@ -167,15 +167,22 @@ module RR
         argument_expectation.expected_arguments
       end
 
+      def implementation_is_original_method?
+        implementation_strategy.is_a?(Strategies::Implementation::Proxy)
+      end
+
       protected
       def install_method_callback(block)
         return unless block
-        case double_definition_creator.implementation_strategy
-        when Strategies::Implementation::Reimplementation
-          returns(&block)
-        when Strategies::Implementation::Proxy
+        if implementation_is_original_method?
           after_call(&block)
+        else
+          returns(&block)
         end
+      end
+
+      def implementation_strategy
+        double_definition_creator.implementation_strategy
       end
     end    
   end
