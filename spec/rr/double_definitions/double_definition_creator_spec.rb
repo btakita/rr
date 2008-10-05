@@ -304,19 +304,24 @@ module RR
             end.should raise_error(Errors::DoubleDefinitionError, "This Double has no strategy")
           end
         end
-
+        
         context "when #verification_strategy is a Mock" do
           context "when #implementation_strategy is a Reimplementation" do
             before do
               creator.mock
             end
 
-            it "sets expectations on the subject" do
-              creator.create(subject, :foobar, 1, 2) {:baz}.twice
-
-              subject.foobar(1, 2).should == :baz
-              subject.foobar(1, 2).should == :baz
+            it "sets expectation on the #subject that it will be sent the method_name once with the passed-in arguments" do
+              creator.create(subject, :foobar, 1, 2)
+              subject.foobar(1, 2)
               lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+            end
+            
+            describe "#subject.method_name being called" do
+              it "returns the return value of the Double#returns block" do
+                creator.create(subject, :foobar, 1, 2) {:baz}
+                subject.foobar(1, 2).should == :baz
+              end
             end
           end
 
@@ -326,29 +331,63 @@ module RR
               creator.proxy
             end
 
-            it "sets expectations on the subject while calling the original method" do
+            it "sets expectation on the #subject that it will be sent the method_name once with the passed-in arguments" do
               def subject.foobar(*args)
                 :baz;
               end
-              creator.create(subject, :foobar, 1, 2).twice
-              subject.foobar(1, 2).should == :baz
-              subject.foobar(1, 2).should == :baz
+              creator.create(subject, :foobar, 1, 2)
+              subject.foobar(1, 2)
               lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
             end
 
-            it "sets after_call on the double when passed a block" do
-              real_value = Object.new
-              (class << subject; self; end).class_eval do
-                define_method(:foobar) {real_value}
-              end
-              creator.create(subject, :foobar, 1, 2) do |value|
-                mock(value).a_method {99}
-                value
+            describe "#subject.method_name being called" do
+              it "calls the original method" do
+                original_method_called = false
+                (class << subject; self; end).class_eval do
+                  define_method(:foobar) do |*args|
+                    original_method_called = true
+                  end
+                end
+                creator.create(subject, :foobar, 1, 2)
+                subject.foobar(1, 2)
+                original_method_called.should be_true
               end
 
-              return_value = subject.foobar(1, 2)
-              return_value.should === return_value
-              return_value.a_method.should == 99
+              context "when not passed a block" do
+                it "returns the value of the original method" do
+                  def subject.foobar(*args)
+                    :baz;
+                  end
+                  creator.create(subject, :foobar, 1, 2)
+                  subject.foobar(1, 2).should == :baz
+                end
+              end
+
+              context "when passed a block" do
+                attr_reader :real_value
+                before do
+                  @real_value = real_value = Object.new
+                  (class << subject; self; end).class_eval do
+                    define_method(:foobar) {real_value}
+                  end
+                end
+
+                it "calls the block with the return value of the original method" do
+                  creator.create(subject, :foobar, 1, 2) do |value|
+                    mock(value).a_method {99}
+                    value
+                  end
+                  subject.foobar(1, 2)
+                  real_value.a_method.should == 99
+                end
+
+                it "returns the return value of the block" do
+                  creator.create(subject, :foobar, 1, 2) do |value|
+                    :something_else
+                  end
+                  subject.foobar(1, 2).should == :something_else
+                end
+              end
             end
           end
         end
