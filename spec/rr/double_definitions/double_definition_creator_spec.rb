@@ -30,30 +30,21 @@ module RR
               creator.mock
               lambda do
                 creator.__send__(method_name)
-              end.should raise_error(
-              Errors::DoubleDefinitionError,
-              "This Double already has a mock strategy"
-              )
+              end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a mock strategy")
             end
 
             it "raises error when using stub strategy" do
               creator.stub
               lambda do
                 creator.__send__(method_name)
-              end.should raise_error(
-              Errors::DoubleDefinitionError,
-              "This Double already has a stub strategy"
-              )
+              end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a stub strategy")
             end
 
             it "raises error when using dont_allow strategy" do
               creator.dont_allow
               lambda do
                 creator.__send__(method_name)
-              end.should raise_error(
-              Errors::DoubleDefinitionError,
-              "This Double already has a dont_allow strategy"
-              )
+              end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a dont_allow strategy")
             end
           end
         end
@@ -172,10 +163,7 @@ module RR
           creator.proxy
           lambda do
             creator.dont_allow
-          end.should raise_error(
-          Errors::DoubleDefinitionError,
-          "Doubles cannot be proxied when using dont_allow strategy"
-          )
+          end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
         end
 
         it "sets up the RR dont_allow call chain" do
@@ -260,10 +248,7 @@ module RR
           creator.dont_allow
           lambda do
             creator.proxy
-          end.should raise_error(
-          Errors::DoubleDefinitionError,
-          "Doubles cannot be proxied when using dont_allow strategy"
-          )
+          end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
         end
 
         it "sets up the RR proxy call chain" do
@@ -359,10 +344,7 @@ module RR
         it "raises error" do
           lambda do
             creator.create(subject, :foobar, 1, 2)
-          end.should raise_error(
-          Errors::DoubleDefinitionError,
-          "This Double has no strategy"
-          )
+          end.should raise_error(Errors::DoubleDefinitionError, "This Double has no strategy")
         end
       end
 
@@ -432,7 +414,7 @@ module RR
 
         it "sets expectations on the subject while calling the original method" do
           def subject.foobar(*args)
-            ; :baz;
+            :baz;
           end
           creator.create(subject, :foobar, 1, 2).twice
           subject.foobar(1, 2).should == :baz

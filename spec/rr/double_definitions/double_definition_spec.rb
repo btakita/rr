@@ -340,10 +340,7 @@ module RR
             it "sets up a Times Called Expectation with 1" do
               lambda do
                 subject.foobar
-              end.should raise_error(
-              Errors::TimesCalledError,
-              "foobar()\nCalled 3 times.\nExpected at most 2 times."
-              )
+              end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected at most 2 times.")
             end
           end
         end
