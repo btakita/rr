@@ -7,7 +7,7 @@ module RR
       include Space::Reader
 
       def initialize
-        @builder = Builders::Builder.new(self)
+        @builder = Builder.new(self)
       end
 
       def mock(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc

@@ -16,7 +16,7 @@ require "#{dir}/rr/double_definitions/double_definition_creator"
 
 require "#{dir}/rr/double"
 require "#{dir}/rr/double_definitions/double_definition"
-require "#{dir}/rr/double_definitions/builders/builder"
+require "#{dir}/rr/double_definitions/builder"
 require "#{dir}/rr/double_matches"
 
 require "#{dir}/rr/expectations/argument_equality_expectation"
