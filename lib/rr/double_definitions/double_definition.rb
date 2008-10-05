@@ -148,18 +148,15 @@ module RR
       end
 
       def exact_match?(*arguments)
-        return false unless @argument_expectation
-        @argument_expectation.exact_match?(*arguments)
+        @argument_expectation ? @argument_expectation.exact_match?(*arguments) : false
       end
 
       def wildcard_match?(*arguments)
-        return false unless @argument_expectation
-        @argument_expectation.wildcard_match?(*arguments)
+        @argument_expectation ? @argument_expectation.wildcard_match?(*arguments) : false
       end
 
       def terminal?
-        return false unless @times_matcher
-        @times_matcher.terminal?
+        @times_matcher ? @times_matcher.terminal? : false
       end
 
       def expected_arguments
