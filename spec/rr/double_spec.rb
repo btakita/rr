@@ -328,25 +328,83 @@ module RR
         double.returns(:baz).should === double.definition
       end
 
-      it "sets the value of the method when passed a block" do
-        double.returns {:baz}
-        double.call(double_injection).should == :baz
+      context "when passed a block" do
+        context "when the block returns a DoubleDefinition" do
+          it "causes #call to return the #subject of the DoubleDefinition" do
+            new_subject = Object.new
+            double.returns do
+              definition = stub(new_subject).foobar
+              definition.class.should == DoubleDefinitions::DoubleDefinition
+              definition
+            end
+            double.call(double_injection).should == new_subject
+          end
+        end
+
+        context "when the block returns a DoubleDefinitionCreatorProxy" do
+          it "causes #call to return the #subject of the DoubleDefinition" do
+            new_subject = Object.new
+            double.returns do
+              proxy = stub(new_subject)
+              proxy.__subject__.should == new_subject
+              proxy
+            end
+            double.call(double_injection).should == new_subject
+          end
+        end
+
+        context "when the block returns an Object" do
+          it "causes #call to return the value of the block" do
+            double.returns {:baz}
+            double.call(double_injection).should == :baz
+          end          
+        end
       end
 
-      it "sets the value of the method when passed an argument" do
-        double.returns(:baz)
-        double.call(double_injection).should == :baz
+      context "when passed a return value argument" do
+        context "when passed a DoubleDefinition" do
+          it "causes #call to return the #subject of the DoubleDefinition" do
+            new_subject = Object.new
+            definition = stub(new_subject).foobar
+            definition.class.should == DoubleDefinitions::DoubleDefinition
+            
+            double.returns(definition)
+            double.call(double_injection).should == new_subject
+          end
+        end
+
+        context "when passed a DoubleDefinitionCreatorProxy" do
+          it "causes #call to return the #subject of the DoubleDefinition" do
+            new_subject = Object.new
+            proxy = stub(new_subject)
+            proxy.__subject__.should == new_subject
+
+            double.returns(proxy)
+            double.call(double_injection).should == new_subject
+          end
+        end
+
+        context "when passed an Object" do
+          it "causes #call to return the Object" do
+            double.returns(:baz)
+            double.call(double_injection).should == :baz
+          end
+        end
+
+        context "when passed false" do
+          it "causes #call to return false" do
+            double.returns(false)
+            double.call(double_injection).should == false
+          end
+        end        
       end
 
-      it "returns false when passed false" do
-        double.returns(false)
-        double.call(double_injection).should == false
-      end
-
-      it "raises an error when both argument and block is passed in" do
-        lambda do
-          double.returns(:baz) {:another}
-        end.should raise_error(ArgumentError, "returns cannot accept both an argument and a block")
+      context "when passed both a return value argument and a block" do
+        it "raises an error" do
+          lambda do
+            double.returns(:baz) {:another}
+          end.should raise_error(ArgumentError, "returns cannot accept both an argument and a block")
+        end
       end
     end
 
@@ -355,7 +413,7 @@ module RR
         double.implemented_by(lambda{:baz}).should === double.definition
       end
 
-      it "sets the implementation to the passed in lambda" do
+      it "sets the implementation to the passed in Proc" do
         double.implemented_by(lambda{:baz})
         double.call(double_injection).should == :baz
       end
