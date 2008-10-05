@@ -57,19 +57,6 @@ module RR
           @strategy_method_name = :mock
         end
 
-        it "sets up the RR mock call chain" do
-          creates_mock_call_chain(creator.mock(subject))
-        end
-
-        def creates_mock_call_chain(creator)
-          double = creator.foobar(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          subject.foobar(1, 2).should == :baz
-        end
-
         context "when passed a second argument" do
           it "creates a mock Double for method" do
             creates_double_with_method_name( creator.mock(subject, :foobar) )
@@ -93,10 +80,6 @@ module RR
           @strategy_method_name = :stub
         end
 
-        it "sets up the RR stub call chain" do
-          creates_stub_call_chain(creator.stub(subject))
-        end
-
         context "when passed a second argument" do
           it "creates a stub Double for method when passed a second argument" do
             creates_double_with_method_name(creator.stub(subject, :foobar))
@@ -108,13 +91,6 @@ module RR
             double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
             subject.foobar(1, 2).should == :baz
           end
-        end
-
-        def creates_stub_call_chain(creator)
-          double = creator.foobar(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          subject.foobar(1, 2).should == :baz
         end
       end
 
@@ -130,22 +106,6 @@ module RR
           lambda do
             creator.dont_allow
           end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
-        end
-
-        it "sets up the RR dont_allow call chain" do
-          creates_dont_allow_call_chain(creator.dont_allow(subject))
-        end
-
-        it "sets up the RR dont_allow call chain" do
-          creates_dont_allow_call_chain(creator.dont_call(subject))
-        end
-
-        it "sets up the RR dont_allow call chain" do
-          creates_dont_allow_call_chain(creator.do_not_allow(subject))
-        end
-
-        it "sets up the RR dont_allow call chain" do
-          creates_dont_allow_call_chain(creator.dont_allow(subject))
         end
 
         context "when passed a second argument_expectation" do
@@ -178,19 +138,6 @@ module RR
             nil
           end
         end
-
-        def creates_dont_allow_call_chain(creator)
-          double = creator.foobar(1, 2)
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          lambda do
-            subject.foobar(1, 2)
-          end.should raise_error(Errors::TimesCalledError)
-          reset
-          nil
-        end
       end
 
       describe "(#proxy or #proxy) and #stub" do
@@ -207,20 +154,6 @@ module RR
           lambda do
             creator.proxy
           end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
-        end
-
-        it "sets up the RR proxy call chain" do
-          double = creator.stub.proxy(subject).foobar(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          subject.foobar(1, 2).should == :baz
-        end
-
-        it "sets up the RR proxy call chain" do
-          double = creator.stub.proxy(subject).foobar(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          subject.foobar(1, 2).should == :baz
         end
 
         context "when passed a second argument" do
@@ -249,14 +182,6 @@ module RR
           end.should raise_error(ArgumentError, "instance_of only accepts class objects")
         end
 
-        it "sets up the RR proxy call chain" do
-          klass = Class.new
-          double = creator.stub.instance_of(klass).foobar(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          klass.new.foobar(1, 2).should == :baz
-        end
-
         context "when passed a second argument" do
           it "creates a proxy Double for method" do
             klass = Class.new
@@ -266,6 +191,39 @@ module RR
             double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
             klass.new.foobar(1, 2).should == :baz
           end
+        end
+      end
+
+      describe "#instance_of and #mock" do
+        before do
+          @klass = Class.new
+        end
+
+        it "returns a DoubleDefinitionCreator when passed no arguments" do
+          instance_of.instance_of.should be_instance_of(DoubleDefinitionCreator)
+        end
+
+        it "creates a instance_of Double for method when passed a second argument" do
+          creates_double_with_method_name(instance_of.mock(@klass, :foobar))
+        end
+
+        it "creates a instance_of Double for method when passed a second argument with rr_instance_of" do
+          creates_double_with_method_name(rr_instance_of.mock(@klass, :foobar))
+        end
+
+        it "raises error if passed a method name and a block" do
+          lambda do
+            instance_of.mock(@klass, :foobar) {}
+          end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
+        end
+
+        def creates_double_with_method_name(double)
+          double.with(1, 2) {:baz}
+          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
+          double.argument_expectation.expected_arguments.should == [1, 2]
+
+          @klass.new.foobar(1, 2).should == :baz
         end
       end
 
@@ -453,56 +411,6 @@ module RR
           end
         end
       end
-
-      describe "#instance_of and #mock" do
-        before do
-          @klass = Class.new
-        end
-
-        it "returns a DoubleDefinitionCreator when passed no arguments" do
-          instance_of.instance_of.should be_instance_of(DoubleDefinitionCreator)
-        end
-
-        it "sets up the RR instance_of call chain" do
-          creates_instance_of_call_chain(instance_of.mock(@klass))
-        end
-
-        it "#rr_instance_of sets up the RR instance_of call chain" do
-          creates_instance_of_call_chain(rr_instance_of.mock(@klass))
-        end
-
-        it "creates a instance_of Double for method when passed a second argument" do
-          creates_double_with_method_name(instance_of.mock(@klass, :foobar))
-        end
-
-        it "creates a instance_of Double for method when passed a second argument with rr_instance_of" do
-          creates_double_with_method_name(rr_instance_of.mock(@klass, :foobar))
-        end
-
-        it "raises error if passed a method name and a block" do
-          lambda do
-            instance_of.mock(@klass, :foobar) {}
-          end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-        end
-
-        def creates_double_with_method_name(double)
-          double.with(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          @klass.new.foobar(1, 2).should == :baz
-        end
-
-        def creates_instance_of_call_chain(creator)
-          double = creator.foobar(1, 2) {:baz}
-          double.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
-          double.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-          double.argument_expectation.expected_arguments.should == [1, 2]
-
-          @klass.new.foobar(1, 2).should == :baz
-        end
-      end      
     end
   end
 end
