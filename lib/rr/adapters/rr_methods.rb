@@ -45,6 +45,11 @@ module RR
         creator.mock(subject, method_name, &definition_eval_block)
       end
 
+      def mock!(method_name=nil, &definition_eval_block)
+        creator = DoubleDefinitions::DoubleDefinitionCreator.new
+        creator.mock!(method_name, &definition_eval_block)
+      end
+
 
       # This method sets the Double to have a stub strategy. A stub strategy
       # sets the default state of the Double to expect the method call
@@ -77,6 +82,11 @@ module RR
       def stub(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
         creator = DoubleDefinitions::DoubleDefinitionCreator.new
         creator.stub(subject, method_name, &definition_eval_block)
+      end
+
+      def stub!(method_name=nil, &definition_eval_block)
+        creator = DoubleDefinitions::DoubleDefinitionCreator.new
+        creator.stub!(method_name, &definition_eval_block)
       end
 
       # This method add proxy capabilities to the Double. proxy can be called
@@ -129,6 +139,11 @@ module RR
         creator.proxy(subject, method_name, &definition_eval_block)
       end
 
+      def proxy!(method_name=nil, &definition_eval_block)
+        creator = DoubleDefinitions::DoubleDefinitionCreator.new
+        creator.proxy!(method_name, &definition_eval_block)
+      end
+
       # This method sets the Double to have a dont_allow strategy.
       # A dont_allow strategy sets the default state of the Double
       # to expect never to be called. The Double's expectations can be
@@ -152,6 +167,14 @@ module RR
       alias_method :do_not_allow, :dont_allow
       alias_method :dont_call, :dont_allow
       alias_method :do_not_call, :dont_allow
+
+      def dont_allow!(method_name=nil, &definition_eval_block)
+        creator = DoubleDefinitions::DoubleDefinitionCreator.new
+        creator.dont_allow!(method_name, &definition_eval_block)
+      end
+      alias_method :do_not_allow!, :dont_allow!
+      alias_method :dont_call!, :dont_allow!
+      alias_method :do_not_call!, :dont_allow!
 
       # Calling instance_of will cause all instances of the passed in Class
       # to have the Double defined.
