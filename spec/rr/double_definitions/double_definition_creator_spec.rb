@@ -113,7 +113,7 @@ module RR
         end
       end
 
-      describe "(#proxy or #proxy) and #stub" do
+      describe "#stub.proxy" do
         before do
           class << subject
             def foobar(*args)
@@ -122,11 +122,13 @@ module RR
           end
         end
 
-        it "raises error when using dont_allow strategy" do
-          creator.dont_allow
-          lambda do
-            creator.proxy
-          end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
+        context "when already using Strategies::Verification::DontAllow" do
+          it "raises error" do
+            creator.dont_allow
+            lambda do
+              creator.proxy
+            end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
+          end
         end
 
         context "when passed a method_name argument" do
@@ -140,10 +142,12 @@ module RR
       end
 
       describe "#instance_of" do
-        it "raises an error when not passed a class" do
-          lambda do
-            creator.instance_of(Object.new)
-          end.should raise_error(ArgumentError, "instance_of only accepts class objects")
+        context "when not passed a class" do
+          it "raises an error" do
+            lambda do
+              creator.instance_of(Object.new)
+            end.should raise_error(ArgumentError, "instance_of only accepts class objects")
+          end
         end
 
         context "when passed a method_name argument" do
@@ -157,7 +161,7 @@ module RR
         end
       end
 
-      describe "#instance_of and #mock" do
+      describe "#instance_of.mock" do
         before do
           @klass = Class.new
         end
