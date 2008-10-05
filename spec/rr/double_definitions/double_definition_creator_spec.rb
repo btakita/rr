@@ -5,40 +5,38 @@ module RR
     describe DoubleDefinitionCreator do
       class << self
         define_method("DoubleDefinitionCreator strategy definition") do
-          describe DoubleDefinitionCreator do
-            describe "strategy definition" do
-              def call_strategy(*args, &block)
-                creator.__send__(strategy_method_name, *args, &block)
-              end
+          describe "strategy definition" do
+            def call_strategy(*args, &block)
+              creator.__send__(strategy_method_name, *args, &block)
+            end
 
-              context "when passing no args" do
-                it "returns self" do
-                  call_strategy.should === creator
-                end
+            context "when passing no args" do
+              it "returns self" do
+                call_strategy.should === creator
               end
+            end
 
-              context "when passed a subject" do
-                it "returns a DoubleDefinitionCreatorProxy" do
-                  double = call_strategy(subject).foobar
-                  double.should be_instance_of(DoubleDefinition)
-                end
+            context "when passed a subject" do
+              it "returns a DoubleDefinitionCreatorProxy" do
+                double = call_strategy(subject).foobar
+                double.should be_instance_of(DoubleDefinition)
               end
+            end
 
-              context "when passed a method name and a block" do
-                it "raises an ArgumentError" do
-                  lambda do
-                    call_strategy(subject, :foobar) {}
-                  end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
-                end
+            context "when passed a method name and a block" do
+              it "raises an ArgumentError" do
+                lambda do
+                  call_strategy(subject, :foobar) {}
+                end.should raise_error(ArgumentError, "Cannot pass in a method name and a block")
               end
+            end
 
-              context "when already using an ImplementationStrategy" do
-                it "raises a DoubleDefinitionError" do
-                  creator.mock
-                  lambda do
-                    call_strategy
-                  end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a mock strategy")
-                end
+            context "when already using an ImplementationStrategy" do
+              it "raises a DoubleDefinitionError" do
+                creator.mock
+                lambda do
+                  call_strategy
+                end.should raise_error(Errors::DoubleDefinitionError, "This Double already has a mock strategy")
               end
             end
           end
