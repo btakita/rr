@@ -427,62 +427,6 @@ module RR
       end
     end
 
-    describe "#implemented_by_original_method" do
-      it "returns the DoubleDefinition subject" do
-        double.implemented_by_original_method.should === double.definition
-      end
-
-      it "sets the implementation to the original method" do
-        double.implemented_by_original_method
-        double.call(double_injection, 1, 2).should == [2, 1]
-      end
-
-      context "when respond_to? is true and methods does not contain original method" do
-        it "calls methods" do
-          method_name = nil
-          class << subject
-            def methods
-              []
-            end
-            def method(name)
-              raise "We should not be here"
-            end
-            def respond_to?(name)
-              true
-            end
-            def method_missing(method_name, *args, &block)
-              raise "We should not be here"
-            end
-          end
-
-          double.with_any_args
-          double.implemented_by_original_method
-
-          subject.foobar(1, 2).should == [2, 1]
-        end        
-      end
-
-      context "when original_method does not exist" do
-        def create_double_injection
-          space.double_injection(subject, :does_not_exist)
-        end
-
-        it "calls method" do
-          class << subject
-            def method_missing(method_name, *args, &block)
-              "method_missing for #{method_name}(#{args.inspect})"
-            end
-          end
-
-          double.with_any_args
-          double.implemented_by_original_method
-
-          return_value = subject.does_not_exist(1, 2)
-          return_value.should == "method_missing for does_not_exist([1, 2])"
-        end
-      end
-    end
-
     describe "#call" do
       describe "when verbose" do
         it "prints the message call" do

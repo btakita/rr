@@ -14,7 +14,7 @@ module RR
 
         define_method("DoubleDefinition where #double_definition_creator is a Proxy") do
           before do
-            definition.implemented_by_original_method
+#            definition.implemented_by_original_method
             definition.double_definition_creator.proxy
             definition.double_definition_creator.implementation_strategy.class.should == Strategies::Implementation::Proxy
             call_double_injection
@@ -676,32 +676,6 @@ module RR
           end
           definition.implemented_by(subject.method(:foobar))
           subject.foobar(1, 2).should == [2, 1]
-        end
-      end
-
-      describe "#implemented_by_original_method" do
-        it "returns self" do
-          definition.implemented_by_original_method.should === definition
-        end
-
-        it "sets the implementation to the original method" do
-          definition.implemented_by_original_method.with_any_args
-          subject.foobar(1, 2).should == :original_return_value
-        end
-
-        it "calls method_missing when original_method does not exist" do
-          class << subject
-            def method_missing(method_name, *args, &block)
-              "method_missing for #{method_name}(#{args.inspect})"
-            end
-          end
-          double_injection = Space.instance.double_injection(subject, :does_not_exist)
-          double = new_double(double_injection)
-          double.with_any_args
-          double.implemented_by_original_method
-
-          return_value = subject.does_not_exist(1, 2)
-          return_value.should == "method_missing for does_not_exist([1, 2])"
         end
       end
 
