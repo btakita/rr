@@ -8,16 +8,16 @@ module RR
         define_method("DoubleDefinition where #double_definition_creator is a Reimplementation") do
           before do
             definition.double_definition_creator.implementation_strategy.class.should == Strategies::Implementation::Reimplementation
-            create_definition
+            call_double_injection
           end
         end
 
         define_method("DoubleDefinition where #double_definition_creator is a Proxy") do
           before do
-            definition.proxy
+            definition.implemented_by_original_method
             definition.double_definition_creator.proxy
             definition.double_definition_creator.implementation_strategy.class.should == Strategies::Implementation::Proxy
-            create_definition
+            call_double_injection
           end
         end
       end
@@ -52,7 +52,7 @@ module RR
           end
         end
 
-        def create_definition
+        def call_double_injection
           actual_args = nil
           definition.with(1, 2) do |*args|
             actual_args = args
@@ -98,7 +98,7 @@ module RR
           end
         end
 
-        def create_definition
+        def call_double_injection
           actual_args = nil
           definition.with_any_args do |*args|
             actual_args = args
@@ -148,7 +148,7 @@ module RR
           end
         end
 
-        def create_definition
+        def call_double_injection
           actual_args = nil
           definition.with_no_args do |*args|
             actual_args = args
@@ -209,7 +209,7 @@ module RR
           end
         end
 
-        def create_definition
+        def call_double_injection
           actual_args = nil
           definition.with_any_args.once do |*args|
             actual_args = args
@@ -254,7 +254,7 @@ module RR
           end
         end
 
-        def create_definition
+        def call_double_injection
           actual_args = nil
           definition.with_any_args.twice do |*args|
             actual_args = args
@@ -299,7 +299,7 @@ module RR
           end
         end
 
-        def create_definition
+        def call_double_injection
           actual_args = nil
           definition.with_any_args.at_least(2) do |*args|
             actual_args = args
@@ -346,7 +346,7 @@ module RR
           end
         end
 
-        def create_definition
+        def call_double_injection
           actual_args = nil
           definition.with_any_args.at_most(2) do |*args|
             actual_args = args
@@ -391,7 +391,7 @@ module RR
           end
         end
 
-        def create_definition
+        def call_double_injection
           actual_args = nil
           definition.with(1, 2).times(3) do |*args|
             actual_args = args
@@ -437,7 +437,7 @@ module RR
           end
         end
 
-        def create_definition
+        def call_double_injection
           actual_args = nil
           definition.with(1, 2).any_number_of_times do |*args|
             actual_args = args
@@ -500,7 +500,7 @@ module RR
           end
         end
 
-        def create_definition
+        def call_double_injection
           actual_args = nil
           definition.with(1, 2).once.ordered do |*args|
             actual_args = args
@@ -550,7 +550,7 @@ module RR
           end
         end
 
-        def create_definition
+        def call_double_injection
           actual_args = nil
           definition.with(1, 2).once.yields(:baz) do |*args|
             actual_args = args
@@ -679,13 +679,13 @@ module RR
         end
       end
 
-      describe "#proxy" do
-        it "returns the DoubleDefinition subject" do
-          definition.proxy.should === definition
+      describe "#implemented_by_original_method" do
+        it "returns self" do
+          definition.implemented_by_original_method.should === definition
         end
 
         it "sets the implementation to the original method" do
-          definition.proxy.with_any_args
+          definition.implemented_by_original_method.with_any_args
           subject.foobar(1, 2).should == :original_return_value
         end
 
@@ -698,7 +698,7 @@ module RR
           double_injection = Space.instance.double_injection(subject, :does_not_exist)
           double = new_double(double_injection)
           double.with_any_args
-          double.proxy
+          double.implemented_by_original_method
 
           return_value = subject.does_not_exist(1, 2)
           return_value.should == "method_missing for does_not_exist([1, 2])"

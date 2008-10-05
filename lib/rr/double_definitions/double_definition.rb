@@ -12,7 +12,6 @@ module RR
         :double_definition_creator,
         :subject
       )
-      attr_reader :block_callback_strategy
 
       include Space::Reader
 
@@ -138,7 +137,7 @@ module RR
         self
       end
 
-      def proxy
+      def implemented_by_original_method
         implemented_by ORIGINAL_METHOD
         self
       end
