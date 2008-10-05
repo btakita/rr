@@ -1,7 +1,7 @@
 module RR
   module DoubleDefinitions
     class Builder #:nodoc:
-      attr_reader :creator, :subject, :method_name, :args, :handler, :definition, :core_strategy
+      attr_reader :creator, :subject, :method_name, :args, :handler, :definition, :verification_strategy
       include Errors
       include Space::Reader
 
@@ -9,7 +9,7 @@ module RR
         @creator = creator
         @using_proxy_strategy = false
         @using_instance_of_strategy = nil
-        @core_strategy = nil
+        @verification_strategy = nil
       end
 
       def build(subject, method_name, args, handler)
@@ -17,20 +17,20 @@ module RR
         @definition = DoubleDefinition.new(creator, subject)
         create_double
         verify_strategy
-        send(@core_strategy)
+        verification_strategy.call(definition, args, handler)
         using_proxy_strategy?? proxy : reimplementation
         @definition
       end
 
-      def core_strategy=(strategy)
-        verify_no_core_strategy
-        @core_strategy = strategy
-        proxy_when_dont_allow_error if strategy == :dont_allow && @using_proxy_strategy
-        strategy
+      def verification_strategy=(verification_strategy)
+        verify_no_verification_strategy
+        @verification_strategy = verification_strategy
+        proxy_when_dont_allow_error if verification_strategy.is_a?(Strategies::DontAllow) && @using_proxy_strategy
+        verification_strategy
       end
 
       def use_proxy_strategy
-        proxy_when_dont_allow_error if @core_strategy == :dont_allow
+        proxy_when_dont_allow_error if verification_strategy.is_a?(Strategies::DontAllow)
         @using_proxy_strategy = true
       end
 
@@ -68,24 +68,9 @@ module RR
         end
 
         instance_of_subject_builder = Builder.new(creator)
-        instance_of_subject_builder.core_strategy = :stub
+        instance_of_subject_builder.verification_strategy = Strategies::Stub.new
         instance_of_subject_builder.use_proxy_strategy
         instance_of_subject_builder.build(subject, :new, [], class_handler)
-      end
-
-      def mock
-        @definition.with(*@args).once
-      end
-
-      def stub
-        @definition.any_number_of_times
-        permissive_argument
-      end
-
-      def dont_allow
-        @definition.never
-        permissive_argument
-        reimplementation
       end
 
       def permissive_argument
@@ -106,14 +91,14 @@ module RR
         @definition.after_call(&@handler) if @handler
       end
 
-      def verify_no_core_strategy
-        strategy_already_defined_error if @core_strategy
+      def verify_no_verification_strategy
+        strategy_already_defined_error if verification_strategy
       end
 
       def strategy_already_defined_error
         raise(
           DoubleDefinitionError,
-          "This Double already has a #{@core_strategy} strategy"
+          "This Double already has a #{verification_strategy.name} strategy"
         )
       end
 
@@ -125,7 +110,7 @@ module RR
       end
 
       def verify_strategy
-        no_strategy_error unless @core_strategy
+        no_strategy_error unless verification_strategy
       end
 
       def no_strategy_error
