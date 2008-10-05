@@ -296,143 +296,149 @@ module RR
         end
       end
 
-      describe "#create using no strategy" do
-        it "raises error" do
-          lambda do
+      describe "#create" do
+        context "when #verification_strategy is not set" do
+          it "raises a DoubleDefinitionError" do
+            lambda do
+              creator.create(subject, :foobar, 1, 2)
+            end.should raise_error(Errors::DoubleDefinitionError, "This Double has no strategy")
+          end
+        end
+
+        context "when #verification_strategy is a Mock" do
+          context "when #implementation_strategy is a Reimplementation" do
+            before do
+              creator.mock
+            end
+
+            it "sets expectations on the subject" do
+              creator.create(subject, :foobar, 1, 2) {:baz}.twice
+
+              subject.foobar(1, 2).should == :baz
+              subject.foobar(1, 2).should == :baz
+              lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+            end
+          end
+
+          context "when #implementation_strategy is a Proxy" do
+            before do
+              creator.mock
+              creator.proxy
+            end
+
+            it "sets expectations on the subject while calling the original method" do
+              def subject.foobar(*args)
+                :baz;
+              end
+              creator.create(subject, :foobar, 1, 2).twice
+              subject.foobar(1, 2).should == :baz
+              subject.foobar(1, 2).should == :baz
+              lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+            end
+
+            it "sets after_call on the double when passed a block" do
+              real_value = Object.new
+              (class << subject; self; end).class_eval do
+                define_method(:foobar) {real_value}
+              end
+              creator.create(subject, :foobar, 1, 2) do |value|
+                mock(value).a_method {99}
+                value
+              end
+
+              return_value = subject.foobar(1, 2)
+              return_value.should === return_value
+              return_value.a_method.should == 99
+            end
+          end
+        end
+
+        context "when #verification_strategy is a Stub" do
+          context "when #implementation_strategy is a Reimplementation" do
+            before do
+              creator.stub
+            end
+
+            it "stubs the subject without any args" do
+              creator.create(subject, :foobar) {:baz}
+              subject.foobar.should == :baz
+            end
+
+            it "stubs the subject mapping passed in args with the output" do
+              creator.create(subject, :foobar, 1, 2) {:one_two}
+              creator.create(subject, :foobar, 1) {:one}
+              creator.create(subject, :foobar) {:nothing}
+              subject.foobar.should == :nothing
+              subject.foobar(1).should == :one
+              subject.foobar(1, 2).should == :one_two
+            end
+          end
+
+          context "when #implementation_strategy is a Proxy" do
+            before do
+              creator.stub
+              creator.proxy
+            end
+
+            it "sets up a double with passed in arguments" do
+              def subject.foobar(*args)
+                :baz
+              end
+              creator.create(subject, :foobar, 1, 2)
+              lambda do
+                subject.foobar
+              end.should raise_error(Errors::DoubleNotFoundError)
+            end
+
+            it "sets expectations on the subject while calling the original method" do
+              def subject.foobar(*args)
+                :baz
+              end
+              creator.create(subject, :foobar, 1, 2) {:new_value}
+              10.times do
+                subject.foobar(1, 2).should == :new_value
+              end
+            end
+
+            it "sets after_call on the double when passed a block" do
+              real_value = Object.new
+              (class << subject; self; end).class_eval do
+                define_method(:foobar) {real_value}
+              end
+              creator.create(subject, :foobar, 1, 2) do |value|
+                mock(value).a_method {99}
+                value
+              end
+
+              return_value = subject.foobar(1, 2)
+              return_value.should === return_value
+              return_value.a_method.should == 99
+            end
+          end
+        end
+
+        context "when #verification_strategy is a DontAllow" do
+          before do
+            creator.dont_allow
+          end
+
+          it "sets expectation for method to never be called with any arguments when on arguments passed in" do
+            creator.create(subject, :foobar)
+            lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
+            lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+          end
+
+          it "sets expectation for method to never be called with passed in arguments" do
             creator.create(subject, :foobar, 1, 2)
-          end.should raise_error(Errors::DoubleDefinitionError, "This Double has no strategy")
-        end
-      end
-
-      describe "#create using mock strategy" do
-        before do
-          creator.mock
-        end
-
-        it "sets expectations on the subject" do
-          creator.create(subject, :foobar, 1, 2) {:baz}.twice
-
-          subject.foobar(1, 2).should == :baz
-          subject.foobar(1, 2).should == :baz
-          lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
-        end
-      end
-
-      describe "#create using stub strategy" do
-        before do
-          creator.stub
-        end
-
-        it "stubs the subject without any args" do
-          creator.create(subject, :foobar) {:baz}
-          subject.foobar.should == :baz
-        end
-
-        it "stubs the subject mapping passed in args with the output" do
-          creator.create(subject, :foobar, 1, 2) {:one_two}
-          creator.create(subject, :foobar, 1) {:one}
-          creator.create(subject, :foobar) {:nothing}
-          subject.foobar.should == :nothing
-          subject.foobar(1).should == :one
-          subject.foobar(1, 2).should == :one_two
-        end
-      end
-
-      describe "#create using dont_allow strategy" do
-        before do
-          creator.dont_allow
-        end
-
-        it "sets expectation for method to never be called with any arguments when on arguments passed in" do
-          creator.create(subject, :foobar)
-          lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
-          lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
-        end
-
-        it "sets expectation for method to never be called with passed in arguments" do
-          creator.create(subject, :foobar, 1, 2)
-          lambda {subject.foobar}.should raise_error(Errors::DoubleNotFoundError)
-          lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
-        end
-
-        it "sets expectation for method to never be called with no arguments when with_no_args is set" do
-          creator.create(subject, :foobar).with_no_args
-          lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
-          lambda {subject.foobar(1, 2)}.should raise_error(Errors::DoubleNotFoundError)
-        end
-      end
-
-      describe "#create using mock strategy with proxy" do
-        before do
-          creator.mock
-          creator.proxy
-        end
-
-        it "sets expectations on the subject while calling the original method" do
-          def subject.foobar(*args)
-            :baz;
-          end
-          creator.create(subject, :foobar, 1, 2).twice
-          subject.foobar(1, 2).should == :baz
-          subject.foobar(1, 2).should == :baz
-          lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
-        end
-
-        it "sets after_call on the double when passed a block" do
-          real_value = Object.new
-          (class << subject; self; end).class_eval do
-            define_method(:foobar) {real_value}
-          end
-          creator.create(subject, :foobar, 1, 2) do |value|
-            mock(value).a_method {99}
-            value
+            lambda {subject.foobar}.should raise_error(Errors::DoubleNotFoundError)
+            lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
           end
 
-          return_value = subject.foobar(1, 2)
-          return_value.should === return_value
-          return_value.a_method.should == 99
-        end
-      end
-
-      describe "#create using stub strategy with proxy" do
-        before do
-          creator.stub
-          creator.proxy
-        end
-
-        it "sets up a double with passed in arguments" do
-          def subject.foobar(*args)
-            :baz
+          it "sets expectation for method to never be called with no arguments when with_no_args is set" do
+            creator.create(subject, :foobar).with_no_args
+            lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
+            lambda {subject.foobar(1, 2)}.should raise_error(Errors::DoubleNotFoundError)
           end
-          creator.create(subject, :foobar, 1, 2)
-          lambda do
-            subject.foobar
-          end.should raise_error(Errors::DoubleNotFoundError)
-        end
-
-        it "sets expectations on the subject while calling the original method" do
-          def subject.foobar(*args)
-            :baz
-          end
-          creator.create(subject, :foobar, 1, 2) {:new_value}
-          10.times do
-            subject.foobar(1, 2).should == :new_value
-          end
-        end
-
-        it "sets after_call on the double when passed a block" do
-          real_value = Object.new
-          (class << subject; self; end).class_eval do
-            define_method(:foobar) {real_value}
-          end
-          creator.create(subject, :foobar, 1, 2) do |value|
-            mock(value).a_method {99}
-            value
-          end
-
-          return_value = subject.foobar(1, 2)
-          return_value.should === return_value
-          return_value.a_method.should == 99
         end
       end
 
