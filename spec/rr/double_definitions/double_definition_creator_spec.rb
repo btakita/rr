@@ -385,8 +385,6 @@ module RR
                 creator.create(subject, :foobar)
                 subject.foobar.should be_nil
               end
-<<<<<<< HEAD:spec/rr/double_definitions/double_definition_creator_spec.rb
-=======
             end
 
             context "when passed a block" do
@@ -396,21 +394,8 @@ module RR
                   subject.foobar.should == :baz
                 end
               end
->>>>>>> 7f490643411d8b073d80a7bfb6ea591183a5da43:spec/rr/double_definitions/double_definition_creator_spec.rb
             end
 
-<<<<<<< HEAD:spec/rr/double_definitions/double_definition_creator_spec.rb
-            context "when passed a block" do
-              describe "#subject.method_name being called" do
-                it "returns the return value of the block" do
-                  creator.create(subject, :foobar) {:baz}
-                  subject.foobar.should == :baz
-                end
-              end
-            end
-
-=======
->>>>>>> 7f490643411d8b073d80a7bfb6ea591183a5da43:spec/rr/double_definitions/double_definition_creator_spec.rb
             context "when not passed args" do
               describe "#subject.method_name being called with any arguments" do
                 it "invokes the implementation of the Stub" do
