@@ -12,14 +12,12 @@ module RR
         creator.mock
       end
 
-      class << self
-        define_method("initializes proxy with passed in creator") do
-          it "initializes proxy with passed in creator" do
-            class << the_proxy
-              attr_reader :creator
-            end
-            the_proxy.creator.should === creator
+      macro("initializes proxy with passed in creator") do
+        it "initializes proxy with passed in creator" do
+          class << the_proxy
+            attr_reader :creator
           end
+          the_proxy.creator.should === creator
         end
       end
 

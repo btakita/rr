@@ -4,20 +4,18 @@ module RR
   module DoubleDefinitions
     describe DoubleDefinition do
       attr_reader :subject, :double_injection, :double, :definition
-      class << self
-        define_method("DoubleDefinition where #double_definition_creator is a Reimplementation") do
-          before do
-            definition.double_definition_creator.implementation_strategy.class.should == Strategies::Implementation::Reimplementation
-            call_double_injection
-          end
+      macro("DoubleDefinition where #double_definition_creator is a Reimplementation") do
+        before do
+          definition.double_definition_creator.implementation_strategy.class.should == Strategies::Implementation::Reimplementation
+          call_double_injection
         end
+      end
 
-        define_method("DoubleDefinition where #double_definition_creator is a Proxy") do
-          before do
-            definition.double_definition_creator.proxy
-            definition.double_definition_creator.implementation_strategy.class.should == Strategies::Implementation::Proxy
-            call_double_injection
-          end
+      macro("DoubleDefinition where #double_definition_creator is a Proxy") do
+        before do
+          definition.double_definition_creator.proxy
+          definition.double_definition_creator.implementation_strategy.class.should == Strategies::Implementation::Proxy
+          call_double_injection
         end
       end
 
@@ -38,17 +36,27 @@ module RR
       end
 
       describe "#with" do
-        class << self
-          define_method "#with" do
-            it "returns DoubleDefinition" do
-              definition.with(1).should === definition
-            end
-
-            it "sets an ArgumentEqualityExpectation" do
-              definition.should be_exact_match(1, 2)
-              definition.should_not be_exact_match(2)
-            end
+        macro("#with") do
+          it "returns DoubleDefinition" do
+            definition.with(1).should === definition
           end
+
+          it "sets an ArgumentEqualityExpectation" do
+            definition.should be_exact_match(1, 2)
+            definition.should_not be_exact_match(2)
+          end
+        end
+
+        context "when passed not a block" do
+          before do
+            actual_args = nil
+            definition.with(1, 2)
+            subject.foobar(1, 2)
+            @return_value = subject.foobar(1, 2)
+            @args = actual_args
+          end
+
+          send "#with"
         end
 
         context "when passed a block" do
@@ -90,17 +98,26 @@ module RR
       end
 
       describe "#with_any_args" do
-        class << self
-          define_method "#with_any_args" do
-            it "returns DoubleDefinition" do
-              definition.with_no_args.should === definition
-            end
-
-            it "sets an AnyArgumentExpectation" do
-              definition.should_not be_exact_match(1)
-              definition.should be_wildcard_match(1)
-            end
+        macro "#with_any_args" do
+          it "returns DoubleDefinition" do
+            definition.with_no_args.should === definition
           end
+
+          it "sets an AnyArgumentExpectation" do
+            definition.should_not be_exact_match(1)
+            definition.should be_wildcard_match(1)
+          end
+        end
+
+        context "when not passed a block" do
+          before do
+            actual_args = nil
+            definition.with_any_args
+            @return_value = subject.foobar(1, 2)
+            @args = actual_args
+          end
+
+          send "#with_any_args"
         end
 
         context "when passed a block" do
@@ -141,15 +158,13 @@ module RR
       end
 
       describe "#with_no_args" do
-        class << self
-          define_method "#with_no_args" do
-            it "returns DoubleDefinition" do
-              definition.with_no_args.should === definition
-            end
+        macro "#with_no_args" do
+          it "returns DoubleDefinition" do
+            definition.with_no_args.should === definition
+          end
 
-            it "sets an ArgumentEqualityExpectation with no arguments" do
-              definition.argument_expectation.should == Expectations::ArgumentEqualityExpectation.new()
-            end
+          it "sets an ArgumentEqualityExpectation with no arguments" do
+            definition.argument_expectation.should == Expectations::ArgumentEqualityExpectation.new()
           end
         end
 
@@ -216,15 +231,13 @@ module RR
       end
 
       describe "#once" do
-        class << self
-          define_method "#once" do
-            it "returns DoubleDefinition" do
-              definition.once.should === definition
-            end
+        macro "#once" do
+          it "returns DoubleDefinition" do
+            definition.once.should === definition
+          end
 
-            it "sets up a Times Called Expectation with 1" do
-              lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
-            end
+          it "sets up a Times Called Expectation with 1" do
+            lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
           end
         end
 
@@ -266,16 +279,14 @@ module RR
       end
 
       describe "#twice" do
-        class << self
-          define_method "#twice" do
-            it "returns DoubleDefinition" do
-              definition.twice.should === definition
-            end
+        macro "#twice" do
+          it "returns DoubleDefinition" do
+            definition.twice.should === definition
+          end
 
-            it "sets up a Times Called Expectation with 2" do
-              definition.twice.with_any_args
-              lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
-            end
+          it "sets up a Times Called Expectation with 2" do
+            definition.twice.with_any_args
+            lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
           end
         end
 
@@ -318,15 +329,13 @@ module RR
       end
 
       describe "#at_least" do
-        class << self
-          define_method "#at_least" do
-            it "returns DoubleDefinition" do
-              definition.with_any_args.at_least(2).should === definition
-            end
+        macro "#at_least" do
+          it "returns DoubleDefinition" do
+            definition.with_any_args.at_least(2).should === definition
+          end
 
-            it "sets up a Times Called Expectation with 1" do
-              definition.times_matcher.should == TimesCalledMatchers::AtLeastMatcher.new(2)
-            end
+          it "sets up a Times Called Expectation with 1" do
+            definition.times_matcher.should == TimesCalledMatchers::AtLeastMatcher.new(2)
           end
         end
 
@@ -369,17 +378,15 @@ module RR
       end
 
       describe "#at_most" do
-        class << self
-          define_method "#at_most" do
-            it "returns DoubleDefinition" do
-              definition.with_any_args.at_most(2).should === definition
-            end
+        macro "#at_most" do
+          it "returns DoubleDefinition" do
+            definition.with_any_args.at_most(2).should === definition
+          end
 
-            it "sets up a Times Called Expectation with 1" do
-              lambda do
-                subject.foobar
-              end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected at most 2 times.")
-            end
+          it "sets up a Times Called Expectation with 1" do
+            lambda do
+              subject.foobar
+            end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected at most 2 times.")
           end
         end
 
@@ -422,15 +429,13 @@ module RR
       end
 
       describe "#times" do
-        class << self
-          define_method "#times" do
-            it "returns DoubleDefinition" do
-              definition.times(3).should === definition
-            end
+        macro "#times" do
+          it "returns DoubleDefinition" do
+            definition.times(3).should === definition
+          end
 
-            it "sets up a Times Called Expectation with passed in times" do
-              lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
-            end
+          it "sets up a Times Called Expectation with passed in times" do
+            lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
           end
         end
 
@@ -474,15 +479,13 @@ module RR
       end
 
       describe "#any_number_of_times" do
-        class << self
-          define_method "#any_number_of_times" do
-            it "returns DoubleDefinition" do
-              definition.any_number_of_times.should === definition
-            end
+        macro "#any_number_of_times" do
+          it "returns DoubleDefinition" do
+            definition.any_number_of_times.should === definition
+          end
 
-            it "sets up a Times Called Expectation with AnyTimes matcher" do
-              definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
-            end
+          it "sets up a Times Called Expectation with AnyTimes matcher" do
+            definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
           end
         end
 
@@ -525,33 +528,31 @@ module RR
       end
 
       describe "#ordered" do
-        class << self
-          define_method "#ordered" do
-            it "adds itself to the ordered doubles list" do
+        macro "#ordered" do
+          it "adds itself to the ordered doubles list" do
+            definition.ordered
+            Space.instance.ordered_doubles.should include(double)
+          end
+
+          it "does not double_injection add itself" do
+            definition.ordered
+            Space.instance.ordered_doubles.should == [double]
+          end
+
+          it "sets ordered? to true" do
+            definition.should be_ordered
+          end
+
+          it "raises error when there is no Double" do
+            definition.double = nil
+            lambda do
               definition.ordered
-              Space.instance.ordered_doubles.should include(double)
-            end
-
-            it "does not double_injection add itself" do
-              definition.ordered
-              Space.instance.ordered_doubles.should == [double]
-            end
-
-            it "sets ordered? to true" do
-              definition.should be_ordered
-            end
-
-            it "raises error when there is no Double" do
-              definition.double = nil
-              lambda do
-                definition.ordered
-              end.should raise_error(
-              Errors::DoubleDefinitionError,
-              "Double Definitions must have a dedicated Double to be ordered. " <<
-              "For example, using instance_of does not allow ordered to be used. " <<
-              "proxy the class's #new method instead."
-              )
-            end
+            end.should raise_error(
+            Errors::DoubleDefinitionError,
+            "Double Definitions must have a dedicated Double to be ordered. " <<
+            "For example, using instance_of does not allow ordered to be used. " <<
+            "proxy the class's #new method instead."
+            )
           end
         end
 
@@ -599,15 +600,13 @@ module RR
       end
 
       describe "#yields" do
-        class << self
-          define_method "#yields" do
-            it "returns DoubleDefinition" do
-              definition.yields(:baz).should === definition
-            end
+        macro "#yields" do
+          it "returns DoubleDefinition" do
+            definition.yields(:baz).should === definition
+          end
 
-            it "yields the passed in argument to the call block when there is a no returns value set" do
-              @passed_in_block_arg.should == :baz
-            end
+          it "yields the passed in argument to the call block when there is a no returns value set" do
+            @passed_in_block_arg.should == :baz
           end
         end
 

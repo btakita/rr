@@ -2,15 +2,13 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
 module RR
   describe DoubleInjection do
-    class << self
-      define_method("cleans up by removing the __rr__method") do
-        it "cleans up by removing the __rr__method" do
-          @double_injection.bind
-          @subject.methods.should include("__rr__foobar")
+    macro("cleans up by removing the __rr__method") do
+      it "cleans up by removing the __rr__method" do
+        @double_injection.bind
+        @subject.methods.should include("__rr__foobar")
 
-          @double_injection.reset
-          @subject.methods.should_not include("__rr__foobar")
-        end
+        @double_injection.reset
+        @subject.methods.should_not include("__rr__foobar")
       end
     end
 
