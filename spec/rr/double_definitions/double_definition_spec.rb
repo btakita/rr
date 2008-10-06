@@ -14,7 +14,6 @@ module RR
 
         define_method("DoubleDefinition where #double_definition_creator is a Proxy") do
           before do
-#            definition.implemented_by_original_method
             definition.double_definition_creator.proxy
             definition.double_definition_creator.implementation_strategy.class.should == Strategies::Implementation::Proxy
             call_double_injection
@@ -52,34 +51,40 @@ module RR
           end
         end
 
-        def call_double_injection
-          actual_args = nil
-          definition.with(1, 2) do |*args|
-            actual_args = args
-            :new_return_value
+        context "when passed a block" do
+          def call_double_injection
+            actual_args = nil
+            definition.with(1, 2) do |*args|
+              actual_args = args
+              :new_return_value
+            end
+            subject.foobar(1, 2)
+            @return_value = subject.foobar(1, 2)
+            @args = actual_args
           end
-          subject.foobar(1, 2)
-          @return_value = subject.foobar(1, 2)
-          @args = actual_args
-        end
 
-        context "with returns block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
-          send "#with"
+          context "when #double_definition_creator.implementation_strategy is a Reimplementation" do
+            send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            send "#with"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [1, 2]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [1, 2]
+              end
+            end
           end
-        end
 
-        context "with after_call block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Proxy"
-          send "#with"
+          context "when #double_definition_creator.implementation_strategy is a Proxy" do
+            send "DoubleDefinition where #double_definition_creator is a Proxy"
+            send "#with"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [:original_return_value]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [:original_return_value]
+              end
+            end
           end
         end
       end
@@ -108,23 +113,29 @@ module RR
           @args = actual_args
         end
 
-        describe "with returns block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
-          send "#with_any_args"
+        context "when passed a block" do
+          context "when #double_definition_creator.implementation_strategy is a Reimplementation" do
+            send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            send "#with_any_args"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [1, 2]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [1, 2]
+              end
+            end
           end
-        end
 
-        describe "with after_call block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Proxy"
-          send "#with_any_args"
+          context "when #double_definition_creator.implementation_strategy is a Proxy" do
+            send "DoubleDefinition where #double_definition_creator is a Proxy"
+            send "#with_any_args"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [:original_return_value]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [:original_return_value]
+              end
+            end
           end
         end
       end
@@ -158,23 +169,27 @@ module RR
           @args = actual_args
         end
 
-        context "with returns block_callback_strategy" do
+        context "when #double_definition_creator.implementation_strategy is a Reimplementation" do
           send "DoubleDefinition where #double_definition_creator is a Reimplementation"
           send "#with_no_args"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == []
+          describe "#subject.method_name being called" do
+            it "returns the return value of the block" do
+              @return_value.should == :new_return_value
+              @args.should == []
+            end
           end
         end
 
-        context "with after_call block_callback_strategy" do
+        context "when #double_definition_creator.implementation_strategy is a Proxy" do
           send "DoubleDefinition where #double_definition_creator is a Proxy"
           send "#with_no_args"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [:original_return_value]
+          describe "#subject.method_name being called" do
+            it "returns the return value of the block" do
+              @return_value.should == :new_return_value
+              @args.should == [:original_return_value]
+            end
           end
         end
       end
@@ -190,9 +205,11 @@ module RR
           lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
         end
 
-        it "sets return value when block passed in" do
-          definition.with_any_args.never
-          lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
+        describe "#subject.method_name being called" do
+          it "raises a TimesCalledError" do
+            definition.with_any_args.never
+            lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
+          end
         end
       end
 
@@ -219,23 +236,29 @@ module RR
           @args = actual_args
         end
 
-        context "with returns block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
-          send "#once"
+        context "when passed a block" do
+          context "with returns block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            send "#once"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [1, 2]
+            describe "#subject.method_name being called with any arguments" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [1, 2]
+              end
+            end
           end
-        end
 
-        context "with after_call block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Proxy"
-          send "#once"
+          context "with after_call block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Proxy"
+            send "#once"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [:original_return_value]
+            describe "#subject.method_name being called with any arguments" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [:original_return_value]
+              end
+            end
           end
         end
       end
@@ -265,23 +288,29 @@ module RR
           @args = actual_args
         end
 
-        context "with returns block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
-          send "#twice"
+        context "when passed a block" do
+          context "with returns block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            send "#twice"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [1, 2]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [1, 2]
+              end
+            end
           end
-        end
 
-        context "with after_call block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Proxy"
-          send "#twice"
+          context "with after_call block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Proxy"
+            send "#twice"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [:original_return_value]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [:original_return_value]
+              end
+            end
           end
         end
       end
@@ -310,23 +339,29 @@ module RR
           @args = actual_args
         end
 
-        context "with returns block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
-          send "#at_least"
+        context "when passed a block" do
+          context "with returns block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            send "#at_least"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [1, 2]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [1, 2]
+              end
+            end
           end
-        end
 
-        context "with after_call block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Proxy"
-          send "#at_least"
+          context "with after_call block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Proxy"
+            send "#at_least"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [:original_return_value]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [:original_return_value]
+              end
+            end
           end
         end
       end
@@ -357,23 +392,29 @@ module RR
           @args = actual_args
         end
 
-        context "with returns block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
-          send "#at_most"
+        context "when passed a block" do
+          context "with returns block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            send "#at_most"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [1, 2]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [1, 2]
+              end
+            end
           end
-        end
 
-        context "with after_call block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Proxy"
-          send "#at_most"
+          context "with after_call block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Proxy"
+            send "#at_most"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [:original_return_value]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [:original_return_value]
+              end
+            end
           end
         end
       end
@@ -403,23 +444,29 @@ module RR
           @args = actual_args
         end
 
-        context "with returns block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
-          send "#times"
+        context "when passed a block" do
+          context "with returns block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            send "#times"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [1, 2]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [1, 2]
+              end
+            end
           end
-        end
 
-        context "with after_call block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Proxy"
-          send "#times"
+          context "with after_call block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Proxy"
+            send "#times"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [:original_return_value]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [:original_return_value]
+              end
+            end
           end
         end
       end
@@ -448,23 +495,29 @@ module RR
           @args = actual_args
         end
 
-        context "with returns block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
-          send "#any_number_of_times"
+        context "when passed a block" do
+          context "with returns block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            send "#any_number_of_times"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [1, 2]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [1, 2]
+              end
+            end
           end
-        end
 
-        context "with after_call block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Proxy"
-          send "#any_number_of_times"
+          context "with after_call block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Proxy"
+            send "#any_number_of_times"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [:original_return_value]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [:original_return_value]
+              end
+            end
           end
         end
       end
@@ -491,10 +544,10 @@ module RR
               lambda do
                 definition.ordered
               end.should raise_error(
-                Errors::DoubleDefinitionError,
-                "Double Definitions must have a dedicated Double to be ordered. " <<
-                "For example, using instance_of does not allow ordered to be used. " <<
-                "proxy the class's #new method instead."
+              Errors::DoubleDefinitionError,
+              "Double Definitions must have a dedicated Double to be ordered. " <<
+              "For example, using instance_of does not allow ordered to be used. " <<
+              "proxy the class's #new method instead."
               )
             end
           end
@@ -510,23 +563,29 @@ module RR
           @args = actual_args
         end
 
-        context "with returns block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
-          send "#ordered"
+        context "when passed a block" do
+          context "with returns block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            send "#ordered"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [1, 2]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [1, 2]
+              end
+            end
           end
-        end
 
-        context "with after_call block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Proxy"
-          send "#ordered"
+          context "with after_call block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Proxy"
+            send "#ordered"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [:original_return_value]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [:original_return_value]
+              end
+            end
           end
         end
       end
@@ -565,70 +624,101 @@ module RR
           @args = actual_args
         end
 
-        context "with returns block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
-          send "#yields"
+        context "when passed a block" do
+          context "with returns block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            send "#yields"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.length.should == 3
-            @args[0..1].should == [1, 2]
-            @args[2].should be_instance_of(Proc)
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.length.should == 3
+                @args[0..1].should == [1, 2]
+                @args[2].should be_instance_of(Proc)
+              end
+            end
           end
-        end
 
-        context "with after_call block_callback_strategy" do
-          send "DoubleDefinition where #double_definition_creator is a Proxy"
-          send "#yields"
+          context "with after_call block_callback_strategy" do
+            send "DoubleDefinition where #double_definition_creator is a Proxy"
+            send "#yields"
 
-          it "sets return value when block passed in" do
-            @return_value.should == :new_return_value
-            @args.should == [:original_return_value]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [:original_return_value]
+              end
+            end
           end
         end
       end
 
       describe "#after_call" do
-        it "returns DoubleDefinition" do
-          definition.after_call {}.should === definition
-        end
-
-        it "sends return value of Double implementation to after_call" do
-          return_value = {}
-          definition.with_any_args.returns(return_value).after_call do |value|
-            value[:foo] = :bar
-            value
+        context "when passed a block" do
+          it "returns DoubleDefinition" do
+            definition.after_call {}.should === definition
           end
 
-          actual_value = subject.foobar
-          actual_value.should === return_value
-          actual_value.should == {:foo => :bar}
-        end
+          describe "#subject.method_name being called" do
+            it "calls the block with the return value of the implementation" do
+              return_value = {:original => :value}
+              definition.with_any_args.returns(return_value).after_call do |value|
+                value[:foo] = :bar
+                value
+              end
 
-        it "receives the return value in the after_call callback" do
-          return_value = :returns_value
-          definition.with_any_args.returns(return_value).after_call do |value|
-            :after_call_proc
+              actual_value = subject.foobar
+              actual_value.should === return_value
+              actual_value.should == {:original => :value, :foo => :bar}
+            end
+
+            context "when the return value of the #after_call_proc is a DoubleDefinition" do
+              it "returns the #subject of the DoubleDefinition" do
+                return_value = Object.new
+                inner_double_definition = nil
+                definition.with_any_args.returns(return_value).after_call do |value|
+                  inner_double_definition = mock(value).inner_method(1) {:baz}
+                end
+
+                foobar_return_value = subject.foobar
+                foobar_return_value.should == inner_double_definition.subject
+                foobar_return_value.inner_method(1).should == :baz
+              end
+            end
+
+            context "when the return value of the #after_call_proc is a DoubleDefinitionCreatorProxy" do
+              it "returns the #__subject__ of the DoubleDefinitionCreatorProxy" do
+                return_value = Object.new
+                inner_double_proxy = nil
+                definition.with_any_args.returns(return_value).after_call do |value|
+                  inner_double_proxy = mock(value)
+                end
+
+                foobar_return_value = subject.foobar
+                foobar_return_value.should == inner_double_proxy.__subject__
+              end
+            end
+
+            context "when the return value of the #after_call_proc is an Object" do
+              it "returns the return value of the #after_call_proc" do
+                return_value = :returns_value
+                definition.with_any_args.returns(return_value).after_call do |value|
+                  :after_call_proc
+                end
+
+                actual_value = subject.foobar
+                actual_value.should == :after_call_proc
+              end
+            end
           end
-
-          actual_value = subject.foobar
-          actual_value.should == :after_call_proc
         end
 
-        it "allows after_call to mock the return value" do
-          return_value = Object.new
-          definition.with_any_args.returns(return_value).after_call do |value|
-            mock(value).inner_method(1) {:baz}
-            value
+        context "when not passed a block" do
+          it "raises an ArgumentError" do
+            lambda do
+              definition.after_call
+            end.should raise_error(ArgumentError, "after_call expects a block")
           end
-
-          subject.foobar.inner_method(1).should == :baz
-        end
-
-        it "raises an error when not passed a block" do
-          lambda do
-            definition.after_call
-          end.should raise_error(ArgumentError, "after_call expects a block")
         end
       end
 
@@ -638,25 +728,39 @@ module RR
           definition.returns(:baz).should === definition
         end
 
-        it "sets the value of the method when passed a block" do
-          definition.with_any_args.returns {:baz}
-          subject.foobar.should == :baz
+        context "when passed a block" do
+          describe "#subject.method_name being called" do
+            it "returns the return value of the block" do
+              definition.with_any_args.returns {:baz}
+              subject.foobar.should == :baz
+            end
+          end
         end
 
-        it "sets the value of the method when passed an argument" do
-          definition.returns(:baz).with_no_args
-          subject.foobar.should == :baz
+        context "when passed an argument" do
+          describe "#subject.method_name being called" do
+            it "returns the passed-in argument" do
+              definition.returns(:baz).with_no_args
+              subject.foobar.should == :baz
+            end
+          end
+
+          context "when the argument is false" do
+            describe "#subject.method_name being called" do
+              it "returns false" do
+                definition.returns(false).with_any_args
+                subject.foobar.should == false
+              end
+            end
+          end
         end
 
-        it "returns false when passed false" do
-          definition.returns(false).with_any_args
-          subject.foobar.should == false
-        end
-
-        it "raises an error when both argument and block is passed in" do
-          lambda do
-            definition.returns(:baz) {:another}
-          end.should raise_error(ArgumentError, "returns cannot accept both an argument and a block")
+        context "when both argument and block is passed in" do
+          it "raises an error" do
+            lambda do
+              definition.returns(:baz) {:another}
+            end.should raise_error(ArgumentError, "returns cannot accept both an argument and a block")
+          end
         end
       end
 
@@ -665,98 +769,126 @@ module RR
           definition.implemented_by(lambda{:baz}).should === definition
         end
 
-        it "sets the implementation to the passed in lambda" do
-          definition.implemented_by(lambda{:baz}).with_no_args
-          subject.foobar.should == :baz
+        context "when passed a Proc" do
+          describe "#subject.method_name being called" do
+            it "returns the return value of the passed-in Proc" do
+              definition.implemented_by(lambda{:baz}).with_no_args
+              subject.foobar.should == :baz
+            end
+          end
         end
 
-        it "sets the implementation to the passed in method" do
-          def subject.foobar(a, b)
-            [b, a]
+        context "when passed a Method" do
+          it "sets the implementation to the passed in method" do
+            def subject.foobar(a, b)
+              [b, a]
+            end
+            definition.implemented_by(subject.method(:foobar))
+            subject.foobar(1, 2).should == [2, 1]
           end
-          definition.implemented_by(subject.method(:foobar))
-          subject.foobar(1, 2).should == [2, 1]
         end
       end
 
       describe "#exact_match?" do
-        it "returns false when no expectation set" do
-          definition.should_not be_exact_match()
-          definition.should_not be_exact_match(nil)
-          definition.should_not be_exact_match(Object.new)
-          definition.should_not be_exact_match(1, 2, 3)
+        context "when no expectation set" do
+          it "returns false" do
+            definition.should_not be_exact_match()
+            definition.should_not be_exact_match(nil)
+            definition.should_not be_exact_match(Object.new)
+            definition.should_not be_exact_match(1, 2, 3)
+          end
         end
 
-        it "returns false when arguments are not an exact match" do
-          definition.with(1, 2, 3)
-          definition.should_not be_exact_match(1, 2)
-          definition.should_not be_exact_match(1)
-          definition.should_not be_exact_match()
-          definition.should_not be_exact_match("does not match")
+        context "when arguments are not an exact match" do
+          it "returns false" do
+            definition.with(1, 2, 3)
+            definition.should_not be_exact_match(1, 2)
+            definition.should_not be_exact_match(1)
+            definition.should_not be_exact_match()
+            definition.should_not be_exact_match("does not match")
+          end
         end
 
-        it "returns true when arguments are an exact match" do
-          definition.with(1, 2, 3)
-          definition.should be_exact_match(1, 2, 3)
+        context "when arguments are an exact match" do
+          it "returns true" do
+            definition.with(1, 2, 3)
+            definition.should be_exact_match(1, 2, 3)
+          end
         end
       end
 
       describe "#wildcard_match?" do
-        it "returns false when no expectation set" do
-          definition.should_not be_wildcard_match()
-          definition.should_not be_wildcard_match(nil)
-          definition.should_not be_wildcard_match(Object.new)
-          definition.should_not be_wildcard_match(1, 2, 3)
+        context "when no expectation is set" do
+          it "returns false" do
+            definition.should_not be_wildcard_match()
+            definition.should_not be_wildcard_match(nil)
+            definition.should_not be_wildcard_match(Object.new)
+            definition.should_not be_wildcard_match(1, 2, 3)
+          end
         end
 
-        it "returns true when arguments are an exact match" do
-          definition.with(1, 2, 3)
-          definition.should be_wildcard_match(1, 2, 3)
-          definition.should_not be_wildcard_match(1, 2)
-          definition.should_not be_wildcard_match(1)
-          definition.should_not be_wildcard_match()
-          definition.should_not be_wildcard_match("does not match")
+        context "when arguments are an exact match" do
+          it "returns true" do
+            definition.with(1, 2, 3)
+            definition.should be_wildcard_match(1, 2, 3)
+            definition.should_not be_wildcard_match(1, 2)
+            definition.should_not be_wildcard_match(1)
+            definition.should_not be_wildcard_match()
+            definition.should_not be_wildcard_match("does not match")
+          end
         end
 
-        it "returns true when with_any_args" do
-          definition.with_any_args
+        context "when with_any_args" do
+          it "returns true" do
+            definition.with_any_args
 
-          definition.should be_wildcard_match(1, 2, 3)
-          definition.should be_wildcard_match(1, 2)
-          definition.should be_wildcard_match(1)
-          definition.should be_wildcard_match()
-          definition.should be_wildcard_match("does not match")
+            definition.should be_wildcard_match(1, 2, 3)
+            definition.should be_wildcard_match(1, 2)
+            definition.should be_wildcard_match(1)
+            definition.should be_wildcard_match()
+            definition.should be_wildcard_match("does not match")
+          end
         end
       end
 
       describe "#terminal?" do
-        it "returns true when times_matcher's terminal? is true" do
-          definition.once
-          definition.times_matcher.should be_terminal
-          definition.should be_terminal
+        context "when times_matcher's terminal? is true" do
+          it "returns true" do
+            definition.once
+            definition.times_matcher.should be_terminal
+            definition.should be_terminal
+          end
         end
 
-        it "returns false when times_matcher's terminal? is false" do
-          definition.any_number_of_times
-          definition.times_matcher.should_not be_terminal
-          definition.should_not be_terminal
+        context "when times_matcher's terminal? is false" do
+          it "returns false" do
+            definition.any_number_of_times
+            definition.times_matcher.should_not be_terminal
+            definition.should_not be_terminal
+          end
         end
 
-        it "returns false when there is not times_matcher" do
-          definition.times_matcher.should be_nil
-          definition.should_not be_terminal
+        context "when there is not times_matcher" do
+          it "returns false" do
+            definition.times_matcher.should be_nil
+            definition.should_not be_terminal
+          end
         end
       end
 
       describe "#expected_arguments" do
-        it "returns argument expectation's expected_arguments when there is a argument expectation" do
-          definition.with(1, 2)
-          definition.expected_arguments.should == [1, 2]
+        context "when there is a argument expectation" do
+          it "returns argument expectation's expected_arguments" do
+            definition.with(1, 2)
+            definition.expected_arguments.should == [1, 2]
+          end
         end
 
-        it "returns an empty array when there is no argument expectation" do
-          definition.argument_expectation.should be_nil
-          definition.expected_arguments.should == []
+        context "when there is no argument expectation" do
+          it "returns an empty array" do
+            definition.argument_expectation.should be_nil
+            definition.expected_arguments.should == []
+          end
         end
       end
 
