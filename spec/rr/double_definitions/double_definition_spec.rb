@@ -49,11 +49,8 @@ module RR
 
         context "when passed not a block" do
           before do
-            actual_args = nil
             definition.with(1, 2)
             subject.foobar(1, 2)
-            @return_value = subject.foobar(1, 2)
-            @args = actual_args
           end
 
           send "#with"
@@ -111,10 +108,7 @@ module RR
 
         context "when not passed a block" do
           before do
-            actual_args = nil
             definition.with_any_args
-            @return_value = subject.foobar(1, 2)
-            @args = actual_args
           end
 
           send "#with_any_args"
@@ -172,6 +166,14 @@ module RR
           def subject.foobar()
             :original_return_value
           end
+        end
+
+        context "when not passed a block" do
+          before do
+            definition.with_no_args
+          end
+
+          send "#with_no_args"
         end
 
         context "when passed a block" do
@@ -241,6 +243,15 @@ module RR
           end
         end
 
+        context "when not passed a block" do
+          before do
+            definition.with_any_args.once
+            subject.foobar(1, 2)
+          end
+
+          send "#once"
+        end
+
         context "when passed a block" do
           def call_double_injection
             actual_args = nil
@@ -288,6 +299,16 @@ module RR
             definition.twice.with_any_args
             lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
           end
+        end
+
+        context "when not passed a block" do
+          before do
+            definition.with_any_args.twice
+            subject.foobar(1, 2)
+            subject.foobar(1, 2)
+          end
+
+          send "#twice"
         end
 
         context "when passed a block" do
@@ -339,18 +360,27 @@ module RR
           end
         end
 
-        def call_double_injection
-          actual_args = nil
-          definition.with_any_args.at_least(2) do |*args|
-            actual_args = args
-            :new_return_value
+        context "when not passed a block" do
+          before do
+            definition.with_any_args.at_least(2)
+            subject.foobar(1, 2)
           end
-          subject.foobar(1, 2)
-          @return_value = subject.foobar(1, 2)
-          @args = actual_args
+
+          send "#at_least"
         end
 
         context "when passed a block" do
+          def call_double_injection
+            actual_args = nil
+            definition.with_any_args.at_least(2) do |*args|
+              actual_args = args
+              :new_return_value
+            end
+            subject.foobar(1, 2)
+            @return_value = subject.foobar(1, 2)
+            @args = actual_args
+          end
+
           context "with returns block_callback_strategy" do
             send "DoubleDefinition where #double_definition_creator is a Reimplementation"
             send "#at_least"
@@ -390,18 +420,28 @@ module RR
           end
         end
 
-        def call_double_injection
-          actual_args = nil
-          definition.with_any_args.at_most(2) do |*args|
-            actual_args = args
-            :new_return_value
+        context "when not passed a block" do
+          before do
+            definition.with_any_args.at_most(2)
+            subject.foobar(1, 2)
+            subject.foobar(1, 2)
           end
-          subject.foobar(1, 2)
-          @return_value = subject.foobar(1, 2)
-          @args = actual_args
+
+          send "#at_most"
         end
 
         context "when passed a block" do
+          def call_double_injection
+            actual_args = nil
+            definition.with_any_args.at_most(2) do |*args|
+              actual_args = args
+              :new_return_value
+            end
+            subject.foobar(1, 2)
+            @return_value = subject.foobar(1, 2)
+            @args = actual_args
+          end
+
           context "with returns block_callback_strategy" do
             send "DoubleDefinition where #double_definition_creator is a Reimplementation"
             send "#at_most"
@@ -437,6 +477,17 @@ module RR
           it "sets up a Times Called Expectation with passed in times" do
             lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
           end
+        end
+
+        context "when not passed a block" do
+          before do
+            definition.with(1, 2).times(3)
+            subject.foobar(1, 2)
+            subject.foobar(1, 2)
+            subject.foobar(1, 2)
+          end
+
+          send "#times"
         end
 
         context "when passed a block" do
@@ -487,6 +538,15 @@ module RR
           it "sets up a Times Called Expectation with AnyTimes matcher" do
             definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
           end
+        end
+
+        context "when not passed a block" do
+          before do
+            definition.with(1, 2).any_number_of_times
+            subject.foobar(1, 2)
+          end
+
+          send "#any_number_of_times"
         end
 
         context "when passed a block" do
@@ -543,17 +603,28 @@ module RR
             definition.should be_ordered
           end
 
-          it "raises error when there is no Double" do
-            definition.double = nil
-            lambda do
-              definition.ordered
-            end.should raise_error(
-            Errors::DoubleDefinitionError,
-            "Double Definitions must have a dedicated Double to be ordered. " <<
-            "For example, using instance_of does not allow ordered to be used. " <<
-            "proxy the class's #new method instead."
-            )
+          context "when there is no Double" do
+            it "raises a DoubleDefinitionError" do
+              definition.double = nil
+              lambda do
+                definition.ordered
+              end.should raise_error(
+                Errors::DoubleDefinitionError,
+                "Double Definitions must have a dedicated Double to be ordered. " <<
+                "For example, using instance_of does not allow ordered to be used. " <<
+                "proxy the class's #new method instead."
+              )
+            end
           end
+        end
+
+        context "when not passed a block" do
+          before do
+            definition.with(1, 2).once.ordered
+            subject.foobar(1, 2)
+          end
+          
+          send "#ordered"
         end
 
         context "when passed a block" do
@@ -605,9 +676,24 @@ module RR
             definition.yields(:baz).should === definition
           end
 
-          it "yields the passed in argument to the call block when there is a no returns value set" do
-            @passed_in_block_arg.should == :baz
+          context "when there is a no returns value set" do
+            it "yields the passed in argument to the call block" do
+              @passed_in_block_arg.should == :baz
+            end
           end
+        end
+
+        context "when not passed a block" do
+          before do
+            definition.with(1, 2).once.yields(:baz)
+            passed_in_block_arg = nil
+            subject.foobar(1, 2) do |arg|
+              passed_in_block_arg = arg
+            end
+            @passed_in_block_arg = passed_in_block_arg
+          end
+
+          send "#yields"
         end
 
         context "when passed a block" do
@@ -729,6 +815,15 @@ module RR
           definition.returns(:baz).should === definition
         end
 
+        context "when passed neither an argument nor a block" do
+          describe "#subject.method_name being called" do
+            it "returns nil" do
+              definition.with_any_args.returns
+              subject.foobar.should be_nil
+            end
+          end
+        end
+
         context "when passed a block" do
           describe "#subject.method_name being called" do
             it "returns the return value of the block" do
@@ -756,7 +851,7 @@ module RR
           end
         end
 
-        context "when both argument and block is passed in" do
+        context "when passed both an argument and a block" do
           it "raises an error" do
             lambda do
               definition.returns(:baz) {:another}
