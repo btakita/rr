@@ -47,7 +47,7 @@ module RR
           end
         end
 
-        context "when passed not a block" do
+        context "when not passed a block" do
           before do
             definition.with(1, 2)
             subject.foobar(1, 2)
