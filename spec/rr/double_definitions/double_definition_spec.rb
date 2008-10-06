@@ -103,17 +103,17 @@ module RR
           end
         end
 
-        def call_double_injection
-          actual_args = nil
-          definition.with_any_args do |*args|
-            actual_args = args
-            :new_return_value
-          end
-          @return_value = subject.foobar(1, 2)
-          @args = actual_args
-        end
-
         context "when passed a block" do
+          def call_double_injection
+            actual_args = nil
+            definition.with_any_args do |*args|
+              actual_args = args
+              :new_return_value
+            end
+            @return_value = subject.foobar(1, 2)
+            @args = actual_args
+          end
+
           context "when #double_definition_creator.implementation_strategy is a Reimplementation" do
             send "DoubleDefinition where #double_definition_creator is a Reimplementation"
             send "#with_any_args"
@@ -159,36 +159,38 @@ module RR
           end
         end
 
-        def call_double_injection
-          actual_args = nil
-          definition.with_no_args do |*args|
-            actual_args = args
-            :new_return_value
+        context "when passed a block" do
+          def call_double_injection
+            actual_args = nil
+            definition.with_no_args do |*args|
+              actual_args = args
+              :new_return_value
+            end
+            @return_value = subject.foobar
+            @args = actual_args
           end
-          @return_value = subject.foobar
-          @args = actual_args
-        end
+          
+          context "when #double_definition_creator.implementation_strategy is a Reimplementation" do
+            send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            send "#with_no_args"
 
-        context "when #double_definition_creator.implementation_strategy is a Reimplementation" do
-          send "DoubleDefinition where #double_definition_creator is a Reimplementation"
-          send "#with_no_args"
-
-          describe "#subject.method_name being called" do
-            it "returns the return value of the block" do
-              @return_value.should == :new_return_value
-              @args.should == []
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == []
+              end
             end
           end
-        end
 
-        context "when #double_definition_creator.implementation_strategy is a Proxy" do
-          send "DoubleDefinition where #double_definition_creator is a Proxy"
-          send "#with_no_args"
+          context "when #double_definition_creator.implementation_strategy is a Proxy" do
+            send "DoubleDefinition where #double_definition_creator is a Proxy"
+            send "#with_no_args"
 
-          describe "#subject.method_name being called" do
-            it "returns the return value of the block" do
-              @return_value.should == :new_return_value
-              @args.should == [:original_return_value]
+            describe "#subject.method_name being called" do
+              it "returns the return value of the block" do
+                @return_value.should == :new_return_value
+                @args.should == [:original_return_value]
+              end
             end
           end
         end
@@ -226,17 +228,17 @@ module RR
           end
         end
 
-        def call_double_injection
-          actual_args = nil
-          definition.with_any_args.once do |*args|
-            actual_args = args
-            :new_return_value
-          end
-          @return_value = subject.foobar(1, 2)
-          @args = actual_args
-        end
-
         context "when passed a block" do
+          def call_double_injection
+            actual_args = nil
+            definition.with_any_args.once do |*args|
+              actual_args = args
+              :new_return_value
+            end
+            @return_value = subject.foobar(1, 2)
+            @args = actual_args
+          end
+
           context "with returns block_callback_strategy" do
             send "DoubleDefinition where #double_definition_creator is a Reimplementation"
             send "#once"
@@ -277,18 +279,18 @@ module RR
           end
         end
 
-        def call_double_injection
-          actual_args = nil
-          definition.with_any_args.twice do |*args|
-            actual_args = args
-            :new_return_value
-          end
-          subject.foobar(1, 2)
-          @return_value = subject.foobar(1, 2)
-          @args = actual_args
-        end
-
         context "when passed a block" do
+          def call_double_injection
+            actual_args = nil
+            definition.with_any_args.twice do |*args|
+              actual_args = args
+              :new_return_value
+            end
+            subject.foobar(1, 2)
+            @return_value = subject.foobar(1, 2)
+            @args = actual_args
+          end
+
           context "with returns block_callback_strategy" do
             send "DoubleDefinition where #double_definition_creator is a Reimplementation"
             send "#twice"
@@ -432,19 +434,19 @@ module RR
           end
         end
 
-        def call_double_injection
-          actual_args = nil
-          definition.with(1, 2).times(3) do |*args|
-            actual_args = args
-            :new_return_value
-          end
-          subject.foobar(1, 2)
-          subject.foobar(1, 2)
-          @return_value = subject.foobar(1, 2)
-          @args = actual_args
-        end
-
         context "when passed a block" do
+          def call_double_injection
+            actual_args = nil
+            definition.with(1, 2).times(3) do |*args|
+              actual_args = args
+              :new_return_value
+            end
+            subject.foobar(1, 2)
+            subject.foobar(1, 2)
+            @return_value = subject.foobar(1, 2)
+            @args = actual_args
+          end
+          
           context "with returns block_callback_strategy" do
             send "DoubleDefinition where #double_definition_creator is a Reimplementation"
             send "#times"
@@ -484,18 +486,18 @@ module RR
           end
         end
 
-        def call_double_injection
-          actual_args = nil
-          definition.with(1, 2).any_number_of_times do |*args|
-            actual_args = args
-            :new_return_value
-          end
-          subject.foobar(1, 2)
-          @return_value = subject.foobar(1, 2)
-          @args = actual_args
-        end
-
         context "when passed a block" do
+          def call_double_injection
+            actual_args = nil
+            definition.with(1, 2).any_number_of_times do |*args|
+              actual_args = args
+              :new_return_value
+            end
+            subject.foobar(1, 2)
+            @return_value = subject.foobar(1, 2)
+            @args = actual_args
+          end
+
           context "with returns block_callback_strategy" do
             send "DoubleDefinition where #double_definition_creator is a Reimplementation"
             send "#any_number_of_times"
@@ -553,17 +555,17 @@ module RR
           end
         end
 
-        def call_double_injection
-          actual_args = nil
-          definition.with(1, 2).once.ordered do |*args|
-            actual_args = args
-            :new_return_value
-          end
-          @return_value = subject.foobar(1, 2)
-          @args = actual_args
-        end
-
         context "when passed a block" do
+          def call_double_injection
+            actual_args = nil
+            definition.with(1, 2).once.ordered do |*args|
+              actual_args = args
+              :new_return_value
+            end
+            @return_value = subject.foobar(1, 2)
+            @args = actual_args
+          end
+
           context "with returns block_callback_strategy" do
             send "DoubleDefinition where #double_definition_creator is a Reimplementation"
             send "#ordered"
@@ -609,22 +611,22 @@ module RR
           end
         end
 
-        def call_double_injection
-          actual_args = nil
-          definition.with(1, 2).once.yields(:baz) do |*args|
-            actual_args = args
-            :new_return_value
-          end
-          passed_in_block_arg = nil
-          @return_value = subject.foobar(1, 2) do |arg|
-            passed_in_block_arg = arg
-          end
-          @passed_in_block_arg = passed_in_block_arg
-
-          @args = actual_args
-        end
-
         context "when passed a block" do
+          def call_double_injection
+            actual_args = nil
+            definition.with(1, 2).once.yields(:baz) do |*args|
+              actual_args = args
+              :new_return_value
+            end
+            passed_in_block_arg = nil
+            @return_value = subject.foobar(1, 2) do |arg|
+              passed_in_block_arg = arg
+            end
+            @passed_in_block_arg = passed_in_block_arg
+
+            @args = actual_args
+          end
+
           context "with returns block_callback_strategy" do
             send "DoubleDefinition where #double_definition_creator is a Reimplementation"
             send "#yields"
