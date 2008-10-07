@@ -12,7 +12,7 @@ module RR
         @scope_strategy = Strategies::Scope::Instance.new
       end
 
-      module SetupStrategies
+      module StrategySetupMethods
         def mock(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
           add_strategy(subject, method_name, definition_eval_block) do
             self.verification_strategy = Strategies::Verification::Mock.new
@@ -132,9 +132,9 @@ module RR
           subject.__id__ === NO_SUBJECT.__id__
         end
       end
-      include SetupStrategies
+      include StrategySetupMethods
 
-      module ExecuteStrategies
+      module StrategyExecutionMethods
         def create(subject, method_name, *args, &handler)
           @subject, @method_name, @args, @handler = subject, method_name, args, handler
           @definition = DoubleDefinition.new(self, subject)
@@ -144,7 +144,7 @@ module RR
           definition
         end
       end
-      include ExecuteStrategies
+      include StrategyExecutionMethods
     end
   end
 end

@@ -3,12 +3,10 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 module RR
   describe DoubleInjection do
     attr_reader :subject, :method_name, :double_injection
-    class << self
-      define_method("sets up object and method_name") do
-        it "sets up object and method_name" do
-          double_injection.subject.should === subject
-          double_injection.method_name.should == method_name.to_sym
-        end
+    macro("sets up object and method_name") do
+      it "sets up object and method_name" do
+        double_injection.subject.should === subject
+        double_injection.method_name.should == method_name.to_sym
       end
     end
 
