@@ -33,7 +33,7 @@ support spies.
 == Syntax between RR and other double/mock frameworks
 === Terse Syntax
 One of the goals of RR is to make doubles more scannable.
-This is accomplished by removing words from a double declaration.
+This is accomplished by making the double declaration look as much as the actual method invocation as possible.
 Here is RR compared to other mock frameworks:
 
   flexmock(User).should_receive(:find).with('42').and_return(jane) # Flexmock
@@ -58,6 +58,9 @@ If you wish to use objects for the sole purpose of being a mock, you can
 do so by creating an empty object.
   mock(my_mock_object = Object.new).hello
 
+or by using mock!
+  my_mock_object = mock!.hello.subject
+
 === No should_receive or expects method
 RR uses method_missing to set your method expectation. This means you do not
 need to use a method such as should_receive or expects.
@@ -70,7 +73,7 @@ Rspec mocks:
   my_object.should_receive(:hello) # should_receive sets the hello method expectation
 
 === with method call is not necessary
-Since RR uses method_missing, it also make using the with method unnecessary
+Since RR uses method_missing, it also makes using the #with method unnecessary in most circumstances
 to set the argument expectations.
 
   mock(my_object).hello('bob', 'jane')
@@ -97,10 +100,11 @@ Rspec mocks:
 To create a double on an object, you can use the following methods:
 * mock
 * stub
+* dont_allow
 * proxy
 * instance_of
 
-These methods are composable. mock and stub can be used by themselves and
+These methods are composable. mock, stub, and dont_allow can be used by themselves and
 are mutually exclusive.
 proxy and instance_of must be chained with mock or stub. You can chain
 proxy and instance_of together.
@@ -135,6 +139,12 @@ an exception is raised.
   stub(User).find do |id|
     raise "Unexpected id #{id.inspect} passed to me"
   end
+
+=== dont_allow - aliased with do_not_allow, dont_call, and do_not_call
+dont_allow sets an expectation on the Double that it will never be called.
+If the Double is called, then a TimesCalledError is raised.
+  dont_allow(User).find('42')
+  User.find('42') # raises a TimesCalledError
 
 === mock.proxy
 mock.proxy replaces the method on the object with an expectation, implementation, and
@@ -191,8 +201,7 @@ Put double scenarios on instances of a Class.
   end
 
 === Double Graphs
-
-  stub(object).foo.stub.bar {:baz}
+  stub(object).foo {stub!.bar {:baz}}
   object.foo.bar # :baz
 
 === Argument Wildcard matchers
@@ -227,10 +236,11 @@ Put double scenarios on instances of a Class.
 With any development effort, there are countless people who have contributed
 to making it possible. We all are standing on the shoulders of giants.
 * Pivotal Labs for sponsoring RR development
+* Nick Kallen for documentation suggestions, bug reports, and patches
+* Nathan Sobo for various ideas and inspiration for cleaner and more expressive code
 * Parker Thompson for pairing with me
 * Felix Morio for pairing with me
 * Jeff Whitmire for documentation suggestions
-* Nick Kallen for documentation suggestion & bug reports
 * David Chelimsky for encouragement to make the RR framework, for developing
   the Rspec mock framework, and syntax ideas
 * Gerard Meszaros for his excellent book "xUnit Test Patterns"

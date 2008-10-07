@@ -452,22 +452,20 @@ module RR
         @double_injection = space.double_injection(subject, method_name)
       end
 
-      class << self
-        define_method "#verify_ordered_double" do
-          it "raises an error when Double is NonTerminal" do
-            double = new_double
-            space.register_ordered_double(double)
+      macro "#verify_ordered_double" do
+        it "raises an error when Double is NonTerminal" do
+          double = new_double
+          space.register_ordered_double(double)
 
-            double.any_number_of_times
-            double.should_not be_terminal
+          double.any_number_of_times
+          double.should_not be_terminal
 
-            lambda do
-              space.verify_ordered_double(double)
-            end.should raise_error(
-            Errors::DoubleOrderError,
-            "Ordered Doubles cannot have a NonTerminal TimesCalledExpectation"
-            )
-          end
+          lambda do
+            space.verify_ordered_double(double)
+          end.should raise_error(
+          Errors::DoubleOrderError,
+          "Ordered Doubles cannot have a NonTerminal TimesCalledExpectation"
+          )
         end
       end
 

@@ -29,6 +29,12 @@ module Spec::Example::ExampleMethods
 end
 
 module Spec::Example::ExampleGroupMethods
+  def macro(name, &implementation)
+    (class << self; self; end).class_eval do
+      define_method(name, &implementation)
+    end
+  end
+
   define_method("normal strategy definition") do
     describe "strategy definition" do
       attr_reader :strategy_method_name

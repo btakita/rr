@@ -225,7 +225,7 @@ module RR
       space.verify_ordered_double(self) if ordered?
       yields!(block)
       return_value = call_implementation(double_injection, *args, &block)
-      definition.after_call_proc ? definition.after_call_proc.call(return_value) : return_value
+      definition.after_call_proc ? extract_subject_from_return_value(definition.after_call_proc.call(return_value)) : return_value
     end
 
     def yields!(block)
