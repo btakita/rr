@@ -3,8 +3,20 @@ module RR
     module Strategies
       module Verification
         class DontAllow < Strategy
-          def name
-            "dont_allow"
+          class << self
+            def domain_name
+              "dont_allow"
+            end
+          end
+          DoubleDefinitionCreator.register_verification_strategy_class(self)
+          DoubleDefinitionCreator.class_eval do
+            alias_method :do_not_allow, :dont_allow
+            alias_method :dont_call, :dont_allow
+            alias_method :do_not_call, :dont_allow
+            
+            alias_method :do_not_allow!, :dont_allow!
+            alias_method :dont_call!, :dont_allow!
+            alias_method :do_not_call!, :dont_allow!
           end
 
           protected

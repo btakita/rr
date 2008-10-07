@@ -2,8 +2,12 @@ module RR
   module DoubleDefinitions
     module Strategies
       class Strategy
-        attr_reader :definition, :method_name, :args, :handler
+        attr_reader :double_definition_creator, :definition, :method_name, :args, :handler
         include Space::Reader
+
+        def initialize(double_definition_creator)
+          @double_definition_creator = double_definition_creator
+        end
         
         def call(definition, method_name, args, handler)
           @definition, @method_name, @args, @handler = definition, method_name, args, handler
@@ -11,7 +15,7 @@ module RR
         end
 
         def name
-          raise NotImplementedError
+          self.class.domain_name
         end
 
         protected

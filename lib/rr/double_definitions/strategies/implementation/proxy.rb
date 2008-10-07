@@ -3,8 +3,10 @@ module RR
     module Strategies
       module Implementation
         class Proxy < Strategy
-          def name
-            "proxy"
+          class << self
+            def domain_name
+              "proxy"
+            end
           end
 
           protected
