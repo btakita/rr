@@ -7,7 +7,9 @@ module RR
         it "returns hash_including with expected key/values" do
           expected_hash = {:foo => "bar", :baz => "qux"}
           matcher = HashIncluding.new(expected_hash)
-          matcher.inspect.should == "hash_including(#{expected_hash.inspect})"
+          matcher.inspect.should include("hash_including(")
+          matcher.inspect.should include(':foo=>"bar"')
+          matcher.inspect.should include(':baz=>"qux"')
         end
       end
     end
