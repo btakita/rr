@@ -1,3 +1,5 @@
+- Implemented hash_including matcher (Patch by Matthew O'Conner)
+- Implemented satisfy matcher (Patch by Matthew O'Conner)
 - Implemented DoubleDefinitionCreator#mock!, #stub!, and #dont_allow!
 - Modified api to method chain Doubles
 - Fix conflict with Mocha overriding Object#verify

@@ -253,6 +253,7 @@ With any development effort, there are countless people who have contributed
 to making it possible. We all are standing on the shoulders of giants.
 * Pivotal Labs for sponsoring RR development
 * Nick Kallen for documentation suggestions, bug reports, and patches
+* Matthew O'Conner for documentation suggestions, bug reports, and patches
 * Nathan Sobo for various ideas and inspiration for cleaner and more expressive code
 * Parker Thompson for pairing with me
 * Felix Morio for pairing with me
