@@ -3,13 +3,13 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 module RR
   module DoubleDefinitions
     describe DoubleDefinitionCreatorProxy do
-      attr_reader :space, :subject, :creator, :the_proxy
+      attr_reader :subject, :creator, :the_proxy
       it_should_behave_like "Swapped Space"
 
       before(:each) do
         @subject = Object.new
         @creator = DoubleDefinitionCreator.new
-        creator.mock
+        creator.mock(subject)
       end
 
       macro("initializes proxy with passed in creator") do

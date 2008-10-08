@@ -8,6 +8,10 @@ module RR
               "proxy"
             end
           end
+          DoubleDefinitionCreator.register_implementation_strategy_class(self)
+          DoubleDefinitionCreator.class_eval do
+            alias_method :probe, :proxy
+          end
 
           protected
           def do_call

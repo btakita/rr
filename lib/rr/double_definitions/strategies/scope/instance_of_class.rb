@@ -8,6 +8,15 @@ module RR
               "instance_of"
             end
           end
+          DoubleDefinitionCreator.register_scope_strategy_class(self)
+
+          def initialize(*args)
+            super
+
+            if !double_definition_creator.no_subject? && !double_definition_creator.subject.is_a?(Class)
+              raise ArgumentError, "instance_of only accepts class objects"
+            end
+          end
 
           protected
           def do_call
@@ -18,8 +27,8 @@ module RR
             end
 
             instance_of_subject_creator = DoubleDefinitionCreator.new
-            instance_of_subject_creator.stub.proxy
-            instance_of_subject_creator.create(subject, :new, &class_handler)
+            instance_of_subject_creator.stub.proxy(subject)
+            instance_of_subject_creator.create(:new, &class_handler)
           end
         end
       end

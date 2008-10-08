@@ -3,7 +3,7 @@ module RR
     class DoubleDefinitionCreator # :nodoc
       class << self
         def register_verification_strategy_class(strategy_class)
-          class_eval((<<-CLASS), __FILE__, __LINE__)
+          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
           def #{strategy_class.domain_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
             add_strategy(subject, method_name, definition_eval_block) do
               self.verification_strategy = #{strategy_class.name}.new(self)
@@ -11,7 +11,39 @@ module RR
           end
           CLASS
 
-          class_eval((<<-CLASS), __FILE__, __LINE__)
+          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
+          def #{strategy_class.domain_name}!(method_name=nil, &definition_eval_block)
+            #{strategy_class.domain_name}(Object.new, method_name, &definition_eval_block)
+          end
+          CLASS
+        end
+
+        def register_implementation_strategy_class(strategy_class)
+          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
+          def #{strategy_class.domain_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+            add_strategy(subject, method_name, definition_eval_block) do
+              self.implementation_strategy = #{strategy_class.name}.new(self)
+            end
+          end
+          CLASS
+
+          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
+          def #{strategy_class.domain_name}!(method_name=nil, &definition_eval_block)
+            #{strategy_class.domain_name}(Object.new, method_name, &definition_eval_block)
+          end
+          CLASS
+        end
+
+        def register_scope_strategy_class(strategy_class)
+          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
+          def #{strategy_class.domain_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+            add_strategy(subject, method_name, definition_eval_block) do
+              self.scope_strategy = #{strategy_class.name}.new(self)
+            end
+          end
+          CLASS
+
+          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
           def #{strategy_class.domain_name}!(method_name=nil, &definition_eval_block)
             #{strategy_class.domain_name}(Object.new, method_name, &definition_eval_block)
           end
@@ -31,20 +63,8 @@ module RR
       end
 
       module StrategySetupMethods
-        def proxy(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
-          add_strategy(subject, method_name, definition_eval_block) do
-            self.implementation_strategy = Strategies::Implementation::Proxy.new(self)
-          end
-        end
-        alias_method :probe, :proxy
-
-        def instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
-          if !no_subject?(subject) && !subject.is_a?(Class)
-            raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
-          end
-          add_strategy(subject, method_name, definition_eval_block) do
-            self.scope_strategy = Strategies::Scope::InstanceOfClass.new(self)
-          end
+        def no_subject?
+          subject.__id__ === NO_SUBJECT.__id__
         end
 
         protected
@@ -52,11 +72,12 @@ module RR
           if method_name && definition_eval_block
             raise ArgumentError, "Cannot pass in a method name and a block"
           end
+          @subject = subject
           yield
-          if no_subject?(subject)
+          if no_subject?
             self
           elsif method_name
-            create(subject, method_name)
+            create(method_name)
           else
             DoubleDefinitionCreatorProxy.new(self, subject, &definition_eval_block)
           end
@@ -109,16 +130,13 @@ module RR
             "This Double has no strategy"
           )
         end
-
-        def no_subject?(subject)
-          subject.__id__ === NO_SUBJECT.__id__
-        end
       end
       include StrategySetupMethods
 
       module StrategyExecutionMethods
-        def create(subject, method_name, *args, &handler)
-          @subject, @method_name, @args, @handler = subject, method_name, args, handler
+        def create(method_name, *args, &handler)
+          raise DoubleDefinitionCreatorError if no_subject?
+          @method_name, @args, @handler = method_name, args, handler
           @definition = DoubleDefinition.new(self, subject)
           verification_strategy ? verification_strategy.call(definition, method_name, args, handler) : no_strategy_error
           implementation_strategy.call(definition, method_name, args, handler)
@@ -127,6 +145,9 @@ module RR
         end
       end
       include StrategyExecutionMethods
+
+      class DoubleDefinitionCreatorError < Errors::RRError
+      end
     end
   end
 end
