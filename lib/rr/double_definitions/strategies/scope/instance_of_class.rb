@@ -2,13 +2,24 @@ module RR
   module DoubleDefinitions
     module Strategies
       module Scope
-        class InstanceOfClass < Strategy
+        # Calling instance_of will cause all instances of the passed in Class
+        # to have the Double defined.
+        #
+        # The following example mocks all User's valid? method and return false.
+        #   mock.instance_of(User).valid? {false}
+        #
+        # The following example mocks and proxies User#projects and returns the
+        # first 3 projects.
+        #   mock.instance_of(User).projects do |projects|
+        #     projects[0..2]
+        #   end        
+        class InstanceOfClass < ScopeStrategy
           class << self
             def domain_name
               "instance_of"
             end
           end
-          DoubleDefinitionCreator.register_scope_strategy_class(self)
+          register
 
           def initialize(*args)
             super
