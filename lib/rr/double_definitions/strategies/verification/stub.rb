@@ -31,12 +31,7 @@ module RR
         #     method_name_2(arg_1, arg_2) {return_value_2}
         #   end        
         class Stub < VerificationStrategy
-          class << self
-            def domain_name
-              "stub"
-            end
-          end
-          register
+          register "stub"
 
           protected
           def do_call

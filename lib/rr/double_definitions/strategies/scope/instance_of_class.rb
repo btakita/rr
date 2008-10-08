@@ -14,12 +14,7 @@ module RR
         #     projects[0..2]
         #   end        
         class InstanceOfClass < ScopeStrategy
-          class << self
-            def domain_name
-              "instance_of"
-            end
-          end
-          register
+          register "instance_of"
 
           def initialize(*args)
             super

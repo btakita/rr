@@ -3,12 +3,6 @@ module RR
     module Strategies
       module Scope
         class Instance < ScopeStrategy
-          class << self
-            def domain_name
-              "instance"
-            end
-          end
-
           protected
           def do_call
             double_injection = space.double_injection(subject, method_name)

@@ -3,13 +3,18 @@ module RR
     module Strategies
       class Strategy
         class << self
-          def register(*alias_method_names)
-            strategy = self
+          attr_reader :domain_name
+          def register(domain_name, *alias_method_names)
+            @domain_name = domain_name
+            register_self_at_external_object(domain_name)
             DoubleDefinitionCreator.class_eval do
               alias_method_names.each do |alias_method_name|
-                alias_method alias_method_name, strategy.domain_name
+                alias_method alias_method_name, domain_name
               end
             end
+          end
+
+          def register_self_at_external_object
           end
         end
 
