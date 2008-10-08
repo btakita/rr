@@ -8,6 +8,7 @@ Spec::Runner.configure do |config|
 end
 
 describe "Swapped Space", :shared => true do
+  attr_reader :space, :original_space
   before do
     @original_space = RR::Space.instance
     RR::Space.instance = RR::Space.new

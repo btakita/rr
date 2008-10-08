@@ -778,7 +778,7 @@ module RR
                   end
 
                   foobar_return_value = subject.foobar
-                  foobar_return_value.should == inner_double_proxy.__subject__
+                  foobar_return_value.should == inner_double_proxy.__creator__.subject
                 end
               end
 

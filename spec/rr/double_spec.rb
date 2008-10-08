@@ -3,7 +3,7 @@ require File.expand_path("#{File.dirname(__FILE__)}/../spec_helper")
 module RR
   describe Double do
     it_should_behave_like "Swapped Space"
-    attr_reader :space, :subject, :double_injection, :definition, :definition_creator, :double
+    attr_reader :subject, :double_injection, :definition, :definition_creator, :double
     before do
       @subject = Object.new
       def subject.foobar(a, b)
@@ -344,9 +344,7 @@ module RR
           it "causes #call to return the #subject of the DoubleDefinition" do
             new_subject = Object.new
             double.returns do
-              proxy = stub(new_subject)
-              proxy.__subject__.should == new_subject
-              proxy
+              stub(new_subject)
             end
             double.call(double_injection).should == new_subject
           end
@@ -376,7 +374,7 @@ module RR
           it "causes #call to return the #subject of the DoubleDefinition" do
             new_subject = Object.new
             proxy = stub(new_subject)
-            proxy.__subject__.should == new_subject
+            proxy.__creator__.subject.should == new_subject
 
             double.returns(proxy)
             double.call(double_injection).should == new_subject

@@ -351,7 +351,7 @@ module RR
       when DoubleDefinitions::DoubleDefinition
         return_value.subject
       when DoubleDefinitions::DoubleDefinitionCreatorProxy
-        return_value.__subject__
+        return_value.__creator__.subject
       else
         return_value
       end

@@ -18,6 +18,9 @@ module RR
           self.class.domain_name
         end
 
+        def verify_subject(subject)
+        end  
+
         protected
         def do_call
           raise NotImplementedError
@@ -37,10 +40,6 @@ module RR
 
         def subject
           definition.subject
-        end
-
-        def double_definition_creator
-          definition.double_definition_creator
         end
       end
     end

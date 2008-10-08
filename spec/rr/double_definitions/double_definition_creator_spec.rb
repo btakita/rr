@@ -207,7 +207,7 @@ module RR
 
         describe "#instance_of" do
           context "when not passed a class" do
-            it "raises an error" do
+            it "raises an ArgumentError" do
               lambda do
                 creator.instance_of(Object.new)
               end.should raise_error(ArgumentError, "instance_of only accepts class objects")
@@ -255,7 +255,7 @@ module RR
           context "when #verification_strategy is not set" do
             it "raises a DoubleDefinitionError" do
               lambda do
-                creator.create(subject, :foobar, 1, 2)
+                creator.create(:foobar, 1, 2)
               end.should raise_error(Errors::DoubleDefinitionError, "This Double has no strategy")
             end
           end
@@ -263,18 +263,18 @@ module RR
           context "when #verification_strategy is a Mock" do
             context "when #implementation_strategy is a Reimplementation" do
               before do
-                creator.mock
+                creator.mock(subject)
               end
 
               it "sets expectation on the #subject that it will be sent the method_name once with the passed-in arguments" do
-                creator.create(subject, :foobar, 1, 2)
+                creator.create(:foobar, 1, 2)
                 subject.foobar(1, 2)
                 lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
               end
 
               describe "#subject.method_name being called" do
                 it "returns the return value of the Double#returns block" do
-                  creator.create(subject, :foobar, 1, 2) {:baz}
+                  creator.create(:foobar, 1, 2) {:baz}
                   subject.foobar(1, 2).should == :baz
                 end
               end
@@ -283,14 +283,14 @@ module RR
             context "when #implementation_strategy is a Proxy" do
               before do
                 creator.mock
-                creator.proxy
+                creator.proxy(subject)
               end
 
               it "sets expectation on the #subject that it will be sent the method_name once with the passed-in arguments" do
                 def subject.foobar(*args)
                   :baz;
                 end
-                creator.create(subject, :foobar, 1, 2)
+                creator.create(:foobar, 1, 2)
                 subject.foobar(1, 2)
                 lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
               end
@@ -303,7 +303,7 @@ module RR
                       original_method_called = true
                     end
                   end
-                  creator.create(subject, :foobar, 1, 2)
+                  creator.create(:foobar, 1, 2)
                   subject.foobar(1, 2)
                   original_method_called.should be_true
                 end
@@ -313,7 +313,7 @@ module RR
                     def subject.foobar(*args)
                       :baz;
                     end
-                    creator.create(subject, :foobar, 1, 2)
+                    creator.create(:foobar, 1, 2)
                     subject.foobar(1, 2).should == :baz
                   end
                 end
@@ -328,7 +328,7 @@ module RR
                   end
 
                   it "calls the block with the return value of the original method" do
-                    creator.create(subject, :foobar, 1, 2) do |value|
+                    creator.create(:foobar, 1, 2) do |value|
                       mock(value).a_method {99}
                       value
                     end
@@ -337,7 +337,7 @@ module RR
                   end
 
                   it "returns the return value of the block" do
-                    creator.create(subject, :foobar, 1, 2) do |value|
+                    creator.create(:foobar, 1, 2) do |value|
                       :something_else
                     end
                     subject.foobar(1, 2).should == :something_else
@@ -350,12 +350,12 @@ module RR
           context "when #verification_strategy is a Stub" do
             context "when #implementation_strategy is a Reimplementation" do
               before do
-                creator.stub
+                creator.stub(subject)
               end
 
               context "when not passed a block" do
                 it "returns nil" do
-                  creator.create(subject, :foobar)
+                  creator.create(:foobar)
                   subject.foobar.should be_nil
                 end
               end
@@ -363,7 +363,7 @@ module RR
               context "when passed a block" do
                 describe "#subject.method_name being called" do
                   it "returns the return value of the block" do
-                    creator.create(subject, :foobar) {:baz}
+                    creator.create(:foobar) {:baz}
                     subject.foobar.should == :baz
                   end
                 end
@@ -372,7 +372,7 @@ module RR
               context "when not passed args" do
                 describe "#subject.method_name being called with any arguments" do
                   it "invokes the implementation of the Stub" do
-                    creator.create(subject, :foobar) {:baz}
+                    creator.create(:foobar) {:baz}
                     subject.foobar(1, 2).should == :baz
                     subject.foobar().should == :baz
                     subject.foobar([]).should == :baz
@@ -383,14 +383,14 @@ module RR
               context "when passed args" do
                 describe "#subject.method_name being called with the passed-in arguments" do
                   it "invokes the implementation of the Stub" do
-                    creator.create(subject, :foobar, 1, 2) {:baz}
+                    creator.create(:foobar, 1, 2) {:baz}
                     subject.foobar(1, 2).should == :baz
                   end
                 end
 
                 describe "#subject.method_name being called with different arguments" do
                   it "raises a DoubleNotFoundError" do
-                    creator.create(subject, :foobar, 1, 2) {:baz}
+                    creator.create(:foobar, 1, 2) {:baz}
                     lambda do
                       subject.foobar
                     end.should raise_error(Errors::DoubleNotFoundError)
@@ -405,13 +405,13 @@ module RR
                   :original_return_value
                 end
                 creator.stub
-                creator.proxy
+                creator.proxy(subject)
               end
 
               context "when not passed a block" do
                 describe "#subject.method_name being called" do
                   it "invokes the original implementanion" do
-                    creator.create(subject, :foobar)
+                    creator.create(:foobar)
                     subject.foobar.should == :original_return_value
                   end
                 end
@@ -421,7 +421,7 @@ module RR
                 describe "#subject.method_name being called" do
                   it "invokes the original implementanion and invokes the block with the return value of the original implementanion" do
                     passed_in_value = nil
-                    creator.create(subject, :foobar) do |original_return_value|
+                    creator.create(:foobar) do |original_return_value|
                       passed_in_value = original_return_value
                     end
                     subject.foobar
@@ -429,7 +429,7 @@ module RR
                   end
 
                   it "returns the return value of the block" do
-                    creator.create(subject, :foobar) do |original_return_value|
+                    creator.create(:foobar) do |original_return_value|
                       :new_return_value
                     end
                     subject.foobar.should == :new_return_value
@@ -440,14 +440,14 @@ module RR
               context "when passed args" do
                 describe "#subject.method_name being called with the passed-in arguments" do
                   it "invokes the implementation of the Stub" do
-                    creator.create(subject, :foobar, 1, 2) {:baz}
+                    creator.create(:foobar, 1, 2) {:baz}
                     subject.foobar(1, 2).should == :baz
                   end
                 end
 
                 describe "#subject.method_name being called with different arguments" do
                   it "raises a DoubleNotFoundError" do
-                    creator.create(subject, :foobar, 1, 2) {:baz}
+                    creator.create(:foobar, 1, 2) {:baz}
                     lambda do
                       subject.foobar
                     end.should raise_error(Errors::DoubleNotFoundError)
@@ -459,13 +459,13 @@ module RR
 
           context "when #verification_strategy is a DontAllow" do
             before do
-              creator.dont_allow
+              creator.dont_allow(subject)
             end
 
             context "when not passed args" do
               describe "#subject.method_name being called with any arguments" do
                 it "raises a TimesCalledError" do
-                  creator.create(subject, :foobar)
+                  creator.create(:foobar)
                   lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
                   lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
                 end
@@ -475,14 +475,14 @@ module RR
             context "when passed args" do
               describe "#subject.method_name being called with the passed-in arguments" do
                 it "raises a TimesCalledError" do
-                  creator.create(subject, :foobar, 1, 2)
+                  creator.create(:foobar, 1, 2)
                   lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
                 end
               end
 
               describe "#subject.method_name being called with different arguments" do
                 it "raises a DoubleNotFoundError" do
-                  creator.create(subject, :foobar, 1, 2)
+                  creator.create(:foobar, 1, 2)
                   lambda {subject.foobar()}.should raise_error(Errors::DoubleNotFoundError)
                 end
               end

@@ -95,7 +95,7 @@ module RR
           @ordered = true
           space.register_ordered_double(@double)
           install_method_callback return_value_block
-          DoubleDefinitionCreatorProxy.new(double_definition_creator, subject)
+          DoubleDefinitionCreatorProxy.new(double_definition_creator)
         end
         alias_method :then, :ordered
 
