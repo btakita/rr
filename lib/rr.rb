@@ -37,6 +37,8 @@ require "#{dir}/rr/wildcard_matchers/boolean"
 require "#{dir}/rr/wildcard_matchers/duck_type"
 require "#{dir}/rr/wildcard_matchers/regexp"
 require "#{dir}/rr/wildcard_matchers/range"
+require "#{dir}/rr/wildcard_matchers/satisfy"
+require "#{dir}/rr/wildcard_matchers/hash_including"
 
 require "#{dir}/rr/times_called_matchers/terminal"
 require "#{dir}/rr/times_called_matchers/non_terminal"
