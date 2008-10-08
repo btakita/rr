@@ -23,13 +23,13 @@ module RR
 
       describe ".new" do
         it "does not undefine object_id" do
-          the_proxy = DoubleDefinitionCreatorProxy.new(creator, subject)
+          the_proxy = DoubleDefinitionCreatorProxy.new(creator)
           the_proxy.object_id.class.should == Fixnum
         end
 
         context "without block" do
           before do
-            @the_proxy = DoubleDefinitionCreatorProxy.new(creator, subject)
+            @the_proxy = DoubleDefinitionCreatorProxy.new(creator)
           end
 
           send "initializes proxy with passed in creator"
@@ -41,14 +41,14 @@ module RR
             end
             proxy_subclass.instance_methods.map {|m| m.to_s}.should include('i_should_be_a_double')
 
-            proxy = proxy_subclass.new(creator, subject)
+            proxy = proxy_subclass.new(creator)
             proxy.i_should_be_a_double.should be_instance_of(DoubleDefinition)
           end
         end
 
         context "with block" do
           before do
-            @the_proxy = DoubleDefinitionCreatorProxy.new(creator, subject) do |b|
+            @the_proxy = DoubleDefinitionCreatorProxy.new(creator) do |b|
               b.foobar(1, 2) {:one_two}
               b.foobar(1) {:one}
               b.foobar.with_any_args {:default}
@@ -72,7 +72,7 @@ module RR
             end
             proxy_subclass.instance_methods.map {|m| m.to_s}.should include('i_should_be_a_double')
 
-            proxy_subclass.new(creator, subject) do |m|
+            proxy_subclass.new(creator) do |m|
               m.i_should_be_a_double.should be_instance_of(DoubleDefinition)
             end
           end

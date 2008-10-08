@@ -79,7 +79,7 @@ module RR
           elsif method_name
             create(method_name)
           else
-            DoubleDefinitionCreatorProxy.new(self, subject, &definition_eval_block)
+            DoubleDefinitionCreatorProxy.new(self, &definition_eval_block)
           end
         end
 
