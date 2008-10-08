@@ -1,6 +1,24 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinitionCreator # :nodoc
+      class << self
+        def register_verification_strategy_class(strategy_class)
+          class_eval((<<-CLASS), __FILE__, __LINE__)
+          def #{strategy_class.domain_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+            add_strategy(subject, method_name, definition_eval_block) do
+              self.verification_strategy = #{strategy_class.name}.new(self)
+            end
+          end
+          CLASS
+
+          class_eval((<<-CLASS), __FILE__, __LINE__)
+          def #{strategy_class.domain_name}!(method_name=nil, &definition_eval_block)
+            #{strategy_class.domain_name}(Object.new, method_name, &definition_eval_block)
+          end
+          CLASS
+        end
+      end
+
       attr_reader :subject, :method_name, :args, :handler, :definition, :verification_strategy, :implementation_strategy, :scope_strategy
       NO_SUBJECT = Object.new
 
@@ -8,50 +26,14 @@ module RR
 
       def initialize
         @verification_strategy = nil
-        @implementation_strategy = Strategies::Implementation::Reimplementation.new
-        @scope_strategy = Strategies::Scope::Instance.new
+        @implementation_strategy = Strategies::Implementation::Reimplementation.new(self)
+        @scope_strategy = Strategies::Scope::Instance.new(self)
       end
 
       module StrategySetupMethods
-        def mock(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
-          add_strategy(subject, method_name, definition_eval_block) do
-            self.verification_strategy = Strategies::Verification::Mock.new
-          end
-        end
-
-        def mock!(method_name=nil, &definition_eval_block)
-          mock(Object.new, method_name, &definition_eval_block)
-        end
-
-        def stub(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
-          add_strategy(subject, method_name, definition_eval_block) do
-            self.verification_strategy = Strategies::Verification::Stub.new
-          end
-        end
-
-        def stub!(method_name=nil, &definition_eval_block)
-          stub(Object.new, method_name, &definition_eval_block)
-        end
-
-        def dont_allow(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
-          add_strategy(subject, method_name, definition_eval_block) do
-            self.verification_strategy = Strategies::Verification::DontAllow.new
-          end
-        end
-        alias_method :do_not_allow, :dont_allow
-        alias_method :dont_call, :dont_allow
-        alias_method :do_not_call, :dont_allow
-
-        def dont_allow!(method_name=nil, &definition_eval_block)
-          dont_allow(Object.new, method_name, &definition_eval_block)
-        end
-        alias_method :do_not_allow!, :dont_allow!
-        alias_method :dont_call!, :dont_allow!
-        alias_method :do_not_call!, :dont_allow!
-
         def proxy(subject=NO_SUBJECT, method_name=nil, &definition_eval_block) # :nodoc
           add_strategy(subject, method_name, definition_eval_block) do
-            self.implementation_strategy = Strategies::Implementation::Proxy.new
+            self.implementation_strategy = Strategies::Implementation::Proxy.new(self)
           end
         end
         alias_method :probe, :proxy
@@ -61,7 +43,7 @@ module RR
             raise ArgumentError, "instance_of only accepts class objects" unless subject.is_a?(Class)
           end
           add_strategy(subject, method_name, definition_eval_block) do
-            self.scope_strategy = Strategies::Scope::InstanceOfClass.new
+            self.scope_strategy = Strategies::Scope::InstanceOfClass.new(self)
           end
         end
 

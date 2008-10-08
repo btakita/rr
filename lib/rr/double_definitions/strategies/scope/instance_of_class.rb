@@ -3,8 +3,10 @@ module RR
     module Strategies
       module Scope
         class InstanceOfClass < Strategy
-          def name
-            "instance_of"
+          class << self
+            def domain_name
+              "instance_of"
+            end
           end
 
           protected

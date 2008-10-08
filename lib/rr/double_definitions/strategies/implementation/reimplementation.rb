@@ -3,8 +3,10 @@ module RR
     module Strategies
       module Implementation
         class Reimplementation < Strategy
-          def name
-            "reimplementation"
+          class << self
+            def domain_name
+              "reimplementation"
+            end
           end
 
           protected

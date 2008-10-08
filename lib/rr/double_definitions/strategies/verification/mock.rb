@@ -3,9 +3,12 @@ module RR
     module Strategies
       module Verification
         class Mock < Strategy
-          def name
-            "mock"
+          class << self
+            def domain_name
+              "mock"
+            end
           end
+          DoubleDefinitionCreator.register_verification_strategy_class(self)
 
           protected
           def do_call

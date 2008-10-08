@@ -3,9 +3,12 @@ module RR
     module Strategies
       module Verification
         class Stub < Strategy
-          def name
-            "stub"
+          class << self
+            def domain_name
+              "stub"
+            end
           end
+          DoubleDefinitionCreator.register_verification_strategy_class(self)
 
           protected
           def do_call
