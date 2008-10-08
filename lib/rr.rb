@@ -12,6 +12,7 @@ require "#{dir}/rr/hash_with_object_id_key"
 
 require "#{dir}/rr/double_definitions/double_definition_creator_proxy"
 require "#{dir}/rr/double_definitions/double_definition_creator"
+require "#{dir}/rr/adapters/rr_methods"
 
 require "#{dir}/rr/double"
 require "#{dir}/rr/double_definitions/double_definition"
@@ -51,8 +52,6 @@ require "#{dir}/rr/times_called_matchers/range_matcher"
 require "#{dir}/rr/times_called_matchers/proc_matcher"
 require "#{dir}/rr/times_called_matchers/at_least_matcher"
 require "#{dir}/rr/times_called_matchers/at_most_matcher"
-
-require "#{dir}/rr/adapters/rr_methods"
 
 require "#{dir}/rr/adapters/rspec"
 require "#{dir}/rr/adapters/test_unit"

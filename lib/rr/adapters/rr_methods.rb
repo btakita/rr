@@ -1,6 +1,24 @@
 module RR
   module Adapters
     module RRMethods
+      class << self
+        def register_strategy_class(strategy_class, method_name)
+          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
+          def #{method_name}(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
+            creator = DoubleDefinitions::DoubleDefinitionCreator.new
+            creator.#{method_name}(subject, method_name, &definition_eval_block)
+          end
+          CLASS
+
+          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
+          def #{method_name}!(method_name=nil, &definition_eval_block)
+            creator = DoubleDefinitions::DoubleDefinitionCreator.new
+            creator.#{method_name}!(method_name, &definition_eval_block)
+          end
+          CLASS
+        end
+      end
+
       # Verifies all the DoubleInjection objects have met their
       # TimesCalledExpectations.
       def verify
@@ -10,58 +28,6 @@ module RR
       # Resets the registered Doubles and ordered Doubles
       def reset
         RR::Space.instance.reset
-      end
-
-      def mock(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
-        creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.mock(subject, method_name, &definition_eval_block)
-      end
-
-      def mock!(method_name=nil, &definition_eval_block)
-        creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.mock!(method_name, &definition_eval_block)
-      end
-
-
-      def stub(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
-        creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.stub(subject, method_name, &definition_eval_block)
-      end
-
-      def stub!(method_name=nil, &definition_eval_block)
-        creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.stub!(method_name, &definition_eval_block)
-      end
-
-      def proxy(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
-        creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.proxy(subject, method_name, &definition_eval_block)
-      end
-
-      def proxy!(method_name=nil, &definition_eval_block)
-        creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.proxy!(method_name, &definition_eval_block)
-      end
-
-      def dont_allow(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
-        creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.dont_allow(subject, method_name, &definition_eval_block)
-      end
-      alias_method :do_not_allow, :dont_allow
-      alias_method :dont_call, :dont_allow
-      alias_method :do_not_call, :dont_allow
-
-      def dont_allow!(method_name=nil, &definition_eval_block)
-        creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.dont_allow!(method_name, &definition_eval_block)
-      end
-      alias_method :do_not_allow!, :dont_allow!
-      alias_method :dont_call!, :dont_allow!
-      alias_method :do_not_call!, :dont_allow!
-
-      def instance_of(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
-        creator = DoubleDefinitions::DoubleDefinitionCreator.new
-        creator.instance_of(subject, method_name, &definition_eval_block)
       end
 
       # Returns a AnyTimesMatcher. This is meant to be passed in as an argument
