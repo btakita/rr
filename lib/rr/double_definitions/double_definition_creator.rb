@@ -2,9 +2,9 @@ module RR
   module DoubleDefinitions
     class DoubleDefinitionCreator # :nodoc
       class << self
-        def register_verification_strategy_class(strategy_class)
+        def register_verification_strategy_class(strategy_class, method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{strategy_class.domain_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+          def #{method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
             add_strategy(subject, method_name, definition_eval_block) do
               self.verification_strategy = #{strategy_class.name}.new(self)
             end
@@ -12,15 +12,15 @@ module RR
           CLASS
 
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{strategy_class.domain_name}!(method_name=nil, &definition_eval_block)
-            #{strategy_class.domain_name}(Object.new, method_name, &definition_eval_block)
+          def #{method_name}!(method_name=nil, &definition_eval_block)
+            #{method_name}(Object.new, method_name, &definition_eval_block)
           end
           CLASS
         end
 
-        def register_implementation_strategy_class(strategy_class)
+        def register_implementation_strategy_class(strategy_class, method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{strategy_class.domain_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+          def #{method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
             add_strategy(subject, method_name, definition_eval_block) do
               self.implementation_strategy = #{strategy_class.name}.new(self)
             end
@@ -28,15 +28,15 @@ module RR
           CLASS
 
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{strategy_class.domain_name}!(method_name=nil, &definition_eval_block)
-            #{strategy_class.domain_name}(Object.new, method_name, &definition_eval_block)
+          def #{method_name}!(method_name=nil, &definition_eval_block)
+            #{method_name}(Object.new, method_name, &definition_eval_block)
           end
           CLASS
         end
 
-        def register_scope_strategy_class(strategy_class)
+        def register_scope_strategy_class(strategy_class, method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{strategy_class.domain_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+          def #{method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
             add_strategy(subject, method_name, definition_eval_block) do
               self.scope_strategy = #{strategy_class.name}.new(self)
             end
@@ -44,8 +44,8 @@ module RR
           CLASS
 
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{strategy_class.domain_name}!(method_name=nil, &definition_eval_block)
-            #{strategy_class.domain_name}(Object.new, method_name, &definition_eval_block)
+          def #{method_name}!(method_name=nil, &definition_eval_block)
+            #{method_name}(Object.new, method_name, &definition_eval_block)
           end
           CLASS
         end

@@ -48,12 +48,7 @@ module RR
         #     "My new return value"
         #   end        
         class Proxy < ImplementationStrategy
-          class << self
-            def domain_name
-              "proxy"
-            end
-          end
-          register(:probe)
+          register("proxy", :probe)
 
           protected
           def do_call
