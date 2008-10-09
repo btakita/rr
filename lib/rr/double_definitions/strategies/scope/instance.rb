@@ -2,7 +2,7 @@ module RR
   module DoubleDefinitions
     module Strategies
       module Scope
-        class Instance < Strategy
+        class Instance < ScopeStrategy
           class << self
             def domain_name
               "instance"

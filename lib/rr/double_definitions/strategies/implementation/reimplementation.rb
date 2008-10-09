@@ -2,7 +2,7 @@ module RR
   module DoubleDefinitions
     module Strategies
       module Implementation
-        class Reimplementation < Strategy
+        class Reimplementation < ImplementationStrategy
           class << self
             def domain_name
               "reimplementation"

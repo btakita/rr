@@ -2,6 +2,17 @@ module RR
   module DoubleDefinitions
     module Strategies
       class Strategy
+        class << self
+          def register(*alias_method_names)
+            strategy = self
+            DoubleDefinitionCreator.class_eval do
+              alias_method_names.each do |alias_method_name|
+                alias_method alias_method_name, strategy.domain_name
+              end
+            end
+          end
+        end
+
         attr_reader :double_definition_creator, :definition, :method_name, :args, :handler
         include Space::Reader
 
