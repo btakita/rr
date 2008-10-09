@@ -12,6 +12,12 @@ module RR
                 alias_method alias_method_name, domain_name
               end
             end
+            RR::Adapters::RRMethods.register_strategy_class(self, domain_name)
+            RR::Adapters::RRMethods.class_eval do
+              alias_method_names.each do |alias_method_name|
+                alias_method alias_method_name, domain_name
+              end
+            end
           end
 
           def register_self_at_external_object
