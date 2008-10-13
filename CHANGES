@@ -1,3 +1,4 @@
+- Implemented Double strategy creation methods (#mock, #stub, #proxy, #instance_of, and ! equivalents) on DoubleDefinition
 - Implemented hash_including matcher (Patch by Matthew O'Conner)
 - Implemented satisfy matcher (Patch by Matthew O'Conner)
 - Implemented DoubleDefinitionCreator#mock!, #stub!, and #dont_allow!

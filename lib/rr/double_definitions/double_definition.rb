@@ -1,6 +1,22 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinition #:nodoc:
+      class << self
+        def register_strategy_class(strategy_class, method_name)
+          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
+          def #{method_name}(subject=DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
+            ChildDoubleDefinitionCreator.new(self).#{method_name}(subject, method_name, &definition_eval_block)
+          end
+          CLASS
+
+          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
+          def #{method_name}!(method_name=nil, &definition_eval_block)
+            ChildDoubleDefinitionCreator.new(self).#{method_name}!(method_name, &definition_eval_block)
+          end
+          CLASS
+        end
+      end
+
       ORIGINAL_METHOD = Object.new
       attr_accessor(
         :argument_expectation,

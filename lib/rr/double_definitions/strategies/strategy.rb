@@ -13,6 +13,7 @@ module RR
               end
             end
             RR::Adapters::RRMethods.register_strategy_class(self, domain_name)
+            DoubleDefinition.register_strategy_class(self, domain_name)
             RR::Adapters::RRMethods.class_eval do
               alias_method_names.each do |alias_method_name|
                 alias_method alias_method_name, domain_name
