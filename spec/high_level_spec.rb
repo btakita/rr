@@ -40,6 +40,21 @@ describe "RR" do
       mock(subject).first(1).mock!.second(2).mock!.third(3) {4}
       subject.first(1).second(2).third(3).should == 4
     end
+
+    it 'allows chaining with proxy' do
+      find_return_value = Object.new
+      def find_return_value.child
+        :the_child
+      end
+      (class << subject; self; end).class_eval do
+        define_method(:find) do |id|
+          id == '1' ? find_return_value : raise(ArgumentError)
+        end
+      end
+
+      mock.proxy(subject).find('1').mock.proxy!.child
+      subject.find('1').child.should == :the_child
+    end
     
     it 'allows branched chaining' do
       mock(subject).first do
