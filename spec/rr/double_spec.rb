@@ -563,52 +563,62 @@ module RR
     end
 
     describe "#exact_match?" do
-      it "returns false when no expectation set" do
-        double.should_not be_exact_match()
-        double.should_not be_exact_match(nil)
-        double.should_not be_exact_match(Object.new)
-        double.should_not be_exact_match(1, 2, 3)
+      context "when no expectation is set" do
+        it "raises a DoubleDefinitionError" do
+          lambda do
+            double.exact_match?
+          end.should raise_error(Errors::DoubleDefinitionError)
+        end
       end
 
-      it "returns false when arguments are not an exact match" do
-        double.with(1, 2, 3)
-        double.should_not be_exact_match(1, 2)
-        double.should_not be_exact_match(1)
-        double.should_not be_exact_match()
-        double.should_not be_exact_match("does not match")
+      context "when arguments are not an exact match" do
+        it "returns false" do
+          double.with(1, 2, 3)
+          double.should_not be_exact_match(1, 2)
+          double.should_not be_exact_match(1)
+          double.should_not be_exact_match()
+          double.should_not be_exact_match("does not match")
+        end
       end
 
-      it "returns true when arguments are an exact match" do
-        double.with(1, 2, 3)
-        double.should be_exact_match(1, 2, 3)
+      context "when arguments are an exact match" do
+        it "returns true" do
+          double.with(1, 2, 3)
+          double.should be_exact_match(1, 2, 3)
+        end
       end
     end
 
     describe "#wildcard_match?" do
-      it "returns false when no expectation set" do
-        double.should_not be_wildcard_match()
-        double.should_not be_wildcard_match(nil)
-        double.should_not be_wildcard_match(Object.new)
-        double.should_not be_wildcard_match(1, 2, 3)
+      context "when no expectation set" do
+        it "raises a DoubleDefinitionError" do
+          lambda do
+            double.wildcard_match?
+          end.should raise_error(Errors::DoubleDefinitionError)
+        end
       end
 
-      it "returns true when arguments are an exact match" do
-        double.with(1, 2, 3)
-        double.should be_wildcard_match(1, 2, 3)
-        double.should_not be_wildcard_match(1, 2)
-        double.should_not be_wildcard_match(1)
-        double.should_not be_wildcard_match()
-        double.should_not be_wildcard_match("does not match")
+      context "when arguments are an exact match" do
+        it "returns true" do
+          double.with(1, 2, 3)
+          double.should be_wildcard_match(1, 2, 3)
+          double.should_not be_wildcard_match(1, 2)
+          double.should_not be_wildcard_match(1)
+          double.should_not be_wildcard_match()
+          double.should_not be_wildcard_match("does not match")
+        end
       end
 
-      it "returns true when with_any_args" do
-        double.with_any_args
+      context "when with_any_args" do
+        it "returns true" do
+          double.with_any_args
 
-        double.should be_wildcard_match(1, 2, 3)
-        double.should be_wildcard_match(1, 2)
-        double.should be_wildcard_match(1)
-        double.should be_wildcard_match()
-        double.should be_wildcard_match("does not match")
+          double.should be_wildcard_match(1, 2, 3)
+          double.should be_wildcard_match(1, 2)
+          double.should be_wildcard_match(1)
+          double.should be_wildcard_match()
+          double.should be_wildcard_match("does not match")
+        end
       end
     end
 

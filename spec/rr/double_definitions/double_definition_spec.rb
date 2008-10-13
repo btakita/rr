@@ -899,11 +899,10 @@ module RR
 
         describe "#exact_match?" do
           context "when no expectation set" do
-            it "returns false" do
-              definition.should_not be_exact_match()
-              definition.should_not be_exact_match(nil)
-              definition.should_not be_exact_match(Object.new)
-              definition.should_not be_exact_match(1, 2, 3)
+            it "raises a DoubleDefinitionError" do
+              lambda do
+                definition.exact_match?
+              end.should raise_error(Errors::DoubleDefinitionError)
             end
           end
 
@@ -927,11 +926,10 @@ module RR
 
         describe "#wildcard_match?" do
           context "when no expectation is set" do
-            it "returns false" do
-              definition.should_not be_wildcard_match()
-              definition.should_not be_wildcard_match(nil)
-              definition.should_not be_wildcard_match(Object.new)
-              definition.should_not be_wildcard_match(1, 2, 3)
+            it "raises a DoubleDefinitionError" do
+              lambda do
+                definition.wildcard_match?
+              end.should raise_error(Errors::DoubleDefinitionError)
             end
           end
 
@@ -977,9 +975,11 @@ module RR
           end
 
           context "when there is not times_matcher" do
-            it "returns false" do
+            it "raises a DoubleDefinitionError" do
               definition.times_matcher.should be_nil
-              definition.should_not be_terminal
+              lambda do
+                definition.terminal?
+              end.should raise_error(Errors::DoubleDefinitionError)
             end
           end
         end
