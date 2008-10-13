@@ -3,6 +3,15 @@
 RR (Double Ruby) is a test double framework that features a rich
 selection of double techniques and a terse syntax.
 
+== More Information
+=== Mailing Lists
+* double-ruby-users@rubyforge.org
+* double-ruby-devel@rubyforge.org
+
+=== Websites
+* http://rubyforge.org/projects/double-ruby
+* http://github.com/btakita/rr
+
 == What is a Test Double?
 A Test Double is a generalization of something that replaces a real
 object to make it easier to test another object. Its like a stunt
