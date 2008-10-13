@@ -33,7 +33,7 @@ Nick Kallen presented the use case for Double chaining and contributed a patch f
     mock(subject).first(1).mock!.second(2).mock!.third(3) {4}
     subject.first(1).second(2).third(3) # 4
 
-Of course you have access so the proxy facilities:
+Of course you have access to the proxy facilities:
 
     mock.proxy(User).find('1').mock.proxy!.children.mock.proxy!.find_all_by_group_id(10)
     User.find('1').children.find_all_by_group_id(10) # Makes verifications pass and returns the actual children
