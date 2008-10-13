@@ -79,8 +79,9 @@ module RR
             error = e
           end
           error.message.should include("On subject #<Object")
-          expected_double_message_part = "unexpected method invocation in the next line followed by the expected invocations\n" <<
+          expected_double_message_part = "unexpected method invocation:\n" <<
             "  foobar(:arg1, :arg2)\n"
+            "expected invocations:\n"
             "- foobar(1, 2)\n" <<
             "- foobar(3)"
           error.message.should include(expected_double_message_part)
