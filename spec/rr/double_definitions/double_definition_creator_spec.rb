@@ -29,7 +29,7 @@ module RR
               end
             end
 
-            context "when passed a method_name argument" do
+            context "when passed a subject and a method_name argument" do
               it "creates a mock Double for method" do
                 double_definition = creator.mock(subject, :foobar).returns {:baz}
                 double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
@@ -62,7 +62,7 @@ module RR
               end
             end
 
-            context "when passed a method_name argument" do
+            context "when passed subject and a method_name argument" do
               it "creates a stub Double for method when passed a method_name argument" do
                 double_definition = creator.stub(subject, :foobar).returns {:baz}
                 double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
@@ -101,7 +101,7 @@ module RR
               end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
             end
 
-            context "when passed a method_name argument_expectation" do
+            context "when passed a subject and a method_name argument_expectation" do
               it "creates a mock Double for method" do
                 double_definition = creator.dont_allow(subject, :foobar)
                 double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)

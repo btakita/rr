@@ -12,6 +12,7 @@ require "#{dir}/rr/hash_with_object_id_key"
 
 require "#{dir}/rr/double_definitions/double_definition_creator_proxy"
 require "#{dir}/rr/double_definitions/double_definition_creator"
+require "#{dir}/rr/double_definitions/child_double_definition_creator"
 require "#{dir}/rr/adapters/rr_methods"
 
 require "#{dir}/rr/double"

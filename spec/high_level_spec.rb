@@ -33,12 +33,12 @@ describe "RR" do
     it 'allows terse chaining' do
       mock(subject).first(1) {mock(Object.new).second(2) {mock(Object.new).third(3) {4}}}
       subject.first(1).second(2).third(3).should == 4
+
       mock(subject).first(1) {mock!.second(2) {mock!.third(3) {4}}}
       subject.first(1).second(2).third(3).should == 4
-      pending("the implementation #mock, #stub, and #dont_allow on DoubleDefinition") do
-        mock(subject).first(1).mock!.second(2).mock!.third(3) {4}
-        subject.first(1).second(2).third(3).should == 4
-      end
+      
+      mock(subject).first(1).mock!.second(2).mock!.third(3) {4}
+      subject.first(1).second(2).third(3).should == 4
     end
     
     it 'allows branched chaining' do

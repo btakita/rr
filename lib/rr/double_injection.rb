@@ -79,9 +79,10 @@ module RR
 
     def call_method(args, block)
       if double = find_double_to_attempt(args)
-        return double.call(self, *args, &block)
+        double.call(self, *args, &block)
+      else
+        double_not_found_error(*args)
       end
-      double_not_found_error(*args)
     end
 
     def find_double_to_attempt(args)
@@ -104,8 +105,7 @@ module RR
       end
 
       unless matches.matching_doubles.empty?
-        # This will raise a TimesCalledError
-        return matches.matching_doubles.first
+        return matches.matching_doubles.first # This will raise a TimesCalledError
       end
 
       return nil
