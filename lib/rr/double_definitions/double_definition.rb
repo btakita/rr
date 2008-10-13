@@ -162,15 +162,18 @@ module RR
         end
 
         def exact_match?(*arguments)
-          @argument_expectation ? @argument_expectation.exact_match?(*arguments) : false
+          raise(Errors::DoubleDefinitionError, "#argument_expectation must be defined on #{inspect}") unless @argument_expectation
+          @argument_expectation.exact_match?(*arguments)
         end
 
         def wildcard_match?(*arguments)
-          @argument_expectation ? @argument_expectation.wildcard_match?(*arguments) : false
+          raise(Errors::DoubleDefinitionError, "#argument_expectation must be defined on #{inspect}") unless @argument_expectation
+          @argument_expectation.wildcard_match?(*arguments)
         end
 
         def terminal?
-          @times_matcher ? @times_matcher.terminal? : false
+          raise(Errors::DoubleDefinitionError, "#argument_expectation must be defined on #{inspect}") unless @times_matcher
+          @times_matcher.terminal?
         end
 
         def expected_arguments
