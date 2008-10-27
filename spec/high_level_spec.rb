@@ -77,10 +77,19 @@ describe "RR" do
       lambda {subject.to_s}.should raise_error(RR::Errors::TimesCalledError)
     end
 
-    it "mocks via block" do
+    it "mocks via block with argument" do
       mock subject do |c|
         c.to_s {"a value"}
         c.to_sym {:crazy}
+      end
+      subject.to_s.should == "a value"
+      subject.to_sym.should == :crazy
+    end
+
+    it "mocks via block without argument" do
+      mock subject do
+        to_s {"a value"}
+        to_sym {:crazy}
       end
       subject.to_s.should == "a value"
       subject.to_sym.should == :crazy
@@ -152,7 +161,7 @@ describe "RR" do
       lambda {subject.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
     end
 
-    it "proxies via block" do
+    it "proxies via block with argument" do
       def subject.foobar_1(*args)
         :original_value_1
       end
@@ -172,7 +181,7 @@ describe "RR" do
       lambda {subject.foobar_2(:blah)}.should raise_error
     end
 
-    it "proxies via block" do
+    it "proxies via block without argument" do
       def subject.foobar_1(*args)
         :original_value_1
       end
@@ -181,9 +190,9 @@ describe "RR" do
         :original_value_2
       end
 
-      mock.proxy subject do |c|
-        c.foobar_1(1)
-        c.foobar_2
+      mock.proxy subject do
+        foobar_1(1)
+        foobar_2
       end
       subject.foobar_1(1).should == :original_value_1
       lambda {subject.foobar_1(:blah)}.should raise_error
@@ -207,10 +216,19 @@ describe "RR" do
       subject.to_s.should == "value 2"
     end
 
-    it "stubs via block" do
+    it "stubs via block with argument" do
       stub subject do |d|
         d.to_s {"a value"}
         d.to_sym {:crazy}
+      end
+      subject.to_s.should == "a value"
+      subject.to_sym.should == :crazy
+    end
+
+    it "stubs via block without argument" do
+      stub subject do
+        to_s {"a value"}
+        to_sym {:crazy}
       end
       subject.to_s.should == "a value"
       subject.to_sym.should == :crazy

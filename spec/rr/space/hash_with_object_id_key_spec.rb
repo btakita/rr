@@ -77,11 +77,11 @@ module RR
       end
 
       it "returns true when the key is in the Hash" do
-        @hash.should include(@key)
+        @hash.include?(@key).should be_true
       end
 
       it "returns false when the key is not in the Hash" do
-        @hash.should_not include(Object.new)
+        @hash.include?(Object.new).should be_false
       end
     end
   end
