@@ -1,3 +1,5 @@
+- DoubleDefinitionCreatorProxy definition eval block is instance_evaled when the arity is not 1. When the arity is 1, the block is yielded with the DoubleDefinitionCreatorProxy passed in.
+ 
 * 0.6.0
 - Friendlier DoubleNotFound error message
 - Implemented Double strategy creation methods (#mock, #stub, #proxy, #instance_of, and ! equivalents) on DoubleDefinition
