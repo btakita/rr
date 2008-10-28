@@ -203,12 +203,27 @@ Put double scenarios on instances of a Class.
   mock.instance_of(User).valid? {false}
 
 === Block Syntax
+The block syntax has two modes
+* A normal block mode with a DoubleDefinitionCreatorProxy argument
+
   script = MyScript.new
-  mock(script) do |m|
-    m.system("cd #{RAILS_ENV}") {true}
-    m.system("rake foo:bar") {true}
-    m.system("rake baz") {true}
+  mock(script) do |expect|
+    expect.system("cd #{RAILS_ENV}") {true}
+    expect.system("rake foo:bar") {true}
+    expect.system("rake baz") {true}
   end
+
+* An instance_eval mode where the DoubleDefinitionCreatorProxy is instance_evaled
+
+    script = MyScript.new
+    mock(script) do
+      system("cd #{RAILS_ENV}") {true}
+      system("rake foo:bar") {true}
+      system("rake baz") {true}
+    end
+
+=== Block Syntax with explicit DoubleDefinitionCreatorProxy argument
+
 
 === Double Graphs
 RR has a method-chaining api support for Double graphs. For example,
