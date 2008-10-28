@@ -7,6 +7,10 @@ module RR
         super()
       end
 
+      def root_subject
+        parent_double_definition.root_subject
+      end
+
       def instance_of(*args)
         raise NoMethodError
       end

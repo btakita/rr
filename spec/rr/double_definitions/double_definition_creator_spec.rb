@@ -9,6 +9,13 @@ module RR
         @subject = Object.new
         @creator = DoubleDefinitionCreator.new
       end
+
+      describe "#root_subject" do
+        it "returns #subject" do
+          creator.stub(subject).foobar
+          creator.root_subject.should == subject
+        end
+      end
       
       describe "StrategySetupMethods" do
         describe "normal strategy definitions" do

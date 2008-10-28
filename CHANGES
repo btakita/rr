@@ -1,3 +1,5 @@
+- Fixed DoubleDefinition chaining edge cases
+
 * 0.6.1
 - DoubleDefinitionCreatorProxy definition eval block is instance_evaled when the arity is not 1. When the arity is 1, the block is yielded with the DoubleDefinitionCreatorProxy passed in.
  

@@ -41,6 +41,10 @@ module RR
         @subject = subject
       end
 
+      def root_subject
+        double_definition_creator.root_subject
+      end
+
       module DefinitionConstructionMethods
         def with(*args, &return_value_block)
           @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)

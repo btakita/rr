@@ -62,6 +62,10 @@ module RR
         @scope_strategy = Strategies::Scope::Instance.new(self)
       end
 
+      def root_subject
+        subject
+      end      
+
       module StrategySetupMethods
         def no_subject?
           subject.__id__ === NO_SUBJECT.__id__

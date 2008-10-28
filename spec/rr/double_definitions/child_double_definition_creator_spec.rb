@@ -11,6 +11,15 @@ module RR
         @parent_double_definition = DoubleDefinition.new(parent_double_definition_creator, parent_subject)
         @child_double_definition_creator = ChildDoubleDefinitionCreator.new(parent_double_definition)
       end
+
+      describe "#root_subject" do
+        it "returns the #parent_double_definition.root_subject" do
+          child_subject = Object.new
+          parent_double_definition_creator.stub(parent_subject)
+          child_double_definition_creator.stub(child_subject)
+          child_double_definition_creator.root_subject.should == parent_subject
+        end
+      end      
       
       describe "Strategies::Verification definitions" do
         describe "methods without !" do

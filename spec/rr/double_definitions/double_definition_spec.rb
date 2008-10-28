@@ -3,21 +3,28 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 module RR
   module DoubleDefinitions
     describe DoubleDefinition do
-      attr_reader :subject, :double_injection, :double, :definition
+      attr_reader :subject, :double_definition_creator, :double, :definition
 
       it_should_behave_like "Swapped Space"
 
       before do
         @subject = Object.new
         add_original_method
-        @double_injection = Space.instance.double_injection(subject, :foobar)
-        @double = new_double(double_injection)
-        @definition = double.definition
+        @double_definition_creator = DoubleDefinitionCreator.new
+        @definition = double_definition_creator.stub(subject).foobar
+        @double = definition.double
       end      
 
       def add_original_method
         def subject.foobar(a, b)
           :original_return_value
+        end
+      end
+      
+      describe "#root_subject" do
+        it "returns #double_definition_creator.root_subject" do
+          definition.root_subject.should == definition.double_definition_creator.root_subject
+          definition.root_subject.should == subject
         end
       end
 
@@ -1009,8 +1016,9 @@ module RR
         end
 
         describe "#exact_match?" do
-          context "when no expectation set" do
+          context "when no argument_expectation set" do
             it "raises a DoubleDefinitionError" do
+              definition.argument_expectation = nil
               lambda do
                 definition.exact_match?
               end.should raise_error(Errors::DoubleDefinitionError)
@@ -1036,8 +1044,9 @@ module RR
         end
 
         describe "#wildcard_match?" do
-          context "when no expectation is set" do
+          context "when no #argument_expectation is set" do
             it "raises a DoubleDefinitionError" do
+              definition.argument_expectation = nil
               lambda do
                 definition.wildcard_match?
               end.should raise_error(Errors::DoubleDefinitionError)
@@ -1087,7 +1096,7 @@ module RR
 
           context "when there is not times_matcher" do
             it "raises a DoubleDefinitionError" do
-              definition.times_matcher.should be_nil
+              definition.times_matcher = nil
               lambda do
                 definition.terminal?
               end.should raise_error(Errors::DoubleDefinitionError)
@@ -1105,7 +1114,7 @@ module RR
 
           context "when there is no argument expectation" do
             it "returns an empty array" do
-              definition.argument_expectation.should be_nil
+              definition.argument_expectation = nil
               definition.expected_arguments.should == []
             end
           end
