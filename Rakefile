@@ -52,7 +52,6 @@ spec = Gem::Specification.new do |s|
 
   s.test_files = Dir.glob('spec/*_spec.rb')
   s.require_path = 'lib'
-  s.autorequire = 'rr'
   s.author = "Brian Takita"
   s.email = "brian@pivotallabs.com"
   s.homepage = "http://pivotallabs.com"
