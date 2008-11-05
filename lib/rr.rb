@@ -1,5 +1,7 @@
 dir = File.dirname(__FILE__)
 require "#{dir}/rr/errors/rr_error"
+require "#{dir}/rr/errors/subject_does_not_implement_method_error"
+require "#{dir}/rr/errors/subject_has_different_arity_error"
 require "#{dir}/rr/errors/double_definition_error"
 require "#{dir}/rr/errors/double_not_found_error"
 require "#{dir}/rr/errors/double_order_error"
@@ -28,6 +30,9 @@ require "#{dir}/rr/double_definitions/strategies/implementation/proxy"
 require "#{dir}/rr/double_definitions/strategies/scope/scope_strategy"
 require "#{dir}/rr/double_definitions/strategies/scope/instance"
 require "#{dir}/rr/double_definitions/strategies/scope/instance_of_class"
+require "#{dir}/rr/double_definitions/strategies/method_signature_verification/method_signature_verification_strategy"
+require "#{dir}/rr/double_definitions/strategies/method_signature_verification/weak"
+require "#{dir}/rr/double_definitions/strategies/method_signature_verification/strong"
 require "#{dir}/rr/double_matches"
 
 require "#{dir}/rr/expectations/argument_equality_expectation"

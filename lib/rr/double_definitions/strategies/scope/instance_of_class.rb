@@ -33,6 +33,7 @@ module RR
             end
 
             instance_of_subject_creator = DoubleDefinitionCreator.new
+            instance_of_subject_creator.strong if definition.verify_method_signature?
             instance_of_subject_creator.stub.proxy(subject)
             instance_of_subject_creator.create(:new, &class_handler)
           end
