@@ -42,7 +42,9 @@ module RR
     end
 
     def invocation(expectation)
-      @invocations.detect {|invocation| expectation.exact_match?(*invocation.args) }
+      @invocations.detect do |invocation| 
+        expectation.exact_match?(*invocation.args) || expectation.wildcard_match?(*invocation.args)
+      end
     end
 
     # RR::DoubleInjection#verify verifies each Double

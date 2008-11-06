@@ -37,6 +37,10 @@ module RR
           @subject.foobar(*@args)
         end
 
+        it "has an invocation for any arguments" do
+          @double_injection.invocation(Expectations::AnyArgumentExpectation.new).should_not be_nil
+        end
+
         it "has an invocation of the passed arguments" do
           @double_injection.invocation(Expectations::ArgumentEqualityExpectation.new(*@args)).
             should_not be_nil
