@@ -8,6 +8,7 @@ require "#{dir}/rr/errors/times_called_error"
 
 require "#{dir}/rr/space"
 require "#{dir}/rr/double_injection"
+require "#{dir}/rr/invocation"
 require "#{dir}/rr/hash_with_object_id_key"
 
 require "#{dir}/rr/double_definitions/double_definition_creator_proxy"
