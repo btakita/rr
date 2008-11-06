@@ -100,6 +100,10 @@ module RR
         RR::WildcardMatchers::Satisfy.new(expectation_proc)
       end
 
+      def have_received(method = nil)
+        InvocationMatcher.new(method)
+      end
+
       instance_methods.each do |name|
         alias_method "rr_#{name}", name
       end
