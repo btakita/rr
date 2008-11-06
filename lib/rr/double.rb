@@ -25,8 +25,11 @@ module RR
       @times_called = 0
       @times_called_expectation = Expectations::TimesCalledExpectation.new(self)
       definition.double = self
+      verify_method_signature if definition.verify_method_signature?
       double_injection.register_double self
     end
+    
+    
 
     # Double#with sets the expectation that the Double will receive
     # the passed in arguments.
@@ -320,6 +323,37 @@ module RR
     end
 
     protected
+    def verify_method_signature
+      raise RR::Errors::SubjectDoesNotImplementMethodError if !definition.subject.respond_to?(double_injection.send(:original_method_name))
+      raise RR::Errors::SubjectHasDifferentArityError if !arity_matches?
+    end
+    
+    def subject_arity
+      definition.subject.method(double_injection.send(:original_method_name)).arity
+    end
+    
+    def subject_accepts_only_varargs?
+      subject_arity == -1
+    end
+    
+    def subject_accepts_varargs?
+      subject_arity < 0
+    end
+    
+    def arity_matches?
+      return true if subject_accepts_only_varargs?
+      if subject_accepts_varargs?
+        return ((subject_arity * -1) - 1) <= args.size
+      else
+        return subject_arity == args.size
+      end
+    end
+    
+    def args
+      definition.argument_expectation.expected_arguments
+    end
+    
+    
     def do_call_implementation_and_get_return_value(double_injection, *args, &block)
       if definition.implementation_is_original_method?
         if double_injection.object_has_original_method?

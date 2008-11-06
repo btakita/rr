@@ -40,9 +40,19 @@ module RR
         @double_definition_creator = double_definition_creator
         @subject = subject
       end
+      
+      attr_reader :argument_expectation
 
       def root_subject
         double_definition_creator.root_subject
+      end
+      
+      def verify_method_signature
+        @verify_method_signature = true
+      end
+      
+      def verify_method_signature?
+        @verify_method_signature
       end
 
       module DefinitionConstructionMethods
