@@ -64,4 +64,17 @@ describe RR do
       @subject.foobar.should == :baz
     end
   end
+
+  it "creates an invocation matcher with a method name" do
+    method  = :test
+    matcher = 'fake'
+    mock(RR::InvocationMatcher).new(method) { matcher }
+    have_received(method).should == matcher
+  end
+
+  it "creates an invocation matcher without a method name" do
+    matcher = 'fake'
+    mock(RR::InvocationMatcher).new(nil) { matcher }
+    have_received.should == matcher
+  end
 end
