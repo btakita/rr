@@ -55,6 +55,10 @@ module RR
         @verify_method_signature
       end
 
+      def method_name
+        double_definition_creator.method_name
+      end
+
       module DefinitionConstructionMethods
         def with(*args, &return_value_block)
           @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)

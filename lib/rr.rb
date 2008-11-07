@@ -7,6 +7,7 @@ require "#{dir}/rr/errors/double_not_found_error"
 require "#{dir}/rr/errors/double_order_error"
 require "#{dir}/rr/errors/argument_equality_error"
 require "#{dir}/rr/errors/times_called_error"
+require "#{dir}/rr/errors/spy_verification_error"
 
 require "#{dir}/rr/space"
 require "#{dir}/rr/double_injection"

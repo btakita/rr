@@ -100,6 +100,19 @@ module RR
         RR::WildcardMatchers::Satisfy.new(expectation_proc)
       end
 
+      def received(subject)
+        RR::DoubleDefinitions::DoubleDefinitionCreator.new.create_spy_verification_proxy(subject)
+      end
+      
+      def verify_spy(double_definition)
+        match_found = RR.recorded_calls.any? do |recorded_call|
+          recorded_call[1] == double_definition.method_name && 
+          ( double_definition.argument_expectation.exact_match?(*recorded_call[2]) ||
+            double_definition.argument_expectation.wildcard_match?(*recorded_call[2]) )
+        end
+        raise RR::Errors::SpyVerificationError.new unless match_found
+      end
+
       instance_methods.each do |name|
         alias_method "rr_#{name}", name
       end

@@ -89,7 +89,20 @@ module RR
       def root_subject
         subject
       end      
-
+      
+      def method_name
+        @verification_strategy.method_name
+      end
+      
+      module SpyVerificationMethods
+        def create_spy_verification_proxy(subject)
+          add_strategy(subject,nil,nil) do
+            self.verification_strategy = Strategies::Verification::Mock.new(self)
+          end
+        end
+      end
+      include SpyVerificationMethods
+      
       module StrategySetupMethods
         def no_subject?
           subject.__id__ === NO_SUBJECT.__id__
