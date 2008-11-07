@@ -224,6 +224,7 @@ module RR
       if verbose?
         puts Double.formatted_name(double_injection.method_name, args)
       end
+      space.record_call(double_injection.subject, double_injection.method_name, args, block)
       times_called_expectation.attempt if definition.times_matcher
       space.verify_ordered_double(self) if ordered?
       yields!(block)

@@ -22,7 +22,16 @@ module RR
         create_double_args.should == [:foo, :bar]
       end
     end
-
+    
+    describe "#record_call" do
+      it "should add a call to the list"  do
+        object = Object.new
+        block = lambda {}
+        space.record_call(object,:to_s,[], block)
+        space.recorded_calls.should == [[object,:to_s,[], block]]
+      end
+    end
+    
     describe "#double_injection" do
       context "when existing subject == but not === with the same method name" do
         it "creates a new DoubleInjection" do
@@ -98,6 +107,14 @@ module RR
         @subject_1 = Object.new
         @subject_2 = Object.new
         @method_name = :foobar
+      end
+      
+      it "should clear the #recorded_calls" do
+        object = Object.new
+        space.record_call(object,:to_s,[], nil)
+        
+        space.reset
+        space.recorded_calls.should == []
       end
 
       it "removes the ordered doubles" do
