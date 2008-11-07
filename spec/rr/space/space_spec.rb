@@ -28,7 +28,7 @@ module RR
         object = Object.new
         block = lambda {}
         space.record_call(object,:to_s,[], block)
-        space.recorded_calls.should == [[object,:to_s,[], block]]
+        space.recorded_calls.should == RecordedCalls.new([[object,:to_s,[], block]])
       end
     end
     
@@ -114,7 +114,7 @@ module RR
         space.record_call(object,:to_s,[], nil)
         
         space.reset
-        space.recorded_calls.should == []
+        space.recorded_calls.should == RecordedCalls.new([])
       end
 
       it "removes the ordered doubles" do

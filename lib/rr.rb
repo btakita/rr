@@ -12,6 +12,7 @@ require "#{dir}/rr/errors/spy_verification_error"
 require "#{dir}/rr/space"
 require "#{dir}/rr/double_injection"
 require "#{dir}/rr/hash_with_object_id_key"
+require "#{dir}/rr/recorded_calls"
 
 require "#{dir}/rr/double_definitions/double_definition_creator_proxy"
 require "#{dir}/rr/double_definitions/double_definition_creator"

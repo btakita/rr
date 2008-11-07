@@ -105,11 +105,7 @@ module RR
       end
       
       def verify_spy(double_definition)
-        match_found = RR.recorded_calls.any? do |recorded_call|
-          recorded_call[1] == double_definition.method_name && 
-          ( double_definition.argument_expectation.exact_match?(*recorded_call[2]) ||
-            double_definition.argument_expectation.wildcard_match?(*recorded_call[2]) )
-        end
+        match_found = RR.recorded_calls.matches?(double_definition)
         raise RR::Errors::SpyVerificationError.new unless match_found
       end
 
