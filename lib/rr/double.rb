@@ -128,11 +128,15 @@ module RR
     end
 
     def verify_times_matcher_is_set
-      raise RR::Errors::DoubleDefinitionError, "#definition.times_matcher is not set" unless definition.times_matcher
+      unless definition.times_matcher
+        raise RR::Errors::DoubleDefinitionError, "#definition.times_matcher is not set"
+      end
     end
 
     def verify_argument_expectation_is_set
-      raise RR::Errors::DoubleDefinitionError, "#definition.argument_expectation is not set" unless definition.argument_expectation
+      unless definition.argument_expectation
+        raise RR::Errors::DoubleDefinitionError, "#definition.argument_expectation is not set"
+      end
     end
 
     def verify_method_signature
