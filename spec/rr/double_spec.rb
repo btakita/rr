@@ -25,23 +25,6 @@ module RR
       end
     end
 
-    describe "#with" do
-      it "returns DoubleDefinition" do
-        double.with(1).should === double.definition
-      end
-
-      it "sets an ArgumentEqualityExpectation" do
-        double.with(1)
-        double.should be_exact_match(1)
-        double.should_not be_exact_match(2)
-      end
-
-      it "sets return value when block passed in" do
-        double.with(1) {:return_value}
-        subject.foobar(1).should == :return_value
-      end
-    end
-
     describe "#with_any_args" do
       before do
         double.with_any_args {:return_value}
@@ -316,7 +299,7 @@ module RR
 
       it "sets return value when block passed in" do
         (class << double; self; end).__send__(:define_method, :puts) {|value|}
-        double.with().verbose {:return_value}
+        double.definition.with().verbose {:return_value}
         subject.foobar.should == :return_value
       end
     end
@@ -482,8 +465,8 @@ module RR
           double1 = double
           double2 = Double.new(double_injection, DoubleDefinitions::DoubleDefinition.new(definition_creator, subject))
 
-          double1.with(1).returns {:return_1}.once.ordered
-          double2.with(2).returns {:return_2}.once.ordered
+          double1.definition.with(1).returns {:return_1}.once.ordered
+          double2.definition.with(2).returns {:return_2}.once.ordered
 
           lambda do
             subject.foobar(2)
@@ -527,21 +510,21 @@ module RR
         end
 
         it "does not add block argument if no block passed in" do
-          double.with(1, 2).returns {|*args| args}
+          double.definition.with(1, 2).returns {|*args| args}
 
           args = subject.foobar(1, 2)
           args.should == [1, 2]
         end
 
         it "makes the block the last argument" do
-          double.with(1, 2).returns {|a, b, blk| blk}
+          double.definition.with(1, 2).returns {|a, b, blk| blk}
 
           block = subject.foobar(1, 2) {|a, b| [b, a]}
           block.call(3, 4).should == [4, 3]
         end
 
         it "raises ArgumentError when yields was called and no block passed in" do
-          double.with(1, 2).yields(55)
+          double.definition.with(1, 2).yields(55)
 
           lambda do
             subject.foobar(1, 2)
@@ -555,7 +538,7 @@ module RR
             yield(a, b)
           end
 
-          double.with(1, 2).implemented_by(subject.method(:foobar))
+          double.definition.with(1, 2).implemented_by(subject.method(:foobar))
 
           subject.foobar(1, 2) {|a, b| [b, a]}.should == [2, 1]
         end
@@ -573,7 +556,7 @@ module RR
 
       context "when arguments are not an exact match" do
         it "returns false" do
-          double.with(1, 2, 3)
+          double.definition.with(1, 2, 3)
           double.should_not be_exact_match(1, 2)
           double.should_not be_exact_match(1)
           double.should_not be_exact_match()
@@ -583,7 +566,7 @@ module RR
 
       context "when arguments are an exact match" do
         it "returns true" do
-          double.with(1, 2, 3)
+          double.definition.with(1, 2, 3)
           double.should be_exact_match(1, 2, 3)
         end
       end
@@ -600,7 +583,7 @@ module RR
 
       context "when arguments are an exact match" do
         it "returns true" do
-          double.with(1, 2, 3)
+          double.definition.with(1, 2, 3)
           double.should be_wildcard_match(1, 2, 3)
           double.should_not be_wildcard_match(1, 2)
           double.should_not be_wildcard_match(1)
@@ -624,14 +607,14 @@ module RR
 
     describe "#attempt?" do
       it "returns true when TimesCalledExpectation#attempt? is true" do
-        double.with(1, 2, 3).twice
+        double.definition.with(1, 2, 3).twice
         double.call(double_injection, 1, 2, 3)
         double.times_called_expectation.should be_attempt
         double.should be_attempt
       end
 
       it "returns false when TimesCalledExpectation#attempt? is true" do
-        double.with(1, 2, 3).twice
+        double.definition.with(1, 2, 3).twice
         double.call(double_injection, 1, 2, 3)
         double.call(double_injection, 1, 2, 3)
         double.times_called_expectation.should_not be_attempt
@@ -639,7 +622,7 @@ module RR
       end
 
       it "returns true when there is no Times Called expectation" do
-        double.with(1, 2, 3)
+        double.definition.with(1, 2, 3)
         double.definition.times_matcher.should be_nil
         double.should be_attempt
       end
@@ -694,7 +677,7 @@ module RR
 
     describe "#expected_arguments" do
       it "returns argument expectation's expected_arguments when there is a argument expectation" do
-        double.with(1, 2)
+        double.definition.with(1, 2)
         double.expected_arguments.should == [1, 2]
       end
 
@@ -710,7 +693,7 @@ module RR
       end
 
       it "renders the formatted name of the Double with arguments" do
-        double.with(1, 2)
+        double.definition.with(1, 2)
         double.formatted_name.should == "foobar(1, 2)"
       end
     end

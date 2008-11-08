@@ -30,17 +30,6 @@ module RR
     end
     
     
-
-    # Double#with sets the expectation that the Double will receive
-    # the passed in arguments.
-    #
-    # Passing in a block sets the return value.
-    #
-    #   mock(subject).method_name.with(1, 2) {:return_value}
-    def with(*args, &returns)
-      definition.with(*args, &returns)
-    end
-
     # Double#with_any_args sets the expectation that the Double can receive
     # any arguments.
     #

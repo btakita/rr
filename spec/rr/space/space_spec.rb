@@ -487,7 +487,7 @@ module RR
             double = new_double
             space.register_ordered_double(double)
 
-            double.with(1).once
+            double.definition.with(1).once
             subject.foobar(1)
             double.should_not be_attempt
 

@@ -34,7 +34,7 @@ module RR
             end
           end
           double = new_double
-          double.with(1, 2).implemented_by(method_fixture.method(:method_with_block))
+          double.definition.with(1, 2).implemented_by(method_fixture.method(:method_with_block))
           subject.foobar(1, 2) {|a, b| [b, a]}.should == [2, 1]
         end
       end
@@ -42,11 +42,11 @@ module RR
       context "when no other Double with duplicate ArgumentExpectations exists" do
         it "dispatches to Double that have an exact match" do
           double1_with_exact_match = new_double
-          double1_with_exact_match.with(:exact_match_1).returns {:return_1}
+          double1_with_exact_match.definition.with(:exact_match_1).returns {:return_1}
           double_with_no_match = new_double
-          double_with_no_match.with("nothing that matches").returns {:no_match}
+          double_with_no_match.definition.with("nothing that matches").returns {:no_match}
           double2_with_exact_match = new_double
-          double2_with_exact_match.with(:exact_match_2).returns {:return_2}
+          double2_with_exact_match.definition.with(:exact_match_2).returns {:return_2}
 
           subject.foobar(:exact_match_1).should == :return_1
           subject.foobar(:exact_match_2).should == :return_2
@@ -56,7 +56,7 @@ module RR
           double_with_wildcard_match = new_double
           double_with_wildcard_match.with_any_args.returns {:wild_card_value}
           double_with_no_match = new_double
-          double_with_no_match.with("nothing that matches").returns {:no_match}
+          double_with_no_match.definition.with("nothing that matches").returns {:no_match}
 
           subject.foobar(:wildcard_match_1).should == :wild_card_value
           subject.foobar(:wildcard_match_2, 3).should == :wild_card_value
@@ -66,10 +66,10 @@ module RR
       context "when other Doubles exists but none of them match the passed-in arguments" do
         it "raises DoubleNotFoundError error when arguments do not match a double" do
           double_1 = new_double
-          double_1.with(1, 2)
+          double_1.definition.with(1, 2)
 
           double_2 = new_double
-          double_2.with(3)
+          double_2.definition.with(3)
 
           error = nil
           begin
@@ -122,7 +122,7 @@ module RR
 
         def new_double(*arguments, &return_value)
           double = super()
-          double.with(*arguments).any_number_of_times.returns(&return_value)
+          double.definition.with(*arguments).any_number_of_times.returns(&return_value)
           double.should_not be_terminal
           double
         end
@@ -164,7 +164,7 @@ module RR
 
         def new_double(*arguments, &return_value)
           double = super()
-          double.with(*arguments).once.returns(&return_value)
+          double.definition.with(*arguments).once.returns(&return_value)
           double.should be_terminal
           double
         end
@@ -221,7 +221,7 @@ module RR
       context "when the original method uses the passed-in block" do
         it "executes the block" do
           double = new_double
-          double.with(1, 2) {:return_value}
+          double.definition.with(1, 2) {:return_value}
           subject.foobar!(1, 2).should == :return_value
         end
       end
@@ -236,7 +236,7 @@ module RR
       context "when the original method uses the passed-in block" do
         it "executes the block" do
           double = new_double
-          double.with(1, 2) {:return_value}
+          double.definition.with(1, 2) {:return_value}
           subject.foobar?(1, 2).should == :return_value
         end
       end

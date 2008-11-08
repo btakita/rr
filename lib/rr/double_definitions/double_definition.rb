@@ -56,6 +56,12 @@ module RR
       end
 
       module DefinitionConstructionMethods
+        # Double#with sets the expectation that the Double will receive
+        # the passed in arguments.
+        #
+        # Passing in a block sets the return value.
+        #
+        #   mock(subject).method_name.with(1, 2) {:return_value}        
         def with(*args, &return_value_block)
           @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
           install_method_callback return_value_block
