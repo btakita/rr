@@ -1,4 +1,7 @@
 dir = File.dirname(__FILE__)
+require 'rubygems'
+require 'BlankSlate'
+
 require "#{dir}/rr/errors/rr_error"
 require "#{dir}/rr/errors/subject_does_not_implement_method_error"
 require "#{dir}/rr/errors/subject_has_different_arity_error"
@@ -7,10 +10,12 @@ require "#{dir}/rr/errors/double_not_found_error"
 require "#{dir}/rr/errors/double_order_error"
 require "#{dir}/rr/errors/argument_equality_error"
 require "#{dir}/rr/errors/times_called_error"
+require "#{dir}/rr/errors/spy_verification_error"
 
 require "#{dir}/rr/space"
 require "#{dir}/rr/double_injection"
 require "#{dir}/rr/hash_with_object_id_key"
+require "#{dir}/rr/recorded_calls"
 
 require "#{dir}/rr/double_definitions/double_definition_creator_proxy"
 require "#{dir}/rr/double_definitions/double_definition_creator"
@@ -61,6 +66,9 @@ require "#{dir}/rr/times_called_matchers/at_most_matcher"
 
 require "#{dir}/rr/adapters/rspec"
 require "#{dir}/rr/adapters/test_unit"
+
+require "#{dir}/rr/spy_verification_proxy"
+require "#{dir}/rr/spy_verification"
 
 module RR
   class << self

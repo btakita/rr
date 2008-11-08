@@ -19,12 +19,13 @@ module RR
       end
     end
 
-    attr_reader :double_injections, :ordered_doubles
+    attr_reader :double_injections, :ordered_doubles, :recorded_calls
     attr_accessor :trim_backtrace
     def initialize
       @double_injections = HashWithObjectIdKey.new
       @ordered_doubles = []
       @trim_backtrace = false
+      @recorded_calls = RR::RecordedCalls.new
     end
 
     # Reuses or creates, if none exists, a DoubleInjection for the passed
@@ -79,6 +80,7 @@ module RR
     def reset
       reset_ordered_doubles
       reset_double_injections
+      reset_recorded_calls
     end
 
     # Verifies the DoubleInjection for the passed in subject and method_name.
@@ -94,6 +96,10 @@ module RR
       @double_injections.delete(subject) if @double_injections[subject].empty?
       double_injection.reset
     end
+    
+    def record_call(subject, method_name, arguments, block)
+      @recorded_calls << [subject, method_name, arguments, block]
+    end
 
     protected
     # Removes the ordered Doubles from the list
@@ -108,6 +114,10 @@ module RR
           reset_double(subject, method_name)
         end
       end
-    end    
+    end  
+    
+    def reset_recorded_calls
+      @recorded_calls.clear
+    end
   end
 end

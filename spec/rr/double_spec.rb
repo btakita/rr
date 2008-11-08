@@ -425,6 +425,12 @@ module RR
     end
 
     describe "#call" do
+      it "should record the call" do
+        block = lambda {}
+        double.call(double_injection, 1, 2, &block)
+        space.recorded_calls.should == RR::RecordedCalls.new([[subject, :foobar, [1,2], block]])
+      end
+      
       describe "when verbose" do
         it "prints the message call" do
           double.verbose
