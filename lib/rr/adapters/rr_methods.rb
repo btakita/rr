@@ -100,11 +100,11 @@ module RR
         RR::WildcardMatchers::Satisfy.new(expectation_proc)
       end
 
-      def received(subject)
+      def of_spy(subject)
         SpyVerification.new(subject)
       end
       
-      def verify_spy(spy_verification)
+      def verify_invocation(spy_verification)
         match_found = RR.recorded_calls.matches?(spy_verification)
         raise RR::Errors::SpyVerificationError.new unless match_found
       end

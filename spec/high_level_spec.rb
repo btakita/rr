@@ -258,13 +258,13 @@ describe "RR" do
       stub(subject).pig_rabbit
       subject.pig_rabbit("bacon", "bunny meat")
       #subject.should have_received.pig_rabitt("bacon", "bunny meat")
-      verify_spy received(subject).pig_rabbit("bacon", "bunny meat")
+      verify_invocation of_spy(subject).pig_rabbit("bacon", "bunny meat")
     end
     
     it "should verify method calls after the fact" do
       stub(subject).pig_rabbit
       lambda do
-        verify_spy received(subject).pig_rabbit("bacon", "bunny meat")
+        verify_invocation of_spy(subject).pig_rabbit("bacon", "bunny meat")
       end.should raise_error(RR::Errors::SpyVerificationError)
     end
     
