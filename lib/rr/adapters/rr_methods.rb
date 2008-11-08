@@ -99,6 +99,13 @@ module RR
         expectation_proc ||= block
         RR::WildcardMatchers::Satisfy.new(expectation_proc)
       end
+      
+      def spy(subject)
+        methods_to_stub = subject.public_methods - Object.new.public_methods + ["to_s"]
+        methods_to_stub.each do |method|
+          stub.proxy(subject).method_missing(method)
+        end
+      end
 
       def of_spy(subject)
         RR::SpyVerificationProxy.new(subject)

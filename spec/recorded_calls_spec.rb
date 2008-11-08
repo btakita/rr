@@ -8,6 +8,27 @@ describe RR::RecordedCalls do
     @recorded_calls = RR::RecordedCalls.new([[@subject,:foobar,[1,2],nil]])
   end
   
+  describe "spy" do
+    it "should record all method invocations" do
+      subject = Object.new
+      def subject.something
+      end
+      
+      def subject.something_else
+      end
+        
+      spy(subject)
+      
+      subject.something
+      subject.something_else
+      subject.to_s
+      
+      verify_invocation of_spy(subject).something
+      verify_invocation of_spy(subject).something_else
+      verify_invocation of_spy(subject).to_s
+    end
+  end
+  
   it "should be able to verify calls to methods defined on Object" do
     stub(@subject).to_s
     @subject.to_s
