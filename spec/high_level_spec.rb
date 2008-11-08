@@ -268,5 +268,6 @@ describe "RR" do
       end.should raise_error(RR::Errors::SpyVerificationError)
     end
     
+    
   end
 end

@@ -101,11 +101,11 @@ module RR
       end
 
       def received(subject)
-        RR::DoubleDefinitions::DoubleDefinitionCreator.new.create_spy_verification_proxy(subject)
+        SpyVerification.new(subject)
       end
       
-      def verify_spy(double_definition)
-        match_found = RR.recorded_calls.matches?(double_definition)
+      def verify_spy(spy_verification)
+        match_found = RR.recorded_calls.matches?(spy_verification)
         raise RR::Errors::SpyVerificationError.new unless match_found
       end
 

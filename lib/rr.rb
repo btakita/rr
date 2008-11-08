@@ -24,6 +24,7 @@ require "#{dir}/rr/double_definitions/double_definition"
 require "#{dir}/rr/double_definitions/strategies/strategy"
 require "#{dir}/rr/double_definitions/strategies/verification/verification_strategy"
 require "#{dir}/rr/double_definitions/strategies/verification/mock"
+require "#{dir}/rr/double_definitions/strategies/verification/spy"
 require "#{dir}/rr/double_definitions/strategies/verification/stub"
 require "#{dir}/rr/double_definitions/strategies/verification/dont_allow"
 require "#{dir}/rr/double_definitions/strategies/implementation/implementation_strategy"
@@ -63,6 +64,8 @@ require "#{dir}/rr/times_called_matchers/at_most_matcher"
 
 require "#{dir}/rr/adapters/rspec"
 require "#{dir}/rr/adapters/test_unit"
+
+require "#{dir}/rr/spy_verification"
 
 module RR
   class << self

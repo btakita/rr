@@ -97,7 +97,7 @@ module RR
       module SpyVerificationMethods
         def create_spy_verification_proxy(subject)
           add_strategy(subject,nil,nil) do
-            self.verification_strategy = Strategies::Verification::Mock.new(self)
+            self.verification_strategy = Strategies::Verification::Spy.new(self)
           end
         end
       end

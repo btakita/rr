@@ -59,7 +59,7 @@ module RR
         double_definition_creator.method_name
       end
 
-      module DefinitionConstructionMethods
+      module ArgumentDefinitionConstructionMethods
         def with(*args, &return_value_block)
           @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
           install_method_callback return_value_block
@@ -76,8 +76,11 @@ module RR
           @argument_expectation = Expectations::ArgumentEqualityExpectation.new()
           install_method_callback return_value_block
           self
-        end
+        end        
+      end
+      include ArgumentDefinitionConstructionMethods
 
+      module TimesDefinitionConstructionMethods
         def never
           @times_matcher = TimesCalledMatchers::IntegerMatcher.new(0)
           self
@@ -118,7 +121,10 @@ module RR
           install_method_callback return_value_block
           self
         end
+      end
+      include TimesDefinitionConstructionMethods
 
+      module DefinitionConstructionMethods
         def ordered(&return_value_block)
           raise(
             Errors::DoubleDefinitionError,
