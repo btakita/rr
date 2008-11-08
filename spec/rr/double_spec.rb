@@ -300,14 +300,19 @@ module RR
     end
 
     describe "#expected_arguments" do
-      it "returns argument expectation's expected_arguments when there is a argument expectation" do
-        double.definition.with(1, 2)
-        double.expected_arguments.should == [1, 2]
+      context "when there is an argument expectation" do
+        it "returns argument expectation's expected_arguments" do
+          double.definition.with(1, 2)
+          double.definition.argument_expectation.should_not be_nil
+          double.expected_arguments.should == [1, 2]
+        end
       end
 
-      it "returns an empty array when there is no argument expectation" do
-        double.argument_expectation.should be_nil
-        double.expected_arguments.should == []
+      context "when there is no argument expectation" do
+        it "returns an empty array" do
+          double.definition.argument_expectation.should be_nil
+          double.expected_arguments.should == []
+        end
       end
     end
 

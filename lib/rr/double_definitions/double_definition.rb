@@ -290,10 +290,15 @@ module RR
       include DefinitionConstructionMethods
 
       module StateQueryMethods
+        # Double#ordered? returns true when the Double is ordered.
+        #
+        #   mock(subject).method_name.ordered?
         def ordered?
           @ordered
         end
 
+        # Double#verbose? returns true when verbose has been called on it. It returns
+        # true when the double is set to print each method call it receives.
         def verbose?
           @verbose ? true : false
         end

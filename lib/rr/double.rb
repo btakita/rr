@@ -29,19 +29,6 @@ module RR
       double_injection.register_double self
     end
     
-    # Double#ordered? returns true when the Double is ordered.
-    #
-    #   mock(subject).method_name.ordered?
-    def ordered?
-      definition.ordered?
-    end
-
-    # Double#verbose? returns true when verbose has been called on it. It returns
-    # true when the double is set to print each method call it receives.
-    def verbose?
-      definition.verbose?
-    end
-
     # Double#call calls the Double's implementation. The return
     # value of the implementation is returned.
     #
@@ -57,23 +44,6 @@ module RR
       return_value = call_implementation(double_injection, *args, &block)
       definition.after_call_proc ? extract_subject_from_return_value(definition.after_call_proc.call(return_value)) : return_value
     end
-
-    def yields!(block)
-      if definition.yields_value
-        if block
-          block.call(*definition.yields_value)
-        else
-          raise ArgumentError, "A Block must be passed into the method call when using yields"
-        end
-      end
-    end
-    protected :yields!
-
-    def call_implementation(double_injection, *args, &block)
-      return_value = do_call_implementation_and_get_return_value(double_injection, *args, &block)
-      extract_subject_from_return_value(return_value)
-    end
-    protected :call_implementation
 
     # Double#exact_match? returns true when the passed in arguments
     # exactly match the ArgumentEqualityExpectation arguments.
@@ -129,27 +99,34 @@ module RR
       @times_called_expectation
     end
 
-    def implementation
-      definition.implementation
-    end
-    def implementation=(value)
-      definition.implementation = value
-    end
-    protected :implementation=
-
-    def argument_expectation
-      definition.argument_expectation
-    end
-    def argument_expectation=(value)
-      definition.argument_expectation = value
-    end
-    protected :argument_expectation=
-
     def formatted_name
       self.class.formatted_name(method_name, expected_arguments)
     end
 
     protected
+    def ordered?
+      definition.ordered?
+    end
+
+    def verbose?
+      definition.verbose?
+    end
+    
+    def yields!(block)
+      if definition.yields_value
+        if block
+          block.call(*definition.yields_value)
+        else
+          raise ArgumentError, "A Block must be passed into the method call when using yields"
+        end
+      end
+    end
+
+    def call_implementation(double_injection, *args, &block)
+      return_value = do_call_implementation_and_get_return_value(double_injection, *args, &block)
+      extract_subject_from_return_value(return_value)
+    end
+
     def verify_method_signature
       raise RR::Errors::SubjectDoesNotImplementMethodError if !definition.subject.respond_to?(double_injection.send(:original_method_name))
       raise RR::Errors::SubjectHasDifferentArityError if !arity_matches?
@@ -179,7 +156,6 @@ module RR
     def args
       definition.argument_expectation.expected_arguments
     end
-    
     
     def do_call_implementation_and_get_return_value(double_injection, *args, &block)
       if definition.implementation_is_original_method?
@@ -217,5 +193,13 @@ module RR
         return_value
       end
     end
+
+    def implementation
+      definition.implementation
+    end
+
+    def argument_expectation
+      definition.argument_expectation
+    end    
   end
 end
