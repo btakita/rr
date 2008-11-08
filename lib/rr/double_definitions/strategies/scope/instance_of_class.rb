@@ -27,8 +27,10 @@ module RR
           protected
           def do_call
             class_handler = lambda do |return_value|
+              #####
               double_injection = space.double_injection(return_value, method_name)
               Double.new(double_injection, definition)
+              #####
               return_value
             end
 

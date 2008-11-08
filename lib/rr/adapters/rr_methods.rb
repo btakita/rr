@@ -101,7 +101,7 @@ module RR
       end
       
       def spy(subject)
-        methods_to_stub = subject.public_methods - Object.new.public_methods + ["to_s"]
+        methods_to_stub = subject.public_methods - ["methods", "==", "method_missing", "__send__", "__id__"]
         methods_to_stub.each do |method|
           stub.proxy(subject).method_missing(method)
         end
