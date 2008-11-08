@@ -73,7 +73,7 @@ module RR
         #
         # Passing in a block sets the return value.
         #
-        #   mock(subject).method_name.with_any_args {:return_value}        
+        #   mock(subject).method_name.with_any_args {:return_value}
         def with_any_args(&return_value_block)
           @argument_expectation = Expectations::AnyArgumentExpectation.new
           install_method_callback return_value_block
@@ -85,7 +85,7 @@ module RR
         #
         # Passing in a block sets the return value.
         #
-        #   mock(subject).method_name.with_no_args {:return_value}        
+        #   mock(subject).method_name.with_no_args {:return_value}
         def with_no_args(&return_value_block)
           @argument_expectation = Expectations::ArgumentEqualityExpectation.new()
           install_method_callback return_value_block
@@ -97,30 +97,56 @@ module RR
         #
         # This method does not accept a block because it will never be called.
         #
-        #   mock(subject).method_name.never        
+        #   mock(subject).method_name.never
         def never
           @times_matcher = TimesCalledMatchers::IntegerMatcher.new(0)
           self
         end
 
+        # Double#once sets the expectation that the Double will be called
+        # 1 time.
+        #
+        # Passing in a block sets the return value.
+        #
+        #   mock(subject).method_name.once {:return_value}
         def once(&return_value_block)
           @times_matcher = TimesCalledMatchers::IntegerMatcher.new(1)
           install_method_callback return_value_block
           self
         end
 
+        # Double#twice sets the expectation that the Double will be called
+        # 2 times.
+        #
+        # Passing in a block sets the return value.
+        #
+        #   mock(subject).method_name.twice {:return_value}        
         def twice(&return_value_block)
           @times_matcher = TimesCalledMatchers::IntegerMatcher.new(2)
           install_method_callback return_value_block
           self
         end
 
+        # Double#at_least sets the expectation that the Double
+        # will be called at least n times.
+        # It works by creating a TimesCalledExpectation.
+        #
+        # Passing in a block sets the return value.
+        #
+        #   mock(subject).method_name.at_least(4) {:return_value}
         def at_least(number, &return_value_block)
           @times_matcher = TimesCalledMatchers::AtLeastMatcher.new(number)
           install_method_callback return_value_block
           self
         end
 
+        # Double#at_most allows sets the expectation that the Double
+        # will be called at most n times.
+        # It works by creating a TimesCalledExpectation.
+        #
+        # Passing in a block sets the return value.
+        #
+        #   mock(subject).method_name.at_most(4) {:return_value}        
         def at_most(number, &return_value_block)
           @times_matcher = TimesCalledMatchers::AtMostMatcher.new(number)
           install_method_callback return_value_block

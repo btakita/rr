@@ -29,49 +29,6 @@ module RR
       double_injection.register_double self
     end
     
-    
-    # Double#once sets the expectation that the Double will be called
-    # 1 time.
-    #
-    # Passing in a block sets the return value.
-    #
-    #   mock(subject).method_name.once {:return_value}
-    def once(&returns)
-      definition.once(&returns)
-    end
-
-    # Double#twice sets the expectation that the Double will be called
-    # 2 times.
-    #
-    # Passing in a block sets the return value.
-    #
-    #   mock(subject).method_name.twice {:return_value}
-    def twice(&returns)
-      definition.twice(&returns)
-    end
-
-    # Double#at_least sets the expectation that the Double
-    # will be called at least n times.
-    # It works by creating a TimesCalledExpectation.
-    #
-    # Passing in a block sets the return value.
-    #
-    #   mock(subject).method_name.at_least(4) {:return_value}
-    def at_least(number, &returns)
-      definition.at_least(number, &returns)
-    end
-
-    # Double#at_most allows sets the expectation that the Double
-    # will be called at most n times.
-    # It works by creating a TimesCalledExpectation.
-    #
-    # Passing in a block sets the return value.
-    #
-    #   mock(subject).method_name.at_most(4) {:return_value}
-    def at_most(number, &returns)
-      definition.at_most(number, &returns)
-    end
-
     # Double#any_number_of_times sets an that the Double will be called
     # any number of times. This effectively removes the times called expectation
     # from the Doublen

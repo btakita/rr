@@ -25,80 +25,6 @@ module RR
       end
     end
 
-    describe "#once" do
-      it "returns DoubleDefinition" do
-        double.once.should === double.definition
-      end
-
-      it "sets up a Times Called Expectation with 1" do
-        double.once
-        double.call(double_injection)
-        lambda {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
-      end
-
-      it "sets return value when block passed in" do
-        double.definition.with_any_args.once {:return_value}
-        subject.foobar.should == :return_value
-      end
-    end
-
-    describe "#twice" do
-      it "returns DoubleDefinition" do
-        double.twice.should === double.definition
-      end
-
-      it "sets up a Times Called Expectation with 2" do
-        double.twice
-        double.call(double_injection)
-        double.call(double_injection)
-        lambda {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
-      end
-
-      it "sets return value when block passed in" do
-        double.definition.with_any_args.twice {:return_value}
-        subject.foobar.should == :return_value
-      end
-    end
-
-    describe "#at_least" do
-      it "returns DoubleDefinition" do
-        double.definition.with_any_args.at_least(2).should === double.definition
-      end
-
-      it "sets up a AtLeastMatcher with 2" do
-        double.at_least(2)
-        double.definition.times_matcher.should == TimesCalledMatchers::AtLeastMatcher.new(2)
-      end
-
-      it "sets return value when block passed in" do
-        double.definition.with_any_args.at_least(2) {:return_value}
-        subject.foobar.should == :return_value
-      end
-    end
-
-    describe "#at_most" do
-      it "returns DoubleDefinition" do
-        double.definition.with_any_args.at_most(2).should === double.definition
-      end
-
-      it "sets up a Times Called Expectation with 1" do
-        double.at_most(2)
-        double.call(double_injection)
-        double.call(double_injection)
-        lambda do
-          double.call(double_injection)
-        end.should raise_error(
-        Errors::TimesCalledError,
-        "foobar()\nCalled 3 times.\nExpected at most 2 times."
-        )
-      end
-
-      it "sets return value when block passed in" do
-        double.definition.with_any_args.at_most(2) {:return_value}
-        subject.foobar.should == :return_value
-      end
-    end
-
     describe "#times" do
       it "returns DoubleDefinition" do
         double.times(3).should === double.definition
@@ -577,7 +503,7 @@ module RR
 
     describe "#verify" do
       it "verifies that times called expectation was met" do
-        double.twice.returns {:return_value}
+        double.definition.twice.returns {:return_value}
 
         lambda {double.verify}.should raise_error(Errors::TimesCalledError)
         double.call(double_injection)
@@ -598,7 +524,7 @@ module RR
 
     describe "#terminal?" do
       it "returns true when times_called_expectation's terminal? is true" do
-        double.once
+        double.definition.once
         double.times_called_expectation.should be_terminal
         double.should be_terminal
       end

@@ -35,7 +35,7 @@ module RR
           double_injection = RR.double_injection(subject, method_name)
           double = new_double(double_injection)
 
-          double.once
+          double.definition.once
 
           lambda do
             fixture.verify_mocks_for_rspec

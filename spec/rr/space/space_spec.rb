@@ -475,7 +475,7 @@ module RR
           double = new_double
           space.register_ordered_double(double)
 
-          double.twice
+          double.definition.twice
           double.should be_attempt
 
           space.verify_ordered_double(double)
@@ -514,7 +514,7 @@ module RR
         end
 
         def new_double
-          double = super.once
+          double = super.definition.once
           space.register_ordered_double(double.double)
           double.double
         end
