@@ -16,7 +16,7 @@ module RR
       end
     end
 
-    attr_reader :times_called, :double_injection, :definition
+    attr_reader :times_called, :double_injection, :definition, :times_called_expectation
     include Space::Reader
 
     def initialize(double_injection, definition)
@@ -91,12 +91,7 @@ module RR
 
     # The TimesCalledMatcher for the TimesCalledExpectation
     def times_matcher
-      times_called_expectation.matcher
-    end
-
-    def times_called_expectation
-      @times_called_expectation.matcher = definition.times_matcher
-      @times_called_expectation
+      definition.times_matcher
     end
 
     def formatted_name

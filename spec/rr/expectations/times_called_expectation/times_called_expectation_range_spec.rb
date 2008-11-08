@@ -8,8 +8,9 @@ module RR
         attr_reader :matcher, :expectation
 
         before do
-          @matcher = TimesCalledMatchers::RangeMatcher.new(1..2)
-          @expectation = TimesCalledExpectation.new(double, matcher)
+          double.definition.times(1..2)
+          @matcher = double.definition.times_matcher
+          @expectation = TimesCalledExpectation.new(double)
         end
 
         describe "#verify" do

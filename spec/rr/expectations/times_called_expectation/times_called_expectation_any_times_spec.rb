@@ -5,11 +5,12 @@ module RR
     describe TimesCalledExpectation do
       context "when using an AnyTimesMatcher" do
         it_should_behave_like "RR::Expectations::TimesCalledExpectation"
-        attr_reader :at_least, :expectation
+        attr_reader :matcher, :expectation
 
         before do
-          @at_least = TimesCalledMatchers::AnyTimesMatcher.new
-          @expectation = TimesCalledExpectation.new(double, at_least)
+          double.definition.any_number_of_times
+          @matcher = double.definition.times_matcher
+          @expectation = TimesCalledExpectation.new(double)
         end
 
         describe "#verify!" do

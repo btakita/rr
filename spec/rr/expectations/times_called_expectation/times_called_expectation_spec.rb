@@ -9,8 +9,9 @@ module RR
 
         before do
           @times = 0
-          @matcher = TimesCalledMatchers::IntegerMatcher.new(times)
-          @expectation = TimesCalledExpectation.new(double, matcher)
+          double.definition.times(0)
+          @matcher = double.definition.times_matcher
+          @expectation = TimesCalledExpectation.new(double)
         end
 
         describe "#attempt!" do
