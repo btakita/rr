@@ -109,8 +109,8 @@ module RR
           space.double_injection(subject_2, :foobar2),
           RR::DoubleDefinitions::DoubleDefinition.new(creator = Object.new, subject_2)
         )
-        double_1.ordered
-        double_2.ordered
+        double_1.definition.ordered
+        double_2.definition.ordered
 
         space.ordered_doubles.should_not be_empty
 
@@ -457,7 +457,7 @@ module RR
           double = new_double
           space.register_ordered_double(double)
 
-          double.any_number_of_times
+          double.definition.any_number_of_times
           double.should_not be_terminal
 
           lambda do

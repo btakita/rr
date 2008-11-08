@@ -153,18 +153,37 @@ module RR
           self
         end
 
+        # Double#any_number_of_times sets an that the Double will be called
+        # any number of times. This effectively removes the times called expectation
+        # from the Doublen
+        #
+        # Passing in a block sets the return value.
+        #
+        #   mock(subject).method_name.any_number_of_times        
         def any_number_of_times(&return_value_block)
           @times_matcher = TimesCalledMatchers::AnyTimesMatcher.new
           install_method_callback return_value_block
           self
         end
 
+        # Double#times creates an TimesCalledExpectation of the passed
+        # in number.
+        #
+        # Passing in a block sets the return value.
+        #
+        #   mock(subject).method_name.times(4) {:return_value}        
         def times(matcher_value, &return_value_block)
           @times_matcher = TimesCalledMatchers::TimesCalledMatcher.create(matcher_value)
           install_method_callback return_value_block
           self
         end
 
+        # Double#ordered sets the Double to have an ordered
+        # expectation.
+        #
+        # Passing in a block sets the return value.
+        #
+        #   mock(subject).method_name.ordered {return_value}
         def ordered(&return_value_block)
           raise(
             Errors::DoubleDefinitionError,
@@ -179,24 +198,53 @@ module RR
         end
         alias_method :then, :ordered
 
+        # Double#yields sets the Double to invoke a passed in block when
+        # the Double is called.
+        # An Expection will be raised if no block is passed in when the
+        # Double is called.
+        #
+        # Passing in a block sets the return value.
+        #
+        #   mock(subject).method_name.yields(yield_arg1, yield_arg2) {return_value}
+        #   subject.method_name {|yield_arg1, yield_arg2|}
         def yields(*args, &return_value_block)
           @yields_value = args
           install_method_callback return_value_block
           self
         end
 
+        # Double#after_call creates a callback that occurs after call
+        # is called. The passed in block receives the return value of
+        # the Double being called.
+        # An Expection will be raised if no block is passed in.
+        #
+        #   mock(subject).method_name {return_value}.after_call {|return_value|}
+        #   subject.method_name # return_value
+        #
+        # This feature is built into proxies.
+        #   mock.proxy(User).find('1') {|user| mock(user).valid? {false}}
         def after_call(&after_call_proc)
           raise ArgumentError, "after_call expects a block" unless after_call_proc
           @after_call_proc = after_call_proc
           self
         end
 
+        # Double#verbose sets the Double to print out each method call it receives.
+        #
+        # Passing in a block sets the return value
         def verbose(&after_call_proc)
           @verbose = true
           @after_call_proc = after_call_proc
           self
         end
 
+        # Double#returns accepts an argument value or a block.
+        # It will raise an ArgumentError if both are passed in.
+        #
+        # Passing in a block causes Double to return the return value of
+        # the passed in block.
+        #
+        # Passing in an argument causes Double to return the argument.
         def returns(*args, &implementation)
           value = args.first
           if !args.empty? && implementation
@@ -215,6 +263,15 @@ module RR
           self
         end
 
+        # Double#implemented_by sets the implementation of the Double.
+        # This method takes a Proc or a Method. Passing in a Method allows
+        # the Double to accept blocks.
+        #
+        #   obj = Object.new
+        #   def obj.foobar
+        #     yield(1)
+        #   end
+        #   mock(obj).method_name.implemented_by(obj.method(:foobar))
         def implemented_by(implementation)
           @implementation = implementation
           self
