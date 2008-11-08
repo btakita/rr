@@ -41,6 +41,23 @@ describe RecordedCalls do
       verify_spy received(@subject).foobar(1,2).twice    
     end.should raise_error(RR::Errors::SpyVerificationError)    
   end
+  
+  it "should raise an error when the order is incorrect" do
+    @subject.foobar(3,4)
+    @subject.foobar(1,2)
+    lambda do
+      verify_spy received(@subject).foobar(1,2).ordered
+      verify_spy received(@subject).foobar(3,4).ordered
+    end.should raise_error(RR::Errors::SpyVerificationError)        
+  end
+  
+  it "should not raise an error when the order is correct" do
+    @subject.foobar(1,2)
+    @subject.foobar(1,2)
+    @subject.foobar(3,4)
+    verify_spy received(@subject).foobar(1,2).once.ordered
+    verify_spy received(@subject).foobar(3,4).ordered
+  end
 
   it "should match when there is an wildcard match" do
     @subject.foobar(1,2)
