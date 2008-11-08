@@ -25,7 +25,7 @@ module RR
       @double_injections = HashWithObjectIdKey.new
       @ordered_doubles = []
       @trim_backtrace = false
-      @recorded_calls = RecordedCalls.new
+      @recorded_calls = RR::RecordedCalls.new
     end
 
     # Reuses or creates, if none exists, a DoubleInjection for the passed

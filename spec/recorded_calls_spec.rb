@@ -1,11 +1,11 @@
 require File.expand_path("#{File.dirname(__FILE__)}/spec_helper")
 
-describe RecordedCalls do
+describe RR::RecordedCalls do
   before(:each) do
     @subject = Object.new
     extend RR::Adapters::RRMethods
     stub(@subject).foobar
-    @recorded_calls = RecordedCalls.new([[@subject,:foobar,[1,2],nil]])
+    @recorded_calls = RR::RecordedCalls.new([[@subject,:foobar,[1,2],nil]])
   end
     
   

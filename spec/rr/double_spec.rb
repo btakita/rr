@@ -428,7 +428,7 @@ module RR
       it "should record the call" do
         block = lambda {}
         double.call(double_injection, 1, 2, &block)
-        space.recorded_calls.should == RecordedCalls.new([[subject, :foobar, [1,2], block]])
+        space.recorded_calls.should == RR::RecordedCalls.new([[subject, :foobar, [1,2], block]])
       end
       
       describe "when verbose" do
