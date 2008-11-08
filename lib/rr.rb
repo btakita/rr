@@ -1,4 +1,7 @@
 dir = File.dirname(__FILE__)
+require 'rubygems'
+require 'BlankSlate'
+
 require "#{dir}/rr/errors/rr_error"
 require "#{dir}/rr/errors/subject_does_not_implement_method_error"
 require "#{dir}/rr/errors/subject_has_different_arity_error"
@@ -64,6 +67,7 @@ require "#{dir}/rr/times_called_matchers/at_most_matcher"
 require "#{dir}/rr/adapters/rspec"
 require "#{dir}/rr/adapters/test_unit"
 
+require "#{dir}/rr/spy_verification_proxy"
 require "#{dir}/rr/spy_verification"
 
 module RR

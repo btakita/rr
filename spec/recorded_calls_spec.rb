@@ -7,7 +7,18 @@ describe RR::RecordedCalls do
     stub(@subject).foobar
     @recorded_calls = RR::RecordedCalls.new([[@subject,:foobar,[1,2],nil]])
   end
-    
+  
+  it "should be able to verify calls to methods defined on Object" do
+    stub(@subject).to_s
+    @subject.to_s
+    verify_invocation of_spy(@subject).to_s
+  end
+
+  it "should be able to call methods used by rr" do
+    stub(@subject).times
+    @subject.times
+    verify_invocation of_spy(@subject).times
+  end
   
   it "should verify method calls after the fact" do
     stub(@subject).pig_rabbit
