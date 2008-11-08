@@ -25,43 +25,6 @@ module RR
       end
     end
 
-    describe "#with_any_args" do
-      before do
-        double.definition.with_any_args {:return_value}
-      end
-
-      it "returns DoubleDefinition" do
-        double.with_no_args.should === double.definition
-      end
-
-      it "sets an AnyArgumentExpectation" do
-        double.should_not be_exact_match(1)
-        double.should be_wildcard_match(1)
-      end
-
-      it "sets return value when block passed in" do
-        subject.foobar(:anything).should == :return_value
-      end
-    end
-
-    describe "#with_no_args" do
-      before do
-        double.with_no_args {:return_value}
-      end
-
-      it "returns DoubleDefinition" do
-        double.with_no_args.should === double.definition
-      end
-
-      it "sets an ArgumentEqualityExpectation with no arguments" do
-        double.argument_expectation.should == Expectations::ArgumentEqualityExpectation.new()
-      end
-
-      it "sets return value when block passed in" do
-        subject.foobar().should == :return_value
-      end
-    end
-
     describe "#never" do
       it "returns DoubleDefinition" do
         double.never.should === double.definition

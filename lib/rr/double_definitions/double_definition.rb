@@ -80,6 +80,12 @@ module RR
           self
         end
 
+        # Double#with_no_args sets the expectation that the Double will receive
+        # no arguments.
+        #
+        # Passing in a block sets the return value.
+        #
+        #   mock(subject).method_name.with_no_args {:return_value}        
         def with_no_args(&return_value_block)
           @argument_expectation = Expectations::ArgumentEqualityExpectation.new()
           install_method_callback return_value_block
