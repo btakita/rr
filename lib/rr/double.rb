@@ -60,7 +60,7 @@ module RR
     # Double#attempt? returns true when the
     # TimesCalledExpectation is satisfied.
     def attempt?
-      return true unless definition.times_matcher
+      verify_times_matcher_is_set
       times_called_expectation.attempt?
     end
 
@@ -68,13 +68,13 @@ module RR
     # is satisfied for this double. A TimesCalledError
     # is raised if the TimesCalledExpectation is not met.
     def verify
-      return true unless definition.times_matcher
+      verify_times_matcher_is_set
       times_called_expectation.verify!
       true
     end
 
     def terminal?
-      return false unless definition.times_matcher
+      verify_times_matcher_is_set
       times_called_expectation.terminal?
     end
 
@@ -85,7 +85,7 @@ module RR
 
     # The Arguments that this Double expects
     def expected_arguments
-      return [] unless argument_expectation
+      verify_argument_expectation_is_set
       argument_expectation.expected_arguments
     end
 
@@ -125,6 +125,14 @@ module RR
     def call_implementation(double_injection, *args, &block)
       return_value = do_call_implementation_and_get_return_value(double_injection, *args, &block)
       extract_subject_from_return_value(return_value)
+    end
+
+    def verify_times_matcher_is_set
+      raise RR::Errors::DoubleDefinitionError, "#definition.times_matcher is not set" unless definition.times_matcher
+    end
+
+    def verify_argument_expectation_is_set
+      raise RR::Errors::DoubleDefinitionError, "#definition.argument_expectation is not set" unless definition.argument_expectation
     end
 
     def verify_method_signature

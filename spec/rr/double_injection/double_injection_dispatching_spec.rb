@@ -16,7 +16,7 @@ module RR
         DoubleDefinitions::DoubleDefinition.new(
           DoubleDefinitions::DoubleDefinitionCreator.new,
           subject
-        )
+        ).any_number_of_times
       )
     end
 

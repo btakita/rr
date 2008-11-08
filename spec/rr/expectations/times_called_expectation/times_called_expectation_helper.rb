@@ -1,7 +1,7 @@
 module RR
   module Expectations
     describe TimesCalledExpectation, :shared => true do
-      attr_reader :space, :subject, :method_name, :double_injection, :double, :double_definition
+      attr_reader :subject, :method_name, :double_injection, :double, :double_definition
       it_should_behave_like "Swapped Space"
       before do
         @subject = Object.new
@@ -12,7 +12,7 @@ module RR
           subject
         )
         @double = new_double(double_injection)
-        double.definition.with_any_args
+        double.definition.with_any_args.any_number_of_times
       end
 
       def raises_expectation_error(&block)

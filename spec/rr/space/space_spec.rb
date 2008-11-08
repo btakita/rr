@@ -514,9 +514,10 @@ module RR
         end
 
         def new_double
-          double = super.definition.once
-          space.register_ordered_double(double.double)
-          double.double
+          double = super
+          double.definition.once
+          space.register_ordered_double(double)
+          double
         end
       end
     end

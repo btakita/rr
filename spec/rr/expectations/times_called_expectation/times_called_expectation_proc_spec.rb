@@ -63,9 +63,9 @@ module RR
 
         describe "#attempt! for a lambda expectation" do
           it "lets everything pass" do
-            @subject.foobar
-            @subject.foobar
-            @subject.foobar
+            subject.foobar
+            subject.foobar
+            subject.foobar
           end
         end
 

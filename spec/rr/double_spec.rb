@@ -11,7 +11,9 @@ module RR
       end
       @double_injection = create_double_injection
       @definition_creator = DoubleDefinitions::DoubleDefinitionCreator.new
-      @definition = DoubleDefinitions::DoubleDefinition.new(definition_creator, subject)
+      @definition = DoubleDefinitions::DoubleDefinition.new(definition_creator, subject).
+        any_number_of_times.
+        with_any_args
       @double = Double.new(double_injection, definition)
     end
 
@@ -172,6 +174,7 @@ module RR
     describe "#exact_match?" do
       context "when no expectation is set" do
         it "raises a DoubleDefinitionError" do
+          double.definition.argument_expectation = nil
           lambda do
             double.exact_match?
           end.should raise_error(Errors::DoubleDefinitionError)
@@ -199,6 +202,7 @@ module RR
     describe "#wildcard_match?" do
       context "when no expectation set" do
         it "raises a DoubleDefinitionError" do
+          double.definition.argument_expectation = nil
           lambda do
             double.wildcard_match?
           end.should raise_error(Errors::DoubleDefinitionError)
@@ -230,25 +234,33 @@ module RR
     end
 
     describe "#attempt?" do
-      it "returns true when TimesCalledExpectation#attempt? is true" do
-        double.definition.with(1, 2, 3).twice
-        double.call(double_injection, 1, 2, 3)
-        double.times_called_expectation.should be_attempt
-        double.should be_attempt
+      context "when TimesCalledExpectation#attempt? is true" do
+        it "returns true" do
+          double.definition.with(1, 2, 3).twice
+          double.call(double_injection, 1, 2, 3)
+          double.times_called_expectation.should be_attempt
+          double.should be_attempt
+        end
       end
 
-      it "returns false when TimesCalledExpectation#attempt? is true" do
-        double.definition.with(1, 2, 3).twice
-        double.call(double_injection, 1, 2, 3)
-        double.call(double_injection, 1, 2, 3)
-        double.times_called_expectation.should_not be_attempt
-        double.should_not be_attempt
+      context "when TimesCalledExpectation#attempt? is true" do
+        it "returns false" do
+          double.definition.with(1, 2, 3).twice
+          double.call(double_injection, 1, 2, 3)
+          double.call(double_injection, 1, 2, 3)
+          double.times_called_expectation.should_not be_attempt
+          double.should_not be_attempt
+        end
       end
 
-      it "returns true when there is no Times Called expectation" do
-        double.definition.with(1, 2, 3)
-        double.definition.times_matcher.should be_nil
-        double.should be_attempt
+      context "when there is no Times Called expectation" do
+        it "raises a DoubleDefinitionError" do
+          double.definition.with(1, 2, 3)
+          double.definition.times_matcher = nil
+          lambda do
+            double.should be_attempt
+          end.should raise_error(RR::Errors::DoubleDefinitionError)
+        end
       end
     end
 
@@ -274,21 +286,29 @@ module RR
     end
 
     describe "#terminal?" do
-      it "returns true when times_called_expectation's terminal? is true" do
-        double.definition.once
-        double.times_called_expectation.should be_terminal
-        double.should be_terminal
+      context "when times_called_expectation's terminal? is true" do
+        it "returns true" do
+          double.definition.once
+          double.times_called_expectation.should be_terminal
+          double.should be_terminal
+        end
       end
 
-      it "returns false when times_called_expectation's terminal? is false" do
-        double.definition.any_number_of_times
-        double.times_called_expectation.should_not be_terminal
-        double.should_not be_terminal
+      context "when times_called_expectation's terminal? is false" do
+        it "returns false" do
+          double.definition.any_number_of_times
+          double.times_called_expectation.should_not be_terminal
+          double.should_not be_terminal
+        end
       end
 
-      it "returns false when there is no times_matcher" do
-        double.definition.times_matcher.should be_nil
-        double.should_not be_terminal
+      context "when there is no times_matcher" do
+        it "raises a DoubleDefinitionError" do
+          double.definition.times_matcher = nil
+          lambda do
+            double.should_not be_terminal
+          end.should raise_error(RR::Errors::DoubleDefinitionError)
+        end
       end
     end
 
@@ -309,9 +329,11 @@ module RR
       end
 
       context "when there is no argument expectation" do
-        it "returns an empty array" do
-          double.definition.argument_expectation.should be_nil
-          double.expected_arguments.should == []
+        it "raises an DoubleDefinitionError" do
+          double.definition.argument_expectation = nil
+          lambda do
+            double.expected_arguments
+          end.should raise_error(Errors::DoubleDefinitionError)
         end
       end
     end
