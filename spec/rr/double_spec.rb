@@ -25,22 +25,6 @@ module RR
       end
     end
 
-    describe "#never" do
-      it "returns DoubleDefinition" do
-        double.never.should === double.definition
-      end
-
-      it "sets up a Times Called Expectation with 0" do
-        double.never
-        lambda {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
-      end
-
-      it "sets return value when block passed in" do
-        double.definition.with_any_args.never
-        lambda {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
-      end
-    end
-
     describe "#once" do
       it "returns DoubleDefinition" do
         double.once.should === double.definition

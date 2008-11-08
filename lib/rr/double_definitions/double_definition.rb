@@ -92,6 +92,12 @@ module RR
           self
         end
 
+        # Double#never sets the expectation that the Double will never be
+        # called.
+        #
+        # This method does not accept a block because it will never be called.
+        #
+        #   mock(subject).method_name.never        
         def never
           @times_matcher = TimesCalledMatchers::IntegerMatcher.new(0)
           self

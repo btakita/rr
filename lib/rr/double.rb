@@ -30,16 +30,6 @@ module RR
     end
     
     
-    # Double#never sets the expectation that the Double will never be
-    # called.
-    #
-    # This method does not accept a block because it will never be called.
-    #
-    #   mock(subject).method_name.never
-    def never
-      definition.never
-    end
-
     # Double#once sets the expectation that the Double will be called
     # 1 time.
     #
