@@ -54,7 +54,7 @@ module RR
 
         it "dispatches to Double that have a wildcard match" do
           double_with_wildcard_match = new_double
-          double_with_wildcard_match.with_any_args.returns {:wild_card_value}
+          double_with_wildcard_match.definition.with_any_args.returns {:wild_card_value}
           double_with_no_match = new_double
           double_with_no_match.definition.with("nothing that matches").returns {:no_match}
 
@@ -206,7 +206,7 @@ module RR
 
         def new_double(&return_value)
           double = super
-          double.with_any_args.once.returns(&return_value)
+          double.definition.with_any_args.once.returns(&return_value)
           double.should be_terminal
           double
         end

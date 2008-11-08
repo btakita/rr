@@ -12,7 +12,7 @@ module RR
           subject
         )
         @double = new_double(double_injection)
-        double.with_any_args
+        double.definition.with_any_args
       end
 
       def raises_expectation_error(&block)

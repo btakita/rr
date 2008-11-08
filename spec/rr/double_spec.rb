@@ -27,7 +27,7 @@ module RR
 
     describe "#with_any_args" do
       before do
-        double.with_any_args {:return_value}
+        double.definition.with_any_args {:return_value}
       end
 
       it "returns DoubleDefinition" do
@@ -73,7 +73,7 @@ module RR
       end
 
       it "sets return value when block passed in" do
-        double.with_any_args.never
+        double.definition.with_any_args.never
         lambda {double.call(double_injection)}.should raise_error(Errors::TimesCalledError)
       end
     end
@@ -90,7 +90,7 @@ module RR
       end
 
       it "sets return value when block passed in" do
-        double.with_any_args.once {:return_value}
+        double.definition.with_any_args.once {:return_value}
         subject.foobar.should == :return_value
       end
     end
@@ -108,14 +108,14 @@ module RR
       end
 
       it "sets return value when block passed in" do
-        double.with_any_args.twice {:return_value}
+        double.definition.with_any_args.twice {:return_value}
         subject.foobar.should == :return_value
       end
     end
 
     describe "#at_least" do
       it "returns DoubleDefinition" do
-        double.with_any_args.at_least(2).should === double.definition
+        double.definition.with_any_args.at_least(2).should === double.definition
       end
 
       it "sets up a AtLeastMatcher with 2" do
@@ -124,14 +124,14 @@ module RR
       end
 
       it "sets return value when block passed in" do
-        double.with_any_args.at_least(2) {:return_value}
+        double.definition.with_any_args.at_least(2) {:return_value}
         subject.foobar.should == :return_value
       end
     end
 
     describe "#at_most" do
       it "returns DoubleDefinition" do
-        double.with_any_args.at_most(2).should === double.definition
+        double.definition.with_any_args.at_most(2).should === double.definition
       end
 
       it "sets up a Times Called Expectation with 1" do
@@ -147,7 +147,7 @@ module RR
       end
 
       it "sets return value when block passed in" do
-        double.with_any_args.at_most(2) {:return_value}
+        double.definition.with_any_args.at_most(2) {:return_value}
         subject.foobar.should == :return_value
       end
     end
@@ -166,7 +166,7 @@ module RR
       end
 
       it "sets return value when block passed in" do
-        double.with_any_args.times(3) {:return_value}
+        double.definition.with_any_args.times(3) {:return_value}
         subject.foobar.should == :return_value
       end
     end
@@ -182,7 +182,7 @@ module RR
       end
 
       it "sets return value when block passed in" do
-        double.with_any_args.any_number_of_times {:return_value}
+        double.definition.with_any_args.any_number_of_times {:return_value}
         subject.foobar.should == :return_value
       end
     end
@@ -205,7 +205,7 @@ module RR
       end
 
       it "sets return value when block passed in" do
-        double.with_any_args.once.ordered {:return_value}
+        double.definition.with_any_args.once.ordered {:return_value}
         subject.foobar.should == :return_value
       end
     end
@@ -222,14 +222,14 @@ module RR
       end
 
       it "yields the passed in argument to the call block when there is no returns value set" do
-        double.with_any_args.yields(:baz)
+        double.definition.with_any_args.yields(:baz)
         passed_in_block_arg = nil
         subject.foobar {|arg| passed_in_block_arg = arg}.should == nil
         passed_in_block_arg.should == :baz
       end
 
       it "yields the passed in argument to the call block when there is a no returns value set" do
-        double.with_any_args.yields(:baz).returns(:return_value)
+        double.definition.with_any_args.yields(:baz).returns(:return_value)
 
         passed_in_block_arg = nil
         subject.foobar {|arg| passed_in_block_arg = arg}.should == :return_value
@@ -237,7 +237,7 @@ module RR
       end
 
       it "sets return value when block passed in" do
-        double.with_any_args.yields {:return_value}
+        double.definition.with_any_args.yields {:return_value}
         subject.foobar {}.should == :return_value
       end
     end
@@ -271,7 +271,7 @@ module RR
 
       it "allows after_call to mock the return value" do
         return_value = Object.new
-        double.with_any_args.returns(return_value).after_call do |value|
+        double.definition.with_any_args.returns(return_value).after_call do |value|
           mock(value).inner_method(1) {:baz}
           value
         end
@@ -594,7 +594,7 @@ module RR
 
       context "when with_any_args" do
         it "returns true" do
-          double.with_any_args
+          double.definition.with_any_args
 
           double.should be_wildcard_match(1, 2, 3)
           double.should be_wildcard_match(1, 2)

@@ -68,6 +68,12 @@ module RR
           self
         end
 
+        # Double#with_any_args sets the expectation that the Double can receive
+        # any arguments.
+        #
+        # Passing in a block sets the return value.
+        #
+        #   mock(subject).method_name.with_any_args {:return_value}        
         def with_any_args(&return_value_block)
           @argument_expectation = Expectations::AnyArgumentExpectation.new
           install_method_callback return_value_block
