@@ -1,5 +1,10 @@
 require File.expand_path("#{File.dirname(__FILE__)}/spec_helper")
 
+class Alpha
+  def bob
+  end
+end
+
 describe RR::RecordedCalls do
   before(:each) do
     @subject = Object.new
@@ -28,7 +33,7 @@ describe RR::RecordedCalls do
       verify_invocation of_spy(subject).to_s
     end
   end
-  
+    
   it "should be able to verify calls to methods defined on Object" do
     stub(@subject).to_s
     @subject.to_s
