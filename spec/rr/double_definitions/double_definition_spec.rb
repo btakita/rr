@@ -895,6 +895,18 @@ module RR
             definition.should be_verbose
           end
         end
+
+        describe "#verify_method_signature" do
+          it "sets #verify_method_signature? to true" do
+            definition.verify_method_signature?.should be_false
+            definition.verify_method_signature
+            definition.verify_method_signature?.should be_true
+          end
+
+          it "returns self" do
+            definition.verify_method_signature.should == definition
+          end
+        end
       end
 
       describe "NestedDoubleCreationMethods" do

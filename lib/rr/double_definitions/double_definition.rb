@@ -47,14 +47,6 @@ module RR
         double_definition_creator.root_subject
       end
       
-      def verify_method_signature
-        @verify_method_signature = true
-      end
-      
-      def verify_method_signature?
-        @verify_method_signature
-      end
-
       module DefinitionConstructionMethods
         # Double#with sets the expectation that the Double will receive
         # the passed in arguments.
@@ -277,6 +269,12 @@ module RR
           self
         end
 
+        def verify_method_signature
+          @verify_method_signature = true
+          self
+        end
+        alias_method :strong, :verify_method_signature
+        
         protected
         def install_method_callback(block)
           return unless block
@@ -319,13 +317,17 @@ module RR
         end
 
         def expected_arguments
-          return [] unless argument_expectation
-          argument_expectation.expected_arguments
+          argument_expectation ? argument_expectation.expected_arguments : []
         end
 
         def implementation_is_original_method?
           implementation_strategy.is_a?(Strategies::Implementation::Proxy)
         end
+
+        def verify_method_signature?
+          !!@verify_method_signature
+        end
+        alias_method :strong?, :verify_method_signature?        
 
         protected
         def implementation_strategy

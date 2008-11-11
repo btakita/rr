@@ -135,8 +135,8 @@ module RR
     end
 
     def verify_method_signature
-      raise RR::Errors::SubjectDoesNotImplementMethodError if !definition.subject.respond_to?(double_injection.send(:original_method_name))
-      raise RR::Errors::SubjectHasDifferentArityError if !arity_matches?
+      raise RR::Errors::SubjectDoesNotImplementMethodError unless definition.subject.respond_to?(double_injection.send(:original_method_name))
+      raise RR::Errors::SubjectHasDifferentArityError unless arity_matches?
     end
     
     def subject_arity
