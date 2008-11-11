@@ -10,8 +10,8 @@ module RR
           DoubleDefinitions::DoubleDefinition.new(
             DoubleDefinitions::DoubleDefinitionCreator.new,
             subject
-          )
-        ).with_any_args.any_number_of_times
+          ).with_any_args.any_number_of_times
+        )
         double_injection.bind
         double_injection
       end

@@ -1,7 +1,5 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../spec_helper")
 
-require 'rr/invocation_matcher'
-
 module RR
   describe InvocationMatcher do
     describe "matching against a method with no doubles" do
@@ -14,7 +12,7 @@ module RR
         @result.should_not be
       end
 
-      it "fails with a message about theh lack of doubles" do
+      it "fails with a message about the lack of doubles" do
         @matcher.failure_message.should =~ /doubles/
       end
     end
