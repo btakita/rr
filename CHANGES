@@ -1,3 +1,5 @@
+- Added strongly typed reimplementation doubles
+
 * 0.6.2
 - Fixed DoubleDefinition chaining edge cases
 

@@ -14,7 +14,7 @@ describe "RR" do
     RR.reset
   end
 
-  describe "RR mock:" do
+  describe "mock" do
     it "mocks via inline call" do
       mock(subject).to_s {"a value"}
       subject.to_s.should == "a value"
@@ -29,7 +29,7 @@ describe "RR" do
       subject.to_s.should == "value 2"
       lambda {subject.to_s}.should raise_error(RR::Errors::TimesCalledError)
     end
-    
+
     it 'allows terse chaining' do
       mock(subject).first(1) {mock(Object.new).second(2) {mock(Object.new).third(3) {4}}}
       subject.first(1).second(2).third(3).should == 4
@@ -42,7 +42,7 @@ describe "RR" do
 
       mock(subject).first(1) {mock!.second(2).mock! {third(3) {4}}}
       subject.first(1).second(2).third(3).should == 4
-      
+
       mock(subject).first(1).mock!.second(2).mock!.third(3) {4}
       subject.first(1).second(2).third(3).should == 4
     end
@@ -61,7 +61,7 @@ describe "RR" do
       mock.proxy(subject).find('1').mock.proxy!.child
       subject.find('1').child.should == :the_child
     end
-    
+
     it 'allows branched chaining' do
       mock(subject).first do
         mock! do |expect|
@@ -73,7 +73,7 @@ describe "RR" do
       o.branch1.branch11.should == 11
       o.branch2.branch22.should == 22
     end
-    
+
     it 'allows chained ordering' do
       mock(subject).to_s {"value 1"}.then.to_s {"value 2"}.twice.then.to_s {"value 3"}.once
       subject.to_s.should == "value 1"
@@ -133,7 +133,7 @@ describe "RR" do
     end
   end
 
-  describe "RR proxy:" do
+  describe "proxy" do
     it "proxies via inline call" do
       expected_to_s_value = subject.to_s
       mock.proxy(subject).to_s
@@ -208,7 +208,7 @@ describe "RR" do
     end
   end
 
-  describe "RR stub:" do
+  describe "stub" do
     it "stubs via inline call" do
       stub(subject).to_s {"a value"}
       subject.to_s.should == "a value"
@@ -250,6 +250,82 @@ describe "RR" do
     it "stubs methods without letters" do
       stub(subject).__send__(:==) {:equality}
       (subject == 55).should == :equality
+    end
+  end
+
+  class StrongTestObject
+    def method_with_no_arguments
+    end
+
+    def method_with_one_argument(string)
+    end
+
+    def method_with_two_arguments(string, integer)
+    end
+
+    def method_with_three_arguments_including_varargs(string, integer, *args)
+    end
+
+    def method_with_varargs(*args)
+    end
+  end
+
+  describe "strong" do
+    context "when the method does not exist" do
+      it "raises an exception" do
+        lambda do
+          strong.stub(StrongTestObject.new).something
+        end.should raise_error(RR::Errors::SubjectDoesNotImplementMethodError)
+      end
+    end
+
+    context "when the method exists with no arguments" do
+      it "does not raise an exception" do
+        strong.stub(StrongTestObject.new).method_with_no_arguments
+      end
+    end
+
+    context "when the method has a different arity" do
+      it "raises an exception" do
+        lambda do
+          strong.stub(StrongTestObject.new).method_with_one_argument
+        end.should raise_error(RR::Errors::SubjectHasDifferentArityError)
+      end
+    end
+
+    context "when the method has accepts a variable number of arguments" do
+      it "does not raise an exception" do
+        strong.stub(StrongTestObject.new).method_with_varargs
+      end
+    end
+
+    context "when the method does not provide the required parameters before varargs" do
+      it "raises an exception" do
+        lambda do
+          strong.stub(StrongTestObject.new).method_with_three_arguments_including_varargs
+        end.should raise_error(RR::Errors::SubjectHasDifferentArityError)
+      end
+    end
+
+    context "when the minimum number of parameters are provided" do
+      it "does not raise an exception" do
+        strong.stub(StrongTestObject.new).method_with_three_arguments_including_varargs("one", 2)
+      end
+    end
+
+    context "when using instance_of and the method does not exist" do
+      it "raises an exception" do
+        lambda do
+          strong.stub.instance_of(StrongTestObject).something
+          StrongTestObject.new
+        end.should raise_error(RR::Errors::SubjectDoesNotImplementMethodError)
+      end
+    end
+
+    context "when using instance_of and the method does exist" do
+      it "does not raise an exception" do
+        strong.stub.instance_of(StrongTestObject).method_with_no_arguments
+      end
     end
   end
 end
