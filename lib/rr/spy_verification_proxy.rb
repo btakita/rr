@@ -1,5 +1,12 @@
 module RR
-  class SpyVerificationProxy < BlankSlate
+  class SpyVerificationProxy
+    instance_methods.each do |m|
+      unless m =~ /^_/ || m.to_s == 'object_id' || m.to_s == "instance_eval" || m.to_s == 'respond_to?'
+        alias_method "__blank_slated_#{m}", m
+        undef_method m
+      end
+    end
+
     def initialize(subject)
       @subject = subject
     end

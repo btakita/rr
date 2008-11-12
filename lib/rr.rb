@@ -1,6 +1,5 @@
 dir = File.dirname(__FILE__)
 require 'rubygems'
-require 'BlankSlate'
 
 require "#{dir}/rr/errors/rr_error"
 require "#{dir}/rr/errors/subject_does_not_implement_method_error"
