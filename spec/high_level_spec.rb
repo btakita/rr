@@ -328,4 +328,7 @@ describe "RR" do
       end
     end
   end
+
+  describe "spies" do
+  end
 end
