@@ -9,8 +9,9 @@ module RR
 
         before do
           @times = 3
-          @at_most = TimesCalledMatchers::AtMostMatcher.new(times)
-          @expectation = TimesCalledExpectation.new(double, at_most)
+          double.definition.at_most(times)
+          @at_most = double.definition.times_matcher
+          @expectation = TimesCalledExpectation.new(double)
         end
 
         describe "#verify!" do

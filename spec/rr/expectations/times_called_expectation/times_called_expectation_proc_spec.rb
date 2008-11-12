@@ -8,8 +8,9 @@ module RR
         attr_reader :matcher, :expectation
 
         before do
-          @matcher = TimesCalledMatchers::ProcMatcher.new(lambda {|value| value == 2})
-          @expectation = TimesCalledExpectation.new(double, matcher)
+          double.definition.times(lambda {|value| value == 2})
+          @matcher = double.definition.times_matcher
+          @expectation = TimesCalledExpectation.new(double)
         end
 
         describe "#verify" do
@@ -63,9 +64,9 @@ module RR
 
         describe "#attempt! for a lambda expectation" do
           it "lets everything pass" do
-            @subject.foobar
-            @subject.foobar
-            @subject.foobar
+            subject.foobar
+            subject.foobar
+            subject.foobar
           end
         end
 

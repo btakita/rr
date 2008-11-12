@@ -116,6 +116,10 @@ module RR
         raise RR::Errors::SpyVerificationError.new unless match_found
       end
 
+      def have_received(method = nil)
+        InvocationMatcher.new(method)
+      end
+
       instance_methods.each do |name|
         alias_method "rr_#{name}", name
       end

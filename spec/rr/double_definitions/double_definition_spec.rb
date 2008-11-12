@@ -895,6 +895,18 @@ module RR
             definition.should be_verbose
           end
         end
+
+        describe "#verify_method_signature" do
+          it "sets #verify_method_signature? to true" do
+            definition.verify_method_signature?.should be_false
+            definition.verify_method_signature
+            definition.verify_method_signature?.should be_true
+          end
+
+          it "returns self" do
+            definition.verify_method_signature.should == definition
+          end
+        end
       end
 
       describe "NestedDoubleCreationMethods" do
@@ -903,7 +915,7 @@ module RR
           RR.verify(ChildDoubleDefinitionCreator)
           RR.verify(child_double_definition_creator)
         end
-        
+
         describe "#mock" do
           it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #mock method with the passed-in arguments and block" do
             child_subject = Object.new
@@ -912,7 +924,7 @@ module RR
               mock.proxy(child_double_definition_creator).mock(child_subject, :baz)
               child_double_definition_creator = child_double_definition_creator
             end
-            
+
             definition.mock(child_subject, :baz)
             @child_double_definition_creator = child_double_definition_creator
           end
@@ -1003,6 +1015,28 @@ module RR
           it "raises a DoubleDefinitionError" do
             lambda do
               definition.proxy!(:baz)
+            end.should raise_error(Errors::DoubleDefinitionError)
+          end
+        end
+
+        describe "#strong" do
+          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #strong method with the passed-in arguments and block" do
+            child_subject = Object.new
+            child_double_definition_creator = nil
+            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
+              mock.proxy(child_double_definition_creator).strong(DoubleDefinitionCreator::NO_SUBJECT, nil)
+              child_double_definition_creator = child_double_definition_creator
+            end
+
+            definition.strong.mock(child_subject)
+            @child_double_definition_creator = child_double_definition_creator
+          end
+        end
+
+        describe "#strong!" do
+          it "raises a DoubleDefinitionError" do
+            lambda do
+              definition.strong!(:baz)
             end.should raise_error(Errors::DoubleDefinitionError)
           end
         end

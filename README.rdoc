@@ -288,19 +288,22 @@ In RR, you would do:
 == Special Thanks To
 With any development effort, there are countless people who have contributed
 to making it possible. We all are standing on the shoulders of giants.
-* Pivotal Labs for sponsoring RR development
-* Nick Kallen for documentation suggestions, bug reports, and patches
+* Aslak Hellesoy for Developing Rspec
+* Dan North for syntax ideas
+* Dave Astels for some BDD inspiration
+* David Chelimsky for encouragement to make the RR framework, for developing the Rspec mock framework, and syntax ideas
+* Felix Morio for pairing with me
+* Gerard Meszaros for his excellent book "xUnit Test Patterns"
+* James Mead for developing Mocha
+* Joe Ferris for patches
+* Jeff Whitmire for documentation suggestions
+* Jim Weirich for developing Flexmock, the first Terse ruby mock framework in Ruby
+* Joe Ferris for patches
 * Matthew O'Conner for patches
+* Michael Niessner for patches and pairing with me
+* Mike Mangino (from Elevated Rails) for patches and pairing with me
+* Nick Kallen for documentation suggestions, bug reports, and patches
 * Nathan Sobo for various ideas and inspiration for cleaner and more expressive code
 * Parker Thompson for pairing with me
-* Felix Morio for pairing with me
-* Jeff Whitmire for documentation suggestions
-* David Chelimsky for encouragement to make the RR framework, for developing
-  the Rspec mock framework, and syntax ideas
-* Gerard Meszaros for his excellent book "xUnit Test Patterns"
-* Dan North for syntax ideas
-* Jim Weirich for developing Flexmock, the first Terse ruby mock framework in Ruby
-* James Mead for developing Mocha
-* Aslak Hellesoy for Developing Rspec
+* Pivotal Labs for sponsoring RR development
 * Stephen Baker for Developing Rspec
-* Dave Astels for some BDD inspiration

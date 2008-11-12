@@ -1,12 +1,13 @@
 module RR
   module DoubleDefinitions
     module Strategies
-      module MethodSignatureVerification   
-        class Strong < MethodSignatureVerificationStrategy
+      module Implementation
+        class StronglyTypedReimplementation < Reimplementation
           register("strong")
 
           protected
           def do_call
+            super
             definition.verify_method_signature
           end
         end

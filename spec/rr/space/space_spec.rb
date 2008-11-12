@@ -126,8 +126,8 @@ module RR
           space.double_injection(subject_2, :foobar2),
           RR::DoubleDefinitions::DoubleDefinition.new(creator = Object.new, subject_2)
         )
-        double_1.ordered
-        double_2.ordered
+        double_1.definition.ordered
+        double_2.definition.ordered
 
         space.ordered_doubles.should_not be_empty
 
@@ -474,7 +474,7 @@ module RR
           double = new_double
           space.register_ordered_double(double)
 
-          double.any_number_of_times
+          double.definition.any_number_of_times
           double.should_not be_terminal
 
           lambda do
@@ -492,7 +492,7 @@ module RR
           double = new_double
           space.register_ordered_double(double)
 
-          double.twice
+          double.definition.twice
           double.should be_attempt
 
           space.verify_ordered_double(double)
@@ -504,7 +504,7 @@ module RR
             double = new_double
             space.register_ordered_double(double)
 
-            double.with(1).once
+            double.definition.with(1).once
             subject.foobar(1)
             double.should_not be_attempt
 
@@ -531,9 +531,10 @@ module RR
         end
 
         def new_double
-          double = super.once
-          space.register_ordered_double(double.double)
-          double.double
+          double = super
+          double.definition.once
+          space.register_ordered_double(double)
+          double
         end
       end
     end

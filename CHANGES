@@ -1,3 +1,6 @@
+- Added spies (Patch by Joe Ferris)
+- Added strongly typed reimplementation doubles (Patch by Michael Niessner)
+
 * 0.6.2
 - Fixed DoubleDefinition chaining edge cases
 

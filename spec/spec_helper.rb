@@ -21,7 +21,10 @@ describe "Swapped Space", :shared => true do
 end
 
 module Spec::Example::ExampleMethods
-  def new_double(double_injection=double_injection, double_definition=RR::DoubleDefinitions::DoubleDefinition.new(creator = RR::DoubleDefinitions::DoubleDefinitionCreator.new, subject))
+  def new_double(
+    double_injection=double_injection,
+    double_definition=RR::DoubleDefinitions::DoubleDefinition.new(creator = RR::DoubleDefinitions::DoubleDefinitionCreator.new, subject).with_any_args.any_number_of_times
+  )
     RR::Double.new(
       double_injection,
       double_definition

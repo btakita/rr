@@ -8,9 +8,9 @@ module RR
         attr_reader :matcher, :expected_line, :expectation
 
         before do
-          @matcher = TimesCalledMatchers::IntegerMatcher.new(2)
-          @expectation = TimesCalledExpectation.new(double, matcher)
-          @expected_line = __LINE__ - 1
+          double.definition.times(2)
+          @matcher = double.definition.times_matcher
+          @expectation = TimesCalledExpectation.new(double)
         end
 
         describe "#verify" do

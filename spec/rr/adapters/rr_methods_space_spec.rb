@@ -74,8 +74,8 @@ module RR
             RR::DoubleDefinitions::DoubleDefinition.new(creator = RR::DoubleDefinitions::DoubleDefinitionCreator.new, subject_2)
           )
 
-          double_1.ordered
-          double_2.ordered
+          double_1.definition.ordered
+          double_2.definition.ordered
 
           space.ordered_doubles.should_not be_empty
 

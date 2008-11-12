@@ -18,22 +18,6 @@ module RR
           CLASS
         end
         
-        def register_method_signature_verification_strategy_class(strategy_class, method_name)
-          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-            add_strategy(subject, method_name, definition_eval_block) do
-              self.method_signature_verification_strategy = #{strategy_class.name}.new(self)
-            end
-          end
-          CLASS
-
-          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}!(method_name=nil, &definition_eval_block)
-            #{method_name}(Object.new, method_name, &definition_eval_block)
-          end
-          CLASS
-        end
-
         def register_implementation_strategy_class(strategy_class, method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
           def #{method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
@@ -73,8 +57,7 @@ module RR
                   :definition, 
                   :verification_strategy, 
                   :implementation_strategy, 
-                  :scope_strategy, 
-                  :method_signature_verification_strategy
+                  :scope_strategy
       NO_SUBJECT = Object.new
 
       include Space::Reader
@@ -83,7 +66,6 @@ module RR
         @verification_strategy = nil
         @implementation_strategy = Strategies::Implementation::Reimplementation.new(self)
         @scope_strategy = Strategies::Scope::Instance.new(self)
-        @method_signature_verification_strategy = Strategies::MethodSignatureVerification::Weak.new(self)
       end
 
       def root_subject
@@ -131,10 +113,6 @@ module RR
           verification_strategy
         end
         
-        def method_signature_verification_strategy=(method_signature_verification_strategy)
-          @method_signature_verification_strategy = method_signature_verification_strategy
-        end
-
         def implementation_strategy=(implementation_strategy)
           verify_not_proxy_and_dont_allow(verification_strategy, implementation_strategy)
           @implementation_strategy = implementation_strategy
@@ -183,7 +161,6 @@ module RR
           raise DoubleDefinitionCreatorError if no_subject?
           @method_name, @args, @handler = method_name, args, handler
           @definition = DoubleDefinition.new(self, subject)
-          method_signature_verification_strategy.call(definition, method_name, args, handler)
           verification_strategy ? verification_strategy.call(definition, method_name, args, handler) : no_strategy_error
           implementation_strategy.call(definition, method_name, args, handler)
           scope_strategy.call(definition, method_name, args, handler)
