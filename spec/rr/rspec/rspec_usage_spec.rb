@@ -63,9 +63,10 @@ describe RR do
     it "validates that a Double was called after it was called" do
       stub(subject).foobar
       subject.foobar(1, 2)
+      
       subject.should have_received.foobar(1, 2)
       lambda do
-      subject.should have_received.foobar(1, 2, 3)
+        subject.should have_received.foobar(1, 2, 3)
       end.should raise_error(Spec::Expectations::ExpectationNotMetError)
     end
   end
