@@ -9,6 +9,7 @@ class CoreExampleSuite
     puts "Running Rspec Example Suite"
     files.each do |file|
       require file
+#      puts "require '#{file}'"
     end
   end
 end
