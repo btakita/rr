@@ -11,10 +11,6 @@ module RR
       it "does not match" do
         @result.should_not be
       end
-
-      it "fails with a message about the lack of doubles" do
-        @matcher.failure_message.should =~ /doubles/
-      end
     end
 
     describe "defining an expectation using a method invocation" do
@@ -22,7 +18,7 @@ module RR
         @subject = Object.new
         stub(@subject).foobar
         @subject.foobar(:args)
-        @result = InvocationMatcher.new.foobar.matches?(@subject)
+        @result = InvocationMatcher.new.foobar(:args).matches?(@subject)
       end
 
       it "uses the invoked method as the expected method" do
@@ -40,14 +36,6 @@ module RR
 
       it "does not match" do
         @result.should_not be
-      end
-
-      it "includes the method name in the failure message" do
-        @matcher.failure_message.should =~ /foobar/
-      end
-
-      it "fails with a message about the method never being called" do
-        @matcher.failure_message.should =~ /never received it/
       end
     end
 
@@ -125,7 +113,7 @@ module RR
         @subject = Object.new
         stub(@subject).foobar
         2.times { @subject.foobar }
-        @result = InvocationMatcher.new(:foobar).matches?(@subject)
+        @result = InvocationMatcher.new(:foobar).twice.matches?(@subject)
       end
 
       it "does match" do
@@ -183,11 +171,6 @@ module RR
 
       it "does not match" do
         @result.should_not be
-      end
-
-      it "describes explains the invocation count error in the failure message" do
-        @matcher.failure_message.should =~ /Expected 1 time/
-        @matcher.failure_message.should =~ /Called 2 times/
       end
     end
 
@@ -267,24 +250,6 @@ module RR
       it "does match" do
         @result.should be
       end
-    end
-
-    it "uses #at_most(0) for #never" do
-      @matcher = InvocationMatcher.new
-      mock(@matcher).at_most(0)
-      @matcher.never
-    end
-
-    it "uses #times(1) for #once" do
-      @matcher = InvocationMatcher.new
-      mock(@matcher).times(1)
-      @matcher.once
-    end
-
-    it "uses #times(2) for #twice" do
-      @matcher = InvocationMatcher.new
-      mock(@matcher).times(2)
-      @matcher.twice
     end
   end
 end

@@ -3,12 +3,12 @@ module RR
   # A double_injection has 0 to many Double objects. Each Double
   # has Argument Expectations and Times called Expectations.
   class DoubleInjection
+    include Space::Reader
     MethodArguments = Struct.new(:arguments, :block)
     attr_reader :subject, :method_name, :doubles
 
     def initialize(subject, method_name)
       @subject = subject
-      @invocations = []
       @method_name = method_name.to_sym
       if object_has_method?(method_name)
         begin
@@ -39,12 +39,6 @@ module RR
         end
       METHOD
       meta.class_eval(returns_method, __FILE__, __LINE__ - 5)
-    end
-
-    def invocation(expectation)
-      @invocations.detect do |invocation| 
-        expectation.exact_match?(*invocation.args) || expectation.wildcard_match?(*invocation.args)
-      end
     end
 
     # RR::DoubleInjection#verify verifies each Double
@@ -85,21 +79,12 @@ module RR
     end
 
     def call_method(args, block)
-      add_invocation(args)
+      space.record_call(subject, method_name, args, block)
       if double = find_double_to_attempt(args)
         double.call(self, *args, &block)
       else
         double_not_found_error(*args)
       end
-    end
-
-    def add_invocation(args)
-      unless invocation = self.invocation(Expectations::ArgumentEqualityExpectation.new(*args))
-        invocation = Invocation.new(args)
-        @invocations << invocation
-      end
-      invocation.invoke
-      invocation
     end
 
     def find_double_to_attempt(args)

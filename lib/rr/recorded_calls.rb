@@ -50,12 +50,18 @@ module RR
     attr_accessor :ordered_index
 
     def times_called(spy_verification)
-      recorded_calls.select do |recorded_call|
+      matching_calls = recorded_calls.select do |recorded_call|
         matches_recorded_call?(recorded_call, spy_verification)
-      end.size
+      end
+      matching_calls.size
     end
 
     def matches_recorded_call?(recorded_call, spy_verification)
+#      p recorded_call[0] == spy_verification.subject
+#      p recorded_call[1] == spy_verification.method_name
+#      p spy_verification.argument_expectation
+#      p spy_verification.argument_expectation.exact_match?(*recorded_call[2])
+#      p spy_verification.argument_expectation.wildcard_match?(*recorded_call[2])
       recorded_call[0] == spy_verification.subject &&
       recorded_call[1] == spy_verification.method_name && 
       ( spy_verification.argument_expectation.exact_match?(*recorded_call[2]) ||

@@ -225,7 +225,6 @@ module RR
           subject.foobar!(1, 2).should == :return_value
         end
       end
-
     end
 
     describe "method names with ?" do

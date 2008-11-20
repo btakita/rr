@@ -8,7 +8,8 @@ module RR
       once
     end
 
-    attr_reader :subject, :argument_expectation, :method_name, :times_matcher
+    attr_reader :argument_expectation, :method_name, :times_matcher
+    attr_accessor :subject
   
     include RR::DoubleDefinitions::DoubleDefinition::TimesDefinitionConstructionMethods
     include RR::DoubleDefinitions::DoubleDefinition::ArgumentDefinitionConstructionMethods

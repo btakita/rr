@@ -13,7 +13,6 @@ require "#{dir}/rr/errors/spy_verification_error"
 
 require "#{dir}/rr/space"
 require "#{dir}/rr/double_injection"
-require "#{dir}/rr/invocation"
 require "#{dir}/rr/hash_with_object_id_key"
 require "#{dir}/rr/recorded_calls"
 
