@@ -1,31 +1,27 @@
 module RR
-  class InvocationMatcher
-    include Space::Reader
-    attr_reader :failure_message, :spy_verification_proxy, :verification
+  class InvocationMatcher < SpyVerificationProxy
+    attr_reader :failure_message
 
     def initialize(method = nil)
-      @spy_verification_proxy = RR::SpyVerificationProxy.new(nil)
-      if method
-        define_spy_verification(method)
-      end
-    end
-
-    def define_spy_verification(method, *args)
-      @verification = spy_verification_proxy.method_missing(method, *args)
-    end
-
-    def method_missing(method_name, *args, &block)
-      if verification
-        verification.send(method_name, *args)
-      else
-        define_spy_verification(method_name, *args)
-      end
-      self
+      method_missing(method) if method
     end
 
     def matches?(subject)
-      verification.subject = subject
-      space.recorded_calls.matches?(verification)
+      @verification.subject = subject
+      RR::Space.instance.recorded_calls.matches?(@verification)
+    end
+
+    def nil?
+      false
+    end
+    
+    def method_missing(method_name, *args, &block)
+      if @verification
+        @verification.send(method_name, *args)
+      else
+        @verification = super
+      end
+      self
     end
   end
 end

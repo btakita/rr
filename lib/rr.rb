@@ -20,7 +20,6 @@ require "#{dir}/rr/double_definitions/double_definition_creator_proxy"
 require "#{dir}/rr/double_definitions/double_definition_creator"
 require "#{dir}/rr/double_definitions/child_double_definition_creator"
 require "#{dir}/rr/adapters/rr_methods"
-require "#{dir}/rr/invocation_matcher"
 
 require "#{dir}/rr/double"
 require "#{dir}/rr/double_definitions/double_definition"
@@ -67,6 +66,7 @@ require "#{dir}/rr/adapters/test_unit"
 
 require "#{dir}/rr/spy_verification_proxy"
 require "#{dir}/rr/spy_verification"
+require "#{dir}/rr/invocation_matcher"
 
 module RR
   class << self
