@@ -85,7 +85,7 @@ describe RR::RecordedCalls do
     lambda do
       verify_invocation of_spy(@subject).foobar(1,2).ordered
       verify_invocation of_spy(@subject).foobar(3,4).ordered
-    end.should raise_error(RR::Errors::SpyVerificationError)        
+    end.should raise_error(RR::Errors::SpyVerificationError)
   end
   
   it "should not raise an error when the order is correct" do

@@ -28,24 +28,7 @@ module RR
       if spy_verification.ordered?
         ordered_matches?(spy_verification)
       else
-        spy_verification.times_matcher.matches?(
-          matching_recorded_calls(spy_verification).size
-        )
-      end
-    end
-  
-    def ordered_matches?(spy_verification)
-      memoized_matching_recorded_calls = matching_recorded_calls(spy_verification)
-
-      if memoized_matching_recorded_calls.last
-        self.ordered_index = recorded_calls.index(memoized_matching_recorded_calls.last)
-      end
-      if memoized_matching_recorded_calls.size > 0
-        (0..memoized_matching_recorded_calls.size).to_a.any? do |i|
-          spy_verification.times_matcher.matches?(i)
-        end
-      else
-        spy_verification.times_matcher.matches?(memoized_matching_recorded_calls.size)
+        unordered_matches?(spy_verification)
       end
     end
   
@@ -67,6 +50,23 @@ module RR
 #             "#{invocation_string} #{times_error_message}")
 #   end
 
+    def ordered_matches?(spy_verification)
+      memoized_matching_recorded_calls = matching_recorded_calls(spy_verification)
+
+      if memoized_matching_recorded_calls.last
+        self.ordered_index = recorded_calls.index(memoized_matching_recorded_calls.last)
+      end
+      (0..memoized_matching_recorded_calls.size).to_a.any? do |i|
+        spy_verification.times_matcher.matches?(i)
+      end
+    end
+
+    def unordered_matches?(spy_verification)
+      spy_verification.times_matcher.matches?(
+        matching_recorded_calls(spy_verification).size
+      )
+    end
+    
     def matching_recorded_calls(spy_verification)
       recorded_calls[ordered_index..-1].
         select(&match_double_injection(spy_verification)).
