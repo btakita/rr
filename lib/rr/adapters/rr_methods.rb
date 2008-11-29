@@ -112,7 +112,7 @@ module RR
       end
       
       def verify_invocation(spy_verification)
-        match_found = RR.recorded_calls.matches?(spy_verification)
+        match_found = !RR.recorded_calls.match_error(spy_verification)
         raise RR::Errors::SpyVerificationError.new unless match_found
       end
 

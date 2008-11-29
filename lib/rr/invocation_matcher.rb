@@ -8,7 +8,7 @@ module RR
 
     def matches?(subject)
       @verification.subject = subject
-      RR::Space.instance.recorded_calls.matches?(@verification)
+      RR::Space.instance.recorded_calls.match_error(@verification) ? false : true
     end
 
     def nil?
