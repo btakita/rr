@@ -28,45 +28,63 @@ module RR
       if spy_verification.ordered?
         ordered_matches?(spy_verification)
       else
-        spy_verification.times_matcher.matches?(times_called(spy_verification))
+        spy_verification.times_matcher.matches?(
+          matching_recorded_calls(spy_verification).size
+        )
       end
     end
   
     def ordered_matches?(spy_verification)
-      matched_count = 0
-      index = ordered_index
-      while index < recorded_calls.size
-        matched_count += 1 if matches_recorded_call?(recorded_calls[index],spy_verification)
-        index = index + 1
-        if spy_verification.times_matcher.matches?(matched_count)
-          self.ordered_index = index
-          return true
-        end
+      memoized_matching_recorded_calls = matching_recorded_calls(spy_verification)
+
+      if memoized_matching_recorded_calls.last
+        self.ordered_index = recorded_calls.index(memoized_matching_recorded_calls.last)
       end
-      false
+      if memoized_matching_recorded_calls.size > 0
+        (0..memoized_matching_recorded_calls.size).to_a.any? do |i|
+          spy_verification.times_matcher.matches?(i)
+        end
+      else
+        spy_verification.times_matcher.matches?(memoized_matching_recorded_calls.size)
+      end
     end
   
   protected
     attr_accessor :ordered_index
 
-    def times_called(spy_verification)
-      matching_calls = recorded_calls.select do |recorded_call|
-        matches_recorded_call?(recorded_call, spy_verification)
-      end
-      matching_calls.size
+#   def check_doubles!
+#     assert!(!double_injection.doubles.empty?,
+#             "No doubles...did you forget to set an expectation or stub?")
+#   end
+#
+#   def find_invocation!
+#     @invocation = double_injection.invocation(@args_expectation)
+#     assert!(!@invocation.nil?, "Expected #{invocation_string} but never received it")
+#   end
+#
+#   def check_invocation_count!
+#     assert!(@invocation.called?(@times_matcher),
+#             "#{invocation_string} #{times_error_message}")
+#   end
+
+    def matching_recorded_calls(spy_verification)
+      recorded_calls[ordered_index..-1].
+        select(&match_double_injection(spy_verification)).
+        select(&match_argument_expectation(spy_verification))
     end
 
-    def matches_recorded_call?(recorded_call, spy_verification)
-#      puts "#{__FILE__}:#{__LINE__}"
-#      p recorded_call[0] == spy_verification.subject
-#      p recorded_call[1] == spy_verification.method_name
-#      p spy_verification.argument_expectation
-#      p spy_verification.argument_expectation.exact_match?(*recorded_call[2])
-#      p spy_verification.argument_expectation.wildcard_match?(*recorded_call[2])
-      recorded_call[0] == spy_verification.subject &&
-      recorded_call[1] == spy_verification.method_name && 
-      ( spy_verification.argument_expectation.exact_match?(*recorded_call[2]) ||
-        spy_verification.argument_expectation.wildcard_match?(*recorded_call[2]))
+    def match_double_injection(spy_verification)
+      lambda do |recorded_call|
+        recorded_call[0] == spy_verification.subject &&
+        recorded_call[1] == spy_verification.method_name
+      end
+    end
+
+    def match_argument_expectation(spy_verification)
+      lambda do |recorded_call|
+        spy_verification.argument_expectation.exact_match?(*recorded_call[2]) ||
+        spy_verification.argument_expectation.wildcard_match?(*recorded_call[2])
+      end
     end
   end
 end

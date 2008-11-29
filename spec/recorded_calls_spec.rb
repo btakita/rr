@@ -92,7 +92,7 @@ describe RR::RecordedCalls do
     @subject.foobar(1,2)
     @subject.foobar(1,2)
     @subject.foobar(3,4)
-    verify_invocation of_spy(@subject).foobar(1,2).once.ordered
+    verify_invocation of_spy(@subject).foobar(1,2).ordered
     verify_invocation of_spy(@subject).foobar(3,4).ordered
   end
 
