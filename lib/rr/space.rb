@@ -33,13 +33,13 @@ module RR
     # When a DoubleInjection is created, it binds the dispatcher to the
     # subject.
     def double_injection(subject, method_name)
-      double_injection = @double_injections[subject][method_name.to_sym]
-      return double_injection if double_injection
+      @double_injections[subject][method_name.to_sym] ||= begin
+        DoubleInjection.new(subject, method_name.to_sym).bind
+      end
+    end
 
-      double_injection = DoubleInjection.new(subject, method_name.to_sym)
-      @double_injections[subject][method_name.to_sym] = double_injection
-      double_injection.bind
-      double_injection
+    def double_injection_exists?(subject, method_name)
+      !!@double_injections[subject][method_name.to_sym]
     end
 
     # Registers the ordered Double to be verified.

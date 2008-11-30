@@ -7,6 +7,7 @@ end
 
 describe RR::SpyVerification do
   attr_reader :subject, :recorded_calls
+  it_should_behave_like "Swapped Space"
   before(:each) do
     @subject = Object.new
     extend RR::Adapters::RRMethods
@@ -24,7 +25,7 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             lambda do
               received(subject).foobar(1, 2).call
-            end.should raise_error(RR::Errors::SpyVerificationError)
+            end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
           end
         end
       end
@@ -37,7 +38,7 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             lambda do
               received(subject).foobar(1, 2).once.call
-            end.should raise_error(RR::Errors::SpyVerificationError)
+            end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
           end
         end
 
@@ -46,7 +47,7 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             lambda do
               received(subject).foobar(1, 2).at_least(2).call
-            end.should raise_error(RR::Errors::SpyVerificationError)
+            end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
             subject.foobar(1, 2)
             received(subject).foobar(1, 2).at_least(2).call
             subject.foobar(1, 2)
@@ -59,13 +60,13 @@ describe RR::SpyVerification do
     context "when a subject is expected to receive a method with wildcard arguments" do
       context "when the number of times the subject received a method is not specified" do
         context "when there is a wildcard match one time" do
-          it "does not raise an error" do
+          it "verifies that the method with arguments was called once" do
             subject.foobar(1, 2)
             received(subject).foobar(1, is_a(Fixnum)).call
             subject.foobar(1, 2)
             lambda do
               received(subject).foobar(1, is_a(Fixnum)).call
-            end.should raise_error(RR::Errors::SpyVerificationError)
+            end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
           end
         end
       end
@@ -78,7 +79,7 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             lambda do
               received(subject).foobar(1, is_a(Fixnum)).once.call
-            end.should raise_error(RR::Errors::SpyVerificationError)
+            end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
           end
         end
 
@@ -87,7 +88,7 @@ describe RR::SpyVerification do
             subject.foobar(1, is_a(Fixnum))
             lambda do
               received(subject).foobar(1, is_a(Fixnum)).at_least(2).call
-            end.should raise_error(RR::Errors::SpyVerificationError)
+            end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
             subject.foobar(1, 2)
             received(subject).foobar(1, is_a(Fixnum)).at_least(2).call
             subject.foobar(1, 2)
@@ -104,7 +105,7 @@ describe RR::SpyVerification do
         lambda do
           received(subject).foobar(1, 2).ordered.call
           received(subject).foobar(3, 4).ordered.call
-        end.should raise_error(RR::Errors::SpyVerificationError)
+        end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
       end
 
       it "when the order is correct; does not raise an error" do
@@ -113,6 +114,15 @@ describe RR::SpyVerification do
         subject.foobar(3, 4)
         received(subject).foobar(1, 2).ordered.call
         received(subject).foobar(3, 4).ordered.call
+      end
+    end
+
+    context "when the subject is expected where there is not DoubleInjection" do
+      it "raises a DoubleInjectionNotFoundError" do
+        space.double_injection_exists?(subject, :method_that_does_not_exist).should be_false
+        lambda do
+          received(subject).method_that_does_not_exist.call
+        end.should raise_error(RR::Errors::SpyVerificationErrors::DoubleInjectionNotFoundError)
       end
     end
   end

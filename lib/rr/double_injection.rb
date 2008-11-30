@@ -39,6 +39,7 @@ module RR
         end
       METHOD
       meta.class_eval(returns_method, __FILE__, __LINE__ - 5)
+      self
     end
 
     # RR::DoubleInjection#verify verifies each Double
