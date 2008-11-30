@@ -105,7 +105,7 @@ describe RR::SpyVerification do
         lambda do
           received(subject).foobar(1, 2).ordered.call
           received(subject).foobar(3, 4).ordered.call
-        end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
+        end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
       end
 
       it "when the order is correct; does not raise an error" do

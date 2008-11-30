@@ -58,7 +58,7 @@ module RR
       end
       (0..memoized_matching_recorded_calls.size).to_a.any? do |i|
         spy_verification.times_matcher.matches?(i)
-      end ? nil : RR::Errors::SpyVerificationErrors::SpyVerificationError
+      end ? nil : invocation_count_error(spy_verification, memoized_matching_recorded_calls)
     end
 
     def unordered_match_error(spy_verification)
@@ -66,16 +66,9 @@ module RR
       
       spy_verification.times_matcher.matches?(
         memoized_matching_recorded_calls.size
-      ) ? nil : RR::Errors::SpyVerificationErrors::InvocationCountError.new(
-        "On subject #{spy_verification.subject.inspect}\n" <<
-        "Expected #{Double.formatted_name(spy_verification.method_name, spy_verification.argument_expectation.expected_arguments)}\n" <<
-        "to be called #{spy_verification.times_matcher.expected_times_message},\n" <<
-        "but was called #{memoized_matching_recorded_calls.size} times.\n" <<
-        "All of the method calls related to Doubles are:\n" <<
-        "\t#{recorded_calls.map {|call| call.inspect}.join("\n\t")}"
-      )
+      ) ? nil : invocation_count_error(spy_verification, memoized_matching_recorded_calls)
     end
-    
+
     def matching_recorded_calls(spy_verification)
       recorded_calls[ordered_index..-1].
         select(&match_double_injection(spy_verification)).
@@ -94,6 +87,17 @@ module RR
         spy_verification.argument_expectation.exact_match?(*recorded_call[2]) ||
         spy_verification.argument_expectation.wildcard_match?(*recorded_call[2])
       end
+    end
+
+    def invocation_count_error(spy_verification, matching_recorded_calls)
+      RR::Errors::SpyVerificationErrors::InvocationCountError.new(
+        "On subject #{spy_verification.subject.inspect}\n" <<
+        "Expected #{Double.formatted_name(spy_verification.method_name, spy_verification.argument_expectation.expected_arguments)}\n" <<
+        "to be called #{spy_verification.times_matcher.expected_times_message},\n" <<
+        "but was called #{matching_recorded_calls.size} times.\n" <<
+        "All of the method calls related to Doubles are:\n" <<
+        "\t#{recorded_calls.map {|call| call.inspect}.join("\n\t")}"
+      )
     end
   end
 end
