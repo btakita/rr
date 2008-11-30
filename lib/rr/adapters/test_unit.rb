@@ -20,6 +20,10 @@ module RR
           alias_method :teardown, :teardown_with_rr
         end
       end
+
+      def assert_received(subject, &block)
+        block.call(SpyVerificationProxy.new(subject)).call
+      end
     end
   end
 end

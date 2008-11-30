@@ -26,6 +26,12 @@ module RR
     def call
       (error = RR.recorded_calls.match_error(self)) && raise(error)
     end
+
+    def to_proc
+      lambda do
+        call
+      end
+    end
   
   protected
     attr_writer :times_matcher

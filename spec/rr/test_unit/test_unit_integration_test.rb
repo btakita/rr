@@ -44,4 +44,14 @@ class TestUnitIntegrationTest < Test::Unit::TestCase
       teardown
     end
   end
+
+  def test_using_assert_received
+    stub(@subject).foobar(1, 2)
+    @subject.foobar(1, 2)
+    assert_received(@subject) {|subject| subject.foobar(1, 2)} 
+
+    assert_raise(RR::Errors::SpyVerificationErrors::InvocationCountError) do
+      assert_received(@subject) {|subject| subject.foobar(1, 2, 3)}
+    end
+  end
 end
