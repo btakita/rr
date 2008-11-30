@@ -1,5 +1,7 @@
 module RR
   class RecordedCalls
+    include RR::Space::Reader
+
     def initialize(recorded_calls=[])
       @recorded_calls = recorded_calls
       @ordered_index = 0
@@ -25,15 +27,23 @@ module RR
     end
   
     def match_error(spy_verification)
-      if spy_verification.ordered?
-        ordered_match_error(spy_verification)
-      else
-        unordered_match_error(spy_verification)
+      double_injection_exists_error(spy_verification) || begin
+        if spy_verification.ordered?
+          ordered_match_error(spy_verification)
+        else
+          unordered_match_error(spy_verification)
+        end
       end
     end
   
   protected
     attr_accessor :ordered_index
+
+    def double_injection_exists_error(spy_verification)
+      unless space.double_injection_exists?(spy_verification.subject, spy_verification.method_name)
+        RR::Errors::SpyVerificationErrors::DoubleInjectionNotFoundError
+      end
+    end    
 
 #   def check_doubles!
 #     assert!(!double_injection.doubles.empty?,
@@ -56,15 +66,15 @@ module RR
       if memoized_matching_recorded_calls.last
         self.ordered_index = recorded_calls.index(memoized_matching_recorded_calls.last)
       end
-      (0..memoized_matching_recorded_calls.size).to_a.all? do |i|
-        !spy_verification.times_matcher.matches?(i)
-      end
+      (0..memoized_matching_recorded_calls.size).to_a.any? do |i|
+        spy_verification.times_matcher.matches?(i)
+      end ? nil : RR::Errors::SpyVerificationErrors::SpyVerificationError
     end
 
     def unordered_match_error(spy_verification)
-      !spy_verification.times_matcher.matches?(
+      spy_verification.times_matcher.matches?(
         matching_recorded_calls(spy_verification).size
-      )
+      ) ? nil : RR::Errors::SpyVerificationErrors::SpyVerificationError
     end
     
     def matching_recorded_calls(spy_verification)

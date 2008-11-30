@@ -265,7 +265,7 @@ describe "RR" do
       stub(subject).pig_rabbit
       lambda do
         received(subject).pig_rabbit("bacon", "bunny meat").call
-      end.should raise_error(RR::Errors::SpyVerificationError)
+      end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
     end
   end
   
