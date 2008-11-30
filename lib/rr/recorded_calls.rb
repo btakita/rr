@@ -76,7 +76,14 @@ module RR
       
       spy_verification.times_matcher.matches?(
         memoized_matching_recorded_calls.size
-      ) ? nil : RR::Errors::SpyVerificationErrors::SpyVerificationError
+      ) ? nil : RR::Errors::SpyVerificationErrors::InvocationCountError.new(
+        "On subject #{spy_verification.subject.inspect}\n" <<
+        "Expected #{Double.formatted_name(spy_verification.method_name, spy_verification.argument_expectation.expected_arguments)}\n" <<
+        "to be called #{spy_verification.times_matcher.expected_times_message},\n" <<
+        "but was called #{memoized_matching_recorded_calls.size} times.\n" <<
+        "All of the method calls related to Doubles are:\n" <<
+        "\t#{recorded_calls.map {|call| call.inspect}.join("\n\t")}"
+      )
     end
     
     def matching_recorded_calls(spy_verification)

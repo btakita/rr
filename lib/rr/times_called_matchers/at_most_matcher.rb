@@ -15,9 +15,8 @@ module RR
         times_called < @times
       end
 
-      protected
-      def expected_message_part
-        "Expected at most #{@times.inspect} times."
+      def expected_times_message
+        "at most #{@times.inspect} times"
       end
     end
   end

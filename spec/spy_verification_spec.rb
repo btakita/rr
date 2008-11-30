@@ -25,7 +25,7 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             lambda do
               received(subject).foobar(1, 2).call
-            end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
+            end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
           end
         end
       end
@@ -38,7 +38,7 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             lambda do
               received(subject).foobar(1, 2).once.call
-            end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
+            end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
           end
         end
 
@@ -47,7 +47,7 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             lambda do
               received(subject).foobar(1, 2).at_least(2).call
-            end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
+            end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
             subject.foobar(1, 2)
             received(subject).foobar(1, 2).at_least(2).call
             subject.foobar(1, 2)
@@ -66,7 +66,7 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             lambda do
               received(subject).foobar(1, is_a(Fixnum)).call
-            end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
+            end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
           end
         end
       end
@@ -79,7 +79,7 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             lambda do
               received(subject).foobar(1, is_a(Fixnum)).once.call
-            end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
+            end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
           end
         end
 
@@ -88,7 +88,7 @@ describe RR::SpyVerification do
             subject.foobar(1, is_a(Fixnum))
             lambda do
               received(subject).foobar(1, is_a(Fixnum)).at_least(2).call
-            end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
+            end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
             subject.foobar(1, 2)
             received(subject).foobar(1, is_a(Fixnum)).at_least(2).call
             subject.foobar(1, 2)

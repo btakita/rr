@@ -10,9 +10,8 @@ module RR
         true
       end
 
-      protected
-      def expected_message_part
-        "Expected any number of times."
+      def expected_times_message
+        "any number of times"
       end
     end
   end

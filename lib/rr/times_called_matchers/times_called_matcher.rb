@@ -24,18 +24,18 @@ module RR
       end
 
       def error_message(times_called)
-        "Called #{times_called.inspect} #{pluralized_time(times_called)}.\n#{expected_message_part}"
+        "Called #{times_called.inspect} #{pluralized_time(times_called)}.\nExpected #{expected_times_message}."
       end
 
       def ==(other)
         self.class == other.class && self.times == other.times
       end
 
-      protected
-      def expected_message_part
-        "Expected #{@times.inspect} times."
+      def expected_times_message
+        "#{@times.inspect} times"
       end
 
+      protected
       def pluralized_time(times_called)
         (times_called == 1) ? "time" : "times"
       end

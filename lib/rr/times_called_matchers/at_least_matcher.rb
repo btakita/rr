@@ -7,9 +7,8 @@ module RR
         times_called >= @times
       end
 
-      protected
-      def expected_message_part
-        "Expected at least #{@times.inspect} times."
+      def expected_times_message
+        "at least #{@times.inspect} times"
       end
     end
   end
