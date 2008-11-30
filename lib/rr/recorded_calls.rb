@@ -41,15 +41,15 @@ module RR
 
     def double_injection_exists_error(spy_verification)
       unless space.double_injection_exists?(spy_verification.subject, spy_verification.method_name)
-        RR::Errors::SpyVerificationErrors::DoubleInjectionNotFoundError
+        RR::Errors::SpyVerificationErrors::DoubleInjectionNotFoundError.new(
+          "A Double Injection for the subject and method call:\n" <<
+          "#{spy_verification.subject.inspect}\n" <<
+          "#{spy_verification.method_name}\ndoes not exist in:\n" <<
+          "\t#{recorded_calls.map {|call| call.inspect}.join("\n\t")}"
+        )
       end
     end    
 
-#   def check_doubles!
-#     assert!(!double_injection.doubles.empty?,
-#             "No doubles...did you forget to set an expectation or stub?")
-#   end
-#
 #   def find_invocation!
 #     @invocation = double_injection.invocation(@args_expectation)
 #     assert!(!@invocation.nil?, "Expected #{invocation_string} but never received it")
@@ -72,8 +72,10 @@ module RR
     end
 
     def unordered_match_error(spy_verification)
+      memoized_matching_recorded_calls = matching_recorded_calls(spy_verification)
+      
       spy_verification.times_matcher.matches?(
-        matching_recorded_calls(spy_verification).size
+        memoized_matching_recorded_calls.size
       ) ? nil : RR::Errors::SpyVerificationErrors::SpyVerificationError
     end
     

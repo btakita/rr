@@ -24,9 +24,7 @@ module RR
     end
 
     def call
-      if error = RR.recorded_calls.match_error(self)
-        raise error
-      end
+      (error = RR.recorded_calls.match_error(self)) && raise(error)
     end
   
   protected
