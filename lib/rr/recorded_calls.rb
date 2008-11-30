@@ -50,16 +50,6 @@ module RR
       end
     end    
 
-#   def find_invocation!
-#     @invocation = double_injection.invocation(@args_expectation)
-#     assert!(!@invocation.nil?, "Expected #{invocation_string} but never received it")
-#   end
-#
-#   def check_invocation_count!
-#     assert!(@invocation.called?(@times_matcher),
-#             "#{invocation_string} #{times_error_message}")
-#   end
-
     def ordered_match_error(spy_verification)
       memoized_matching_recorded_calls = matching_recorded_calls(spy_verification)
 

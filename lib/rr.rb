@@ -12,7 +12,6 @@ require "#{dir}/rr/errors/times_called_error"
 require "#{dir}/rr/errors/spy_verification_errors/spy_verification_error"
 require "#{dir}/rr/errors/spy_verification_errors/double_injection_not_found_error"
 require "#{dir}/rr/errors/spy_verification_errors/invocation_count_error"
-require "#{dir}/rr/errors/spy_verification_errors/invocation_not_found_error"
 
 require "#{dir}/rr/space"
 require "#{dir}/rr/double_injection"
