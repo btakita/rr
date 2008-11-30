@@ -29,9 +29,9 @@ describe RR::RecordedCalls do
       subject.something_else
       subject.to_s
       
-      verify_invocation received(subject).something
-      verify_invocation received(subject).something_else
-      verify_invocation received(subject).to_s
+      received(subject).something.call
+      received(subject).something_else.call
+      received(subject).to_s.call
     end
   end
   
@@ -39,30 +39,30 @@ describe RR::RecordedCalls do
   it "should be able to verify calls to methods defined on Object" do
     stub(subject).to_s
     subject.to_s
-    verify_invocation received(subject).to_s
+    received(subject).to_s.call
   end
 
   it "should be able to call methods used by rr" do
     stub(subject).times
     subject.times
-    verify_invocation received(subject).times
+    received(subject).times.call
   end
   
   it "should verify method calls after the fact" do
     stub(subject).pig_rabbit
     subject.pig_rabbit("bacon", "bunny meat")
     #subject.should have_received.pig_rabitt("bacon", "bunny meat")
-    verify_invocation received(subject).pig_rabbit("bacon", "bunny meat")
+    received(subject).pig_rabbit("bacon", "bunny meat").call
   end
   
   it "should match when there is an exact match" do
     subject.foobar(1,2)
-    verify_invocation received(subject).foobar(1,2)
+    received(subject).foobar(1,2).call
   end
 
   it "should match when there is an exact match with a times matcher" do
     subject.foobar(1,2)
-    verify_invocation received(subject).foobar(1,2).once
+    received(subject).foobar(1,2).once.call
     subject.foobar(1,2)
   end
 
@@ -70,13 +70,13 @@ describe RR::RecordedCalls do
     subject.foobar(1,2)
     subject.foobar(1,2)
     subject.foobar(1,2)
-    verify_invocation received(subject).foobar(1,2).at_least(2)
+    received(subject).foobar(1,2).at_least(2).call
   end
 
   it "should raise an error when the number of times doesn't match" do
     subject.foobar(1,2)
     lambda do
-      verify_invocation received(subject).foobar(1,2).twice
+      received(subject).foobar(1,2).twice.call
     end.should raise_error(RR::Errors::SpyVerificationError)    
   end
   
@@ -84,8 +84,8 @@ describe RR::RecordedCalls do
     subject.foobar(3,4)
     subject.foobar(1,2)
     lambda do
-      verify_invocation received(subject).foobar(1,2).ordered
-      verify_invocation received(subject).foobar(3,4).ordered
+      received(subject).foobar(1,2).ordered.call
+      received(subject).foobar(3,4).ordered.call
     end.should raise_error(RR::Errors::SpyVerificationError)
   end
   
@@ -93,20 +93,20 @@ describe RR::RecordedCalls do
     subject.foobar(1,2)
     subject.foobar(1,2)
     subject.foobar(3,4)
-    verify_invocation received(subject).foobar(1,2).ordered
-    verify_invocation received(subject).foobar(3,4).ordered
+    received(subject).foobar(1,2).ordered.call
+    received(subject).foobar(3,4).ordered.call
   end
 
   it "should match when there is an wildcard match" do
     subject.foobar(1,2)
-    verify_invocation received(subject).foobar(1,is_a(Fixnum))
+    received(subject).foobar(1,is_a(Fixnum)).call
   end
   
   it "should not match when there is neither an exact nor wildcard match" do
     subject.foobar(1,2)
-    verify_invocation received(subject).foobar(1,is_a(Fixnum))
+    received(subject).foobar(1,is_a(Fixnum)).call
     lambda do
-      verify_invocation received(subject).foobar(1,is_a(String))
+      received(subject).foobar(1,is_a(String)).call
     end.should raise_error(RR::Errors::SpyVerificationError)
   end
   
@@ -114,7 +114,7 @@ describe RR::RecordedCalls do
     subject.foobar(1,2)
     @wrong_subject = Object.new
     lambda do
-      verify_invocation received(@wrong_subject).foobar(1,2).once
+      received(@wrong_subject).foobar(1,2).once.call
     end.should raise_error(RR::Errors::SpyVerificationError)    
   end
 end

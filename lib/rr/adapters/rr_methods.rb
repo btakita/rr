@@ -111,11 +111,6 @@ module RR
         RR::SpyVerificationProxy.new(subject)
       end
       
-      def verify_invocation(spy_verification)
-        match_found = !RR.recorded_calls.match_error(spy_verification)
-        raise RR::Errors::SpyVerificationError.new unless match_found
-      end
-
       def have_received(method = nil)
         InvocationMatcher.new(method)
       end

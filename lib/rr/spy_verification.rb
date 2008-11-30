@@ -22,6 +22,12 @@ module RR
     def ordered?
       @ordered
     end
+
+    def call
+      if RR.recorded_calls.match_error(self)
+        raise raise RR::Errors::SpyVerificationError.new
+      end
+    end
   
   protected
     attr_writer :times_matcher
