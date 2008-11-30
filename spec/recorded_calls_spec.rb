@@ -5,116 +5,115 @@ class Alpha
   end
 end
 
-describe RR::RecordedCalls do
+describe RR::SpyVerification do
   attr_reader :subject, :recorded_calls
   before(:each) do
     @subject = Object.new
     extend RR::Adapters::RRMethods
     stub(subject).foobar
-    @recorded_calls = RR::RecordedCalls.new([[subject,:foobar,[1,2],nil]])
+    @recorded_calls = RR::RecordedCalls.new([[subject, :foobar, [1, 2], nil]])
   end
-  
-  describe "spy" do
-    it "should record all method invocations" do
-      subject = Object.new
-      def subject.something
+
+  describe "#call" do
+    context "when a subject is expected to receive a method with exact arguments" do
+      context "when the number of times the subject received a method is not specified" do
+        context "when there is an exact match one time" do
+          it "verifies that the method with arguments was called once" do
+            subject.foobar(1, 2)
+            received(subject).foobar(1, 2).call
+            subject.foobar(1, 2)
+            lambda do
+              received(subject).foobar(1, 2).call
+            end.should raise_error(RR::Errors::SpyVerificationError)
+          end
+        end
       end
-      
-      def subject.something_else
+
+      context "when the number of times the subject received a method is specified" do
+        context "as one time" do
+          it "verifies that the method with arugments was called once" do
+            subject.foobar(1, 2)
+            received(subject).foobar(1, 2).once.call
+            subject.foobar(1, 2)
+            lambda do
+              received(subject).foobar(1, 2).once.call
+            end.should raise_error(RR::Errors::SpyVerificationError)
+          end
+        end
+
+        context "as an at least matcher" do
+          it "verifies that the method with arugments was called at least the specified number of times" do
+            subject.foobar(1, 2)
+            lambda do
+              received(subject).foobar(1, 2).at_least(2).call
+            end.should raise_error(RR::Errors::SpyVerificationError)
+            subject.foobar(1, 2)
+            received(subject).foobar(1, 2).at_least(2).call
+            subject.foobar(1, 2)
+            received(subject).foobar(1, 2).at_least(2).call
+          end
+        end
       end
-        
-      spy(subject)
-      
-      subject.something
-      subject.something_else
-      subject.to_s
-      
-      received(subject).something.call
-      received(subject).something_else.call
-      received(subject).to_s.call
     end
-  end
-  
-    
-  it "should be able to verify calls to methods defined on Object" do
-    stub(subject).to_s
-    subject.to_s
-    received(subject).to_s.call
-  end
 
-  it "should be able to call methods used by rr" do
-    stub(subject).times
-    subject.times
-    received(subject).times.call
-  end
-  
-  it "should verify method calls after the fact" do
-    stub(subject).pig_rabbit
-    subject.pig_rabbit("bacon", "bunny meat")
-    #subject.should have_received.pig_rabitt("bacon", "bunny meat")
-    received(subject).pig_rabbit("bacon", "bunny meat").call
-  end
-  
-  it "should match when there is an exact match" do
-    subject.foobar(1,2)
-    received(subject).foobar(1,2).call
-  end
+    context "when a subject is expected to receive a method with wildcard arguments" do
+      context "when the number of times the subject received a method is not specified" do
+        context "when there is a wildcard match one time" do
+          it "does not raise an error" do
+            subject.foobar(1, 2)
+            received(subject).foobar(1, is_a(Fixnum)).call
+            subject.foobar(1, 2)
+            lambda do
+              received(subject).foobar(1, is_a(Fixnum)).call
+            end.should raise_error(RR::Errors::SpyVerificationError)
+          end
+        end
+      end
 
-  it "should match when there is an exact match with a times matcher" do
-    subject.foobar(1,2)
-    received(subject).foobar(1,2).once.call
-    subject.foobar(1,2)
-  end
+      context "when the number of times the subject received a method is specified" do
+        context "as one time" do
+          it "verifies that the method with arugments was called once" do
+            subject.foobar(1, 2)
+            received(subject).foobar(1, is_a(Fixnum)).once.call
+            subject.foobar(1, 2)
+            lambda do
+              received(subject).foobar(1, is_a(Fixnum)).once.call
+            end.should raise_error(RR::Errors::SpyVerificationError)
+          end
+        end
 
-  it "should match when there is an at least matcher" do
-    subject.foobar(1,2)
-    subject.foobar(1,2)
-    subject.foobar(1,2)
-    received(subject).foobar(1,2).at_least(2).call
-  end
+        context "as an at least matcher" do
+          it "verifies that the method with arugments was called at least the specified number of times" do
+            subject.foobar(1, is_a(Fixnum))
+            lambda do
+              received(subject).foobar(1, is_a(Fixnum)).at_least(2).call
+            end.should raise_error(RR::Errors::SpyVerificationError)
+            subject.foobar(1, 2)
+            received(subject).foobar(1, is_a(Fixnum)).at_least(2).call
+            subject.foobar(1, 2)
+            received(subject).foobar(1, is_a(Fixnum)).at_least(2).call
+          end
+        end
+      end
+    end
 
-  it "should raise an error when the number of times doesn't match" do
-    subject.foobar(1,2)
-    lambda do
-      received(subject).foobar(1,2).twice.call
-    end.should raise_error(RR::Errors::SpyVerificationError)    
-  end
-  
-  it "should raise an error when the order is incorrect" do
-    subject.foobar(3,4)
-    subject.foobar(1,2)
-    lambda do
-      received(subject).foobar(1,2).ordered.call
-      received(subject).foobar(3,4).ordered.call
-    end.should raise_error(RR::Errors::SpyVerificationError)
-  end
-  
-  it "should not raise an error when the order is correct" do
-    subject.foobar(1,2)
-    subject.foobar(1,2)
-    subject.foobar(3,4)
-    received(subject).foobar(1,2).ordered.call
-    received(subject).foobar(3,4).ordered.call
-  end
+    context "when checking for ordering" do
+      it "when the order is incorrect; raises an error" do
+        subject.foobar(3, 4)
+        subject.foobar(1, 2)
+        lambda do
+          received(subject).foobar(1, 2).ordered.call
+          received(subject).foobar(3, 4).ordered.call
+        end.should raise_error(RR::Errors::SpyVerificationError)
+      end
 
-  it "should match when there is an wildcard match" do
-    subject.foobar(1,2)
-    received(subject).foobar(1,is_a(Fixnum)).call
-  end
-  
-  it "should not match when there is neither an exact nor wildcard match" do
-    subject.foobar(1,2)
-    received(subject).foobar(1,is_a(Fixnum)).call
-    lambda do
-      received(subject).foobar(1,is_a(String)).call
-    end.should raise_error(RR::Errors::SpyVerificationError)
-  end
-  
-  it "should raise an error when the subject doesn't match" do
-    subject.foobar(1,2)
-    @wrong_subject = Object.new
-    lambda do
-      received(@wrong_subject).foobar(1,2).once.call
-    end.should raise_error(RR::Errors::SpyVerificationError)    
+      it "when the order is correct; does not raise an error" do
+        subject.foobar(1, 2)
+        subject.foobar(1, 2)
+        subject.foobar(3, 4)
+        received(subject).foobar(1, 2).ordered.call
+        received(subject).foobar(3, 4).ordered.call
+      end
+    end
   end
 end

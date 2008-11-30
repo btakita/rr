@@ -345,6 +345,24 @@ describe "RR" do
     end
   end
 
-  describe "spies" do
+  describe "spy" do
+    it "should record all method invocations" do
+      subject = Object.new
+      def subject.something
+      end
+
+      def subject.something_else
+      end
+
+      spy(subject)
+
+      subject.something
+      subject.something_else
+      subject.to_s
+
+      received(subject).something.call
+      received(subject).something_else.call
+      received(subject).to_s.call
+    end
   end
 end
