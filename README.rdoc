@@ -23,8 +23,7 @@ double for tests. The following are test doubles:
 * Proxies
 http://xunitpatterns.com/Test%20Double.html
 
-Currently RR implements mocks, stubs, and proxies. In the future, RR will
-support spies.
+Currently RR implements mocks, stubs, proxies, and spies. Fakes usually require custom code, so it is beyond the scope of RR.
 
 == Using RR
 === test/unit
