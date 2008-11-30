@@ -22,7 +22,7 @@ module RR
       end
 
       def assert_received(subject, &block)
-        block.call(SpyVerificationProxy.new(subject)).call
+        block.call(received(subject)).call
       end
     end
   end
