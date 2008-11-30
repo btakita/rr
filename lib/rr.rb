@@ -61,12 +61,11 @@ require "#{dir}/rr/times_called_matchers/proc_matcher"
 require "#{dir}/rr/times_called_matchers/at_least_matcher"
 require "#{dir}/rr/times_called_matchers/at_most_matcher"
 
-require "#{dir}/rr/adapters/rspec"
-require "#{dir}/rr/adapters/test_unit"
-
 require "#{dir}/rr/spy_verification_proxy"
 require "#{dir}/rr/spy_verification"
-require "#{dir}/rr/invocation_matcher"
+
+require "#{dir}/rr/adapters/rspec"
+require "#{dir}/rr/adapters/test_unit"
 
 module RR
   class << self
