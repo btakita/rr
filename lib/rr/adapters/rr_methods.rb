@@ -107,7 +107,7 @@ module RR
         end
       end
 
-      def of_spy(subject)
+      def received(subject)
         RR::SpyVerificationProxy.new(subject)
       end
       
