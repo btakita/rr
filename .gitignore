@@ -1,6 +1,7 @@
 *.iml
 *.ipr
 *.iws
+*.swp
 .idea
 previous_failures.txt
 pkg

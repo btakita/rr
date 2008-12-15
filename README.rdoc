@@ -201,6 +201,27 @@ Put double scenarios on instances of a Class.
 
   mock.instance_of(User).valid? {false}
 
+=== Spies
+
+Adding a DoubleInjection to an Object + Method (done by stub, mock, or dont_allow) causes RR to record any method
+invocations to the Object + method. Assertions can then be made on the recorded method calls.
+
+==== test/unit
+
+  subject = Object.new
+  stub(subject).foo
+  subject.foo(1)
+  assert_received(subject) {|subject| subject.foo(1)}
+  assert_received(subject) {|subject| subject.bar} # This fails
+
+==== rspec
+
+  subject = Object.new
+  stub(subject).foo
+  subject.foo(1)
+  subject.should have_received.foo(1)
+  subject.should have_received.bar # this fails
+
 === Block Syntax
 The block syntax has two modes
 * A normal block mode with a DoubleDefinitionCreatorProxy argument
