@@ -19,7 +19,7 @@ end
 #
 ##RR.mock(o).foobar.returns("baz")
 ##o.foobar
-#5.times do
+#10.times do
 #  RR.mock(o).foobar.returns("baz")
 #  o.foobar
 #  RR.reset
