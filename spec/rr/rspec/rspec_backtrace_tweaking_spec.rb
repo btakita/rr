@@ -19,34 +19,11 @@ module RR
         end
       end
 
-      describe " backtrace tweaking" do
-        attr_reader :original_rspec_options, :error, :output
-        before do
-          @original_rspec_options = Spec::Runner.options
-          @error = StringIO.new("")
-          @output = StringIO.new("")
-          Spec::Runner.use(::Spec::Runner::Options.new(error, output))
-        end
-
-        after do
-          Spec::Runner.use(original_rspec_options)
-        end
-
+      describe "backtrace tweaking" do
         it "hides rr library from the backtrace by default" do
-          subject = @subject
-          example_group = Class.new(::Spec::Example::ExampleGroup) do
-            describe "Example"
-
-            it("hides RR framework in backtrace") do
-              mock(subject).foobar()
-              RR.verify_double(subject, :foobar)
-            end
-          end
-
-          Spec::Runner.options.run_examples
-
-          output.string.should_not be_empty
-          output.string.should_not include("lib/rr")
+          dir = File.dirname(__FILE__)
+          output = `ruby #{dir}/rspec_backtrace_tweaking_spec_fixture.rb`
+          output.should_not include("lib/rr")
         end
       end
     end

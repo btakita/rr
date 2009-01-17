@@ -1,6 +1,6 @@
 module RR
   module Errors
-    BACKTRACE_IDENTIFIER = /lib\/rr/
+    BACKTRACE_IDENTIFIER = Regexp.new("/lib/rr")
 
     class RRError < RuntimeError
       attr_writer :backtrace
