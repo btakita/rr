@@ -1,6 +1,17 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinitionCreatorProxy
+      class << self
+        def blank_slate_methods
+          instance_methods.each do |m|
+            unless m =~ /^_/ || m.to_s == 'object_id' || m.to_s == "instance_eval" || m.to_s == 'respond_to?'
+              alias_method "__blank_slated_#{m}", m
+              undef_method m
+            end
+          end
+        end
+      end
+
       def initialize(creator, &block) #:nodoc:
         @creator = creator
         class << self
@@ -12,12 +23,7 @@ module RR
             @apply_blank_slate ||= false
           end
 
-          instance_methods.each do |m|
-            unless m =~ /^_/ || m.to_s == 'object_id' || m.to_s == "instance_eval" || m.to_s == 'respond_to?'
-              alias_method "__blank_slated_#{m}", m
-              undef_method m
-            end
-          end
+          blank_slate_methods
 
           def instance_eval
             return_value = super
