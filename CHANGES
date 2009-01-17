@@ -1,3 +1,5 @@
+- Performance improvements
+
 * 0.7.0
 - Added spies (Patchs by Joe Ferris, Michael Niessner & Mike Mangino)
 - Added strongly typed reimplementation doubles (Patch by Michael Niessner)
