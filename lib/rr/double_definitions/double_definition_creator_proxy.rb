@@ -14,6 +14,8 @@ module RR
 
       def initialize(creator, &block) #:nodoc:
         @creator = creator
+        respond_to?(:class) ? self.class.blank_slate_methods : __blank_slated_class.blank_slate_methods
+
         class << self
           def __apply_blank_slate
             @apply_blank_slate = true
@@ -22,8 +24,6 @@ module RR
           def __apply_blank_slate?
             @apply_blank_slate ||= false
           end
-
-          blank_slate_methods
 
           def instance_eval
             return_value = super
