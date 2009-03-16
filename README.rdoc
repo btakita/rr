@@ -301,6 +301,10 @@ In RR, you would do:
   mock(object).foobar(satisfy {|arg| arg.length == 2})
   object.foobar("xy")
 
+==== Writing your own Argument Matchers
+Writing a custom argument wildcard matcher is not difficult.  See
+RR::WildcardMatchers for details.
+
 === Invocation Amount Wildcard Matchers
 ==== any_times
   mock(object).method_name(anything).times(any_times) {return_value}
