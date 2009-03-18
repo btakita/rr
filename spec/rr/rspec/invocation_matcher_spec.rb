@@ -253,6 +253,26 @@ module RR
             @result.should be
           end
         end
+
+        describe "that does not match" do
+          before do
+            @error = Object.new
+            @message = 'Verification error message'
+            stub(RR::Space.instance.recorded_calls).match_error { @error }
+            stub(@error).message { @message }
+
+            @matcher = InvocationMatcher.new(:foobar)
+            @result = @matcher.matches?(Object.new)
+          end
+
+          it "returns false when matching" do
+            @result.should_not be
+          end
+
+          it "returns a failure messsage" do
+            @matcher.failure_message.should == @message
+          end
+        end
       end
     end
   end
