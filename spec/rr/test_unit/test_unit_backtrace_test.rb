@@ -15,6 +15,7 @@ class TestUnitBacktraceTest < Test::Unit::TestCase
   end
 
   def test_backtrace_tweaking
+    skip "Skipped, because there is no Test::Unit::TestResult in this Test::Unit. Don't worry, this is totally fine." unless defined?(Test::Unit::TestResult)
     old_result = @_result
     result = Test::Unit::TestResult.new
 
