@@ -252,7 +252,7 @@ module RR
           if implementation
             implemented_by implementation
           else
-            implemented_by lambda {value}
+            implemented_by proc {value}
           end
           self
         end
