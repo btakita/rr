@@ -34,17 +34,44 @@ module RR
       end
 
       context "when method does not exist on object" do
-        send("sets up object and method_name")
-
         before do
           @subject = Object.new
           @method_name = :foobar
           subject.methods.should_not include(method_name.to_s)
-          @double_injection = DoubleInjection.new(subject, method_name)
         end
 
-        it "object does not have original method" do
-          double_injection.object_has_original_method?.should be_false
+        context "and invoking the method for the first time does not add the method" do
+          before do
+            @double_injection = DoubleInjection.new(subject, method_name)
+          end
+          send("sets up object and method_name")
+
+          example "object does not have original method" do
+            double_injection.object_has_original_method?.should be_false
+          end
+        end
+
+
+        context "and invoking the method for the first time adds the method" do
+          before do
+            class << subject
+              def respond_to?(method_name)
+                true
+              end
+
+              def method_missing(method_name, *args, &block)
+                (class << self; self; end).class_eval do
+                  define_method(method_name) {}
+                end
+              end
+            end
+            @double_injection = DoubleInjection.new(subject, method_name)
+          end
+          send("sets up object and method_name")
+
+          example "object has original method" do
+            double_injection.object_has_original_method?.should be_true
+          end
         end
       end
 

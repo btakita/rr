@@ -14,8 +14,11 @@ module RR
         begin
           meta.__send__(:alias_method, original_method_name, method_name)
         rescue NameError => e
-          subject.send(method_name)
-          meta.__send__(:alias_method, original_method_name, method_name)
+          begin
+            subject.send(method_name)
+            meta.__send__(:alias_method, original_method_name, method_name)
+          rescue NameError => e
+          end
         end
       end
       @doubles = []

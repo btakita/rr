@@ -1,3 +1,5 @@
+- Fixed exception where the Subject uses method delegation via method_missing (e.g. certain ActiveRecord AssociationProxy methods)
+
 * 0.8.0
 - Fixed compatability issues with Ruby 1.9
 - Aliased any_number_of_times with any_times
