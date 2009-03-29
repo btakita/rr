@@ -160,6 +160,7 @@ module RR
           install_method_callback return_value_block
           self
         end
+        alias_method :any_times, :any_number_of_times
 
         # Double#times creates an TimesCalledExpectation of the passed
         # in number.
@@ -251,7 +252,7 @@ module RR
           if implementation
             implemented_by implementation
           else
-            implemented_by lambda {value}
+            implemented_by proc {value}
           end
           self
         end
