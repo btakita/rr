@@ -2,6 +2,7 @@
 *.ipr
 *.iws
 *.swp
+*.gem
 .idea
 previous_failures.txt
 pkg
