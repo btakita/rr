@@ -312,6 +312,7 @@ RR::WildcardMatchers for details.
 == Special Thanks To
 With any development effort, there are countless people who have contributed
 to making it possible. We all are standing on the shoulders of giants.
+* Andreas Haller for patches
 * Aslak Hellesoy for Developing Rspec
 * Dan North for syntax ideas
 * Dave Astels for some BDD inspiration
