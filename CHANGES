@@ -1,3 +1,4 @@
+* 0.8.0
 - Fixed compatability issues with Ruby 1.9
 - Aliased any_number_of_times with any_times
 - Better error messages for have_received and assert_received matchers (Patch by Joe Ferris)
