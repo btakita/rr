@@ -1,4 +1,5 @@
-- Better documentation on RR wilcard matchers
+- Better error messages for have_received and assert_received matchers (Patch by Joe Ferris)
+- Better documentation on RR wilcard matchers (Patch by Phil Arnowsky)
 
 * 0.7.1
 - Performance improvements
