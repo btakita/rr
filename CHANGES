@@ -1,3 +1,4 @@
+* 0.8.1
 - Fixed exception where the Subject uses method delegation via method_missing (e.g. certain ActiveRecord AssociationProxy methods)
 
 * 0.8.0
