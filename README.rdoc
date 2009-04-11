@@ -330,6 +330,6 @@ to making it possible. We all are standing on the shoulders of giants.
 * Nick Kallen for documentation suggestions, bug reports, and patches
 * Nathan Sobo for various ideas and inspiration for cleaner and more expressive code
 * Parker Thompson for pairing with me
-* Phil Arnowsky for patches
+* Phil Darnowsky for patches
 * Pivotal Labs for sponsoring RR development
 * Stephen Baker for Developing Rspec
