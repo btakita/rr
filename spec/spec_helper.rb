@@ -2,7 +2,7 @@ dir = File.dirname(__FILE__)
 require "#{dir}/environment_fixture_setup"
 require "#{dir}/rr/expectations/times_called_expectation/times_called_expectation_helper"
 require "#{dir}/rr/adapters/rr_methods_spec_helper"
-ARGV.push("--format", "nested") unless ARGV.include?("--options")
+ARGV.push("--format", "nested") unless ARGV.include?("--format")
 
 Spec::Runner.configure do |config|
   config.mock_with RR::Adapters::Rspec
