@@ -39,7 +39,7 @@ module RR
     end
 
     def double_injection_exists?(subject, method_name)
-      !!@double_injections[subject][method_name.to_sym]
+      @double_injections.include?(subject) && @double_injections[subject].include?(method_name.to_sym)
     end
 
     # Registers the ordered Double to be verified.

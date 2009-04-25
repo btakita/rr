@@ -32,7 +32,8 @@ module RR
 
         def matches?(subject)
           @verification.subject = subject
-          if error = RR::Space.instance.recorded_calls.match_error(@verification)
+          calls = RR::Space.instance.recorded_calls
+          if error = calls.match_error(@verification)
             @failure_message = error.message
             false
           else
