@@ -707,9 +707,10 @@ module RR
                 :new_return_value
               end
               passed_in_block_arg = nil
-              @return_value = subject.foobar(1, 2) do |arg|
+              @block = lambda do |arg|
                 passed_in_block_arg = arg
               end
+              @return_value = subject.foobar(1, 2, &@block)
               @passed_in_block_arg = passed_in_block_arg
 
               @args = actual_args
@@ -722,9 +723,14 @@ module RR
               describe "#subject.method_name being called" do
                 it "returns the return value of the block" do
                   @return_value.should == :new_return_value
+                end
+
+                it "passes an array of the args with the block appended as a ProcFromBlock around the original block" do
                   @args.length.should == 3
                   @args[0..1].should == [1, 2]
-                  @args[2].should be_instance_of(Proc)
+                  @args[2].should be_instance_of(ProcFromBlock)
+                  @block.should == Proc.new(&@block)
+                  @args[2].should == @block
                 end
               end
             end

@@ -1,3 +1,5 @@
+- instance_of Doubles now apply to methods invoked in the subject's #initialize method.
+
 * 0.8.1
 - Fixed exception where the Subject uses method delegation via method_missing (e.g. certain ActiveRecord AssociationProxy methods)
 

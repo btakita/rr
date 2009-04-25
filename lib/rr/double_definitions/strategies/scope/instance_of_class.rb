@@ -26,18 +26,22 @@ module RR
 
           protected
           def do_call
-            class_handler = lambda do |return_value|
-              #####
-              double_injection = space.double_injection(return_value, method_name)
-              Double.new(double_injection, definition)
-              #####
-              return_value
-            end
-
             instance_of_subject_creator = DoubleDefinitionCreator.new
             instance_of_subject_creator.strong if definition.verify_method_signature?
-            instance_of_subject_creator.stub.proxy(subject)
-            instance_of_subject_creator.create(:new, &class_handler)
+            instance_of_subject_creator.stub(subject)
+            instance_of_subject_creator.create(:new) do |*args|
+              #####
+              instance = subject.allocate
+              double_injection = space.double_injection(instance, method_name)
+              Double.new(double_injection, definition)
+              #####
+              if args.last.is_a?(ProcFromBlock)
+                instance.__send__(:initialize, *args[0..(args.length-2)], &args.last)
+              else
+                instance.__send__(:initialize, *args)
+              end
+              instance
+            end
           end
         end
       end

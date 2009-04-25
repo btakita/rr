@@ -181,7 +181,7 @@ module RR
           if implementation.is_a?(Method)
             implementation.call(*args, &block)
           else
-            args << block if block
+            args << ProcFromBlock.new(&block) if block
             implementation.call(*args)
           end
         else

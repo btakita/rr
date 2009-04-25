@@ -1,6 +1,17 @@
 require File.expand_path("#{File.dirname(__FILE__)}/spec_helper")
 
 class HighLevelSpec
+  attr_reader :initialize_arguments
+
+  def initialize(*args)
+    @initialize_arguments = args
+    yield if block_given?
+    method_run_in_initialize
+  end
+
+  def method_run_in_initialize
+    
+  end
 end
 
 describe "RR" do
@@ -250,6 +261,25 @@ describe "RR" do
     it "stubs methods without letters" do
       stub(subject).__send__(:==) {:equality}
       (subject == 55).should == :equality
+    end
+
+    it "stubs methods invoked in #initialize while passing along the #initialize arg" do
+      method_run_in_initialize_stubbed = false
+      stub.instance_of(HighLevelSpec) do |o|
+        o.method_run_in_initialize {method_run_in_initialize_stubbed = true}
+      end
+      HighLevelSpec.new
+      method_run_in_initialize_stubbed.should be_true
+    end
+
+    it "passed the arguments and block passed to #initialize" do
+      block_called = false
+      stub.instance_of(HighLevelSpec) do |o|
+        o.method_run_in_initialize
+      end
+      instance = HighLevelSpec.new(1, 2) {block_called = true}
+      instance.initialize_arguments.should == [1, 2]
+      block_called.should be_true
     end
   end
 
