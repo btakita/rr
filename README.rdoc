@@ -32,7 +32,7 @@ Currently RR implements mocks, stubs, proxies, and spies. Fakes usually require 
   end
 
 === rspec
-  Spec::Runners.configure do |config|
+  Spec::Runner.configure do |config|
     config.mock_with :rr
     # or if that doesn't work due to a version incompatibility
     # config.mock_with RR::Adapters::Rspec
