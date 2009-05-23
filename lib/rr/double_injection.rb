@@ -5,14 +5,14 @@ module RR
   class DoubleInjection
     include Space::Reader
     MethodArguments = Struct.new(:arguments, :block)
-    attr_reader :subject, :method_name, :doubles, :klass
-
-    def initialize(subject, method_name, klass)
+    attr_reader :subject, :method_name, :doubles, :subject_class
+    
+    def initialize(subject, method_name, subject_class)
       @subject = subject
-      @klass = klass
+      @subject_class = subject_class
       @method_name = method_name.to_sym
       if object_has_method?(method_name)
-        klass.__send__(:alias_method, original_method_alias_name, method_name)
+        subject_class.__send__(:alias_method, original_method_alias_name, method_name)
       end
       @doubles = []
     end
@@ -35,7 +35,7 @@ module RR
           __send__('#{reference_to_double_injection_method_name}', arguments)
         end
       METHOD
-      klass.class_eval(returns_method, __FILE__, __LINE__ - 5)
+      subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
       self
     end
 
@@ -51,12 +51,12 @@ module RR
     # It binds the original method implementation on the subject
     # if one exists.
     def reset
-      klass.__send__(:remove_method, reference_to_double_injection_method_name)
+      subject_class.__send__(:remove_method, reference_to_double_injection_method_name)
       if object_has_original_method?
-        klass.__send__(:alias_method, @method_name, original_method_alias_name)
-        klass.__send__(:remove_method, original_method_alias_name)
+        subject_class.__send__(:alias_method, @method_name, original_method_alias_name)
+        subject_class.__send__(:remove_method, original_method_alias_name)
       else
-        klass.__send__(:remove_method, @method_name)
+        subject_class.__send__(:remove_method, @method_name)
       end
     end
 
@@ -71,7 +71,7 @@ module RR
     protected
     def define_reference_to_double_injection
       me = self
-      klass.__send__(:define_method, reference_to_double_injection_method_name) do |arguments|
+      subject_class.__send__(:define_method, reference_to_double_injection_method_name) do |arguments|
         me.__send__(:call_method, arguments.arguments, arguments.block)
       end
     end
