@@ -14,7 +14,7 @@ module RR
         #     projects[0..2]
         #   end        
         class InstanceOfClass < ScopeStrategy
-          register "instance_of"
+          register "instance_of", :new_instance_of
 
           def initialize(*args)
             super
@@ -27,22 +27,29 @@ module RR
           protected
           def do_call
             instance_of_subject_creator = DoubleDefinitionCreator.new
+#            space.double_injection
+#            ObjectSpace
+#            space.double_injection
+
             instance_of_subject_creator.strong if definition.verify_method_signature?
             instance_of_subject_creator.stub(subject)
             instance_of_subject_creator.create(:new) do |*args|
               #####
-              instance = subject.allocate
-              double_injection = space.double_injection(instance, method_name)
-              Double.new(double_injection, definition)
-              #####
-              if args.last.is_a?(ProcFromBlock)
-                instance.__send__(:initialize, *args[0..(args.length-2)], &args.last)
-              else
-                instance.__send__(:initialize, *args)
-              end
-              instance
+              add_double_to_instance(subject.allocate, *args)
             end
           end
+          
+          def add_double_to_instance(instance, *args)
+            double_injection = space.double_injection(instance, method_name)
+            Double.new(double_injection, definition)
+            #####
+            if args.last.is_a?(ProcFromBlock)
+              instance.__send__(:initialize, *args[0..(args.length-2)], &args.last)
+            else
+              instance.__send__(:initialize, *args)
+            end
+            instance
+          end  
         end
       end
     end

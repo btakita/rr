@@ -32,9 +32,10 @@ module RR
     # in subject and method_name.
     # When a DoubleInjection is created, it binds the dispatcher to the
     # subject.
-    def double_injection(subject, method_name)
+    def double_injection(subject, method_name, subject_class=nil)
       @double_injections[subject][method_name.to_sym] ||= begin
-        DoubleInjection.new(subject, method_name.to_sym, (class << subject; self; end)).bind
+        subject_class ||= (class << subject; self; end)
+        DoubleInjection.new(subject, method_name.to_sym, subject_class).bind
       end
     end
 

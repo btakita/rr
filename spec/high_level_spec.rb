@@ -142,6 +142,15 @@ describe "RR" do
         subject == 99
       end.should raise_error(RR::Errors::DoubleNotFoundError)
     end
+
+    it "can be marshaled" do
+      pending("instance method dispatch defined on the Class, not the eigen-class") do
+        obj = "hello"
+        mock(obj).do_it
+        obj.do_it
+        lambda { Marshal.dump(obj) }.should_not raise_error(TypeError)
+      end
+    end
   end
 
   describe "proxy" do
@@ -280,6 +289,28 @@ describe "RR" do
       instance = HighLevelSpec.new(1, 2) {block_called = true}
       instance.initialize_arguments.should == [1, 2]
       block_called.should be_true
+    end
+  end
+
+  describe "instance_of" do
+    it "can be marshalled" do
+      stub.instance_of(HighLevelSpec) do |o|
+        o.to_s {"High Level Spec"}
+      end
+      hls = HighLevelSpec.new
+      hls.to_s
+
+      lambda { Marshal.dump(hls) }.should_not raise_error(TypeError)
+    end
+  end
+
+  describe "any_instance_of" do
+    it "applies to instances instantiated before the Double expection was created" do
+      hls = HighLevelSpec.new
+      stub.any_instance_of(HighLevelSpec) do |o|
+        o.to_s {"High Level Spec"}
+      end
+      hls.to_s.should == "High Level Spec"
     end
   end
 
