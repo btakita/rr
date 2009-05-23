@@ -26,11 +26,12 @@ module RR
     # that dispatches to the matching Double when the method
     # is called.
     def bind
-      define_implementation_placeholder
+      # TODO: Implement and use Space.double_injection instead of reference_to_double_injection_method_name
+      define_reference_to_double_injection
       returns_method = <<-METHOD
         def #{@method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
-          __send__('#{placeholder_name}', arguments)
+          __send__('#{reference_to_double_injection_method_name}', arguments)
         end
       METHOD
       meta.class_eval(returns_method, __FILE__, __LINE__ - 5)
@@ -49,7 +50,7 @@ module RR
     # It binds the original method implementation on the subject
     # if one exists.
     def reset
-      meta.__send__(:remove_method, placeholder_name)
+      meta.__send__(:remove_method, reference_to_double_injection_method_name)
       if object_has_original_method?
         meta.__send__(:alias_method, @method_name, original_method_alias_name)
         meta.__send__(:remove_method, original_method_alias_name)
@@ -67,9 +68,9 @@ module RR
     end
 
     protected
-    def define_implementation_placeholder
+    def define_reference_to_double_injection
       me = self
-      meta.__send__(:define_method, placeholder_name) do |arguments|
+      meta.__send__(:define_method, reference_to_double_injection_method_name) do |arguments|
         me.__send__(:call_method, arguments.arguments, arguments.block)
       end
     end
@@ -119,7 +120,8 @@ module RR
       raise Errors::DoubleNotFoundError, message
     end
 
-    def placeholder_name
+    # TODO: Implement and use Space.double_injection instead of reference_to_double_injection_method_name
+    def reference_to_double_injection_method_name
       "__rr__#{@method_name}"
     end
 
