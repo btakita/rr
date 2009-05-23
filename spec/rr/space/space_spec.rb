@@ -74,8 +74,9 @@ module RR
         end
 
         it "overrides the method when passing a block" do
-          @double_injection = space.double_injection(subject, method_name)
-          subject.methods.should include("__rr__#{method_name}")
+          original_method = subject.method(:foobar)
+          double_injection = space.double_injection(subject, method_name)
+          subject.method(:foobar).should_not == original_method
         end
       end
 
@@ -166,16 +167,20 @@ module RR
     describe "#reset_double" do
       before do
         @method_name = :foobar
+        def subject.foobar
+        end
       end
 
-      it "resets the double_injections" do
+      it "resets the double_injections and restores the original method" do
+        original_method = subject.method(method_name)
+
         @double_injection = space.double_injection(subject, method_name)
         space.double_injections[subject][method_name].should === double_injection
-        subject.methods.should include("__rr__#{method_name}")
+        subject.method(method_name).should_not == original_method
 
         space.reset_double(subject, method_name)
         space.double_injections[subject][method_name].should be_nil
-        subject.methods.should_not include("__rr__#{method_name}")
+        subject.method(method_name).should == original_method
       end
 
       context "when it has no double_injections" do
@@ -421,12 +426,13 @@ module RR
     describe "#verify_double" do
       before do
         @method_name = :foobar
+        def subject.foobar
+        end
       end
 
       it "verifies and deletes the double_injection" do
         @double_injection = space.double_injection(subject, method_name)
         space.double_injections[subject][method_name].should === double_injection
-        subject.methods.should include("__rr__#{method_name}")
 
         verify_call_count = 0
         (class << double_injection; self; end).class_eval do
@@ -438,14 +444,16 @@ module RR
         verify_call_count.should == 1
 
         space.double_injections[subject][method_name].should be_nil
-        subject.methods.should_not include("__rr__#{method_name}")
       end
 
       context "when verifying the double_injection raises an error" do
-        it "deletes the double_injection" do
+        it "deletes the double_injection and restores the original method" do
+          original_method = subject.method(method_name)
+
           @double_injection = space.double_injection(subject, method_name)
+          subject.method(method_name).should_not == original_method
+
           space.double_injections[subject][method_name].should === double_injection
-          subject.methods.should include("__rr__#{method_name}")
 
           verify_called = true
           (class << double_injection; self; end).class_eval do
@@ -458,7 +466,7 @@ module RR
           verify_called.should be_true
 
           space.double_injections[subject][method_name].should be_nil
-          subject.methods.should_not include("__rr__#{method_name}")
+          subject.method(method_name).should == original_method
         end
       end
     end

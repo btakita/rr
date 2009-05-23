@@ -27,12 +27,10 @@ module RR
     # that dispatches to the matching Double when the method
     # is called.
     def bind
-      # TODO: Implement and use Space.double_injection instead of reference_to_double_injection_method_name
-      define_reference_to_double_injection
       returns_method = <<-METHOD
         def #{@method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
-          __send__('#{reference_to_double_injection_method_name}', arguments)
+          RR::Space.double_injection(self, :#{@method_name}).call_method(arguments.arguments, arguments.block)
         end
       METHOD
       subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
@@ -51,7 +49,6 @@ module RR
     # It binds the original method implementation on the subject
     # if one exists.
     def reset
-      subject_class.__send__(:remove_method, reference_to_double_injection_method_name)
       if object_has_original_method?
         subject_class.__send__(:alias_method, @method_name, original_method_alias_name)
         subject_class.__send__(:remove_method, original_method_alias_name)
@@ -68,14 +65,6 @@ module RR
       object_has_method?(original_method_alias_name)
     end
 
-    protected
-    def define_reference_to_double_injection
-      me = self
-      subject_class.__send__(:define_method, reference_to_double_injection_method_name) do |arguments|
-        me.__send__(:call_method, arguments.arguments, arguments.block)
-      end
-    end
-
     def call_method(args, block)
       space.record_call(subject, method_name, args, block)
       if double = find_double_to_attempt(args)
@@ -84,7 +73,8 @@ module RR
         double_not_found_error(*args)
       end
     end
-
+    
+    protected
     def find_double_to_attempt(args)
       matches = DoubleMatches.new(@doubles).find_all_matches(args)
 
@@ -119,11 +109,6 @@ module RR
         "expected invocations:\n" <<
         Double.list_message_part(@doubles)
       raise Errors::DoubleNotFoundError, message
-    end
-
-    # TODO: Implement and use Space.double_injection instead of reference_to_double_injection_method_name
-    def reference_to_double_injection_method_name
-      "__rr__#{@method_name}"
     end
 
     def original_method_alias_name
