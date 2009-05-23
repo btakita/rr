@@ -11,15 +11,7 @@ module RR
       @subject = subject
       @method_name = method_name.to_sym
       if object_has_method?(method_name)
-        begin
-          meta.__send__(:alias_method, original_method_name, method_name)
-        rescue NameError => e
-          begin
-            subject.send(method_name)
-            meta.__send__(:alias_method, original_method_name, method_name)
-          rescue NameError => e
-          end
-        end
+        meta.__send__(:alias_method, original_method_name, method_name)
       end
       @doubles = []
     end
