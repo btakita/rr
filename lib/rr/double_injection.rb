@@ -11,7 +11,7 @@ module RR
       @subject = subject
       @method_name = method_name.to_sym
       if object_has_method?(method_name)
-        meta.__send__(:alias_method, original_method_name, method_name)
+        meta.__send__(:alias_method, original_method_alias_name, method_name)
       end
       @doubles = []
     end
@@ -51,19 +51,19 @@ module RR
     def reset
       meta.__send__(:remove_method, placeholder_name)
       if object_has_original_method?
-        meta.__send__(:alias_method, @method_name, original_method_name)
-        meta.__send__(:remove_method, original_method_name)
+        meta.__send__(:alias_method, @method_name, original_method_alias_name)
+        meta.__send__(:remove_method, original_method_alias_name)
       else
         meta.__send__(:remove_method, @method_name)
       end
     end
 
     def call_original_method(*args, &block)
-      @subject.__send__(original_method_name, *args, &block)
+      @subject.__send__(original_method_alias_name, *args, &block)
     end
 
     def object_has_original_method?
-      object_has_method?(original_method_name)
+      object_has_method?(original_method_alias_name)
     end
 
     protected
@@ -123,7 +123,7 @@ module RR
       "__rr__#{@method_name}"
     end
 
-    def original_method_name
+    def original_method_alias_name
       "__rr__original_#{@method_name}"
     end
 

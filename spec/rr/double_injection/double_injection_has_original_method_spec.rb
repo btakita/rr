@@ -7,7 +7,7 @@ module RR
       @method_name = :to_s
       @double_injection = DoubleInjection.new(@subject, @method_name)
       class << @double_injection
-        public :original_method_name
+        public :original_method_alias_name
       end
     end
 

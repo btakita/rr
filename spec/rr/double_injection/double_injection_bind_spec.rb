@@ -33,7 +33,7 @@ module RR
             rr_foobar_called.should == true
           end
 
-          it "stores original method in __rr__original_method_name" do
+          it "stores original method in __rr__original_method_alias_name" do
             @double_injection.bind
             @subject.respond_to?(:__rr__original_foobar).should == true
             @subject.method(:__rr__original_foobar).should == @original_method
@@ -65,7 +65,7 @@ module RR
             rr_foobar_called.should == true
           end
 
-          it "does not create method __rr__original_method_name" do
+          it "does not create method __rr__original_method_alias_name" do
             @double_injection.bind
             @subject.respond_to?(:__rr__original_foobar).should == false
           end
@@ -99,7 +99,7 @@ module RR
             override_called.should == true
           end
 
-          it "stores original method in __rr__original_method_name" do
+          it "stores original method in __rr__original_method_alias_name" do
             @double_injection.bind
             @subject.respond_to?(:"__rr__original_#{@method_name}").should == true
             @subject.method(:"__rr__original_#{@method_name}").should == @original_method

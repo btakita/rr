@@ -324,7 +324,7 @@ to making it possible. We all are standing on the shoulders of giants.
 * Jeff Whitmire for documentation suggestions
 * Jim Weirich for developing Flexmock, the first Terse ruby mock framework in Ruby
 * Joe Ferris for patches
-* Matthew O'Conner for patches
+* Matthew O'Connor for patches and pairing with me
 * Michael Niessner for patches and pairing with me
 * Mike Mangino (from Elevated Rails) for patches and pairing with me
 * Nick Kallen for documentation suggestions, bug reports, and patches
