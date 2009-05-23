@@ -20,7 +20,7 @@ module RR
           @subject = Object.new
           @method_name = :foobar
           @subject.methods.should_not include(@method_name.to_s)
-          @double_injection = DoubleInjection.new(@subject, @method_name)
+          @double_injection = DoubleInjection.new(@subject, @method_name, (class << @subject; self; end))
         end
 
         it "removes the method" do
@@ -44,7 +44,7 @@ module RR
           end
           @subject.methods.should include(@method_name.to_s)
           @original_method = @subject.method(@method_name)
-          @double_injection = DoubleInjection.new(@subject, @method_name)
+          @double_injection = DoubleInjection.new(@subject, @method_name, (class << @subject; self; end))
 
           @double_injection.bind
           @subject.methods.should include(@method_name.to_s)
@@ -68,7 +68,7 @@ module RR
           end
           @subject.methods.should include(@method_name.to_s)
           @original_method = @subject.method(@method_name)
-          @double_injection = DoubleInjection.new(@subject, @method_name)
+          @double_injection = DoubleInjection.new(@subject, @method_name, (class << @subject; self; end))
 
           @double_injection.bind
           @subject.methods.should include(@method_name.to_s)

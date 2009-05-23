@@ -13,7 +13,7 @@ module RR
             end
             @original_method = @subject.method(@method_name)
             @subject.methods.should include(@method_name.to_s)
-            @double_injection = DoubleInjection.new(@subject, @method_name)
+            @double_injection = DoubleInjection.new(@subject, @method_name, (class << @subject; self; end))
           end
 
           it "overrides the original method with the double_injection's dispatching methods" do
@@ -45,7 +45,7 @@ module RR
             @subject = Object.new
             @method_name = :foobar
             @subject.methods.should_not include(@method_name.to_s)
-            @double_injection = DoubleInjection.new(@subject, @method_name)
+            @double_injection = DoubleInjection.new(@subject, @method_name, (class << @subject; self; end))
           end
 
           it "creates a new method with the double_injection's dispatching methods" do
@@ -78,7 +78,7 @@ module RR
             @subject.should respond_to(@method_name)
             @original_method = @subject.method(@method_name)
             @subject.methods.should include(@method_name.to_s)
-            @double_injection = DoubleInjection.new(@subject, @method_name)
+            @double_injection = DoubleInjection.new(@subject, @method_name, (class << @subject; self; end))
           end
 
           it "overrides the original method with the double_injection's dispatching methods" do

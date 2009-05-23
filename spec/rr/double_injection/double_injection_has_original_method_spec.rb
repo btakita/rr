@@ -5,7 +5,7 @@ module RR
     before do
       @subject = Object.new
       @method_name = :to_s
-      @double_injection = DoubleInjection.new(@subject, @method_name)
+      @double_injection = DoubleInjection.new(@subject, @method_name, (class << @subject; self; end))
       class << @double_injection
         public :original_method_alias_name
       end

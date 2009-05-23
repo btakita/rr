@@ -18,7 +18,7 @@ module RR
           @subject = Object.new
           @method_name = :foobar
           subject.methods.should_not include(method_name.to_s)
-          @double_injection = DoubleInjection.new(subject, method_name)
+          @double_injection = DoubleInjection.new(subject, method_name, (class << subject; self; end))
         end
       end
 
@@ -29,7 +29,7 @@ module RR
           @subject = Object.new
           @method_name = 'foobar'
           subject.methods.should_not include(method_name)
-          @double_injection = DoubleInjection.new(subject, method_name)
+          @double_injection = DoubleInjection.new(subject, method_name, (class << subject; self; end))
         end
       end
 
@@ -42,7 +42,7 @@ module RR
 
         context "and invoking the method for the first time does not add the method" do
           before do
-            @double_injection = DoubleInjection.new(subject, method_name)
+            @double_injection = DoubleInjection.new(subject, method_name, (class << subject; self; end))
           end
           send("sets up object and method_name")
 
@@ -59,7 +59,7 @@ module RR
           @subject = Object.new
           @method_name = :to_s
           subject.methods.should include(method_name.to_s)
-          @double_injection = DoubleInjection.new(subject, method_name)
+          @double_injection = DoubleInjection.new(subject, method_name, (class << subject; self; end))
         end
 
         it "has a original_method" do
@@ -73,7 +73,7 @@ module RR
         before do
           @subject = Object.new
           @method_name = '=='
-          @double_injection = DoubleInjection.new(subject, method_name)
+          @double_injection = DoubleInjection.new(subject, method_name, (class << subject; self; end))
         end
       end
     end

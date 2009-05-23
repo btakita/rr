@@ -5,13 +5,14 @@ module RR
   class DoubleInjection
     include Space::Reader
     MethodArguments = Struct.new(:arguments, :block)
-    attr_reader :subject, :method_name, :doubles
+    attr_reader :subject, :method_name, :doubles, :klass
 
-    def initialize(subject, method_name)
+    def initialize(subject, method_name, klass)
       @subject = subject
+      @klass = klass
       @method_name = method_name.to_sym
       if object_has_method?(method_name)
-        meta.__send__(:alias_method, original_method_alias_name, method_name)
+        klass.__send__(:alias_method, original_method_alias_name, method_name)
       end
       @doubles = []
     end
@@ -34,7 +35,7 @@ module RR
           __send__('#{reference_to_double_injection_method_name}', arguments)
         end
       METHOD
-      meta.class_eval(returns_method, __FILE__, __LINE__ - 5)
+      klass.class_eval(returns_method, __FILE__, __LINE__ - 5)
       self
     end
 
@@ -50,12 +51,12 @@ module RR
     # It binds the original method implementation on the subject
     # if one exists.
     def reset
-      meta.__send__(:remove_method, reference_to_double_injection_method_name)
+      klass.__send__(:remove_method, reference_to_double_injection_method_name)
       if object_has_original_method?
-        meta.__send__(:alias_method, @method_name, original_method_alias_name)
-        meta.__send__(:remove_method, original_method_alias_name)
+        klass.__send__(:alias_method, @method_name, original_method_alias_name)
+        klass.__send__(:remove_method, original_method_alias_name)
       else
-        meta.__send__(:remove_method, @method_name)
+        klass.__send__(:remove_method, @method_name)
       end
     end
 
@@ -70,7 +71,7 @@ module RR
     protected
     def define_reference_to_double_injection
       me = self
-      meta.__send__(:define_method, reference_to_double_injection_method_name) do |arguments|
+      klass.__send__(:define_method, reference_to_double_injection_method_name) do |arguments|
         me.__send__(:call_method, arguments.arguments, arguments.block)
       end
     end
@@ -131,10 +132,6 @@ module RR
 
     def object_has_method?(method_name)
       @subject.methods.include?(method_name.to_s) || @subject.respond_to?(method_name)
-    end
-
-    def meta
-      (class << @subject; self; end)
     end
   end
 end
