@@ -9,15 +9,15 @@ module RR
           before do
             @subject = Object.new
             @method_name = :foobar
-            def @subject.foobar;
+            def subject.foobar;
               :original_foobar;
             end
-            @original_method = @subject.method(@method_name)
-            @subject.methods.should include(@method_name.to_s)
+            @original_method = @subject.method(method_name)
+            @subject.methods.should include(method_name.to_s)
 
-            subject.method(:foobar).should == @original_method
+            subject.method(:foobar).should == original_method
 
-            @double_injection = RR::Space.double_injection(@subject, @method_name)
+            @double_injection = RR::Space.double_injection(subject, method_name)
           end
 
           it "overrides the original method with the double_injection's dispatching methods" do
@@ -35,7 +35,7 @@ module RR
           before do
             @subject = Object.new
             @method_name = :foobar
-            @subject.methods.should_not include(method_name.to_s)
+            subject.methods.should_not include(method_name.to_s)
             RR::Space.double_injection(subject, method_name)
           end
 
@@ -52,9 +52,9 @@ module RR
           before do
             @subject = Object.new
             @method_name = :'=='
-            @subject.should respond_to(method_name)
-            @original_method = @subject.method(method_name)
-            @subject.methods.should include(method_name.to_s)
+            subject.should respond_to(method_name)
+            @original_method = subject.method(method_name)
+            subject.methods.should include(method_name.to_s)
             @double_injection = RR::Space.double_injection(subject, method_name)
           end
 

@@ -50,7 +50,7 @@ module RR
       # that succeeds when passed an argument of a certain type.
       #   mock(object).method_name(is_a(String)) {return_value}
       #   object.method_name("A String") # passes
-      def is_a(klass)
+          def is_a(klass)
         RR::WildcardMatchers::IsA.new(klass)
       end
 
