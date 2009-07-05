@@ -38,6 +38,14 @@ Currently RR implements mocks, stubs, proxies, and spies. Fakes usually require 
     # config.mock_with RR::Adapters::Rspec
   end
 
+== standalone
+  extend RR::Adapters::RRMethods
+  mock(object).method_name {:return_value}
+
+  object.method_name # Returns :return_value
+
+  RR.verify # Verifies the Double expectations are satisfied
+
 == Syntax between RR and other double/mock frameworks
 === Terse Syntax
 One of the goals of RR is to make doubles more scannable.
