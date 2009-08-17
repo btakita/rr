@@ -1,3 +1,5 @@
+- Fixed issue with mock.proxy and returns [2]. Identified by trogdoro (http://github.com/trogdoro)
+
 * 0.10.0
 - Method is no longer invoked if respond_to? returns false. This was in place to support ActiveRecord association proxies, and is no longer needed. 
 

@@ -245,14 +245,15 @@ module RR
         #
         # Passing in an argument causes Double to return the argument.
         def returns(*args, &implementation)
-          value = args.first
           if !args.empty? && implementation
             raise ArgumentError, "returns cannot accept both an argument and a block"
           end
           if implementation
-            implemented_by implementation
+            install_method_callback implementation
           else
-            implemented_by proc {value}
+            install_method_callback(lambda do
+              return *args
+            end)
           end
           self
         end
@@ -288,7 +289,7 @@ module RR
           if implementation_is_original_method?
             after_call(&block)
           else
-            returns(&block)
+            implemented_by block
           end
         end
       end
