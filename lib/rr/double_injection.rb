@@ -4,6 +4,13 @@ module RR
   # has Argument Expectations and Times called Expectations.
   class DoubleInjection
     include Space::Reader
+
+    LAZY_METHOD_DEFINITIONS = [
+      (lambda do |subject|
+        subject.respond_to?(:descends_from_active_record?) && subject.descends_from_active_record?
+      end)
+    ]
+
     MethodArguments = Struct.new(:arguments, :block)
     attr_reader :subject, :method_name, :doubles, :subject_class
     
@@ -12,6 +19,9 @@ module RR
       @subject_class = subject_class
       @method_name = method_name.to_sym
       if object_has_method?(method_name)
+        if LAZY_METHOD_DEFINITIONS.any? {|definition| definition.call(subject)} && !subject.methods.include?(method_name)
+          subject.send(method_name)
+        end
         subject_class.__send__(:alias_method, original_method_alias_name, method_name)
       end
       @doubles = []

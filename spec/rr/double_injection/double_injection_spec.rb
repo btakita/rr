@@ -23,14 +23,14 @@ module RR
       end
 
       context "when method_name is a string" do
-        send("sets up object and method_name")
-
         before do
           @subject = Object.new
           @method_name = 'foobar'
           subject.methods.should_not include(method_name)
           @double_injection = DoubleInjection.new(subject, method_name, (class << subject; self; end))
         end
+
+        send("sets up object and method_name")
       end
 
       context "when method does not exist on object" do
@@ -40,14 +40,30 @@ module RR
           subject.methods.should_not include(method_name.to_s)
         end
 
-        context "and invoking the method for the first time does not add the method" do
+        context "when the subject descends from active record" do
           before do
+            def subject.descends_from_active_record?
+              true
+            end
+            def subject.respond_to?(name)
+              return true if name == :foobar
+              super
+            end
+            def subject.method_missing(name, *args, &block)
+              if name == :foobar
+                def self.foobar
+                end
+              else
+                super
+              end
+            end
             @double_injection = DoubleInjection.new(subject, method_name, (class << subject; self; end))
           end
+          
           send("sets up object and method_name")
 
-          example "object does not have original method" do
-            double_injection.object_has_original_method?.should be_false
+          example "object has the original method" do
+            double_injection.object_has_original_method?.should be_true
           end
         end
       end
