@@ -16,18 +16,44 @@ module RR
             @subject.methods.should include(method_name.to_s)
 
             subject.method(:foobar).should == original_method
-
-            @double_injection = RR::Space.double_injection(subject, method_name)
           end
 
-          it "overrides the original method with the double_injection's dispatching methods" do
-            double_injection.bind
-            subject.method(:foobar).should_not == original_method
+          context "when the existing method is public" do
+            before do
+              stub(subject, method_name).returns {:new_foobar}
+            end
+
+            it "returns the value of the Double Injection" do
+              subject.foobar.should == :new_foobar
+            end
+
+            it "overrides the original method with the double_injection's dispatching methods" do
+              subject.method(:foobar).should_not == original_method
+            end
+
+            it "stores original method in __rr__original_method_alias_name" do
+              subject.respond_to?(:__rr__original_foobar).should == true
+              subject.method(:__rr__original_foobar).should == original_method
+            end
           end
 
-          it "stores original method in __rr__original_method_alias_name" do
-            subject.respond_to?(:__rr__original_foobar).should == true
-            subject.method(:__rr__original_foobar).should == original_method
+          context "when the existing method is private" do
+            before do
+              class << subject
+                private :foobar
+              end
+              @double_injection = RR::Space.double_injection(subject, method_name)
+            end
+
+            it "overrides the original method with the double_injection's dispatching methods" do
+              double_injection.bind
+              subject.method(:foobar).should_not == original_method
+            end
+
+            it "stores original method in __rr__original_method_alias_name" do
+              subject.private_methods.should include('__rr__original_foobar')
+              subject.method(:__rr__original_foobar).should == original_method
+            end
           end
         end
 

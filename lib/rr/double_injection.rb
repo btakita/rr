@@ -18,7 +18,7 @@ module RR
       @subject = subject
       @subject_class = subject_class
       @method_name = method_name.to_sym
-      if object_has_method?(method_name)
+      if subject_respond_to_method?(method_name)
         if LAZY_METHOD_DEFINITIONS.any? {|definition| definition.call(subject)} && !subject.methods.include?(method_name)
           subject.send(method_name)
         end
@@ -72,7 +72,7 @@ module RR
     end
 
     def object_has_original_method?
-      object_has_method?(original_method_alias_name)
+      subject_respond_to_method?(original_method_alias_name)
     end
 
     def call_method(args, block)
@@ -125,8 +125,12 @@ module RR
       "__rr__original_#{@method_name}"
     end
 
-    def object_has_method?(method_name)
-      @subject.methods.include?(method_name.to_s) || @subject.respond_to?(method_name)
+    def subject_respond_to_method?(method_name)
+      subject_has_method_defined?(method_name) || @subject.respond_to?(method_name)
+    end
+
+    def subject_has_method_defined?(method_name)
+      @subject.methods.include?(method_name.to_s) || @subject.protected_methods.include?(method_name.to_s) || @subject.private_methods.include?(method_name.to_s)
     end
   end
 end

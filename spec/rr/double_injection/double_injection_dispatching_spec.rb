@@ -102,20 +102,20 @@ module RR
         end
 
         it "dispatches to Double with wildcard match" do
-          double = new_double(anything) {:return_value}
+          new_double(anything) {:return_value}
           subject.foobar(:dont_care).should == :return_value
         end
 
         it "matches to the last Double that was registered with a wildcard match" do
-          double_1 = new_double(anything) {:value_1}
-          double_2 = new_double(anything) {:value_2}
+          new_double(anything) {:value_1}
+          new_double(anything) {:value_2}
 
           subject.foobar(:dont_care).should == :value_2
         end
 
         it "matches to Double with exact match Double even when a Double with wildcard match was registered later" do
-          exact_double_registered_first = new_double(1, 2) {:exact_first}
-          wildcard_double_registered_last = new_double(anything, anything) {:wildcard_last}
+          new_double(1, 2) {:exact_first}
+          new_double(anything, anything) {:wildcard_last}
 
           subject.foobar(1, 2).should == :exact_first
         end
@@ -130,30 +130,30 @@ module RR
 
       context "when two or more Terminal Doubles with duplicate Exact Match ArgumentExpectations exists" do
         it "dispatches to Double that have an exact match" do
-          double1_with_exact_match = new_double(:exact_match) {:return_1}
+          new_double(:exact_match) {:return_1}
 
           subject.foobar(:exact_match).should == :return_1
         end
 
         it "dispatches to the first Double that have an exact match" do
-          double1_with_exact_match = new_double(:exact_match) {:return_1}
-          double2_with_exact_match = new_double(:exact_match) {:return_2}
+          new_double(:exact_match) {:return_1}
+          new_double(:exact_match) {:return_2}
 
           subject.foobar(:exact_match).should == :return_1
         end
 
         it "dispatches the second Double with an exact match
           when the first double's Times Called expectation is satisfied" do
-          double1_with_exact_match = new_double(:exact_match) {:return_1}
-          double2_with_exact_match = new_double(:exact_match) {:return_2}
+          new_double(:exact_match) {:return_1}
+          new_double(:exact_match) {:return_2}
 
           subject.foobar(:exact_match)
           subject.foobar(:exact_match).should == :return_2
         end
 
         it "raises TimesCalledError when all of the doubles Times Called expectation is satisfied" do
-          double1_with_exact_match = new_double(:exact_match) {:return_1}
-          double2_with_exact_match = new_double(:exact_match) {:return_2}
+          new_double(:exact_match) {:return_1}
+          new_double(:exact_match) {:return_2}
 
           subject.foobar(:exact_match)
           subject.foobar(:exact_match)
@@ -172,30 +172,30 @@ module RR
 
       context "when two or more Doubles with duplicate Wildcard Match ArgumentExpectations exists" do
         it "dispatches to Double that have a wildcard match" do
-          double_1 = new_double {:return_1}
+          new_double {:return_1}
 
           subject.foobar(:anything).should == :return_1
         end
 
         it "dispatches to the first Double that has a wildcard match" do
-          double_1 = new_double {:return_1}
-          double_2 = new_double {:return_2}
+          new_double {:return_1}
+          new_double {:return_2}
 
           subject.foobar(:anything).should == :return_1
         end
 
         it "dispatches the second Double with a wildcard match
           when the first double's Times Called expectation is satisfied" do
-          double_1 = new_double {:return_1}
-          double_2 = new_double {:return_2}
+          new_double {:return_1}
+          new_double {:return_2}
 
           subject.foobar(:anything)
           subject.foobar(:anything).should == :return_2
         end
 
         it "raises TimesCalledError when all of the doubles Times Called expectation is satisfied" do
-          double_1 = new_double {:return_1}
-          double_2 = new_double {:return_2}
+          new_double {:return_1}
+          new_double {:return_2}
 
           subject.foobar(:anything)
           subject.foobar(:anything)
