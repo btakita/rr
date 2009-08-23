@@ -1,3 +1,4 @@
+0.10.1
 - Fixed issue with DoubleInjection not invoking methods that are lazily created [http://github.com/btakita/rr/issues/#issue/4]. Identified by davidlee (http://github.com/davidlee)
 - Fixed issue with mock.proxy and returns [http://github.com/btakita/rr/issues/#issue/2]. Identified by trogdoro (http://github.com/trogdoro)
 
