@@ -1,3 +1,4 @@
+0.10.2
 - RR properly proxies subjects with private methods [http://github.com/btakita/rr/issues/#issue/7]. Identified by Matthew O'Connor.
 
 0.10.1
