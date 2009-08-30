@@ -4,7 +4,7 @@ module RR
       class << self
         def blank_slate_methods
           instance_methods.each do |m|
-            unless m =~ /^_/ || m.to_s == 'object_id' || m.to_s == 'respond_to?' || m.to_s == 'method_missing'
+            unless m =~ /^_/ || m.to_s == 'object_id' || m.to_s == 'respond_to?' || m.to_s == 'method_missing' || m.to_s == 'instance_eval' || m.to_s == 'instance_exec'
               alias_method "__blank_slated_#{m}", m
               undef_method m
             end
