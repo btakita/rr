@@ -166,16 +166,7 @@ module RR
     
     def do_call_implementation_and_get_return_value(double_injection, *args, &block)
       if definition.implementation_is_original_method?
-        if double_injection.object_has_original_method?
-          double_injection.call_original_method(*args, &block)
-        else
-          double_injection.subject.__send__(
-            :method_missing,
-            method_name,
-            *args,
-            &block
-          )
-        end
+        double_injection.call_original_method(*args, &block)
       else
         if implementation
           if implementation.is_a?(Method)

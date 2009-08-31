@@ -5,12 +5,6 @@ module RR
   class DoubleInjection
     include Space::Reader
 
-    LAZY_METHOD_DEFINITIONS = [
-      (lambda do |subject|
-        subject.respond_to?(:descends_from_active_record?) && subject.descends_from_active_record?
-      end)
-    ]
-
     MethodArguments = Struct.new(:arguments, :block)
     attr_reader :subject, :method_name, :doubles, :subject_class
     
@@ -18,12 +12,6 @@ module RR
       @subject = subject
       @subject_class = subject_class
       @method_name = method_name.to_sym
-      if subject_respond_to_method?(method_name)
-        if LAZY_METHOD_DEFINITIONS.any? {|definition| definition.call(subject)} && !subject.methods.include?(method_name)
-          subject.send(method_name)
-        end
-        subject_class.__send__(:alias_method, original_method_alias_name, method_name)
-      end
       @doubles = []
     end
 
@@ -37,13 +25,16 @@ module RR
     # that dispatches to the matching Double when the method
     # is called.
     def bind
-      returns_method = <<-METHOD
-        def #{@method_name}(*args, &block)
-          arguments = MethodArguments.new(args, block)
-          RR::Space.double_injection(self, :#{@method_name}).call_method(arguments.arguments, arguments.block)
+      if subject_respond_to_method?(method_name)
+        if subject_has_method_defined?(method_name)
+          do_bind_with_alias
+        else
+          do_bind
+          @deferred_bind = true
         end
-      METHOD
-      subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
+      else
+        do_bind
+      end
       self
     end
 
@@ -67,10 +58,6 @@ module RR
       end
     end
 
-    def call_original_method(*args, &block)
-      @subject.__send__(original_method_alias_name, *args, &block)
-    end
-
     def object_has_original_method?
       subject_respond_to_method?(original_method_alias_name)
     end
@@ -83,8 +70,37 @@ module RR
         double_not_found_error(*args)
       end
     end
+
+    def call_original_method(*args, &block)
+      if object_has_original_method?
+        subject.__send__(original_method_alias_name, *args, &block)
+      elsif @deferred_bind
+        subject_class.__send__(:remove_method, method_name)
+        return_value = subject.__send__(:method_missing, method_name, *args, &block)
+        do_bind_with_alias
+        @deferred_bind = nil
+        return_value
+      else
+        subject.__send__(:method_missing, method_name, *args, &block)
+      end
+    end
     
     protected
+    def do_bind_with_alias
+      subject_class.__send__(:alias_method, original_method_alias_name, method_name)
+      do_bind
+    end
+
+    def do_bind
+      returns_method = <<-METHOD
+        def #{@method_name}(*args, &block)
+          arguments = MethodArguments.new(args, block)
+          RR::Space.double_injection(self, :#{@method_name}).call_method(arguments.arguments, arguments.block)
+        end
+      METHOD
+      subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
+    end
+    
     def find_double_to_attempt(args)
       matches = DoubleMatches.new(@doubles).find_all_matches(args)
 

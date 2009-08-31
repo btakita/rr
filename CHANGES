@@ -1,3 +1,4 @@
+- Handle lazily defined methods (where respond_to? returns true yet the method is not yet defined and the first call to method_missing defines the method). This pattern is used in ActiveRecord and ActionMailer.
 - Fixed warning about aliasing #instance_exec in jruby. http://github.com/btakita/rr/issues#issue/9 (Patch by Nathan Sobo)
 
 0.10.2
