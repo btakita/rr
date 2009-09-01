@@ -7,7 +7,7 @@ module RR
 
     MethodArguments = Struct.new(:arguments, :block)
     attr_reader :subject, :method_name, :doubles, :subject_class
-    
+
     def initialize(subject, method_name, subject_class)
       @subject = subject
       @subject_class = subject_class
@@ -29,7 +29,19 @@ module RR
         if subject_has_method_defined?(method_name)
           do_bind_with_alias
         else
-          do_bind
+          me = self
+          previously_bound = false
+          subject_class.__send__(:alias_method, original_singleton_method_added_alias_name, :singleton_method_added)
+
+          subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
+            if method_name_arg.to_sym == me.method_name.to_sym && !previously_bound
+              previously_bound = true
+              me.send(:perform_deferred_bind)
+              send(me.send(:original_singleton_method_added_alias_name), method_name_arg)
+            else
+              send(me.send(:original_singleton_method_added_alias_name), method_name_arg)
+            end
+          end
           @deferred_bind = true
         end
       else
@@ -54,7 +66,19 @@ module RR
         subject_class.__send__(:alias_method, @method_name, original_method_alias_name)
         subject_class.__send__(:remove_method, original_method_alias_name)
       else
-        subject_class.__send__(:remove_method, @method_name)
+        if @deferred_bind
+          me = self
+          subject_class.class_eval do
+            alias_method :singleton_method_added, me.send(:original_singleton_method_added_alias_name)
+            remove_method me.send(:original_singleton_method_added_alias_name)
+          end
+
+          if @performed_deferred_bind
+            subject_class.__send__(:remove_method, @method_name)
+          end
+        else
+          subject_class.__send__(:remove_method, @method_name)
+        end
       end
     end
 
@@ -75,17 +99,21 @@ module RR
       if object_has_original_method?
         subject.__send__(original_method_alias_name, *args, &block)
       elsif @deferred_bind
-        subject_class.__send__(:remove_method, method_name)
         return_value = subject.__send__(:method_missing, method_name, *args, &block)
-        do_bind_with_alias
-        @deferred_bind = nil
+        perform_deferred_bind
         return_value
       else
         subject.__send__(:method_missing, method_name, *args, &block)
       end
     end
-    
+
     protected
+    def perform_deferred_bind
+      do_bind_with_alias
+      @deferred_bind = nil
+      @performed_deferred_bind = true
+    end
+
     def do_bind_with_alias
       subject_class.__send__(:alias_method, original_method_alias_name, method_name)
       do_bind
@@ -100,7 +128,7 @@ module RR
       METHOD
       subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
     end
-    
+
     def find_double_to_attempt(args)
       matches = DoubleMatches.new(@doubles).find_all_matches(args)
 
@@ -139,6 +167,10 @@ module RR
 
     def original_method_alias_name
       "__rr__original_#{@method_name}"
+    end
+
+    def original_singleton_method_added_alias_name
+      "__rr__original_singleton_method_added"
     end
 
     def subject_respond_to_method?(method_name)

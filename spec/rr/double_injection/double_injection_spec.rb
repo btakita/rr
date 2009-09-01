@@ -144,16 +144,6 @@ module RR
           describe "being bound" do
             before do
               @subject = Object.new
-              def subject.method_missing(method_name, *args, &block)
-                if method_name.to_sym == :foobar
-                  def self.foobar
-                    :original_foobar
-                  end
-                  foobar
-                else
-                  super
-                end
-              end
               def subject.respond_to?(method_name)
                 if method_name.to_sym == :foobar
                   true
@@ -170,18 +160,83 @@ module RR
               subject.methods.should_not include("__rr__original_foobar")
             end
 
-            describe "being called" do
-              it "defines __rr__original_{method_name} to be the lazily created method" do
-                subject.foobar
-                subject.methods.should include("__rr__original_foobar")
-                subject.__rr__original_foobar.should == :original_foobar
+            context "when method is defined after being bound and before being called" do
+              before do
+                def subject.foobar
+                  :original_foobar
+                end
               end
 
-              it "calls the lazily created method and returns the injected method return value" do
-                original_return_value = nil
-                stub.proxy(subject).foobar {|original_return_value| :new_foobar}
-                subject.foobar.should == :new_foobar
-                original_return_value.should == :original_foobar
+              describe "being called" do
+                it "defines __rr__original_{method_name} to be the lazily created method" do
+                  subject.methods.should include("__rr__original_foobar")
+                  subject.__rr__original_foobar.should == :original_foobar
+                end
+
+                it "calls the original method first and sends it into the block" do
+                  original_return_value = nil
+                  stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                  subject.foobar.should == :new_foobar
+                  original_return_value.should == :original_foobar
+                end
+              end
+
+              describe "being reset" do
+                before do
+                  RR::Space.reset_double(subject, :foobar)
+                end
+
+                it "rebinds the original method" do
+                  subject.foobar.should == :original_foobar
+                end
+
+                it "removes __rr__original_{method_name}" do
+                  subject.should_not respond_to(:__rr__original_foobar)
+                end
+              end
+            end
+
+            context "when method is still not defined" do
+              before do
+                def subject.method_missing(method_name, *args, &block)
+                  if method_name.to_sym == :foobar
+                    def self.foobar
+                      :original_foobar
+                    end
+                    foobar
+                  else
+                    super
+                  end
+                end
+              end
+
+              describe "being called" do
+                it "defines __rr__original_{method_name} to be the lazily created method" do
+                  subject.foobar
+                  subject.methods.should include("__rr__original_foobar")
+                  subject.__rr__original_foobar.should == :original_foobar
+                end
+
+                it "calls the lazily created method and returns the injected method return value" do
+                  original_return_value = nil
+                  stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                  subject.foobar.should == :new_foobar
+                  original_return_value.should == :original_foobar
+                end
+              end
+
+              describe "being reset" do
+                before do
+                  RR::Space.reset_double(subject, :foobar)
+                end
+
+                it "rebinds the original method" do
+                  subject.foobar.should == :original_foobar
+                end
+
+                it "removes __rr__original_{method_name}" do
+                  subject.should_not respond_to(:__rr__original_foobar)
+                end
               end
             end
           end

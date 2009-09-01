@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rr}
-  s.version = "0.10.2"
+  s.version = "0.10.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Takita"]
@@ -93,10 +93,6 @@ Gem::Specification.new do |s|
      "spec/rr/double_definitions/double_definition_creator_proxy_spec.rb",
      "spec/rr/double_definitions/double_definition_creator_spec.rb",
      "spec/rr/double_definitions/double_definition_spec.rb",
-     "spec/rr/double_injection/double_injection_bind_spec.rb",
-     "spec/rr/double_injection/double_injection_dispatching_spec.rb",
-     "spec/rr/double_injection/double_injection_has_original_method_spec.rb",
-     "spec/rr/double_injection/double_injection_reset_spec.rb",
      "spec/rr/double_injection/double_injection_spec.rb",
      "spec/rr/double_injection/double_injection_verify_spec.rb",
      "spec/rr/double_spec.rb",
