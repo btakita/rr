@@ -27,7 +27,7 @@ module RR
     def bind
       if subject_respond_to_method?(method_name)
         if subject_has_method_defined?(method_name)
-          do_bind_with_alias
+          bind_method_with_alias
         else
           me = self
           previously_bound = false
@@ -45,7 +45,7 @@ module RR
           @deferred_bind = true
         end
       else
-        do_bind
+        bind_method
       end
       self
     end
@@ -106,17 +106,17 @@ module RR
 
     protected
     def perform_deferred_bind
-      do_bind_with_alias
+      bind_method_with_alias
       @deferred_bind = nil
       @performed_deferred_bind = true
     end
 
-    def do_bind_with_alias
+    def bind_method_with_alias
       subject_class.__send__(:alias_method, original_method_alias_name, method_name)
-      do_bind
+      bind_method
     end
 
-    def do_bind
+    def bind_method
       returns_method = <<-METHOD
         def #{@method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)

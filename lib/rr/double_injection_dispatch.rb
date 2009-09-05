@@ -75,8 +75,8 @@ module RR
           if implementation.is_a?(Method)
             implementation.call(*args, &block)
           else
-            args << ProcFromBlock.new(&block) if block
-            implementation.call(*args)
+            call_args = block ? args + [ProcFromBlock.new(&block)] : args
+            implementation.call(*call_args)
           end
         else
           nil
