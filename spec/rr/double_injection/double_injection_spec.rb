@@ -16,15 +16,17 @@ module RR
           @subject = Object.new
           class << subject
             attr_reader :original_foobar_called
-            
+
             def foobar
               @original_foobar_called = true
               :original_foobar
             end
           end
+
           def subject.foobar
             :original_foobar
           end
+
           subject.should respond_to(:foobar)
           subject.methods.should include('foobar')
           stub(subject).foobar {:new_foobar}
@@ -99,9 +101,11 @@ module RR
           describe "being bound" do
             before do
               @subject = Object.new
+
               def subject.foobar
                 :original_foobar
               end
+
               subject.should respond_to(:foobar)
               subject.methods.should include('foobar')
               stub.proxy(subject).foobar {:new_foobar}
@@ -128,7 +132,7 @@ module RR
               before do
                 RR::Space.reset_double(subject, :foobar)
               end
-              
+
               it "rebinds the original method" do
                 subject.foobar.should == :original_foobar
               end
@@ -144,6 +148,13 @@ module RR
           describe "being bound" do
             before do
               @subject = Object.new
+              setup_subject
+
+              subject.should respond_to(:foobar)
+              stub.proxy(subject).foobar {:new_foobar}
+            end
+
+            def setup_subject
               def subject.respond_to?(method_name)
                 if method_name.to_sym == :foobar
                   true
@@ -151,9 +162,6 @@ module RR
                   super
                 end
               end
-              subject.should respond_to(:foobar)
-              subject.methods.should_not include('foobar')
-              stub.proxy(subject).foobar {:new_foobar}
             end
 
             it "does not define __rr__original_{method_name}" do
@@ -161,7 +169,8 @@ module RR
             end
 
             context "when method is defined after being bound and before being called" do
-              before do
+              def setup_subject
+                super
                 def subject.foobar
                   :original_foobar
                 end
@@ -197,45 +206,90 @@ module RR
             end
 
             context "when method is still not defined" do
-              before do
-                def subject.method_missing(method_name, *args, &block)
-                  if method_name.to_sym == :foobar
-                    def self.foobar
-                      :original_foobar
+              context "when the method is lazily created" do
+                def setup_subject
+                  super
+                  def subject.method_missing(method_name, *args, &block)
+                    if method_name.to_sym == :foobar
+                      def self.foobar
+                        :original_foobar
+                      end
+
+                      foobar
+                    else
+                      super
                     end
-                    foobar
-                  else
-                    super
+                  end
+                end
+
+                describe "being called" do
+                  it "defines __rr__original_{method_name} to be the lazily created method" do
+                    subject.foobar
+                    subject.methods.should include("__rr__original_foobar")
+                    subject.__rr__original_foobar.should == :original_foobar
+                  end
+
+                  it "calls the lazily created method and returns the injected method return value" do
+                    original_return_value = nil
+                    stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                    subject.foobar.should == :new_foobar
+                    original_return_value.should == :original_foobar
+                  end
+                end
+
+                describe "being reset" do
+                  before do
+                    RR::Space.reset_double(subject, :foobar)
+                  end
+
+                  it "rebinds the original method" do
+                    subject.foobar.should == :original_foobar
+                  end
+
+                  it "removes __rr__original_{method_name}" do
+                    subject.should_not respond_to(:__rr__original_foobar)
                   end
                 end
               end
 
-              describe "being called" do
-                it "defines __rr__original_{method_name} to be the lazily created method" do
-                  subject.foobar
-                  subject.methods.should include("__rr__original_foobar")
-                  subject.__rr__original_foobar.should == :original_foobar
+              context "when the method is not lazily created (handled in method_missing)" do
+                def setup_subject
+                  super
+                  def subject.method_missing(method_name, *args, &block)
+                    if method_name.to_sym == :foobar
+                      :original_foobar
+                    else
+                      super
+                    end
+                  end
                 end
 
-                it "calls the lazily created method and returns the injected method return value" do
-                  original_return_value = nil
-                  stub.proxy(subject).foobar {|original_return_value| :new_foobar}
-                  subject.foobar.should == :new_foobar
-                  original_return_value.should == :original_foobar
-                end
-              end
+                describe "being called" do
+                  it "does not define the __rr__original_{method_name}" do
+                    subject.foobar
+                    subject.methods.should_not include("__rr__original_foobar")
+                  end
 
-              describe "being reset" do
-                before do
-                  RR::Space.reset_double(subject, :foobar)
-                end
-
-                it "rebinds the original method" do
-                  subject.foobar.should == :original_foobar
+                  it "calls the lazily created method and returns the injected method return value" do
+                    original_return_value = nil
+                    stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                    subject.foobar.should == :new_foobar
+                    original_return_value.should == :original_foobar
+                  end
                 end
 
-                it "removes __rr__original_{method_name}" do
-                  subject.should_not respond_to(:__rr__original_foobar)
+                describe "being reset" do
+                  before do
+                    RR::Space.reset_double(subject, :foobar)
+                  end
+
+                  it "rebinds the original method" do
+                    subject.foobar.should == :original_foobar
+                  end
+
+                  it "removes __rr__original_{method_name}" do
+                    subject.should_not respond_to(:__rr__original_foobar)
+                  end
                 end
               end
             end
