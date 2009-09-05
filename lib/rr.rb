@@ -15,6 +15,7 @@ require "#{dir}/rr/errors/spy_verification_errors/invocation_count_error"
 
 require "#{dir}/rr/space"
 require "#{dir}/rr/double_injection"
+require "#{dir}/rr/double_injection_dispatch"
 require "#{dir}/rr/hash_with_object_id_key"
 require "#{dir}/rr/recorded_calls"
 require "#{dir}/rr/proc_from_block"

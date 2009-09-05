@@ -92,7 +92,7 @@ module RR
           original_foobar_method = subject.method(:foobar)
           @double_injection = space.double_injection(subject, 'foobar')
 
-          double_injection.object_has_original_method?.should be_true
+          double_injection.subject_has_original_method?.should be_true
 
           space.double_injection(subject, 'foobar').should === double_injection
 

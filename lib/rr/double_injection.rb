@@ -62,7 +62,7 @@ module RR
     # It binds the original method implementation on the subject
     # if one exists.
     def reset
-      if object_has_original_method?
+      if subject_has_original_method?
         subject_class.__send__(:alias_method, @method_name, original_method_alias_name)
         subject_class.__send__(:remove_method, original_method_alias_name)
       else
@@ -82,23 +82,20 @@ module RR
       end
     end
 
-    def object_has_original_method?
+    def subject_has_original_method?
       subject_respond_to_method?(original_method_alias_name)
     end
 
     def call_method(args, block)
-      space.record_call(subject, method_name, args, block)
-      if double = find_double_to_attempt(args)
-        double.call(self, *args, &block)
-      else
-        double_not_found_error(*args)
-      end
+      DoubleInjectionDispatch.new(self, args, block).call
     end
 
-    def call_original_method(*args, &block)
-      if object_has_original_method?
-        subject.__send__(original_method_alias_name, *args, &block)
-      elsif @deferred_bind
+    def call_original_method(args, block)
+      subject.__send__(original_method_alias_name, *args, &block)
+    end
+
+    def call_method_missing(args, block)
+      if @deferred_bind
         return_value = subject.__send__(:method_missing, method_name, *args, &block)
         perform_deferred_bind
         return_value
@@ -127,42 +124,6 @@ module RR
         end
       METHOD
       subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
-    end
-
-    def find_double_to_attempt(args)
-      matches = DoubleMatches.new(@doubles).find_all_matches(args)
-
-      unless matches.exact_terminal_doubles_to_attempt.empty?
-        return matches.exact_terminal_doubles_to_attempt.first
-      end
-
-      unless matches.exact_non_terminal_doubles_to_attempt.empty?
-        return matches.exact_non_terminal_doubles_to_attempt.last
-      end
-
-      unless matches.wildcard_terminal_doubles_to_attempt.empty?
-        return matches.wildcard_terminal_doubles_to_attempt.first
-      end
-
-      unless matches.wildcard_non_terminal_doubles_to_attempt.empty?
-        return matches.wildcard_non_terminal_doubles_to_attempt.last
-      end
-
-      unless matches.matching_doubles.empty?
-        return matches.matching_doubles.first # This will raise a TimesCalledError
-      end
-
-      return nil
-    end
-
-    def double_not_found_error(*args)
-      message =
-        "On subject #{subject},\n" <<
-        "unexpected method invocation:\n" <<
-        "  #{Double.formatted_name(@method_name, args)}\n" <<
-        "expected invocations:\n" <<
-        Double.list_message_part(@doubles)
-      raise Errors::DoubleNotFoundError, message
     end
 
     def original_method_alias_name

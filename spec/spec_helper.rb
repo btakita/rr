@@ -3,6 +3,7 @@ require "#{dir}/environment_fixture_setup"
 require "#{dir}/rr/expectations/times_called_expectation/times_called_expectation_helper"
 require "#{dir}/rr/adapters/rr_methods_spec_helper"
 ARGV.push("--format", "nested") unless ARGV.include?("--format")
+ARGV.push("-b")
 
 Spec::Runner.configure do |config|
   config.mock_with RR::Adapters::Rspec
