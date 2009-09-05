@@ -36,7 +36,7 @@ module RR
           subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
             if method_name_arg.to_sym == me.method_name.to_sym && !previously_bound
               previously_bound = true
-              me.send(:perform_deferred_bind)
+              me.send(:deferred_bind_method)
               send(me.send(:original_singleton_method_added_alias_name), method_name_arg)
             else
               send(me.send(:original_singleton_method_added_alias_name), method_name_arg)
@@ -97,7 +97,7 @@ module RR
     def call_method_missing(args, block)
       if @deferred_bind
         return_value = subject.__send__(:method_missing, method_name, *args, &block)
-        perform_deferred_bind
+        deferred_bind_method
         return_value
       else
         subject.__send__(:method_missing, method_name, *args, &block)
@@ -105,7 +105,7 @@ module RR
     end
 
     protected
-    def perform_deferred_bind
+    def deferred_bind_method
       bind_method_with_alias
       @deferred_bind = nil
       @performed_deferred_bind = true

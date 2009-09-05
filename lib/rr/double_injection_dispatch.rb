@@ -63,11 +63,11 @@ module RR
     end
 
     def call_implementation
-      return_value = do_call_implementation_and_get_return_value
+      return_value = get_implementation_return_value
       extract_subject_from_return_value(return_value)
     end
 
-    def do_call_implementation_and_get_return_value
+    def get_implementation_return_value
       if implementation_is_original_method?
         call_original_method
       else
