@@ -1,5 +1,5 @@
 module RR
-  class DoubleInjectionDispatch
+  class DoubleInjectionMethodDispatch
     include Space::Reader
 
     attr_reader :double_injection, :args, :block, :double

@@ -88,7 +88,7 @@ module RR
     end
 
     def dispatch_method(args, block)
-      DoubleInjectionDispatch.new(self, args, block).call
+      DoubleInjectionMethodDispatch.new(self, args, block).call
     end
 
     def subject_has_original_method?
