@@ -30,17 +30,12 @@ module RR
           bind_method_with_alias
         else
           me = self
-          previously_bound = false
           subject_class.__send__(:alias_method, original_singleton_method_added_alias_name, :singleton_method_added)
-
           subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
-            if method_name_arg.to_sym == me.method_name.to_sym && !previously_bound
-              previously_bound = true
+            if method_name_arg.to_sym == me.method_name.to_sym
               me.send(:deferred_bind_method)
-              send(me.send(:original_singleton_method_added_alias_name), method_name_arg)
-            else
-              send(me.send(:original_singleton_method_added_alias_name), method_name_arg)
             end
+            send(me.send(:original_singleton_method_added_alias_name), method_name_arg)
           end
           @deferred_bind = true
         end
@@ -105,7 +100,9 @@ module RR
 
     protected
     def deferred_bind_method
-      bind_method_with_alias
+      unless subject_has_method_defined?(original_method_alias_name)
+        bind_method_with_alias
+      end
       @performed_deferred_bind = true
     end
 
@@ -119,6 +116,16 @@ module RR
         def #{@method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
           RR::Space.double_injection(self, :#{@method_name}).dispatch_method(arguments.arguments, arguments.block)
+        end
+      METHOD
+      subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
+    end
+
+    def bind_method_missing
+      returns_method = <<-METHOD
+        def #{@method_name}(*args, &block)
+          arguments = MethodArguments.new(args, block)
+          RR::Space.double_injection(self, :#{@method_name}).dispatch_method_missing(arguments.arguments, arguments.block)
         end
       METHOD
       subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
