@@ -69,7 +69,7 @@ module RR
 
     def get_implementation_return_value
       if implementation_is_original_method?
-        call_original_method
+        send_original_method_name
       else
         if implementation
           if implementation.is_a?(Method)
@@ -88,12 +88,20 @@ module RR
       double.implementation_is_original_method?
     end
 
-    def call_original_method
+    def send_original_method_name
       if subject_has_original_method?
-        double_injection.call_original_method(args, block)
+        call_original_method
       else
-        double_injection.call_method_missing(args, block)
+        call_method_missing
       end
+    end
+
+    def call_original_method
+      subject.__send__(original_method_alias_name, *args, &block)
+    end
+
+    def call_method_missing
+      subject.__send__(:method_missing, method_name, *args, &block)
     end
 
     def extract_subject_from_return_value(return_value)
@@ -131,6 +139,10 @@ module RR
 
     def method_name
       double_injection.method_name
+    end
+
+    def original_method_alias_name
+      double_injection.original_method_alias_name
     end
 
     def doubles

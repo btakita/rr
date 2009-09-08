@@ -95,12 +95,8 @@ module RR
       DoubleInjectionDispatch.new(self, args, block).call
     end
 
-    def call_original_method(args, block)
-      subject.__send__(original_method_alias_name, *args, &block)
-    end
-
-    def call_method_missing(args, block)
-      subject.__send__(:method_missing, method_name, *args, &block)
+    def original_method_alias_name
+      "__rr__original_#{@method_name}"
     end
 
     protected
@@ -122,10 +118,6 @@ module RR
         end
       METHOD
       subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
-    end
-
-    def original_method_alias_name
-      "__rr__original_#{@method_name}"
     end
 
     def original_singleton_method_added_alias_name
