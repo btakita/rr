@@ -88,7 +88,11 @@ module RR
     end
 
     def dispatch_method(args, block)
-      DoubleInjectionMethodDispatch.new(self, args, block).call
+      MethodDispatches::MethodDispatch.new(self, args, block).call
+    end
+
+    def dispatch_method_missing(args, block)
+      MethodDispatches::MethodMissingDispatch.new(self, args, block).call
     end
 
     def subject_has_original_method?
