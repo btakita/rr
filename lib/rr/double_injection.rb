@@ -62,22 +62,27 @@ module RR
     # It binds the original method implementation on the subject
     # if one exists.
     def reset
+      reset_bound_method
+      reset_singleton_method_added
+    end
+
+    def reset_bound_method
       if subject_has_original_method?
-        subject_class.__send__(:alias_method, @method_name, original_method_alias_name)
+        subject_class.__send__(:alias_method, method_name, original_method_alias_name)
         subject_class.__send__(:remove_method, original_method_alias_name)
       else
-        if @deferred_bind
-          me = self
-          subject_class.class_eval do
-            alias_method :singleton_method_added, me.send(:original_singleton_method_added_alias_name)
-            remove_method me.send(:original_singleton_method_added_alias_name)
-          end
+        if subject_has_method_defined?(method_name)
+          subject_class.__send__(:remove_method, method_name)
+        end
+      end
+    end
 
-          if @performed_deferred_bind
-            subject_class.__send__(:remove_method, @method_name)
-          end
-        else
-          subject_class.__send__(:remove_method, @method_name)
+    def reset_singleton_method_added
+      if @deferred_bind
+        me = self
+        subject_class.class_eval do
+          alias_method :singleton_method_added, me.send(:original_singleton_method_added_alias_name)
+          remove_method me.send(:original_singleton_method_added_alias_name)
         end
       end
     end
@@ -86,7 +91,7 @@ module RR
       subject_respond_to_method?(original_method_alias_name)
     end
 
-    def call_method(args, block)
+    def dispatch_method(args, block)
       DoubleInjectionDispatch.new(self, args, block).call
     end
 
@@ -95,19 +100,12 @@ module RR
     end
 
     def call_method_missing(args, block)
-      if @deferred_bind
-        return_value = subject.__send__(:method_missing, method_name, *args, &block)
-        deferred_bind_method
-        return_value
-      else
-        subject.__send__(:method_missing, method_name, *args, &block)
-      end
+      subject.__send__(:method_missing, method_name, *args, &block)
     end
 
     protected
     def deferred_bind_method
       bind_method_with_alias
-      @deferred_bind = nil
       @performed_deferred_bind = true
     end
 
@@ -120,7 +118,7 @@ module RR
       returns_method = <<-METHOD
         def #{@method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
-          RR::Space.double_injection(self, :#{@method_name}).call_method(arguments.arguments, arguments.block)
+          RR::Space.double_injection(self, :#{@method_name}).dispatch_method(arguments.arguments, arguments.block)
         end
       METHOD
       subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)

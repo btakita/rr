@@ -238,16 +238,18 @@ module RR
                 end
 
                 describe "being reset" do
-                  before do
-                    RR::Space.reset_double(subject, :foobar)
-                  end
+                  context "when reset before being called" do
+                    before do
+                      RR::Space.reset_double(subject, :foobar)
+                    end
 
-                  it "rebinds the original method" do
-                    subject.foobar.should == :original_foobar
-                  end
+                    it "rebinds the original method" do
+                      subject.foobar.should == :original_foobar
+                    end
 
-                  it "removes __rr__original_{method_name}" do
-                    subject.should_not respond_to(:__rr__original_foobar)
+                    it "removes __rr__original_{method_name}" do
+                      subject.should_not respond_to(:__rr__original_foobar)
+                    end
                   end
                 end
               end
