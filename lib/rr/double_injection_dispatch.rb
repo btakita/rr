@@ -15,8 +15,8 @@ module RR
         double.method_call(args)
         call_yields
         return_value = call_implementation
-        if definition.after_call_proc
-          extract_subject_from_return_value(definition.after_call_proc.call(return_value))
+        if after_call_proc
+          extract_subject_from_return_value(after_call_proc.call(return_value))
         else
           return_value
         end
@@ -131,6 +131,10 @@ module RR
 
     def subject_has_original_method?
       double_injection.subject_has_original_method?
+    end
+
+    def after_call_proc
+      definition.after_call_proc
     end
 
     def subject
