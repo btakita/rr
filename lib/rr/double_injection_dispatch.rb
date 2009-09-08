@@ -12,7 +12,14 @@ module RR
     def call
       space.record_call(subject, method_name, args, block)
       if double
-        call_double
+        double.method_call(args)
+        call_yields
+        return_value = call_implementation
+        if definition.after_call_proc
+          extract_subject_from_return_value(definition.after_call_proc.call(return_value))
+        else
+          return_value
+        end
       else
         double_not_found_error
       end
@@ -43,13 +50,6 @@ module RR
       end
 
       return nil
-    end
-
-    def call_double
-      double.method_call(args)
-      call_yields
-      return_value = call_implementation
-      definition.after_call_proc ? extract_subject_from_return_value(definition.after_call_proc.call(return_value)) : return_value
     end
 
     def call_yields
