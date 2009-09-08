@@ -14,7 +14,7 @@ module RR
       if double
         double.method_call(args)
         call_yields
-        return_value = call_implementation
+        return_value = extract_subject_from_return_value(call_implementation)
         if after_call_proc
           extract_subject_from_return_value(after_call_proc.call(return_value))
         else
@@ -63,8 +63,7 @@ module RR
     end
 
     def call_implementation
-      return_value = get_implementation_return_value
-      extract_subject_from_return_value(return_value)
+      get_implementation_return_value
     end
 
     def get_implementation_return_value

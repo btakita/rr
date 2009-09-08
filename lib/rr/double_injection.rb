@@ -87,12 +87,12 @@ module RR
       end
     end
 
-    def subject_has_original_method?
-      subject_respond_to_method?(original_method_alias_name)
-    end
-
     def dispatch_method(args, block)
       DoubleInjectionDispatch.new(self, args, block).call
+    end
+
+    def subject_has_original_method?
+      subject_respond_to_method?(original_method_alias_name)
     end
 
     def original_method_alias_name
