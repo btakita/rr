@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{rr}
+  s.name = %q{redinger-rr}
   s.version = "0.10.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
@@ -55,6 +55,9 @@ Gem::Specification.new do |s|
      "lib/rr/expectations/any_argument_expectation.rb",
      "lib/rr/expectations/argument_equality_expectation.rb",
      "lib/rr/expectations/times_called_expectation.rb",
+     "lib/rr/method_dispatches/base_method_dispatch.rb",
+     "lib/rr/method_dispatches/method_dispatch.rb",
+     "lib/rr/method_dispatches/method_missing_dispatch.rb",
      "lib/rr/hash_with_object_id_key.rb",
      "lib/rr/proc_from_block.rb",
      "lib/rr/recorded_calls.rb",
