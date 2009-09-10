@@ -30,6 +30,10 @@ module RR
           bind_method_with_alias
         else
           me = self
+
+          subject_class.__send__(:alias_method, original_method_missing_alias_name, :method_missing)
+          bind_method_missing
+
           subject_class.__send__(:alias_method, original_singleton_method_added_alias_name, :singleton_method_added)
           subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
             if method_name_arg.to_sym == me.method_name.to_sym
@@ -58,6 +62,7 @@ module RR
     # if one exists.
     def reset
       reset_bound_method
+      reset_method_missing
       reset_singleton_method_added
     end
 
@@ -68,6 +73,16 @@ module RR
       else
         if subject_has_method_defined?(method_name)
           subject_class.__send__(:remove_method, method_name)
+        end
+      end
+    end
+
+    def reset_method_missing
+      if subject_has_method_defined?(original_method_missing_alias_name)
+        me = self
+        subject_class.class_eval do
+          alias_method :method_missing, me.send(:original_method_missing_alias_name)
+          remove_method me.send(:original_method_missing_alias_name)
         end
       end
     end
@@ -83,19 +98,43 @@ module RR
     end
 
     def dispatch_method(args, block)
-      MethodDispatches::MethodDispatch.new(self, args, block).call
+      dispatch = MethodDispatches::MethodDispatch.new(self, args, block)
+      if @bypass_bound_method
+        dispatch.call_original_method
+      else
+        dispatch.call
+      end
     end
 
-    def dispatch_method_missing(args, block)
-      MethodDispatches::MethodMissingDispatch.new(self, args, block).call
+    def dispatch_method_missing(method_name, args, block)
+      MethodDispatches::MethodMissingDispatch.new(self, method_name, args, block).call
     end
 
     def subject_has_original_method?
       subject_respond_to_method?(original_method_alias_name)
     end
 
+    def subject_has_original_method_missing?
+      subject_respond_to_method?(original_method_missing_alias_name)
+    end
+
     def original_method_alias_name
       "__rr__original_#{@method_name}"
+    end
+
+    def original_method_missing_alias_name
+      "__rr__original_method_missing"
+    end
+
+    def subject_has_method_defined?(method_name)
+      @subject.methods.include?(method_name.to_s) || @subject.protected_methods.include?(method_name.to_s) || @subject.private_methods.include?(method_name.to_s)
+    end
+
+    def bypass_bound_method
+      @bypass_bound_method = true
+      yield
+    ensure
+      @bypass_bound_method = nil
     end
 
     protected
@@ -123,12 +162,11 @@ module RR
 
     def bind_method_missing
       returns_method = <<-METHOD
-        def #{@method_name}(*args, &block)
-          arguments = MethodArguments.new(args, block)
-          RR::Space.double_injection(self, :#{@method_name}).dispatch_method_missing(arguments.arguments, arguments.block)
+        def method_missing(method_name, *args, &block)
+          RR::Space.double_injection(self, :#{@method_name}).dispatch_method_missing(method_name, args, block)
         end
       METHOD
-      subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
+      subject_class.class_eval(returns_method, __FILE__, __LINE__ - 4)
     end
 
     def original_singleton_method_added_alias_name
@@ -137,10 +175,6 @@ module RR
 
     def subject_respond_to_method?(method_name)
       subject_has_method_defined?(method_name) || @subject.respond_to?(method_name)
-    end
-
-    def subject_has_method_defined?(method_name)
-      @subject.methods.include?(method_name.to_s) || @subject.protected_methods.include?(method_name.to_s) || @subject.private_methods.include?(method_name.to_s)
     end
   end
 end
