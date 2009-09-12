@@ -300,35 +300,82 @@ module RR
       end
 
       context "when the subject does not respond to the injected method" do
-        describe "being bound" do
-          before do
-            @subject = Object.new
-            subject.should_not respond_to(:foobar)
-            subject.methods.should_not include('foobar')
-            stub.proxy(subject).foobar {:new_foobar}
-          end
-
-          it "adds the method to the subject" do
-            subject.should respond_to(:foobar)
-            subject.methods.should include('foobar')
-          end
-
-          describe "being called" do
-            it "raises a NoMethodError" do
-              lambda do
-                subject.foobar
-              end.should raise_error(NoMethodError)
-            end
-          end
-
-          describe "being reset" do
+        context "when the subject responds to the method via method_missing" do
+          describe "being bound" do
             before do
-              RR::Space.reset_double(subject, :foobar)
-            end
-
-            it "unsets the foobar method" do
+              @subject = Object.new
               subject.should_not respond_to(:foobar)
               subject.methods.should_not include('foobar')
+              class << subject
+                def method_missing(method_name, *args, &block)
+                  if method_name == :foobar
+                    :original_foobar
+                  else
+                    super
+                  end
+                end
+              end
+              stub.proxy(subject).foobar {:new_foobar}
+            end
+
+            it "adds the method to the subject" do
+              subject.should respond_to(:foobar)
+              subject.methods.should include('foobar')
+            end
+
+            describe "being called" do
+              it "calls the original method first and sends it into the block" do
+                original_return_value = nil
+                stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                subject.foobar.should == :new_foobar
+                original_return_value.should == :original_foobar
+              end
+            end
+
+            describe "being reset" do
+              before do
+                RR::Space.reset_double(subject, :foobar)
+              end
+
+              it "unsets the foobar method" do
+                subject.should_not respond_to(:foobar)
+                subject.methods.should_not include('foobar')
+              end
+            end
+          end
+        end
+
+        context "when the subject would raise a NoMethodError when the method is called" do
+          describe "being bound" do
+            before do
+              @subject = Object.new
+              subject.should_not respond_to(:foobar)
+              subject.methods.should_not include('foobar')
+              stub.proxy(subject).foobar {:new_foobar}
+            end
+
+            it "adds the method to the subject" do
+              subject.should respond_to(:foobar)
+              subject.methods.should include('foobar')
+            end
+
+            describe "being called" do
+              it "raises a NoMethodError" do
+                lambda do
+                  subject.foobar
+                end.should raise_error(NoMethodError)
+              end
+            end
+
+            describe "being reset" do
+              before do
+                RR::Space.reset_double(subject, :foobar)
+              end
+
+              it "unsets the foobar method" do
+                subject.should_not respond_to(:foobar)
+                subject.methods.should_not include('foobar')
+              end
             end
           end
         end
