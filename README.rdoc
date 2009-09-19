@@ -322,6 +322,7 @@ With any development effort, there are countless people who have contributed
 to making it possible. We all are standing on the shoulders of giants.
 * Andreas Haller for patches
 * Aslak Hellesoy for Developing Rspec
+* Christopher Redinger for patches
 * Dan North for syntax ideas
 * Dave Astels for some BDD inspiration
 * David Chelimsky for encouragement to make the RR framework, for developing the Rspec mock framework, syntax ideas, and patches
