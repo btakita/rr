@@ -19,10 +19,13 @@ module RR
       end
     end
 
-    attr_reader :double_injections, :ordered_doubles, :recorded_calls
+    attr_reader :double_injections, :method_missing_injections, :ordered_doubles, :recorded_calls
     attr_accessor :trim_backtrace
     def initialize
-      @double_injections = HashWithObjectIdKey.new
+      @double_injections = HashWithObjectIdKey.new do |hash, subject_object|
+        hash.set_with_object_id(subject_object, {})
+      end
+      @method_missing_injections = HashWithObjectIdKey.new
       @ordered_doubles = []
       @trim_backtrace = false
       @recorded_calls = RR::RecordedCalls.new
@@ -40,6 +43,16 @@ module RR
 
     def double_injection_exists?(subject, method_name)
       @double_injections.include?(subject) && @double_injections[subject].include?(method_name.to_sym)
+    end
+
+    def method_missing_injection(subject)
+      @method_missing_injections[subject] ||= begin
+        Injections::MethodMissingInjection.new(subject).bind
+      end
+    end
+
+    def method_missing_injection_exists?(subject)
+      @method_missing_injections.include?(subject)
     end
 
     # Registers the ordered Double to be verified.
@@ -80,6 +93,7 @@ module RR
     def reset
       reset_ordered_doubles
       reset_double_injections
+      reset_method_missing_injections
       reset_recorded_calls
     end
 
@@ -114,7 +128,14 @@ module RR
           reset_double(subject, method_name)
         end
       end
-    end  
+    end
+
+    def reset_method_missing_injections
+      @method_missing_injections.each do |subject, injection|
+        injection.reset
+      end
+      @method_missing_injections.clear
+    end
     
     def reset_recorded_calls
       @recorded_calls.clear

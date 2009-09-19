@@ -106,4 +106,8 @@ class Spec::ExampleGroup
       double_definition
     )
   end
+
+  def eigen(object)
+    class << object; self; end
+  end
 end

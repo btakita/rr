@@ -3,11 +3,10 @@ module RR
     # RR::DoubleInjection is the binding of an subject and a method.
     # A double_injection has 0 to many Double objects. Each Double
     # has Argument Expectations and Times called Expectations.
-    class DoubleInjection
-      include Space::Reader
+    class DoubleInjection < Injection
+      attr_reader :subject_class, :method_name, :doubles
 
       MethodArguments = Struct.new(:arguments, :block)
-      attr_reader :subject, :method_name, :doubles, :subject_class
 
       def initialize(subject, method_name, subject_class)
         @subject = subject
@@ -32,17 +31,7 @@ module RR
           else
             me = self
 
-            unless subject.respond_to?(original_method_missing_alias_name)
-              unless subject.respond_to?(:method_missing)
-                subject_class.class_eval do
-                  def method_missing(method_name, *args, &block)
-                    super
-                  end
-                end
-              end
-              subject_class.__send__(:alias_method, original_method_missing_alias_name, :method_missing)
-              bind_method_missing
-            end
+            space.method_missing_injection(subject)
 
             unless subject.respond_to?(original_singleton_method_added_alias_name)
               unless subject.respond_to?(:singleton_method_added)
@@ -129,10 +118,6 @@ module RR
         MethodDispatches::MethodMissingDispatch.new(subject, method_name, args, block).call
       end
 
-      def subject_has_original_method?
-        subject_respond_to_method?(original_method_alias_name)
-      end
-
       def subject_has_original_method_missing?
         subject_respond_to_method?(original_method_missing_alias_name)
       end
@@ -143,10 +128,6 @@ module RR
 
       def original_method_missing_alias_name
         MethodDispatches::MethodMissingDispatch.original_method_missing_alias_name
-      end
-
-      def subject_has_method_defined?(method_name)
-        @subject.methods.include?(method_name.to_s) || @subject.protected_methods.include?(method_name.to_s) || @subject.private_methods.include?(method_name.to_s)
       end
 
       def bypass_bound_method
@@ -190,10 +171,6 @@ module RR
 
       def original_singleton_method_added_alias_name
         "__rr__original_singleton_method_added"
-      end
-
-      def subject_respond_to_method?(method_name)
-        subject_has_method_defined?(method_name) || @subject.respond_to?(method_name)
       end
     end
   end

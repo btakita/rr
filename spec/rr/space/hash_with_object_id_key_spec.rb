@@ -48,7 +48,7 @@ module RR
 
       it "removes the object from the hash" do
         @hash.delete(@key)
-        @hash[@key].should == {}
+        @hash[@key].should be_nil
       end
 
       it "removes the object from the keys hash" do

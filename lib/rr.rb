@@ -15,7 +15,9 @@ require "#{dir}/rr/errors/spy_verification_errors/double_injection_not_found_err
 require "#{dir}/rr/errors/spy_verification_errors/invocation_count_error"
 
 require "#{dir}/rr/space"
+require "#{dir}/rr/injections/injection"
 require "#{dir}/rr/injections/double_injection"
+require "#{dir}/rr/injections/method_missing_injection"
 require "#{dir}/rr/method_dispatches/base_method_dispatch"
 require "#{dir}/rr/method_dispatches/method_dispatch"
 require "#{dir}/rr/method_dispatches/method_missing_dispatch"

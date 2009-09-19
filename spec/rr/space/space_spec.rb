@@ -12,7 +12,10 @@ module RR
     describe ".method_missing" do
       it "proxies to a singleton instance of Space" do
         create_double_args = nil
-        (class << space; self; end).class_eval do
+        (
+        class << space;
+          self;
+        end).class_eval do
           define_method :double_injection do |*args|
             create_double_args = args
           end
@@ -22,16 +25,16 @@ module RR
         create_double_args.should == [:foo, :bar]
       end
     end
-    
+
     describe "#record_call" do
-      it "should add a call to the list"  do
+      it "should add a call to the list" do
         object = Object.new
         block = lambda {}
-        space.record_call(object,:to_s,[], block)
-        space.recorded_calls.should == RR::RecordedCalls.new([[object,:to_s,[], block]])
+        space.record_call(object, :to_s, [], block)
+        space.recorded_calls.should == RR::RecordedCalls.new([[object, :to_s, [], block]])
       end
     end
-    
+
     describe "#double_injection" do
       context "when existing subject == but not === with the same method name" do
         it "creates a new DoubleInjection" do
@@ -52,6 +55,7 @@ module RR
           def subject.foobar(*args)
             :original_foobar
           end
+
           @method_name = :foobar
         end
 
@@ -75,7 +79,7 @@ module RR
 
         it "overrides the method when passing a block" do
           original_method = subject.method(:foobar)
-          double_injection = space.double_injection(subject, method_name)
+          space.double_injection(subject, method_name)
           subject.method(:foobar).should_not == original_method
         end
       end
@@ -85,12 +89,12 @@ module RR
           def subject.foobar(*args)
             :original_foobar
           end
+
           @method_name = :foobar
         end
 
         context "when a DoubleInjection is registered for the subject and method_name" do
           it "returns the existing DoubleInjection" do
-            original_foobar_method = subject.method(:foobar)
             @double_injection = space.double_injection(subject, 'foobar')
 
             double_injection.subject_has_original_method?.should be_true
@@ -104,21 +108,55 @@ module RR
       end
     end
 
-#    describe "#method_missing_injection" do
-#      context "when existing subject == but not === with the same method name" do
-#        it "creates a new DoubleInjection" do
-#          subject_1 = []
-#          subject_2 = []
-#          (subject_1 === subject_2).should be_true
-#          subject_1.__id__.should_not == subject_2.__id__
-#
-#          injection_1 = space.method_missing_injection(subject_1, :foobar)
-#          injection_2 = space.method_missing_injection(subject_2, :foobar)
-#
-#          injection_1.should_not == injection_2
-#        end
-#      end
-#    end  
+    describe "#method_missing_injection" do
+      context "when existing subject == but not === with the same method name" do
+        it "creates a new DoubleInjection" do
+          subject_1 = []
+          subject_2 = []
+          (subject_1 === subject_2).should be_true
+          subject_1.__id__.should_not == subject_2.__id__
+
+          injection_1 = space.method_missing_injection(subject_1)
+          injection_2 = space.method_missing_injection(subject_2)
+
+          injection_1.should_not == injection_2
+        end
+      end
+
+      context "when a DoubleInjection is not registered for the subject and method_name" do
+        before do
+          def subject.method_missing(method_name, *args, &block)
+            :original_method_missing
+          end
+        end
+
+        it "overrides the method when passing a block" do
+          original_method = subject.method(:method_missing)
+          space.method_missing_injection(subject)
+          subject.method(:method_missing).should_not == original_method
+        end
+      end
+
+      context "when double_injection exists" do
+        before do
+          def subject.method_missing(method_name, *args, &block)
+            :original_method_missing
+          end
+        end
+
+        context "when a DoubleInjection is registered for the subject and method_name" do
+          it "returns the existing DoubleInjection" do
+            injection = space.method_missing_injection(subject)
+            injection.subject_has_original_method?.should be_true
+
+            space.method_missing_injection(subject).should === injection
+
+            injection.reset
+            subject.method_missing(:foobar).should == :original_method_missing
+          end
+        end
+      end
+    end
 
     describe "#reset" do
       attr_reader :subject_1, :subject_2
@@ -127,11 +165,11 @@ module RR
         @subject_2 = Object.new
         @method_name = :foobar
       end
-      
+
       it "should clear the #recorded_calls" do
         object = Object.new
-        space.record_call(object,:to_s,[], nil)
-        
+        space.record_call(object, :to_s, [], nil)
+
         space.reset
         space.recorded_calls.should == RR::RecordedCalls.new([])
       end
@@ -155,36 +193,52 @@ module RR
       end
 
       it "resets all double_injections" do
-        double_1 = space.double_injection(subject_1, method_name)
-        double_1_reset_call_count = 0
-        (
-        class << double_1;
-          self;
-        end).class_eval do
-          define_method(:reset) do ||
-            double_1_reset_call_count += 1
-          end
-        end
-        double_2 = space.double_injection(subject_2, method_name)
-        double_2_reset_call_count = 0
-        (
-        class << double_2;
-          self;
-        end).class_eval do
-          define_method(:reset) do ||
-            double_2_reset_call_count += 1
-          end
-        end
+        subject_1.respond_to?(method_name).should be_false
+        subject_2.respond_to?(method_name).should be_false
+
+        space.double_injection(subject_1, method_name)
+        space.double_injection_exists?(subject_1, method_name).should be_true
+        subject_1.respond_to?(method_name).should be_true
+
+        space.double_injection(subject_2, method_name)
+        space.double_injection_exists?(subject_2, method_name).should be_true
+        subject_2.respond_to?(method_name).should be_true
 
         space.reset
-        double_1_reset_call_count.should == 1
-        double_2_reset_call_count.should == 1
+
+        subject_1.respond_to?(method_name).should be_false
+        space.double_injection_exists?(subject_1, method_name).should be_false
+
+        subject_2.respond_to?(method_name).should be_false
+        space.double_injection_exists?(subject_2, method_name).should be_false
+      end
+
+      it "resets all method_missing_injections" do
+        subject_1.respond_to?(:method_missing).should be_false
+        subject_2.respond_to?(:method_missing).should be_false
+
+        space.method_missing_injection(subject_1)
+        space.method_missing_injection_exists?(subject_1).should be_true
+        subject_1.respond_to?(:method_missing).should be_true
+
+        space.method_missing_injection(subject_2)
+        space.method_missing_injection_exists?(subject_2).should be_true
+        subject_2.respond_to?(:method_missing).should be_true
+
+        space.reset
+
+        subject_1.respond_to?(:method_missing).should be_false
+        space.method_missing_injection_exists?(subject_1).should be_false
+
+        subject_2.respond_to?(:method_missing).should be_false
+        space.method_missing_injection_exists?(subject_2).should be_false
       end
     end
 
     describe "#reset_double" do
       before do
         @method_name = :foobar
+
         def subject.foobar
         end
       end
@@ -232,14 +286,20 @@ module RR
       it "resets the double_injection and removes it from the double_injections list" do
         double_injection_1 = space.double_injection(subject_1, method_name)
         double_1_reset_call_count = 0
-        (class << double_injection_1; self; end).class_eval do
+        (
+        class << double_injection_1;
+          self;
+        end).class_eval do
           define_method(:reset) do
             double_1_reset_call_count += 1
           end
         end
         double_injection_2 = space.double_injection(subject_2, method_name)
         double_2_reset_call_count = 0
-        (class << double_injection_2; self; end).class_eval do
+        (
+        class << double_injection_2;
+          self;
+        end).class_eval do
           define_method(:reset) do
             double_2_reset_call_count += 1
           end
@@ -286,7 +346,10 @@ module RR
         it "verifies and deletes the double_injections" do
           double_1_verify_call_count = 0
           double_1_reset_call_count = 0
-          (class << double_1; self; end).class_eval do
+          (
+          class << double_1;
+            self;
+          end).class_eval do
             define_method(:verify) do
               double_1_verify_call_count += 1
             end
@@ -297,7 +360,10 @@ module RR
 
           double_2_verify_call_count = 0
           double_2_reset_call_count = 0
-          (class << double_2; self; end).class_eval do
+          (
+          class << double_2;
+            self;
+          end).class_eval do
             define_method(:verify) do
               double_2_verify_call_count += 1
             end
@@ -318,7 +384,10 @@ module RR
         it "verifies all Doubles injected into the Object" do
           double_1_verify_call_count = 0
           double_1_reset_call_count = 0
-          (class << double_1; self; end).class_eval do
+          (
+          class << double_1;
+            self;
+          end).class_eval do
             define_method(:verify) do
               double_1_verify_call_count += 1
             end
@@ -329,7 +398,10 @@ module RR
 
           double_2_verify_call_count = 0
           double_2_reset_call_count = 0
-          (class << double_2; self; end).class_eval do
+          (
+          class << double_2;
+            self;
+          end).class_eval do
             define_method(:verify) do
               double_2_verify_call_count += 1
             end
@@ -351,7 +423,10 @@ module RR
         it "verifies the Doubles injected into all of the Objects" do
           double_1_verify_call_count = 0
           double_1_reset_call_count = 0
-          (class << double_1; self; end).class_eval do
+          (
+          class << double_1;
+            self;
+          end).class_eval do
             define_method(:verify) do
               double_1_verify_call_count += 1
             end
@@ -362,7 +437,10 @@ module RR
 
           double_2_verify_call_count = 0
           double_2_reset_call_count = 0
-          (class << double_2; self; end).class_eval do
+          (
+          class << double_2;
+            self;
+          end).class_eval do
             define_method(:verify) do
               double_2_verify_call_count += 1
             end
@@ -373,7 +451,10 @@ module RR
 
           double3_verify_call_count = 0
           double3_reset_call_count = 0
-          (class << double3; self; end).class_eval do
+          (
+          class << double3;
+            self;
+          end).class_eval do
             define_method(:verify) do
               double3_verify_call_count += 1
             end
@@ -397,7 +478,10 @@ module RR
         it "does not raise an error" do
           double_1_verify_call_count = 0
           double_1_reset_call_count = 0
-          (class << double_1; self; end).class_eval do
+          (
+          class << double_1;
+            self;
+          end).class_eval do
             define_method(:verify) do
               double_1_verify_call_count += 1
             end
@@ -408,7 +492,10 @@ module RR
 
           double_2_verify_call_count = 0
           double_2_reset_call_count = 0
-          (class << double_2; self; end).class_eval do
+          (
+          class << double_2;
+            self;
+          end).class_eval do
             define_method(:verify) do
               double_2_verify_call_count += 1
             end
@@ -419,7 +506,10 @@ module RR
 
           double3_verify_call_count = 0
           double3_reset_call_count = 0
-          (class << double3; self; end).class_eval do
+          (
+          class << double3;
+            self;
+          end).class_eval do
             define_method(:verify) do
               double3_verify_call_count += 1
             end
@@ -444,6 +534,7 @@ module RR
     describe "#verify_double" do
       before do
         @method_name = :foobar
+
         def subject.foobar
         end
       end
@@ -453,7 +544,10 @@ module RR
         space.double_injections[subject][method_name].should === double_injection
 
         verify_call_count = 0
-        (class << double_injection; self; end).class_eval do
+        (
+        class << double_injection;
+          self;
+        end).class_eval do
           define_method(:verify) do
             verify_call_count += 1
           end
@@ -474,7 +568,10 @@ module RR
           space.double_injections[subject][method_name].should === double_injection
 
           verify_called = true
-          (class << double_injection; self; end).class_eval do
+          (
+          class << double_injection;
+            self;
+          end).class_eval do
             define_method(:verify) do
               verify_called = true
               raise "An Error"
@@ -506,8 +603,8 @@ module RR
           lambda do
             space.verify_ordered_double(double)
           end.should raise_error(
-          Errors::DoubleOrderError,
-          "Ordered Doubles cannot have a NonTerminal TimesCalledExpectation"
+            Errors::DoubleOrderError,
+            "Ordered Doubles cannot have a NonTerminal TimesCalledExpectation"
           )
         end
       end
@@ -551,8 +648,8 @@ module RR
           end.should raise_error(
             Errors::DoubleOrderError,
             "foobar() called out of order in list\n" <<
-            "- foobar()\n" <<
-            "- foobar()"
+              "- foobar()\n" <<
+              "- foobar()"
           )
         end
 
