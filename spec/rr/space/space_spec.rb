@@ -47,7 +47,7 @@ module RR
         end
       end
 
-      context "when double_injection does not exist" do
+      context "when a DoubleInjection is not registered for the subject and method_name" do
         before do
           def subject.foobar(*args)
             :original_foobar
@@ -57,7 +57,7 @@ module RR
 
         context "when method_name is a symbol" do
           it "returns double_injection and adds double_injection to double_injection list" do
-            @double_injection = space.double_injection(subject, method_name)
+            double_injection = space.double_injection(subject, method_name)
             space.double_injection(subject, method_name).should === double_injection
             double_injection.subject.should === subject
             double_injection.method_name.should === method_name
@@ -66,7 +66,7 @@ module RR
 
         context "when method_name is a string" do
           it "returns double_injection and adds double_injection to double_injection list" do
-            @double_injection = space.double_injection(subject, 'foobar')
+            double_injection = space.double_injection(subject, 'foobar')
             space.double_injection(subject, method_name).should === double_injection
             double_injection.subject.should === subject
             double_injection.method_name.should === method_name
@@ -88,16 +88,18 @@ module RR
           @method_name = :foobar
         end
 
-        it "returns the existing double_injection" do
-          original_foobar_method = subject.method(:foobar)
-          @double_injection = space.double_injection(subject, 'foobar')
+        context "when a DoubleInjection is registered for the subject and method_name" do
+          it "returns the existing DoubleInjection" do
+            original_foobar_method = subject.method(:foobar)
+            @double_injection = space.double_injection(subject, 'foobar')
 
-          double_injection.subject_has_original_method?.should be_true
+            double_injection.subject_has_original_method?.should be_true
 
-          space.double_injection(subject, 'foobar').should === double_injection
+            space.double_injection(subject, 'foobar').should === double_injection
 
-          double_injection.reset
-          subject.foobar.should == :original_foobar
+            double_injection.reset
+            subject.foobar.should == :original_foobar
+          end
         end
       end
     end
