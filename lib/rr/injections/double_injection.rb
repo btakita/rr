@@ -70,7 +70,6 @@ module RR
       # if one exists.
       def reset
         reset_bound_method
-        reset_method_missing
         reset_singleton_method_added
       end
 
@@ -81,16 +80,6 @@ module RR
         else
           if subject_has_method_defined?(method_name)
             subject_class.__send__(:remove_method, method_name)
-          end
-        end
-      end
-
-      def reset_method_missing
-        if subject_has_method_defined?(original_method_missing_alias_name)
-          me = self
-          subject_class.class_eval do
-            alias_method :method_missing, me.send(:original_method_missing_alias_name)
-            remove_method me.send(:original_method_missing_alias_name)
           end
         end
       end
