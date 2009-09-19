@@ -31,17 +31,35 @@ module RR
         else
           me = self
 
-          subject_class.__send__(:alias_method, original_method_missing_alias_name, :method_missing)
-          bind_method_missing
-
-          subject_class.__send__(:alias_method, original_singleton_method_added_alias_name, :singleton_method_added)
-          subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
-            if method_name_arg.to_sym == me.method_name.to_sym
-              me.send(:deferred_bind_method)
+          unless subject.respond_to?(original_method_missing_alias_name)
+            unless subject.respond_to?(:method_missing)
+              subject_class.class_eval do
+                def method_missing(method_name, *args, &block)
+                  super
+                end
+              end
             end
-            send(me.send(:original_singleton_method_added_alias_name), method_name_arg)
+            subject_class.__send__(:alias_method, original_method_missing_alias_name, :method_missing)
+            bind_method_missing
           end
-          @deferred_bind = true
+
+          unless subject.respond_to?(original_singleton_method_added_alias_name)
+            unless subject.respond_to?(:singleton_method_added)
+              subject_class.class_eval do
+                def singleton_method_added(method_name)
+                  super
+                end
+              end
+            end
+
+            subject_class.__send__(:alias_method, original_singleton_method_added_alias_name, :singleton_method_added)
+            subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
+              if me.space.double_injection_exists?(me.subject, method_name_arg)
+                me.space.double_injection(me.subject, method_name_arg).send(:deferred_bind_method)
+              end
+              send(me.send(:original_singleton_method_added_alias_name), method_name_arg)
+            end
+          end
         end
       else
         bind_method
@@ -56,8 +74,8 @@ module RR
         double.verify
       end
     end
-
     # RR::DoubleInjection#reset removes the injected dispatcher method.
+
     # It binds the original method implementation on the subject
     # if one exists.
     def reset
@@ -88,7 +106,7 @@ module RR
     end
 
     def reset_singleton_method_added
-      if @deferred_bind
+      if subject.respond_to?(original_singleton_method_added_alias_name)
         me = self
         subject_class.class_eval do
           alias_method :singleton_method_added, me.send(:original_singleton_method_added_alias_name)
@@ -107,7 +125,7 @@ module RR
     end
 
     def dispatch_method_missing(method_name, args, block)
-      MethodDispatches::MethodMissingDispatch.new(self, method_name, args, block).call
+      MethodDispatches::MethodMissingDispatch.new(subject, method_name, args, block).call
     end
 
     def subject_has_original_method?
@@ -123,7 +141,7 @@ module RR
     end
 
     def original_method_missing_alias_name
-      "__rr__original_method_missing"
+      MethodDispatches::MethodMissingDispatch.original_method_missing_alias_name
     end
 
     def subject_has_method_defined?(method_name)
