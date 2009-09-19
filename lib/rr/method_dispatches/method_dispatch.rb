@@ -1,6 +1,7 @@
 module RR
   module MethodDispatches
     class MethodDispatch < BaseMethodDispatch
+      attr_reader :double_injection
       def initialize(double_injection, args, block)
         @double_injection, @args, @block = double_injection, args, block
         @double = find_double_to_attempt

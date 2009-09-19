@@ -3,7 +3,7 @@ module RR
     class BaseMethodDispatch
       include Space::Reader
 
-      attr_reader :double_injection, :args, :block, :double
+      attr_reader :args, :block, :double
 
       def call
         raise NotImplementedError

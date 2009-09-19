@@ -1,14 +1,19 @@
 module RR
   module MethodDispatches
     class MethodMissingDispatch < BaseMethodDispatch
-      attr_reader :method_name
-      def initialize(double_injection, method_name, args, block)
-        @double_injection, @args, @block = double_injection, args, block
-        @method_name = method_name
+      class << self
+        def original_method_missing_alias_name
+          "__rr__original_method_missing"
+        end
+      end
+
+      attr_reader :subject, :method_name
+      def initialize(subject, method_name, args, block)
+        @subject, @method_name, @args, @block = subject, method_name, args, block
       end
 
       def call
-        if double_injection.method_name == method_name
+        if space.double_injection_exists?(subject, method_name)
           space.record_call(subject, method_name, args, block)
           @double = find_double_to_attempt
 
@@ -36,13 +41,12 @@ module RR
       end
 
       protected
-
-      def original_method_missing_alias_name
-        double_injection.original_method_missing_alias_name
+      def double_injection
+        space.double_injection(subject, method_name)
       end
 
-      def subject
-        double_injection.subject
+      def original_method_missing_alias_name
+        self.class.original_method_missing_alias_name
       end
     end
   end
