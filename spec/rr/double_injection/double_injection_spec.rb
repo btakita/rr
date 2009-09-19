@@ -93,6 +93,18 @@ module RR
           end
         end
       end
+
+      context "when the subject redefines respond_to?" do
+        it "does not try to call the implementation" do
+          class << subject
+            def respond_to?(method_symbol, include_private = false)
+              method_symbol == :foobar
+            end
+          end
+          mock(@subject).foobar
+          @subject.foobar.should == nil
+        end
+      end
     end
 
     describe "mock/stub + proxy" do
