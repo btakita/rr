@@ -1,6 +1,7 @@
 module RR
   module MethodDispatches
     class BaseMethodDispatch
+      extend Forwardable
       include Space::Reader
 
       attr_reader :args, :block, :double
@@ -75,17 +76,9 @@ module RR
         raise Errors::DoubleNotFoundError, message
       end
 
-      def after_call_proc
-        definition.after_call_proc
-      end
-
-      def definition
-        double.definition
-      end
-
-      def doubles
-        double_injection.doubles
-      end
+      def_delegators :definition, :after_call_proc
+      def_delegators :double, :definition
+      def_delegators :double_injection, :doubles
     end
   end
 end

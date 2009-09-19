@@ -51,29 +51,8 @@ module RR
         end
       end
 
-      def implementation
-        definition.implementation
-      end
-
-      def subject_has_original_method?
-        double_injection.subject_has_original_method?
-      end
-
-      def subject_has_original_method_missing?
-        double_injection.subject_has_original_method_missing?
-      end
-
-      def subject
-        double_injection.subject
-      end
-
-      def method_name
-        double_injection.method_name
-      end
-
-      def original_method_alias_name
-        double_injection.original_method_alias_name
-      end
+      def_delegators :definition, :implementation
+      def_delegators :double_injection, :subject_has_original_method?, :subject_has_original_method_missing?, :subject, :method_name, :original_method_alias_name
     end
   end
 end

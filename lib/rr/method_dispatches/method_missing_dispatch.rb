@@ -53,9 +53,7 @@ module RR
         space.double_injection(subject, method_name)
       end
 
-      def original_method_missing_alias_name
-        self.class.original_method_missing_alias_name
-      end
+      def_delegators 'self.class', :original_method_missing_alias_name
     end
   end
 end
