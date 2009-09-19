@@ -50,7 +50,7 @@ module RR
         if implementation_is_original_method?
           call_original_method
         else
-          if implementation
+          if defined?(implementation) && implementation
             if implementation.is_a?(Method)
               implementation.call(*args, &block)
             else
