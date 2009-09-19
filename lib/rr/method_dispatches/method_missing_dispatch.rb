@@ -41,6 +41,14 @@ module RR
       end
 
       protected
+      def call_implementation
+        if implementation_is_original_method?
+          call_original_method
+        else
+          nil
+        end
+      end
+
       def double_injection
         space.double_injection(subject, method_name)
       end

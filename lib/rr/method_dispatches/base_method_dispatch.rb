@@ -46,23 +46,6 @@ module RR
         end
       end
 
-      def call_implementation
-        if implementation_is_original_method?
-          call_original_method
-        else
-          if defined?(implementation) && implementation
-            if implementation.is_a?(Method)
-              implementation.call(*args, &block)
-            else
-              call_args = block ? args + [ProcFromBlock.new(&block)] : args
-              implementation.call(*call_args)
-            end
-          else
-            nil
-          end
-        end
-      end
-
       def call_original_method_missing
         subject.__send__(original_method_missing_alias_name, method_name, *args, &block)
       end

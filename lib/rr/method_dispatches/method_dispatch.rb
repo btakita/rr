@@ -34,6 +34,23 @@ module RR
       end
 
       protected
+      def call_implementation
+        if implementation_is_original_method?
+          call_original_method
+        else
+          if implementation
+            if implementation.is_a?(Method)
+              implementation.call(*args, &block)
+            else
+              call_args = block ? args + [ProcFromBlock.new(&block)] : args
+              implementation.call(*call_args)
+            end
+          else
+            nil
+          end
+        end
+      end
+
       def implementation
         definition.implementation
       end
