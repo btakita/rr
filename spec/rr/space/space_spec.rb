@@ -40,10 +40,10 @@ module RR
           (subject_1 === subject_2).should be_true
           subject_1.__id__.should_not == subject_2.__id__
 
-          double_1 = space.double_injection(subject_1, :foobar)
-          double_2 = space.double_injection(subject_2, :foobar)
+          injection_1 = space.double_injection(subject_1, :foobar)
+          injection_2 = space.double_injection(subject_2, :foobar)
 
-          double_1.should_not == double_2
+          injection_1.should_not == injection_2
         end
       end
 
@@ -103,6 +103,22 @@ module RR
         end
       end
     end
+
+#    describe "#method_missing_injection" do
+#      context "when existing subject == but not === with the same method name" do
+#        it "creates a new DoubleInjection" do
+#          subject_1 = []
+#          subject_2 = []
+#          (subject_1 === subject_2).should be_true
+#          subject_1.__id__.should_not == subject_2.__id__
+#
+#          injection_1 = space.method_missing_injection(subject_1, :foobar)
+#          injection_2 = space.method_missing_injection(subject_2, :foobar)
+#
+#          injection_1.should_not == injection_2
+#        end
+#      end
+#    end  
 
     describe "#reset" do
       attr_reader :subject_1, :subject_2

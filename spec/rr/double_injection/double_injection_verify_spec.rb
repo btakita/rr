@@ -1,7 +1,7 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
 module RR
-  module DoubleDefinitions
+  module Injections
     describe DoubleInjection, "#verify" do
       it_should_behave_like "Swapped Space"
       attr_reader :space, :subject, :method_name, :double_injection
@@ -15,7 +15,7 @@ module RR
       it "verifies each double was met" do
         double = Double.new(
           double_injection,
-          DoubleDefinition.new(DoubleDefinitions::DoubleDefinitionCreator.new, subject)
+          DoubleDefinitions::DoubleDefinition.new(DoubleDefinitions::DoubleDefinitionCreator.new, subject)
         )
         double_injection.register_double double
 
@@ -24,6 +24,6 @@ module RR
         subject.foobar(1)
         lambda {double_injection.verify}.should_not raise_error
       end
-    end    
+    end
   end
 end

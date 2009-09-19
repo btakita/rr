@@ -34,7 +34,7 @@ module RR
     # subject.
     def double_injection(subject, method_name)
       @double_injections[subject][method_name.to_sym] ||= begin
-        DoubleInjection.new(subject, method_name.to_sym, (class << subject; self; end)).bind
+        Injections::DoubleInjection.new(subject, method_name.to_sym, (class << subject; self; end)).bind
       end
     end
 
