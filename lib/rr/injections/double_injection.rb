@@ -76,6 +76,7 @@ module RR
 
       def reset_bound_method
         if subject_has_original_method?
+          subject_class.__send__(:remove_method, method_name)
           subject_class.__send__(:alias_method, method_name, original_method_alias_name)
           subject_class.__send__(:remove_method, original_method_alias_name)
         else
