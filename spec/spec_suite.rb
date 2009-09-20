@@ -6,15 +6,15 @@ class ExampleSuite
   end
 
   def run_core_examples
-    system("ruby #{dir}/core_spec_suite.rb #{spec_opts}") || raise("Core suite Failed")
+    system("ruby -W #{dir}/core_spec_suite.rb #{spec_opts}") || raise("Core suite Failed")
   end
 
   def run_rspec_examples
-    system("ruby #{dir}/rspec_spec_suite.rb #{spec_opts}") || raise("Rspec suite Failed")
+    system("ruby -W #{dir}/rspec_spec_suite.rb #{spec_opts}") || raise("Rspec suite Failed")
   end
 
   def run_test_unit_examples
-    system("ruby #{dir}/test_unit_spec_suite.rb") || raise("Test::Unit suite Failed")
+    system("ruby -W #{dir}/test_unit_spec_suite.rb") || raise("Test::Unit suite Failed")
   end
 
   def spec_opts
