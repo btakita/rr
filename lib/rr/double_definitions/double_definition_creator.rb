@@ -52,7 +52,6 @@ module RR
       end
 
       attr_reader :subject, 
-                  :method_name, 
                   :args, :handler, 
                   :definition, 
                   :verification_strategy, 
