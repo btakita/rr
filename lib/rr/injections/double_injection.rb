@@ -13,6 +13,7 @@ module RR
         @subject_class = subject_class
         @method_name = method_name.to_sym
         @doubles = []
+        @bypass_bound_method = nil
       end
 
       # RR::DoubleInjection#register_double adds the passed in Double
