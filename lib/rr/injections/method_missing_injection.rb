@@ -8,7 +8,7 @@ module RR
       def bind
         unless subject.respond_to?(original_method_alias_name)
           unless subject.respond_to?(:method_missing)
-            @defined_placeholder_method_missing = true
+            @placeholder_method_defined = true
             subject_class.class_eval do
               def method_missing(method_name, *args, &block)
                 super
@@ -24,9 +24,9 @@ module RR
       def reset
         if subject_has_method_defined?(original_method_alias_name)
           memoized_original_method_alias_name = original_method_alias_name
-          defined_placeholder_method_missing = @defined_placeholder_method_missing
+          placeholder_method_defined = @placeholder_method_defined
           subject_class.class_eval do
-            if defined_placeholder_method_missing
+            if placeholder_method_defined
               remove_method :method_missing
             else
               alias_method :method_missing, memoized_original_method_alias_name

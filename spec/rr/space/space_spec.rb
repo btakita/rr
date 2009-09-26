@@ -283,6 +283,27 @@ module RR
         subject_2.respond_to?(:method_missing).should be_false
         space.method_missing_injection_exists?(subject_2).should be_false
       end
+
+      it "resets all singleton_method_added_injections" do
+        subject_1.respond_to?(:singleton_method_added).should be_false
+        subject_2.respond_to?(:singleton_method_added).should be_false
+
+        space.singleton_method_added_injection(subject_1)
+        space.singleton_method_added_injection_exists?(subject_1).should be_true
+        subject_1.respond_to?(:singleton_method_added).should be_true
+
+        space.singleton_method_added_injection(subject_2)
+        space.singleton_method_added_injection_exists?(subject_2).should be_true
+        subject_2.respond_to?(:singleton_method_added).should be_true
+
+        space.reset
+
+        subject_1.respond_to?(:singleton_method_added).should be_false
+        space.singleton_method_added_injection_exists?(subject_1).should be_false
+
+        subject_2.respond_to?(:singleton_method_added).should be_false
+        space.singleton_method_added_injection_exists?(subject_2).should be_false
+      end
     end
 
     describe "#reset_double" do

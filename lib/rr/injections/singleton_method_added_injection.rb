@@ -8,6 +8,7 @@ module RR
       def bind
         unless subject.respond_to?(original_method_alias_name)
           unless subject.respond_to?(:singleton_method_added)
+            @placeholder_method_defined = true
             subject_class.class_eval do
               def singleton_method_added(method_name)
                 super
@@ -30,11 +31,16 @@ module RR
       end
 
       def reset
-        if subject.respond_to?(original_method_alias_name)
-          me = self
+        if subject_has_method_defined?(original_method_alias_name)
+          memoized_original_method_alias_name = original_method_alias_name
+          placeholder_method_defined = @placeholder_method_defined
           subject_class.class_eval do
-            alias_method :singleton_method_added, me.send(:original_method_alias_name)
-            remove_method me.send(:original_method_alias_name)
+            if placeholder_method_defined
+              remove_method :singleton_method_added
+            else
+              alias_method :singleton_method_added, memoized_original_method_alias_name
+            end
+            remove_method memoized_original_method_alias_name
           end
         end
       end

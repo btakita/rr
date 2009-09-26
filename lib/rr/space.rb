@@ -62,6 +62,10 @@ module RR
       end
     end
 
+    def singleton_method_added_injection_exists?(subject)
+      @singleton_method_added_injections.include?(subject)
+    end
+
     # Registers the ordered Double to be verified.
     def register_ordered_double(double)
       @ordered_doubles << double unless ordered_doubles.include?(double)
@@ -101,6 +105,7 @@ module RR
       reset_ordered_doubles
       reset_double_injections
       reset_method_missing_injections
+      reset_singleton_method_added_injections
       reset_recorded_calls
     end
 
@@ -142,6 +147,13 @@ module RR
         injection.reset
       end
       @method_missing_injections.clear
+    end
+
+    def reset_singleton_method_added_injections
+      @singleton_method_added_injections.each do |subject, injection|
+        injection.reset
+      end
+      @singleton_method_added_injections.clear
     end
     
     def reset_recorded_calls
