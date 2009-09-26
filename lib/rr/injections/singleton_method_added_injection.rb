@@ -17,7 +17,6 @@ module RR
 
           memoized_subject = subject
           memoized_space = space
-          memoized_subject = subject
           memoized_original_method_alias_name = original_method_alias_name
           subject_class.__send__(:alias_method, original_method_alias_name, :singleton_method_added)
           subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
