@@ -123,7 +123,7 @@ module RR
         end
       end
 
-      context "when a DoubleInjection is not registered for the subject and method_name" do
+      context "when a MethodMissingInjection is not registered for the subject and method_name" do
         before do
           def subject.method_missing(method_name, *args, &block)
             :original_method_missing
@@ -137,7 +137,7 @@ module RR
         end
       end
 
-      context "when double_injection exists" do
+      context "when a MethodMissingInjection is registered for the subject and method_name" do
         before do
           def subject.method_missing(method_name, *args, &block)
             :original_method_missing
@@ -153,6 +153,56 @@ module RR
 
             injection.reset
             subject.method_missing(:foobar).should == :original_method_missing
+          end
+        end
+      end
+    end
+
+    describe "#singleton_method_added_injection" do
+      context "when existing subject == but not === with the same method name" do
+        it "creates a new DoubleInjection" do
+          subject_1 = []
+          subject_2 = []
+          (subject_1 === subject_2).should be_true
+          subject_1.__id__.should_not == subject_2.__id__
+
+          injection_1 = space.singleton_method_added_injection(subject_1)
+          injection_2 = space.singleton_method_added_injection(subject_2)
+
+          injection_1.should_not == injection_2
+        end
+      end
+
+      context "when a SingletonMethodAddedInjection is not registered for the subject and method_name" do
+        before do
+          def subject.singleton_method_added(method_name)
+            :original_singleton_method_added
+          end
+        end
+
+        it "overrides the method when passing a block" do
+          original_method = subject.method(:singleton_method_added)
+          space.singleton_method_added_injection(subject)
+          subject.method(:singleton_method_added).should_not == original_method
+        end
+      end
+
+      context "when a SingletonMethodAddedInjection is registered for the subject and method_name" do
+        before do
+          def subject.singleton_method_added(method_name)
+            :original_singleton_method_added
+          end
+        end
+
+        context "when a DoubleInjection is registered for the subject and method_name" do
+          it "returns the existing DoubleInjection" do
+            injection = space.singleton_method_added_injection(subject)
+            injection.subject_has_original_method?.should be_true
+
+            space.singleton_method_added_injection(subject).should === injection
+
+            injection.reset
+            subject.singleton_method_added(:foobar).should == :original_singleton_method_added
           end
         end
       end

@@ -26,6 +26,7 @@ module RR
         hash.set_with_object_id(subject_object, {})
       end
       @method_missing_injections = HashWithObjectIdKey.new
+      @singleton_method_added_injections = HashWithObjectIdKey.new
       @ordered_doubles = []
       @trim_backtrace = false
       @recorded_calls = RR::RecordedCalls.new
@@ -53,6 +54,12 @@ module RR
 
     def method_missing_injection_exists?(subject)
       @method_missing_injections.include?(subject)
+    end
+
+    def singleton_method_added_injection(subject)
+      @singleton_method_added_injections[subject] ||= begin
+        Injections::SingletonMethodAddedInjection.new(subject).bind
+      end
     end
 
     # Registers the ordered Double to be verified.

@@ -29,27 +29,8 @@ module RR
           if subject_has_method_defined?(method_name)
             bind_method_with_alias
           else
-            me = self
-
             space.method_missing_injection(subject)
-
-            unless subject.respond_to?(original_singleton_method_added_alias_name)
-              unless subject.respond_to?(:singleton_method_added)
-                subject_class.class_eval do
-                  def singleton_method_added(method_name)
-                    super
-                  end
-                end
-              end
-
-              subject_class.__send__(:alias_method, original_singleton_method_added_alias_name, :singleton_method_added)
-              subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
-                if me.space.double_injection_exists?(me.subject, method_name_arg)
-                  me.space.double_injection(me.subject, method_name_arg).send(:deferred_bind_method)
-                end
-                send(me.send(:original_singleton_method_added_alias_name), method_name_arg)
-              end
-            end
+            space.singleton_method_added_injection(subject)
           end
         else
           bind_method
@@ -69,27 +50,12 @@ module RR
       # It binds the original method implementation on the subject
       # if one exists.
       def reset
-        reset_bound_method
-        reset_singleton_method_added
-      end
-
-      def reset_bound_method
         if subject_has_original_method?
           subject_class.__send__(:alias_method, method_name, original_method_alias_name)
           subject_class.__send__(:remove_method, original_method_alias_name)
         else
           if subject_has_method_defined?(method_name)
             subject_class.__send__(:remove_method, method_name)
-          end
-        end
-      end
-
-      def reset_singleton_method_added
-        if subject.respond_to?(original_singleton_method_added_alias_name)
-          me = self
-          subject_class.class_eval do
-            alias_method :singleton_method_added, me.send(:original_singleton_method_added_alias_name)
-            remove_method me.send(:original_singleton_method_added_alias_name)
           end
         end
       end
@@ -147,19 +113,6 @@ module RR
         end
         METHOD
         subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
-      end
-
-      def bind_method_missing
-        returns_method = <<-METHOD
-        def method_missing(method_name, *args, &block)
-          RR::Space.double_injection(self, :#{@method_name}).dispatch_method_missing(method_name, args, block)
-        end
-        METHOD
-        subject_class.class_eval(returns_method, __FILE__, __LINE__ - 4)
-      end
-
-      def original_singleton_method_added_alias_name
-        "__rr__original_singleton_method_added"
       end
     end
   end
