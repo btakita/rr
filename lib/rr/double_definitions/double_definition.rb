@@ -39,6 +39,9 @@ module RR
         @yields_value = nil
         @double_definition_creator = double_definition_creator
         @subject = subject
+        @ordered = false
+        @verbose = false
+        @verify_method_signature = false
       end
       
       attr_reader :argument_expectation

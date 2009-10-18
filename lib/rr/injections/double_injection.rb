@@ -13,6 +13,7 @@ module RR
         @subject_class = subject_class
         @method_name = method_name.to_sym
         @doubles = []
+        @bypass_bound_method = nil
       end
 
       # RR::DoubleInjection#register_double adds the passed in Double
@@ -51,6 +52,7 @@ module RR
       # if one exists.
       def reset
         if subject_has_original_method?
+          subject_class.__send__(:remove_method, method_name)
           subject_class.__send__(:alias_method, method_name, original_method_alias_name)
           subject_class.__send__(:remove_method, original_method_alias_name)
         else
