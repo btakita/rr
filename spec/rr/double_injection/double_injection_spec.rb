@@ -24,10 +24,6 @@ module RR
               end
             end
 
-            def subject.foobar
-              :original_foobar
-            end
-
             subject.should respond_to(:foobar)
             subject.methods.should include('foobar')
             stub(subject).foobar {:new_foobar}

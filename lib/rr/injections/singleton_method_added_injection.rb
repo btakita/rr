@@ -3,6 +3,7 @@ module RR
     class SingletonMethodAddedInjection < Injection
       def initialize(subject)
         @subject = subject
+        @placeholder_method_defined = false
       end
 
       def bind
@@ -35,9 +36,8 @@ module RR
           memoized_original_method_alias_name = original_method_alias_name
           placeholder_method_defined = @placeholder_method_defined
           subject_class.class_eval do
-            if placeholder_method_defined
-              remove_method :singleton_method_added
-            else
+            remove_method :singleton_method_added
+            unless placeholder_method_defined
               alias_method :singleton_method_added, memoized_original_method_alias_name
             end
             remove_method memoized_original_method_alias_name

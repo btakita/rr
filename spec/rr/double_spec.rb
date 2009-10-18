@@ -160,8 +160,11 @@ module RR
 
       describe "when implemented by a method" do
         it "sends block to the method" do
-          def subject.foobar(a, b)
-            yield(a, b)
+          class << subject
+            remove_method :foobar
+            def foobar(a, b)
+              yield(a, b)
+            end
           end
 
           double.definition.with(1, 2).implemented_by(subject.method(:foobar))

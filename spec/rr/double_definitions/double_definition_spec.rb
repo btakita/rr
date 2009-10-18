@@ -885,8 +885,10 @@ module RR
 
           context "when passed a Method" do
             it "sets the implementation to the passed in method" do
-              def subject.foobar(a, b)
-                [b, a]
+              class << subject
+                def foobar(a, b)
+                  [b, a]
+                end
               end
               definition.implemented_by(subject.method(:foobar))
               subject.foobar(1, 2).should == [2, 1]

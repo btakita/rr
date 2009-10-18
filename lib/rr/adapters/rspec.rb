@@ -27,6 +27,7 @@ module RR
         attr_reader :failure_message
  
         def initialize(method = nil)
+          @verification = nil
           method_missing(method) if method
         end
 
