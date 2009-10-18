@@ -11,10 +11,13 @@ module RR
         end
       end
 
+      before do
+        @subject = Object.new
+      end
+
       describe "mock/stub" do
         context "when the subject responds to the injected method" do
           before do
-            @subject = Object.new
             class << subject
               attr_reader :original_foobar_called
 
@@ -63,7 +66,6 @@ module RR
 
         context "when the subject does not respond to the injected method" do
           before do
-            @subject = Object.new
             subject.should_not respond_to(:foobar)
             subject.methods.should_not include('foobar')
             stub(subject).foobar {:new_foobar}
@@ -109,8 +111,6 @@ module RR
           context "when the subject has the method defined" do
             describe "being bound" do
               before do
-                @subject = Object.new
-
                 def subject.foobar
                   :original_foobar
                 end
@@ -157,7 +157,6 @@ module RR
             describe "being bound" do
               context "when the subject has not been previously bound to" do
                 before do
-                  @subject = Object.new
                   setup_subject
 
                   subject.should respond_to(:foobar)
@@ -309,7 +308,6 @@ module RR
 
               context "when the subject has been previously bound to" do
                 before do
-                  @subject = Object.new
                   setup_subject
 
                   subject.should respond_to(:foobar)
@@ -467,7 +465,6 @@ module RR
           context "when the subject responds to the method via method_missing" do
             describe "being bound" do
               before do
-                @subject = Object.new
                 subject.should_not respond_to(:foobar)
                 subject.methods.should_not include('foobar')
                 class << subject
@@ -512,7 +509,6 @@ module RR
           context "when the subject would raise a NoMethodError when the method is called" do
             describe "being bound" do
               before do
-                @subject = Object.new
                 subject.should_not respond_to(:foobar)
                 subject.methods.should_not include('foobar')
                 stub.proxy(subject).foobar {:new_foobar}

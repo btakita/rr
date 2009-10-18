@@ -886,6 +886,7 @@ module RR
           context "when passed a Method" do
             it "sets the implementation to the passed in method" do
               class << subject
+                remove_method :foobar
                 def foobar(a, b)
                   [b, a]
                 end
