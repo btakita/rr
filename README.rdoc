@@ -140,6 +140,15 @@ When the method is called "Information" is returned.
   view = controller.template
   mock(view).render(:partial => "user_info") {"Information"}
 
+You can also allow any number of arguments to be passed into the mock by using:
+  mock(view).render.with_any_args.twice do |*args|
+    if args.first == {:partial => "user_info}
+      "User Info"
+    else
+      "Stuff in the view #{args.inspect}"
+    end
+  end
+
 === stub
 stub replaces the method on the object with only an implementation. You
 can still use arguments to differentiate which stub gets invoked.
