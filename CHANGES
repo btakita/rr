@@ -1,4 +1,4 @@
-- Fixed stack overflow caused by double include in Test::Unit adapter (reported by Dave Myron)
+- Fixed stack overflow caused by double include in Test::Unit adapter [http://github.com/btakita/rr/issues#issue/16]. Identified by Dave Myron (http://github.com/contentfree)
 - Fixed warnings (Patch by Bryan Helmkamp)
 
 0.10.4
