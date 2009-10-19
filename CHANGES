@@ -1,3 +1,4 @@
+- Fixed stack overflow caused by double include in Test::Unit adapter (reported by Dave Myron)
 - Fixed warnings (Patch by Bryan Helmkamp)
 
 0.10.4
