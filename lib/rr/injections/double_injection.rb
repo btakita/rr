@@ -108,10 +108,11 @@ module RR
       end
 
       def bind_method
+        subject = @subject.is_a?(Class) && !@subject.name.empty? ? @subject.name : "self"
         returns_method = <<-METHOD
         def #{@method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
-          RR::Space.double_injection(self, :#{@method_name}).dispatch_method(arguments.arguments, arguments.block)
+          RR::Space.double_injection(#{subject}, :#{@method_name}).dispatch_method(arguments.arguments, arguments.block)
         end
         METHOD
         subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
