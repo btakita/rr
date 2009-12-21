@@ -1,3 +1,5 @@
+0.10.5
+- Fixed issues with Ruby 1.9
 - Fixed stack overflow caused by double include in Test::Unit adapter [http://github.com/btakita/rr/issues#issue/16]. Identified by Dave Myron (http://github.com/contentfree)
 - Fixed warnings (Patch by Bryan Helmkamp)
 
