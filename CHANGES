@@ -1,3 +1,4 @@
+- Added MIT license
 - Fixed Bug - dont_allow doesn't work when it follows stub (http://github.com/btakita/rr/issues#issue/20)
 
 0.10.5
