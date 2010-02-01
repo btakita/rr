@@ -21,7 +21,7 @@ module RR
             end
           end
 
-          def register_self_at_double_definition_creator
+          def register_self_at_double_definition_creator(domain_name)
           end
         end
 

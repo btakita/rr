@@ -97,7 +97,7 @@ module RR
         #
         #   mock(subject).method_name.never
         def never
-          @times_matcher = TimesCalledMatchers::IntegerMatcher.new(0)
+          @times_matcher = TimesCalledMatchers::NeverMatcher.new
           self
         end
 

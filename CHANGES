@@ -1,3 +1,5 @@
+- Fixed Bug - dont_allow doesn't work when it follows stub (http://github.com/btakita/rr/issues#issue/20)
+
 0.10.5
 - Fixed issues with Ruby 1.9
 - Fixed stack overflow caused by double include in Test::Unit adapter [http://github.com/btakita/rr/issues#issue/16]. Identified by Dave Myron (http://github.com/contentfree)

@@ -25,7 +25,6 @@ module RR
           def do_call
             definition.never
             permissive_argument
-            reimplementation
           end
         end
       end

@@ -81,7 +81,7 @@ module RR
           context "when passed a method_name argument_expectation" do
             it "creates a mock Double for method" do
               double_definition = dont_allow(subject, :foobar)
-              double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
+              double_definition.times_matcher.should == TimesCalledMatchers::NeverMatcher.new
               double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
 
               lambda do

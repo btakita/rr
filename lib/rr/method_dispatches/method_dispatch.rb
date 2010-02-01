@@ -12,11 +12,12 @@ module RR
         if double
           double.method_call(args)
           call_yields
-          return_value = extract_subject_from_return_value(call_implementation)
+          return_value_1 = call_implementation
+          return_value_2 = extract_subject_from_return_value(return_value_1)
           if after_call_proc
-            extract_subject_from_return_value(after_call_proc.call(return_value))
+            extract_subject_from_return_value(after_call_proc.call(return_value_2))
           else
-            return_value
+            return_value_2
           end
         else
           double_not_found_error
