@@ -127,4 +127,29 @@ describe "mock" do
       subject == 99
     end.should raise_error(RR::Errors::DoubleNotFoundError)
   end
+
+  describe "on class method" do
+    class SampleClass1
+      def self.hello; "hello!"; end
+    end
+
+    class SampleClass2 < SampleClass1; end
+
+    it "can mock" do
+      mock(SampleClass1).hello { "hola!" }
+
+      SampleClass1.hello.should == "hola!"
+    end
+
+    it "should not break when it is mocked on subclass" do
+      mock(SampleClass1).hello { "hi!" }
+
+      SampleClass2.hello.should == "hi!"
+    end
+
+    it "should not get affected from a previous example" do
+      SampleClass2.hello.should == "hello!"
+    end
+
+  end
 end
