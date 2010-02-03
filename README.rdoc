@@ -353,3 +353,4 @@ to making it possible. We all are standing on the shoulders of giants.
 * Phil Darnowsky for patches
 * Pivotal Labs for sponsoring RR development
 * Stephen Baker for Developing Rspec
+* Tatsuya Ono for patches
