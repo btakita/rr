@@ -327,8 +327,8 @@ RR::WildcardMatchers for details.
   mock(object).method_name(anything).times(any_times) {return_value}
 
 == Special Thanks To
-With any development effort, there are countless people who have contributed
-to making it possible. We all are standing on the shoulders of giants.
+With any development effort, there are countless people who have contributed to making it possible. We all are standing on the shoulders of giants.
+If you have directly contributed to RR and I missed you in this list, please let me know and I will add you. Thanks!
 * Andreas Haller for patches
 * Aslak Hellesoy for Developing Rspec
 * Bryan Helmkamp for patches
@@ -347,6 +347,7 @@ to making it possible. We all are standing on the shoulders of giants.
 * Matthew O'Connor for patches and pairing with me
 * Michael Niessner for patches and pairing with me
 * Mike Mangino (from Elevated Rails) for patches and pairing with me
+* Myron Marston for bug reports
 * Nick Kallen for documentation suggestions, bug reports, and patches
 * Nathan Sobo for various ideas and inspiration for cleaner and more expressive code
 * Parker Thompson for pairing with me
