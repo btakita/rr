@@ -28,7 +28,11 @@ module RR
       def bind
         if subject_respond_to_method?(method_name)
           if subject_has_method_defined?(method_name)
-            bind_method_with_alias
+            if subject_is_proxy_for_method?(method_name)
+              bind_method
+            else
+              bind_method_with_alias
+            end
           else
             space.method_missing_injection(subject)
             space.singleton_method_added_injection(subject)
@@ -95,6 +99,11 @@ module RR
       end
 
       protected
+      def subject_is_proxy_for_method?(method_name)
+        method_owner = @subject.method(method_name).owner
+        !(subject_class.object_id == method_owner.object_id || subject_class.ancestors.include?(method_owner))
+      end
+
       def deferred_bind_method
         unless subject_has_method_defined?(original_method_alias_name)
           bind_method_with_alias
@@ -109,13 +118,12 @@ module RR
 
       def bind_method
         subject = @subject.is_a?(Class) && !@subject.name.empty? ? @subject.name : "self"
-        returns_method = <<-METHOD
+        subject_class.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
         def #{@method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
           RR::Space.double_injection(#{subject}, :#{@method_name}).dispatch_method(arguments.arguments, arguments.block)
         end
         METHOD
-        subject_class.class_eval(returns_method, __FILE__, __LINE__ - 5)
       end
     end
   end

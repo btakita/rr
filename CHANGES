@@ -1,5 +1,7 @@
 - Added MIT license
 - Fixed Bug - dont_allow doesn't work when it follows stub (http://github.com/btakita/rr/issues#issue/20)
+- Fixed exception with DoubleInjections on proxy objects (http://github.com/btakita/rr/issues#issue/24)
+- Fixed Bug - Can't stub attribute methods on a BelongsToAssociation (http://github.com/btakita/rr/issues#issue/24)
 
 0.10.5
 - Fixed issues with Ruby 1.9

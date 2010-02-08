@@ -17,13 +17,41 @@ describe "mock" do
     lambda {subject.to_s}.should raise_error(RR::Errors::TimesCalledError)
   end
 
-  it "allows ordering" do
-    mock(subject).to_s {"value 1"}.ordered
-    mock(subject).to_s {"value 2"}.twice
-    subject.to_s.should == "value 1"
-    subject.to_s.should == "value 2"
-    subject.to_s.should == "value 2"
-    lambda {subject.to_s}.should raise_error(RR::Errors::TimesCalledError)
+  describe ".once.ordered" do
+    it "returns the values in the ordered called" do
+      mock(subject).to_s {"value 1"}.ordered
+      mock(subject).to_s {"value 2"}.twice
+      subject.to_s.should == "value 1"
+      subject.to_s.should == "value 2"
+      subject.to_s.should == "value 2"
+      lambda {subject.to_s}.should raise_error(RR::Errors::TimesCalledError)
+    end
+  end
+
+  context "when the subject is a proxy for the object with the defined method" do
+    it "stubs the method on the proxy object" do
+      proxy_target = Class.new {def foobar; :original_foobar; end}.new
+      proxy = Class.new do
+        def initialize(target)
+          @target = target
+        end
+
+        instance_methods.each do |m|
+          unless m =~ /^_/ || m.to_s == 'object_id' || m.to_s == 'method_missing'
+            alias_method "__blank_slated_#{m}", m
+            undef_method m
+          end
+        end
+
+        def method_missing(method_name, *args, &block)
+          @target.send(method_name, *args, &block)
+        end
+      end.new(proxy_target)
+      proxy.methods.should =~ proxy_target.methods
+
+      mock(proxy).foobar {:new_foobar}
+      proxy.foobar.should == :new_foobar
+    end
   end
 
   it 'allows terse chaining' do
