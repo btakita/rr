@@ -354,4 +354,4 @@ If you have directly contributed to RR and I missed you in this list, please let
 * Phil Darnowsky for patches
 * Pivotal Labs for sponsoring RR development
 * Stephen Baker for Developing Rspec
-* Tatsuya Ono for patchesh
+* Tatsuya Ono for patches
