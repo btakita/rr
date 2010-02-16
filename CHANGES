@@ -1,3 +1,6 @@
+- Fixed issue with DoubleInjections binding to objects overriding the method method.
+
+0.10.6
 - Added MIT license
 - Fixed Bug - dont_allow doesn't work when it follows stub (http://github.com/btakita/rr/issues#issue/20)
 - Fixed exception with DoubleInjections on proxy objects (http://github.com/btakita/rr/issues#issue/24)

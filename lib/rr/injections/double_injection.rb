@@ -100,8 +100,9 @@ module RR
 
       protected
       def subject_is_proxy_for_method?(method_name)
-        method_owner = @subject.method(method_name).owner
-        !(subject_class.object_id == method_owner.object_id || subject_class.ancestors.include?(method_owner))
+        subject_eigen = (class << @subject; self; end)
+        method_owner = subject_eigen.instance_methods.include?(method_name.to_s) ? subject_eigen.instance_method(method_name).owner : nil
+        !method_owner || !(subject_class.object_id == method_owner.object_id || subject_class.ancestors.include?(method_owner))
       end
 
       def deferred_bind_method
