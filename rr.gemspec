@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rr}
-  s.version = "0.10.5"
+  s.version = "0.10.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Takita"]
-  s.date = %q{2009-12-20}
+  s.date = %q{2010-02-15}
   s.description = %q{RR (Double Ruby) is a double framework that features a rich selection of double techniques and a terse syntax. http://xunitpatterns.com/Test%20Double.html}
   s.email = %q{brian@pivotallabs.com}
   s.extra_rdoc_files = [
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "CHANGES",
+     "LICENSE",
      "README.rdoc",
      "Rakefile",
      "VERSION.yml",
@@ -74,6 +75,7 @@ Gem::Specification.new do |s|
      "lib/rr/times_called_matchers/at_least_matcher.rb",
      "lib/rr/times_called_matchers/at_most_matcher.rb",
      "lib/rr/times_called_matchers/integer_matcher.rb",
+     "lib/rr/times_called_matchers/never_matcher.rb",
      "lib/rr/times_called_matchers/non_terminal.rb",
      "lib/rr/times_called_matchers/proc_matcher.rb",
      "lib/rr/times_called_matchers/range_matcher.rb",
@@ -90,9 +92,14 @@ Gem::Specification.new do |s|
      "lib/rr/wildcard_matchers/regexp.rb",
      "lib/rr/wildcard_matchers/satisfy.rb",
      "ruby_19_spec.rb",
+     "spec/api/dont_allow/dont_allow_after_stub_spec.rb",
+     "spec/api/mock/mock_spec.rb",
+     "spec/api/proxy/proxy_spec.rb",
+     "spec/api/spy/spy_spec.rb",
+     "spec/api/strong/strong_spec.rb",
+     "spec/api/stub/stub_spec.rb",
      "spec/core_spec_suite.rb",
      "spec/environment_fixture_setup.rb",
-     "spec/high_level_spec.rb",
      "spec/proc_from_block_spec.rb",
      "spec/rr/adapters/rr_methods_argument_matcher_spec.rb",
      "spec/rr/adapters/rr_methods_creator_spec.rb",
@@ -162,7 +169,6 @@ Gem::Specification.new do |s|
   s.summary = %q{RR (Double Ruby) is a double framework that features a rich selection of double techniques and a terse syntax. http://xunitpatterns.com/Test%20Double.html}
   s.test_files = [
     "spec/spy_verification_spec.rb",
-     "spec/high_level_spec.rb",
      "spec/rr_spec.rb",
      "spec/proc_from_block_spec.rb"
   ]
