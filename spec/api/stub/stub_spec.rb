@@ -114,4 +114,13 @@ describe "stub" do
     instance.initialize_arguments.should == [1, 2]
     block_called.should be_true
   end
+
+  context "mock then stub" do
+    it "stubs any calls not matching the mock" do
+      mock(subject).foobar(3) {:baz3}
+      stub(subject).foobar {:baz}
+      subject.foobar(3).should == :baz3
+      subject.foobar(4).should == :baz
+    end
+  end
 end
