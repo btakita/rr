@@ -1,3 +1,7 @@
+0.10.8
+- Fixed 1.8.6 bug
+
+0.10.7
 - Fixed issue with DoubleInjections binding to objects overriding the method method.
 
 0.10.6
