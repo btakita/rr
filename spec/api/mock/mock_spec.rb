@@ -148,7 +148,7 @@ describe "mock" do
   end
 
   it "mocks methods without letters" do
-    mock(subject) == 55
+    mock(subject, :==).with(55)
 
     subject == 55
     lambda do

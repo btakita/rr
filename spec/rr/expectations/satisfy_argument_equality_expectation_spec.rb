@@ -17,11 +17,11 @@ module Expectations
       end
       
       it "returns true when passed a Satisfy matcher with the same proc" do
-        expectation.should be_exact_match(WildcardMatchers::Satisfy.new(expectation_proc))
+        expectation.should be_exact_match(RR::WildcardMatchers::Satisfy.new(expectation_proc))
       end
       
       it "returns false when passed a Satisfy matcher with another proc" do
-        expectation.should_not be_exact_match(WildcardMatchers::Satisfy.new(lambda {}))
+        expectation.should_not be_exact_match(RR::WildcardMatchers::Satisfy.new(lambda {}))
       end
 
       it "returns false otherwise" do

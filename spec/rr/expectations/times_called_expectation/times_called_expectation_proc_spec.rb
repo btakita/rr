@@ -34,14 +34,14 @@ module RR
 
           it "fails after attempt! called 1 time" do
             expectation.attempt
-            lambda {expectation.verify!}.should raise_error(Errors::TimesCalledError)
+            lambda {expectation.verify!}.should raise_error(RR::Errors::TimesCalledError)
           end
 
           it "fails after attempt! called 3 times" do
             expectation.attempt
             expectation.attempt
             expectation.attempt
-            lambda {expectation.verify!}.should raise_error(Errors::TimesCalledError)
+            lambda {expectation.verify!}.should raise_error(RR::Errors::TimesCalledError)
           end
         end
 

@@ -5,8 +5,10 @@ module RR
 
       attr_reader :subject
 
-      def subject_has_method_defined?(method_name)
-        @subject.methods.include?(method_name.to_s) || @subject.protected_methods.include?(method_name.to_s) || @subject.private_methods.include?(method_name.to_s)
+      def subject_has_method_defined?(method_name_in_question)
+        @subject.methods.map {|method_name| method_name.to_sym}.include?(method_name_in_question.to_sym) ||
+          @subject.protected_methods.map {|method_name| method_name.to_sym}.include?(method_name_in_question.to_sym) ||
+          @subject.private_methods.map {|method_name| method_name.to_sym}.include?(method_name_in_question.to_sym)
       end
 
       def subject_has_original_method?

@@ -105,7 +105,7 @@ module RR
               creator.proxy
               lambda do
                 creator.dont_allow
-              end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
+              end.should raise_error(RR::Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
             end
 
             context "when passed a subject and a method_name argument_expectation" do
@@ -116,7 +116,7 @@ module RR
 
                 lambda do
                   subject.foobar
-                end.should raise_error(Errors::TimesCalledError)
+                end.should raise_error(RR::Errors::TimesCalledError)
                 RR.reset
               end
             end
@@ -198,7 +198,7 @@ module RR
               creator.dont_allow
               lambda do
                 creator.proxy
-              end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
+              end.should raise_error(RR::Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
             end
           end
 
@@ -263,7 +263,7 @@ module RR
             it "raises a DoubleDefinitionError" do
               lambda do
                 creator.create(:foobar, 1, 2)
-              end.should raise_error(Errors::DoubleDefinitionError, "This Double has no strategy")
+              end.should raise_error(RR::Errors::DoubleDefinitionError, "This Double has no strategy")
             end
           end
 
@@ -276,7 +276,7 @@ module RR
               it "sets expectation on the #subject that it will be sent the method_name once with the passed-in arguments" do
                 creator.create(:foobar, 1, 2)
                 subject.foobar(1, 2)
-                lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+                lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
               end
 
               describe "#subject.method_name being called" do
@@ -299,7 +299,7 @@ module RR
                 end
                 creator.create(:foobar, 1, 2)
                 subject.foobar(1, 2)
-                lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+                lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
               end
 
               describe "#subject.method_name being called" do
@@ -400,7 +400,7 @@ module RR
                     creator.create(:foobar, 1, 2) {:baz}
                     lambda do
                       subject.foobar
-                    end.should raise_error(Errors::DoubleNotFoundError)
+                    end.should raise_error(RR::Errors::DoubleNotFoundError)
                   end
                 end
               end
@@ -457,7 +457,7 @@ module RR
                     creator.create(:foobar, 1, 2) {:baz}
                     lambda do
                       subject.foobar
-                    end.should raise_error(Errors::DoubleNotFoundError)
+                    end.should raise_error(RR::Errors::DoubleNotFoundError)
                   end
                 end
               end
@@ -473,8 +473,8 @@ module RR
               describe "#subject.method_name being called with any arguments" do
                 it "raises a TimesCalledError" do
                   creator.create(:foobar)
-                  lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
-                  lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+                  lambda {subject.foobar}.should raise_error(RR::Errors::TimesCalledError)
+                  lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
                 end
               end
             end
@@ -483,14 +483,14 @@ module RR
               describe "#subject.method_name being called with the passed-in arguments" do
                 it "raises a TimesCalledError" do
                   creator.create(:foobar, 1, 2)
-                  lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+                  lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
                 end
               end
 
               describe "#subject.method_name being called with different arguments" do
                 it "raises a DoubleNotFoundError" do
                   creator.create(:foobar, 1, 2)
-                  lambda {subject.foobar()}.should raise_error(Errors::DoubleNotFoundError)
+                  lambda {subject.foobar()}.should raise_error(RR::Errors::DoubleNotFoundError)
                 end
               end
             end

@@ -7,11 +7,11 @@ module RR
         it_should_behave_like "RR::Adapters::RRMethods"
 
         it "returns an Anything matcher" do
-          anything.should == WildcardMatchers::Anything.new
+          anything.should == RR::WildcardMatchers::Anything.new
         end
 
         it "rr_anything returns an Anything matcher" do
-          rr_anything.should == WildcardMatchers::Anything.new
+          rr_anything.should == RR::WildcardMatchers::Anything.new
         end
       end
 
@@ -19,11 +19,11 @@ module RR
         it_should_behave_like "RR::Adapters::RRMethods"
 
         it "returns an IsA matcher" do
-          is_a(Integer).should == WildcardMatchers::IsA.new(Integer)
+          is_a(Integer).should == RR::WildcardMatchers::IsA.new(Integer)
         end
 
         it "rr_is_a returns an IsA matcher" do
-          rr_is_a(Integer).should == WildcardMatchers::IsA.new(Integer)
+          rr_is_a(Integer).should == RR::WildcardMatchers::IsA.new(Integer)
         end
       end
 
@@ -31,11 +31,11 @@ module RR
         it_should_behave_like "RR::Adapters::RRMethods"
 
         it "returns an Numeric matcher" do
-          numeric.should == WildcardMatchers::Numeric.new
+          numeric.should == RR::WildcardMatchers::Numeric.new
         end
 
         it "rr_numeric returns an Numeric matcher" do
-          rr_numeric.should == WildcardMatchers::Numeric.new
+          rr_numeric.should == RR::WildcardMatchers::Numeric.new
         end
       end
 
@@ -43,11 +43,11 @@ module RR
         it_should_behave_like "RR::Adapters::RRMethods"
 
         it "returns an Boolean matcher" do
-          boolean.should == WildcardMatchers::Boolean.new
+          boolean.should == RR::WildcardMatchers::Boolean.new
         end
 
         it "rr_boolean returns an Boolean matcher" do
-          rr_boolean.should == WildcardMatchers::Boolean.new
+          rr_boolean.should == RR::WildcardMatchers::Boolean.new
         end
       end
 
@@ -55,11 +55,11 @@ module RR
         it_should_behave_like "RR::Adapters::RRMethods"
 
         it "returns a DuckType matcher" do
-          duck_type(:one, :two).should == WildcardMatchers::DuckType.new(:one, :two)
+          duck_type(:one, :two).should == RR::WildcardMatchers::DuckType.new(:one, :two)
         end
 
         it "rr_duck_type returns a DuckType matcher" do
-          rr_duck_type(:one, :two).should == WildcardMatchers::DuckType.new(:one, :two)
+          rr_duck_type(:one, :two).should == RR::WildcardMatchers::DuckType.new(:one, :two)
         end
       end
     end

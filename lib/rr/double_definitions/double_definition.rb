@@ -254,7 +254,7 @@ module RR
           if implementation
             install_method_callback implementation
           else
-            install_method_callback(lambda do
+            install_method_callback(lambda do |*lambda_args|
               return *args
             end)
           end
@@ -288,11 +288,12 @@ module RR
         
         protected
         def install_method_callback(block)
-          return unless block
-          if implementation_is_original_method?
-            after_call(&block)
-          else
-            implemented_by block
+          if block
+            if implementation_is_original_method?
+              after_call(&block)
+            else
+              implemented_by block
+            end
           end
         end
       end

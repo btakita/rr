@@ -2,17 +2,18 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
 describe "spy" do
   attr_reader :subject
-    before(:each) do
-      @subject = Object.new
-      extend RR::Adapters::RRMethods
-    end
+  before(:each) do
+    @subject = Object.new
+    extend RR::Adapters::RRMethods
+  end
 
-    after(:each) do
-      RR.reset
-    end
+  after(:each) do
+    RR.reset
+  end
 
   it "should record all method invocations" do
     subject = Object.new
+
     def subject.something
     end
 
@@ -44,5 +45,5 @@ describe "spy" do
         received(subject).pig_rabbit("bacon", "bunny meat").call
       end.should raise_error(RR::Errors::SpyVerificationErrors::SpyVerificationError)
     end
-  end  
+  end
 end

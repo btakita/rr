@@ -39,7 +39,7 @@ module RR
 
           it "raises error before attempted more than expected times" do
             3.times {expectation.attempt}
-            lambda {expectation.attempt}.should raise_error( Errors::TimesCalledError )
+            lambda {expectation.attempt}.should raise_error( RR::Errors::TimesCalledError )
           end
         end
 
@@ -48,7 +48,7 @@ module RR
             3.times {expectation.attempt}
             lambda do
               expectation.attempt
-            end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 4 times.\nExpected at most 3 times.")
+            end.should raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 4 times.\nExpected at most 3 times.")
           end
 
           it "passes when times called == times" do

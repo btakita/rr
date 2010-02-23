@@ -19,7 +19,7 @@ module RR
       def add_strategy(subject, method_name, definition_eval_block, &block)
         super do
           block.call
-          parent_double_definition.implemented_by(lambda {subject})
+          parent_double_definition.implemented_by(lambda {|*args|subject})
         end
       end
     end
