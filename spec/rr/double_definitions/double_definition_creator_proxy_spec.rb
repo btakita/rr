@@ -94,37 +94,6 @@ module RR
             end
           end
 
-          context "when the block has an arity of -1" do
-            attr_reader :self_value, :passed_in_arguments
-            before do
-              self_value = nil
-              passed_in_arguments = nil
-              block = lambda do |*args|
-                self_value = self
-                passed_in_arguments = args
-                args[0].foobar(1, 2) {:one_two}
-                args[0].foobar(1) {:one}
-                args[0].foobar.with_any_args {:default}
-                args[0].baz() {:baz_result}
-              end
-              block.arity.should == -1
-
-              @the_proxy = DoubleDefinitionCreatorProxy.new(creator, &block)
-              @self_value = self_value
-              @passed_in_arguments = passed_in_arguments
-            end
-
-            send("calls the block to define the Doubles")
-
-            it "passes the self into the block" do
-              passed_in_arguments.map {|a| a.__creator__}.should == [creator]
-            end
-
-            it "evaluates the block with the context of self" do
-              self_value.__creator__.should == creator
-            end
-          end
-
           context "when the block has an arity of 0" do
             attr_reader :self_value
             before do
