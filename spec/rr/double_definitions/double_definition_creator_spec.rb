@@ -39,7 +39,7 @@ module RR
             context "when passed a subject and a method_name argument" do
               it "creates a mock Double for method" do
                 double_definition = creator.mock(subject, :foobar).returns {:baz}
-                double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+                double_definition.times_matcher.should == RR::TimesCalledMatchers::IntegerMatcher.new(1)
                 double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
                 double_definition.argument_expectation.expected_arguments.should == []
                 subject.foobar.should == :baz
@@ -72,7 +72,7 @@ module RR
             context "when passed subject and a method_name argument" do
               it "creates a stub Double for method when passed a method_name argument" do
                 double_definition = creator.stub(subject, :foobar).returns {:baz}
-                double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+                double_definition.times_matcher.should == RR::TimesCalledMatchers::AnyTimesMatcher.new
                 double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
                 subject.foobar.should == :baz
               end
@@ -111,7 +111,7 @@ module RR
             context "when passed a subject and a method_name argument_expectation" do
               it "creates a mock Double for method" do
                 double_definition = creator.dont_allow(subject, :foobar)
-                double_definition.times_matcher.should == TimesCalledMatchers::NeverMatcher.new
+                double_definition.times_matcher.should == RR::TimesCalledMatchers::NeverMatcher.new
                 double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
 
                 lambda do
@@ -205,7 +205,7 @@ module RR
           context "when passed a method_name argument" do
             it "creates a proxy Double for method" do
               double_definition = creator.stub.proxy(subject, :foobar).after_call {:baz}
-              double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+              double_definition.times_matcher.should == RR::TimesCalledMatchers::AnyTimesMatcher.new
               double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
               subject.foobar.should == :baz
             end
@@ -225,7 +225,7 @@ module RR
             it "creates a proxy Double for method" do
               klass = Class.new
               double_definition = creator.stub.instance_of(klass, :foobar).returns {:baz}
-              double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+              double_definition.times_matcher.should == RR::TimesCalledMatchers::AnyTimesMatcher.new
               double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
               klass.new.foobar.should == :baz
             end
@@ -247,7 +247,7 @@ module RR
             it "creates a instance_of Double for method" do
               double_definition = instance_of.mock(@klass, :foobar)
               double_definition.with(1, 2) {:baz}
-              double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+              double_definition.times_matcher.should == RR::TimesCalledMatchers::IntegerMatcher.new(1)
               double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
               double_definition.argument_expectation.expected_arguments.should == [1, 2]
 
@@ -330,7 +330,7 @@ module RR
                   before do
                     @real_value = real_value = Object.new
                     (class << subject; self; end).class_eval do
-                      define_method(:foobar) {real_value}
+                      define_method(:foobar) {|arg1, arg2| real_value}
                     end
                   end
 

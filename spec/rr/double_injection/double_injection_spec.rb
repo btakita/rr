@@ -28,7 +28,7 @@ module RR
             end
 
             subject.should respond_to(:foobar)
-            subject.methods.should include('foobar')
+            (!!subject.methods.detect {|method| method.to_sym == :foobar}).should be_true
             stub(subject).foobar {:new_foobar}
           end
 
@@ -116,7 +116,7 @@ module RR
                 end
 
                 subject.should respond_to(:foobar)
-                subject.methods.should include('foobar')
+                (!!subject.methods.detect {|method| method.to_sym == :foobar}).should be_true
                 stub.proxy(subject).foobar {:new_foobar}
               end
 
@@ -131,7 +131,7 @@ module RR
               describe "being called" do
                 it "calls the original method first and sends it into the block" do
                   original_return_value = nil
-                  stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                  stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
                   subject.foobar.should == :new_foobar
                   original_return_value.should == :original_foobar
                 end
@@ -187,13 +187,13 @@ module RR
 
                   describe "being called" do
                     it "defines __rr__original_{method_name} to be the lazily created method" do
-                      subject.methods.should include("__rr__original_foobar")
+                      (!!subject.methods.detect {|method| method.to_sym == :__rr__original_foobar}).should be_true
                       subject.__rr__original_foobar.should == :original_foobar
                     end
 
                     it "calls the original method first and sends it into the block" do
                       original_return_value = nil
-                      stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                      stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
                       subject.foobar.should == :new_foobar
                       original_return_value.should == :original_foobar
                     end
@@ -234,13 +234,13 @@ module RR
                     describe "being called" do
                       it "defines __rr__original_{method_name} to be the lazily created method" do
                         subject.foobar
-                        subject.methods.should include("__rr__original_foobar")
+                        (!!subject.methods.detect {|method| method.to_sym == :__rr__original_foobar}).should be_true
                         subject.__rr__original_foobar.should == :original_foobar
                       end
 
                       it "calls the lazily created method and returns the injected method return value" do
                         original_return_value = nil
-                        stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                        stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
                         subject.foobar.should == :new_foobar
                         original_return_value.should == :original_foobar
                       end
@@ -283,7 +283,7 @@ module RR
 
                       it "calls the lazily created method and returns the injected method return value" do
                         original_return_value = nil
-                        stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                        stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
                         subject.foobar.should == :new_foobar
                         original_return_value.should == :original_foobar
                       end
@@ -339,13 +339,13 @@ module RR
 
                   describe "being called" do
                     it "defines __rr__original_{method_name} to be the lazily created method" do
-                      subject.methods.should include("__rr__original_foobar")
+                      (!!subject.methods.detect {|method| method.to_sym == :__rr__original_foobar}).should be_true
                       subject.__rr__original_foobar.should == :original_foobar
                     end
 
                     it "calls the original method first and sends it into the block" do
                       original_return_value = nil
-                      stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                      stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
                       subject.foobar.should == :new_foobar
                       original_return_value.should == :original_foobar
                     end
@@ -386,13 +386,13 @@ module RR
                     describe "being called" do
                       it "defines __rr__original_{method_name} to be the lazily created method" do
                         subject.foobar
-                        subject.methods.should include("__rr__original_foobar")
+                        (!!subject.methods.detect {|method| method.to_sym == :__rr__original_foobar}).should be_true
                         subject.__rr__original_foobar.should == :original_foobar
                       end
 
                       it "calls the lazily created method and returns the injected method return value" do
                         original_return_value = nil
-                        stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                        stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
                         subject.foobar.should == :new_foobar
                         original_return_value.should == :original_foobar
                       end
@@ -435,7 +435,7 @@ module RR
 
                       it "calls the lazily created method and returns the injected method return value" do
                         original_return_value = nil
-                        stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                        stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
                         subject.foobar.should == :new_foobar
                         original_return_value.should == :original_foobar
                       end
@@ -481,13 +481,13 @@ module RR
 
               it "adds the method to the subject" do
                 subject.should respond_to(:foobar)
-                subject.methods.should include('foobar')
+                (!!subject.methods.detect {|method| method.to_sym == :foobar}).should be_true
               end
 
               describe "being called" do
                 it "calls the original method first and sends it into the block" do
                   original_return_value = nil
-                  stub.proxy(subject).foobar {|original_return_value| :new_foobar}
+                  stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
                   subject.foobar.should == :new_foobar
                   original_return_value.should == :original_foobar
                 end
@@ -516,7 +516,7 @@ module RR
 
               it "adds the method to the subject" do
                 subject.should respond_to(:foobar)
-                subject.methods.should include('foobar')
+                (!!subject.methods.detect {|method| method.to_sym == :foobar}).should be_true
               end
 
               describe "being called" do

@@ -13,14 +13,14 @@ module RR
       end
 
       it "verifies each double was met" do
-        double = Double.new(
+        double = RR::Double.new(
           double_injection,
-          DoubleDefinitions::DoubleDefinition.new(DoubleDefinitions::DoubleDefinitionCreator.new, subject)
+          RR::DoubleDefinitions::DoubleDefinition.new(RR::DoubleDefinitions::DoubleDefinitionCreator.new, subject)
         )
         double_injection.register_double double
 
         double.definition.with(1).once.returns {nil}
-        lambda {double_injection.verify}.should raise_error(Errors::TimesCalledError)
+        lambda {double_injection.verify}.should raise_error(RR::Errors::TimesCalledError)
         subject.foobar(1)
         lambda {double_injection.verify}.should_not raise_error
       end

@@ -58,7 +58,8 @@ module RR
         end
 
         def reimplementation
-          definition.returns(&handler)
+          rv = definition.returns(&handler)
+
         end
 
         def subject

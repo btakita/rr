@@ -119,7 +119,7 @@ module RR
       end
 
       def bind_method
-        subject = @subject.is_a?(Class) && !@subject.name.empty? ? @subject.name : "self"
+        subject = @subject.is_a?(Class) && !@subject.name.to_s.empty? ? @subject.name : "self"
         subject_class.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
         def #{@method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)

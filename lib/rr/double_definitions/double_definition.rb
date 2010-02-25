@@ -255,7 +255,7 @@ module RR
             install_method_callback implementation
           else
             install_method_callback(lambda do |*lambda_args|
-              return *args
+              args.first
             end)
           end
           self
