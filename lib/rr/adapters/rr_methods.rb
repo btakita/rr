@@ -50,7 +50,7 @@ module RR
       # that succeeds when passed an argument of a certain type.
       #   mock(object).method_name(is_a(String)) {return_value}
       #   object.method_name("A String") # passes
-          def is_a(klass)
+      def is_a(klass)
         RR::WildcardMatchers::IsA.new(klass)
       end
 
@@ -80,7 +80,7 @@ module RR
       def duck_type(*args)
         RR::WildcardMatchers::DuckType.new(*args)
       end
-      
+
       # Sets up a HashIncluding wildcard ArgumentEqualityExpectation
       # that succeeds when the passed argument contains at least those keys
       # and values of the expectation.
@@ -99,7 +99,7 @@ module RR
         expectation_proc ||= block
         RR::WildcardMatchers::Satisfy.new(expectation_proc)
       end
-      
+
       def spy(subject)
         methods_to_stub = subject.public_methods.map {|method_name| method_name.to_sym} -
           [:methods, :==, :__send__, :__id__, :object_id]
@@ -111,7 +111,7 @@ module RR
       def received(subject)
         RR::SpyVerificationProxy.new(subject)
       end
-      
+
       instance_methods.each do |name|
         alias_method "rr_#{name}", name
       end

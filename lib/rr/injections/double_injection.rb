@@ -102,8 +102,7 @@ module RR
       def subject_is_proxy_for_method?(method_name_in_question)
         !(class << @subject; self; end).
           instance_methods.
-          map {|method_name| method_name.to_sym}.
-          include?(method_name_in_question.to_sym)
+          detect {|method_name| method_name.to_sym == method_name_in_question.to_sym}
       end
 
       def deferred_bind_method
