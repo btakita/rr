@@ -35,14 +35,20 @@ module RR
 
     describe "#call" do
       describe "when verbose" do
+        attr_reader :original_stdout
+        before do
+          @original_stdout = $stdout
+        end
+
+        after do
+          $stdout = original_stdout
+        end
+
         it "prints the message call" do
           double.definition.verbose
-          output = nil
-          (class << double; self; end).__send__(:define_method, :puts) do |output|
-            output = output
-          end
+          $stdout = StringIO.new(output = "")
           subject.foobar(1, 2)
-          output.should == Double.formatted_name(:foobar, [1, 2])
+          output.strip.should == Double.formatted_name(:foobar, [1, 2])
         end
       end
 
