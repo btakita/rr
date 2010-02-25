@@ -5,7 +5,7 @@ module RR
       def self.included(mod)
         RR.trim_backtrace = true
         mod.class_eval do
-          unless instance_methods.include?('setup_with_rr')
+          unless instance_methods.detect {|method_name| method_name.to_sym == :setup_with_rr}
             alias_method :setup_without_rr, :setup
             def setup_with_rr
               setup_without_rr
