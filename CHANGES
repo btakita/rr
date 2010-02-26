@@ -1,3 +1,6 @@
+0.10.10
+- Suite passes for Ruby 1.9.1
+
 0.10.9
 - Fixed 1.8.6 bug for real
 
@@ -14,7 +17,6 @@
 - Fixed Bug - Can't stub attribute methods on a BelongsToAssociation (http://github.com/btakita/rr/issues#issue/24)
 
 0.10.5
-- Fixed issues with Ruby 1.9
 - Fixed stack overflow caused by double include in Test::Unit adapter [http://github.com/btakita/rr/issues#issue/16]. Identified by Dave Myron (http://github.com/contentfree)
 - Fixed warnings (Patch by Bryan Helmkamp)
 
