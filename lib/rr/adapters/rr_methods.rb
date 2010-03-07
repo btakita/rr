@@ -4,15 +4,15 @@ module RR
       class << self
         def register_strategy_class(strategy_class, method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}(subject=DoubleDefinitions::DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
-            creator = DoubleDefinitions::DoubleDefinitionCreator.new
+          def #{method_name}(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+            creator = DoubleDefinitions::DoubleDefinitionCreate.new
             creator.#{method_name}(subject, method_name, &definition_eval_block)
           end
           CLASS
 
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
           def #{method_name}!(method_name=nil, &definition_eval_block)
-            creator = DoubleDefinitions::DoubleDefinitionCreator.new
+            creator = DoubleDefinitions::DoubleDefinitionCreate.new
             creator.#{method_name}!(method_name, &definition_eval_block)
           end
           CLASS

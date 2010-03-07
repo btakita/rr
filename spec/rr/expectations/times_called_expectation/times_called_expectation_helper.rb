@@ -8,7 +8,7 @@ module RR
         @method_name = :foobar
         @double_injection = space.double_injection(subject, method_name)
         @double_definition = RR::DoubleDefinitions::DoubleDefinition.new(
-          RR::DoubleDefinitions::DoubleDefinitionCreator.new,
+          RR::DoubleDefinitions::DoubleDefinitionCreate.new,
           subject
         )
         @double = new_double(double_injection)

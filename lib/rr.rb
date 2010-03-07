@@ -26,9 +26,9 @@ require "#{dir}/rr/hash_with_object_id_key"
 require "#{dir}/rr/recorded_calls"
 require "#{dir}/rr/proc_from_block"
 
-require "#{dir}/rr/double_definitions/double_definition_creator_proxy"
-require "#{dir}/rr/double_definitions/double_definition_creator"
-require "#{dir}/rr/double_definitions/child_double_definition_creator"
+require "#{dir}/rr/double_definitions/double_definition_create_blank_slate"
+require "#{dir}/rr/double_definitions/double_definition_create"
+require "#{dir}/rr/double_definitions/child_double_definition_create"
 require "#{dir}/rr/adapters/rr_methods"
 
 require "#{dir}/rr/double"

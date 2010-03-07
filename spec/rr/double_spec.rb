@@ -10,7 +10,7 @@ module RR
         [b, a]
       end
       @double_injection = create_double_injection
-      @definition_creator = DoubleDefinitions::DoubleDefinitionCreator.new
+      @definition_creator = DoubleDefinitions::DoubleDefinitionCreate.new
       @definition = DoubleDefinitions::DoubleDefinition.new(definition_creator, subject).
         any_number_of_times.
         with_any_args

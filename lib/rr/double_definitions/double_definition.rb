@@ -4,14 +4,14 @@ module RR
       class << self
         def register_strategy_class(strategy_class, method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}(subject=DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
-            ChildDoubleDefinitionCreator.new(self).#{method_name}(subject, method_name, &definition_eval_block)
+          def #{method_name}(subject=DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+            ChildDoubleDefinitionCreate.new(self).#{method_name}(subject, method_name, &definition_eval_block)
           end
           CLASS
 
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
           def #{method_name}!(method_name=nil, &definition_eval_block)
-            ChildDoubleDefinitionCreator.new(self).#{method_name}!(method_name, &definition_eval_block)
+            ChildDoubleDefinitionCreate.new(self).#{method_name}!(method_name, &definition_eval_block)
           end
           CLASS
         end
@@ -196,7 +196,7 @@ module RR
           @ordered = true
           space.register_ordered_double(@double)
           install_method_callback return_value_block
-          DoubleDefinitionCreatorProxy.new(double_definition_creator)
+          DoubleDefinitionCreateBlankSlate.new(double_definition_creator)
         end
         alias_method :then, :ordered
 

@@ -1,6 +1,6 @@
 module RR
   module DoubleDefinitions
-    class ChildDoubleDefinitionCreator < DoubleDefinitionCreator # :nodoc
+    class ChildDoubleDefinitionCreate < DoubleDefinitionCreate # :nodoc
       attr_reader :parent_double_definition
       def initialize(parent_double_definition)
         @parent_double_definition = parent_double_definition

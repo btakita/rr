@@ -7,7 +7,7 @@ module RR
           def register(domain_name, *alias_method_names)
             @domain_name = domain_name
             register_self_at_double_definition_creator(domain_name)
-            DoubleDefinitionCreator.class_eval do
+            DoubleDefinitionCreate.class_eval do
               alias_method_names.each do |alias_method_name|
                 alias_method alias_method_name, domain_name
               end

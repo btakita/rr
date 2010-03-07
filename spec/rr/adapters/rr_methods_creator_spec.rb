@@ -26,8 +26,8 @@ module RR
           send("normal strategy definition")
 
           context "when passing no args" do
-            it "returns a DoubleDefinitionCreator" do
-              call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreator
+            it "returns a DoubleDefinitionCreate" do
+              call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreate
             end
           end
 
@@ -50,8 +50,8 @@ module RR
           send("normal strategy definition")
 
           context "when passing no args" do
-            it "returns a DoubleDefinitionCreator" do
-              call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreator
+            it "returns a DoubleDefinitionCreate" do
+              call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreate
             end
           end
 
@@ -73,8 +73,8 @@ module RR
           send("normal strategy definition")
 
           context "when passing no args" do
-            it "returns a DoubleDefinitionCreator" do
-              call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreator
+            it "returns a DoubleDefinitionCreate" do
+              call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreate
             end
           end
 

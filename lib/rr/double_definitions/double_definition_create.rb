@@ -1,6 +1,6 @@
 module RR
   module DoubleDefinitions
-    class DoubleDefinitionCreator # :nodoc
+    class DoubleDefinitionCreate # :nodoc
       class << self
         def register_verification_strategy_class(strategy_class, strategy_method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
@@ -61,8 +61,8 @@ module RR
         @scope_strategy = Strategies::Scope::Instance.new(self)
       end
 
-      def create(method_name, *args, &handler)
-        raise DoubleDefinitionCreatorError if no_subject?
+      def call(method_name, *args, &handler)
+        raise DoubleDefinitionCreateError if no_subject?
         @method_name, @args, @handler = method_name, args, handler
         @definition = DoubleDefinition.new(self, subject)
         verification_strategy ? verification_strategy.call(definition, method_name, args, handler) : no_strategy_error
@@ -112,9 +112,9 @@ module RR
           if no_subject?
             self
           elsif method_name
-            create(method_name)
+            call(method_name)
           else
-            DoubleDefinitionCreatorProxy.new(self, &definition_eval_block)
+            DoubleDefinitionCreateBlankSlate.new(self, &definition_eval_block)
           end
         end
 
@@ -168,7 +168,7 @@ module RR
       end
       include StrategySetupMethods
 
-      class DoubleDefinitionCreatorError < Errors::RRError
+      class DoubleDefinitionCreateError < Errors::RRError
       end
     end
   end

@@ -2,14 +2,14 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
 module RR
   module DoubleDefinitions
-    describe ChildDoubleDefinitionCreator do
+    describe ChildDoubleDefinitionCreate do
       attr_reader :parent_subject, :parent_double_definition_creator, :parent_double_definition, :child_double_definition_creator
       it_should_behave_like "Swapped Space"
       before(:each) do
         @parent_subject = Object.new
-        @parent_double_definition_creator = DoubleDefinitionCreator.new
+        @parent_double_definition_creator = DoubleDefinitionCreate.new
         @parent_double_definition = DoubleDefinition.new(parent_double_definition_creator, parent_subject)
-        @child_double_definition_creator = ChildDoubleDefinitionCreator.new(parent_double_definition)
+        @child_double_definition_creator = ChildDoubleDefinitionCreate.new(parent_double_definition)
       end
 
       describe "#root_subject" do
@@ -63,7 +63,7 @@ module RR
           describe "#mock!" do
             it "sets #parent_double_definition.implementation to a Proc returning the #subject" do
               parent_double_definition.implementation.should be_nil
-              child_subject = child_double_definition_creator.mock!.__creator__.subject
+              child_subject = child_double_definition_creator.mock!.__double_definition_create__.subject
               parent_double_definition.implementation.call.should == child_subject
             end
           end
@@ -71,7 +71,7 @@ module RR
           describe "#stub!" do
             it "sets #parent_double_definition.implementation to a Proc returning the #subject" do
               parent_double_definition.implementation.should be_nil
-              child_subject = child_double_definition_creator.stub!.__creator__.subject
+              child_subject = child_double_definition_creator.stub!.__double_definition_create__.subject
               parent_double_definition.implementation.call.should == child_subject
             end
           end
@@ -79,7 +79,7 @@ module RR
           describe "#dont_allow!" do
             it "sets #parent_double_definition.implementation to a Proc returning the #subject" do
               parent_double_definition.implementation.should be_nil
-              child_subject = child_double_definition_creator.dont_allow!.__creator__.subject
+              child_subject = child_double_definition_creator.dont_allow!.__double_definition_create__.subject
               parent_double_definition.implementation.call.should == child_subject
             end
           end

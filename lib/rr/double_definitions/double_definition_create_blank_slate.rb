@@ -1,6 +1,6 @@
 module RR
   module DoubleDefinitions
-    class DoubleDefinitionCreatorProxy
+    class DoubleDefinitionCreateBlankSlate
       class << self
         def blank_slate_methods
           instance_methods.each do |m|
@@ -12,8 +12,8 @@ module RR
         end
       end
 
-      def initialize(creator, &block) #:nodoc:
-        @creator = creator
+      def initialize(double_definition_create, &block) #:nodoc:
+        @double_definition_create = double_definition_create
         respond_to?(:class) ? self.class.blank_slate_methods : __blank_slated_class.blank_slate_methods
 
         if block_given?
@@ -26,11 +26,11 @@ module RR
       end
 
       def method_missing(method_name, *args, &block)
-        @creator.create(method_name, *args, &block)
+        @double_definition_create.call(method_name, *args, &block)
       end
 
-      def __creator__
-        @creator
+      def __double_definition_create__
+        @double_definition_create
       end
     end    
   end

@@ -10,7 +10,7 @@ module RR
       before do
         @subject = Object.new
         add_original_method
-        @double_definition_creator = DoubleDefinitionCreator.new
+        @double_definition_creator = DoubleDefinitionCreate.new
         @definition = double_definition_creator.stub(subject).foobar
         @double = definition.double
       end      
@@ -782,8 +782,8 @@ module RR
                 end
               end
 
-              context "when the return value of the #after_call_proc is a DoubleDefinitionCreatorProxy" do
-                it "returns the #__subject__ of the DoubleDefinitionCreatorProxy" do
+              context "when the return value of the #after_call_proc is a DoubleDefinitionCreateBlankSlate" do
+                it "returns the #__subject__ of the DoubleDefinitionCreateBlankSlate" do
                   return_value = Object.new
                   inner_double_proxy = nil
                   definition.with_any_args.returns(return_value).after_call do |value|
@@ -791,7 +791,7 @@ module RR
                   end
 
                   foobar_return_value = subject.foobar
-                  foobar_return_value.should == inner_double_proxy.__creator__.subject
+                  foobar_return_value.should == inner_double_proxy.__double_definition_create__.subject
                 end
               end
 
@@ -921,15 +921,15 @@ module RR
       describe "NestedDoubleCreationMethods" do
         attr_reader :child_double_definition_creator
         after do
-          RR.verify(ChildDoubleDefinitionCreator)
+          RR.verify(ChildDoubleDefinitionCreate)
           RR.verify(child_double_definition_creator)
         end
 
         describe "#mock" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #mock method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #mock method with the passed-in arguments and block" do
             child_subject = Object.new
             child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_creator|
               mock.proxy(child_double_definition_creator).mock(child_subject, :baz)
               child_double_definition_creator = child_double_definition_creator
             end
@@ -940,9 +940,9 @@ module RR
         end
 
         describe "#mock!" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #mock! method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #mock! method with the passed-in arguments and block" do
             child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_creator|
               mock.proxy(child_double_definition_creator).mock!(:baz)
               child_double_definition_creator = child_double_definition_creator
             end
@@ -953,10 +953,10 @@ module RR
         end
 
         describe "#stub" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #stub method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #stub method with the passed-in arguments and block" do
             child_subject = Object.new
             child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_creator|
               mock.proxy(child_double_definition_creator).stub(child_subject, :baz)
               child_double_definition_creator = child_double_definition_creator
             end
@@ -967,9 +967,9 @@ module RR
         end
 
         describe "#stub!" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #stub! method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #stub! method with the passed-in arguments and block" do
             child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_creator|
               mock.proxy(child_double_definition_creator).stub!(:baz)
               child_double_definition_creator = child_double_definition_creator
             end
@@ -980,10 +980,10 @@ module RR
         end
 
         describe "#dont_allow" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #dont_allow method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #dont_allow method with the passed-in arguments and block" do
             child_subject = Object.new
             child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_creator|
               mock.proxy(child_double_definition_creator).dont_allow(child_subject, :baz)
               child_double_definition_creator = child_double_definition_creator
             end
@@ -994,9 +994,9 @@ module RR
         end
 
         describe "#dont_allow!" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #dont_allow! method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #dont_allow! method with the passed-in arguments and block" do
             child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_creator|
               mock.proxy(child_double_definition_creator).dont_allow!(:baz)
               child_double_definition_creator = child_double_definition_creator
             end
@@ -1007,11 +1007,11 @@ module RR
         end
 
         describe "#proxy" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #proxy method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #proxy method with the passed-in arguments and block" do
             child_subject = Object.new
             child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
-              mock.proxy(child_double_definition_creator).proxy(DoubleDefinitionCreator::NO_SUBJECT, nil)
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_creator|
+              mock.proxy(child_double_definition_creator).proxy(DoubleDefinitionCreate::NO_SUBJECT, nil)
               child_double_definition_creator = child_double_definition_creator
             end
 
@@ -1029,11 +1029,11 @@ module RR
         end
 
         describe "#strong" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #strong method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #strong method with the passed-in arguments and block" do
             child_subject = Object.new
             child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
-              mock.proxy(child_double_definition_creator).strong(DoubleDefinitionCreator::NO_SUBJECT, nil)
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_creator|
+              mock.proxy(child_double_definition_creator).strong(DoubleDefinitionCreate::NO_SUBJECT, nil)
               child_double_definition_creator = child_double_definition_creator
             end
 

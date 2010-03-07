@@ -59,8 +59,8 @@ module RR
         case return_value
           when DoubleDefinitions::DoubleDefinition
             return_value.root_subject
-          when DoubleDefinitions::DoubleDefinitionCreatorProxy
-            return_value.__creator__.root_subject
+          when DoubleDefinitions::DoubleDefinitionCreateBlankSlate
+            return_value.__double_definition_create__.root_subject
           else
             return_value
         end
