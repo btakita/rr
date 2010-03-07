@@ -2,50 +2,44 @@ module RR
   module DoubleDefinitions
     class DoubleDefinitionCreator # :nodoc
       class << self
-        def register_verification_strategy_class(strategy_class, method_name)
+        def register_verification_strategy_class(strategy_class, strategy_method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-            add_strategy(subject, method_name, definition_eval_block) do
-              self.verification_strategy = #{strategy_class.name}.new(self)
-            end
+          def #{strategy_method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+            self.add_verification_strategy(#{strategy_class.name}, subject, method_name, &definition_eval_block)
           end
           CLASS
 
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}!(method_name=nil, &definition_eval_block)
-            #{method_name}(Object.new, method_name, &definition_eval_block)
+          def #{strategy_method_name}!(method_name=nil, &definition_eval_block)
+            #{strategy_method_name}(Object.new, method_name, &definition_eval_block)
           end
           CLASS
         end
         
-        def register_implementation_strategy_class(strategy_class, method_name)
+        def register_implementation_strategy_class(strategy_class, strategy_method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-            add_strategy(subject, method_name, definition_eval_block) do
-              self.implementation_strategy = #{strategy_class.name}.new(self)
-            end
+          def #{strategy_method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+            self.add_implementation_strategy(#{strategy_class.name}, subject, method_name, &definition_eval_block)
           end
           CLASS
 
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}!(method_name=nil, &definition_eval_block)
-            #{method_name}(Object.new, method_name, &definition_eval_block)
+          def #{strategy_method_name}!(method_name=nil, &definition_eval_block)
+            #{strategy_method_name}(Object.new, method_name, &definition_eval_block)
           end
           CLASS
         end
 
-        def register_scope_strategy_class(strategy_class, method_name)
+        def register_scope_strategy_class(strategy_class, strategy_method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-            add_strategy(subject, method_name, definition_eval_block) do
-              self.scope_strategy = #{strategy_class.name}.new(self)
-            end
+          def #{strategy_method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+            self.add_scope_strategy(#{strategy_class.name}, subject, method_name, &definition_eval_block)
           end
           CLASS
 
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}!(method_name=nil, &definition_eval_block)
-            #{method_name}(Object.new, method_name, &definition_eval_block)
+          def #{strategy_method_name}!(method_name=nil, &definition_eval_block)
+            #{strategy_method_name}(Object.new, method_name, &definition_eval_block)
           end
           CLASS
         end
@@ -91,6 +85,24 @@ module RR
         end
 
         protected
+        def add_verification_strategy(verification_strategy_class, subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+          add_strategy(subject, method_name, definition_eval_block) do
+            self.verification_strategy = verification_strategy_class.new(self)
+          end
+        end
+
+        def add_implementation_strategy(implementation_strategy_class, subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+          add_strategy(subject, method_name, definition_eval_block) do
+            self.implementation_strategy = implementation_strategy_class.new(self)
+          end
+        end
+
+        def add_scope_strategy(scope_strategy_class, subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+          add_strategy(subject, method_name, definition_eval_block) do
+            self.scope_strategy = scope_strategy_class.new(self)
+          end
+        end
+
         def add_strategy(subject, method_name, definition_eval_block)
           if method_name && definition_eval_block
             raise ArgumentError, "Cannot pass in a method name and a block"
@@ -112,7 +124,7 @@ module RR
           @verification_strategy = verification_strategy
           verification_strategy
         end
-        
+
         def implementation_strategy=(implementation_strategy)
           verify_not_proxy_and_dont_allow(verification_strategy, implementation_strategy)
           @implementation_strategy = implementation_strategy
