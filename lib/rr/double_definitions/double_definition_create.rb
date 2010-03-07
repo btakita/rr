@@ -46,9 +46,7 @@ module RR
       end
 
       attr_reader :subject, 
-                  :args, :handler, 
-                  :definition, 
-                  :verification_strategy, 
+                  :verification_strategy,
                   :implementation_strategy, 
                   :scope_strategy
       NO_SUBJECT = Object.new
@@ -63,8 +61,7 @@ module RR
 
       def call(method_name, *args, &handler)
         raise DoubleDefinitionCreateError if no_subject?
-        @method_name, @args, @handler = method_name, args, handler
-        @definition = DoubleDefinition.new(self, subject)
+        definition = DoubleDefinition.new(self, subject)
         verification_strategy ? verification_strategy.call(definition, method_name, args, handler) : no_strategy_error
         implementation_strategy.call(definition, method_name, args, handler)
         scope_strategy.call(definition, method_name, args, handler)
