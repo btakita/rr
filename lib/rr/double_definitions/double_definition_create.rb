@@ -73,7 +73,7 @@ module RR
       
       def root_subject
         subject
-      end      
+      end
       
       def method_name
         @verification_strategy.method_name
