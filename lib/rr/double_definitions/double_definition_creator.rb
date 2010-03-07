@@ -67,6 +67,16 @@ module RR
         @scope_strategy = Strategies::Scope::Instance.new(self)
       end
 
+      def create(method_name, *args, &handler)
+        raise DoubleDefinitionCreatorError if no_subject?
+        @method_name, @args, @handler = method_name, args, handler
+        @definition = DoubleDefinition.new(self, subject)
+        verification_strategy ? verification_strategy.call(definition, method_name, args, handler) : no_strategy_error
+        implementation_strategy.call(definition, method_name, args, handler)
+        scope_strategy.call(definition, method_name, args, handler)
+        definition
+      end
+      
       def root_subject
         subject
       end      
@@ -145,19 +155,6 @@ module RR
         end
       end
       include StrategySetupMethods
-
-      module StrategyExecutionMethods
-        def create(method_name, *args, &handler)
-          raise DoubleDefinitionCreatorError if no_subject?
-          @method_name, @args, @handler = method_name, args, handler
-          @definition = DoubleDefinition.new(self, subject)
-          verification_strategy ? verification_strategy.call(definition, method_name, args, handler) : no_strategy_error
-          implementation_strategy.call(definition, method_name, args, handler)
-          scope_strategy.call(definition, method_name, args, handler)
-          definition
-        end
-      end
-      include StrategyExecutionMethods
 
       class DoubleDefinitionCreatorError < Errors::RRError
       end
