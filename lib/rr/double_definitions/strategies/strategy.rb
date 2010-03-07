@@ -3,25 +3,25 @@ module RR
     module Strategies
       class Strategy
         class << self
-          attr_reader :domain_name
-          def register(domain_name, *alias_method_names)
-            @domain_name = domain_name
-            register_self_at_double_definition_create(domain_name)
+          attr_reader :strategy_method_name
+          def register(strategy_method_name, *alias_method_names)
+            @strategy_method_name = strategy_method_name
+            register_self_at_double_definition_create(strategy_method_name)
             DoubleDefinitionCreate.class_eval do
               alias_method_names.each do |alias_method_name|
-                alias_method alias_method_name, domain_name
+                alias_method alias_method_name, strategy_method_name
               end
             end
-            RR::Adapters::RRMethods.register_strategy_class(self, domain_name)
-            DoubleDefinition.register_strategy_class(self, domain_name)
+            RR::Adapters::RRMethods.register_strategy_class(self, strategy_method_name)
+            DoubleDefinition.register_strategy_class(self, strategy_method_name)
             RR::Adapters::RRMethods.class_eval do
               alias_method_names.each do |alias_method_name|
-                alias_method alias_method_name, domain_name
+                alias_method alias_method_name, strategy_method_name
               end
             end
           end
 
-          def register_self_at_double_definition_create(domain_name)
+          def register_self_at_double_definition_create(strategy_method_name)
           end
         end
 
@@ -38,7 +38,7 @@ module RR
         end
 
         def name
-          self.class.domain_name
+          self.class.strategy_method_name
         end
 
         def verify_subject(subject)
