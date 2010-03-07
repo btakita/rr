@@ -35,14 +35,20 @@ module RR
 
     describe "#call" do
       describe "when verbose" do
+        attr_reader :original_stdout
+        before do
+          @original_stdout = $stdout
+        end
+
+        after do
+          $stdout = original_stdout
+        end
+
         it "prints the message call" do
           double.definition.verbose
-          output = nil
-          (class << double; self; end).__send__(:define_method, :puts) do |output|
-            output = output
-          end
-          double.call(double_injection, 1, 2)
-          output.should == Double.formatted_name(:foobar, [1, 2])
+          $stdout = StringIO.new(output = "")
+          subject.foobar(1, 2)
+          output.strip.should == Double.formatted_name(:foobar, [1, 2])
         end
       end
 
@@ -52,7 +58,7 @@ module RR
           (class << double; self; end).__send__(:define_method, :puts) do |output|
             output = output
           end
-          double.call(double_injection, 1, 2)
+          subject.foobar(1, 2)
           output.should be_nil
         end
       end
@@ -60,31 +66,31 @@ module RR
       describe "when implemented by a lambda" do
         it "calls the return lambda when implemented by a lambda" do
           double.definition.returns {|arg| "returning #{arg}"}
-          double.call(double_injection, :foobar).should == "returning foobar"
+          subject.foobar(:foobar).should == "returning foobar"
         end
 
         it "calls and returns the after_call when after_call is set" do
           double.definition.returns {|arg| "returning #{arg}"}.after_call do |value|
             "#{value} after call"
           end
-          double.call(double_injection, :foobar).should == "returning foobar after call"
+          subject.foobar(:foobar).should == "returning foobar after call"
         end
 
         it "returns nil when to returns is not set" do
-          double.call(double_injection).should be_nil
+          subject.foobar.should be_nil
         end
 
         it "works when times_called is not set" do
           double.definition.returns {:value}
-          double.call(double_injection)
+          subject.foobar
         end
 
         it "verifes the times_called does not exceed the TimesCalledExpectation" do
           double.definition.times(2).returns {:value}
 
-          double.call(double_injection, :foobar)
-          double.call(double_injection, :foobar)
-          lambda {double.call(double_injection, :foobar)}.should raise_error(Errors::TimesCalledError)
+          subject.foobar(:foobar)
+          subject.foobar(:foobar)
+          lambda {subject.foobar(:foobar)}.should raise_error(Errors::TimesCalledError)
         end
 
         it "raises DoubleOrderError when ordered and called out of order" do
@@ -116,7 +122,7 @@ module RR
           end
 
           double.definition.returns {:value}.ordered
-          double.call(double_injection, :foobar)
+          subject.foobar(:foobar)
           verify_ordered_double_called.should be_true
           passed_in_double.should === double
         end
@@ -131,7 +137,7 @@ module RR
           end
 
           double.definition.returns {:value}
-          double.call(double_injection, :foobar)
+          subject.foobar(:foobar)
           verify_ordered_double_called.should be_false
         end
 
@@ -160,8 +166,11 @@ module RR
 
       describe "when implemented by a method" do
         it "sends block to the method" do
-          def subject.foobar(a, b)
-            yield(a, b)
+          class << subject
+            remove_method :foobar
+            def foobar(a, b)
+              yield(a, b)
+            end
           end
 
           double.definition.with(1, 2).implemented_by(subject.method(:foobar))
@@ -237,7 +246,7 @@ module RR
       context "when TimesCalledExpectation#attempt? is true" do
         it "returns true" do
           double.definition.with(1, 2, 3).twice
-          double.call(double_injection, 1, 2, 3)
+          subject.foobar(1, 2, 3)
           double.times_called_expectation.should be_attempt
           double.should be_attempt
         end
@@ -246,8 +255,8 @@ module RR
       context "when TimesCalledExpectation#attempt? is true" do
         it "returns false" do
           double.definition.with(1, 2, 3).twice
-          double.call(double_injection, 1, 2, 3)
-          double.call(double_injection, 1, 2, 3)
+          subject.foobar(1, 2, 3)
+          subject.foobar(1, 2, 3)
           double.times_called_expectation.should_not be_attempt
           double.should_not be_attempt
         end
@@ -269,18 +278,18 @@ module RR
         double.definition.twice.returns {:return_value}
 
         lambda {double.verify}.should raise_error(Errors::TimesCalledError)
-        double.call(double_injection)
+        subject.foobar
         lambda {double.verify}.should raise_error(Errors::TimesCalledError)
-        double.call(double_injection)
+        subject.foobar
 
         lambda {double.verify}.should_not raise_error
       end
 
       it "does not raise an error when there is no times called expectation" do
         lambda {double.verify}.should_not raise_error
-        double.call(double_injection)
+        subject.foobar
         lambda {double.verify}.should_not raise_error
-        double.call(double_injection)
+        subject.foobar
         lambda {double.verify}.should_not raise_error
       end
     end

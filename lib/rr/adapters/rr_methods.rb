@@ -80,7 +80,7 @@ module RR
       def duck_type(*args)
         RR::WildcardMatchers::DuckType.new(*args)
       end
-      
+
       # Sets up a HashIncluding wildcard ArgumentEqualityExpectation
       # that succeeds when the passed argument contains at least those keys
       # and values of the expectation.
@@ -99,9 +99,10 @@ module RR
         expectation_proc ||= block
         RR::WildcardMatchers::Satisfy.new(expectation_proc)
       end
-      
+
       def spy(subject)
-        methods_to_stub = subject.public_methods - ["methods", "==", "__send__", "__id__"]
+        methods_to_stub = subject.public_methods.map {|method_name| method_name.to_sym} -
+          [:methods, :==, :__send__, :__id__, :object_id]
         methods_to_stub.each do |method|
           stub.proxy(subject, method)
         end
@@ -110,7 +111,7 @@ module RR
       def received(subject)
         RR::SpyVerificationProxy.new(subject)
       end
-      
+
       instance_methods.each do |name|
         alias_method "rr_#{name}", name
       end

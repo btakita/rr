@@ -167,7 +167,7 @@ module RR
             end
 
             it "sets an ArgumentEqualityExpectation with no arguments" do
-              definition.argument_expectation.should == Expectations::ArgumentEqualityExpectation.new()
+              definition.argument_expectation.should == RR::Expectations::ArgumentEqualityExpectation.new()
             end
           end
 
@@ -230,13 +230,13 @@ module RR
           it "sets up a Times Called Expectation with 0" do
             definition.with_any_args
             definition.never
-            lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
+            lambda {subject.foobar}.should raise_error(RR::Errors::TimesCalledError)
           end
 
           describe "#subject.method_name being called" do
             it "raises a TimesCalledError" do
               definition.with_any_args.never
-              lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
+              lambda {subject.foobar}.should raise_error(RR::Errors::TimesCalledError)
             end
           end
         end
@@ -248,7 +248,7 @@ module RR
             end
 
             it "sets up a Times Called Expectation with 1" do
-              lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
+              lambda {subject.foobar}.should raise_error(RR::Errors::TimesCalledError)
             end
           end
 
@@ -306,7 +306,7 @@ module RR
 
             it "sets up a Times Called Expectation with 2" do
               definition.twice.with_any_args
-              lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+              lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
             end
           end
 
@@ -365,7 +365,7 @@ module RR
             end
 
             it "sets up a Times Called Expectation with 1" do
-              definition.times_matcher.should == TimesCalledMatchers::AtLeastMatcher.new(2)
+              definition.times_matcher.should == RR::TimesCalledMatchers::AtLeastMatcher.new(2)
             end
           end
 
@@ -425,7 +425,7 @@ module RR
             it "sets up a Times Called Expectation with 1" do
               lambda do
                 subject.foobar
-              end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected at most 2 times.")
+              end.should raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected at most 2 times.")
             end
           end
 
@@ -484,7 +484,7 @@ module RR
             end
 
             it "sets up a Times Called Expectation with passed in times" do
-              lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+              lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
             end
           end
 
@@ -545,7 +545,7 @@ module RR
             end
 
             it "sets up a Times Called Expectation with AnyTimes matcher" do
-              definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+              definition.times_matcher.should == RR::TimesCalledMatchers::AnyTimesMatcher.new
             end
           end
 
@@ -600,12 +600,12 @@ module RR
           macro "#ordered" do
             it "adds itself to the ordered doubles list" do
               definition.ordered
-              Space.instance.ordered_doubles.should include(double)
+              RR::Space.instance.ordered_doubles.should include(double)
             end
 
             it "does not double_injection add itself" do
               definition.ordered
-              Space.instance.ordered_doubles.should == [double]
+              RR::Space.instance.ordered_doubles.should == [double]
             end
 
             it "sets ordered? to true" do
@@ -618,7 +618,7 @@ module RR
                 lambda do
                   definition.ordered
                 end.should raise_error(
-                  Errors::DoubleDefinitionError,
+                  RR::Errors::DoubleDefinitionError,
                   "Double Definitions must have a dedicated Double to be ordered. " <<
                   "For example, using instance_of does not allow ordered to be used. " <<
                   "proxy the class's #new method instead."
@@ -725,10 +725,10 @@ module RR
                   @return_value.should == :new_return_value
                 end
 
-                it "passes an array of the args with the block appended as a ProcFromBlock around the original block" do
+                it "passes an array of the args with the block appended as a RR::ProcFromBlock around the original block" do
                   @args.length.should == 3
                   @args[0..1].should == [1, 2]
-                  @args[2].should be_instance_of(ProcFromBlock)
+                  @args[2].should be_instance_of(RR::ProcFromBlock)
                   @block.should == Proc.new(&@block)
                   @args[2].should == @block
                 end
@@ -885,8 +885,11 @@ module RR
 
           context "when passed a Method" do
             it "sets the implementation to the passed in method" do
-              def subject.foobar(a, b)
-                [b, a]
+              class << subject
+                remove_method :foobar
+                def foobar(a, b)
+                  [b, a]
+                end
               end
               definition.implemented_by(subject.method(:foobar))
               subject.foobar(1, 2).should == [2, 1]
@@ -1021,7 +1024,7 @@ module RR
           it "raises a DoubleDefinitionError" do
             lambda do
               definition.proxy!(:baz)
-            end.should raise_error(Errors::DoubleDefinitionError)
+            end.should raise_error(RR::Errors::DoubleDefinitionError)
           end
         end
 
@@ -1043,7 +1046,7 @@ module RR
           it "raises a DoubleDefinitionError" do
             lambda do
               definition.strong!(:baz)
-            end.should raise_error(Errors::DoubleDefinitionError)
+            end.should raise_error(RR::Errors::DoubleDefinitionError)
           end
         end
       end
@@ -1061,7 +1064,7 @@ module RR
               definition.argument_expectation = nil
               lambda do
                 definition.exact_match?
-              end.should raise_error(Errors::DoubleDefinitionError)
+              end.should raise_error(RR::Errors::DoubleDefinitionError)
             end
           end
 
@@ -1089,7 +1092,7 @@ module RR
               definition.argument_expectation = nil
               lambda do
                 definition.wildcard_match?
-              end.should raise_error(Errors::DoubleDefinitionError)
+              end.should raise_error(RR::Errors::DoubleDefinitionError)
             end
           end
 
@@ -1139,7 +1142,7 @@ module RR
               definition.times_matcher = nil
               lambda do
                 definition.terminal?
-              end.should raise_error(Errors::DoubleDefinitionError)
+              end.should raise_error(RR::Errors::DoubleDefinitionError)
             end
           end
         end

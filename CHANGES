@@ -1,3 +1,39 @@
+0.10.10
+- Suite passes for Ruby 1.9.1
+
+0.10.9
+- Fixed 1.8.6 bug for real
+
+0.10.8
+- Fixed 1.8.6 bug
+
+0.10.7
+- Fixed issue with DoubleInjections binding to objects overriding the method method.
+
+0.10.6
+- Added MIT license
+- Fixed Bug - dont_allow doesn't work when it follows stub (http://github.com/btakita/rr/issues#issue/20)
+- Fixed exception with DoubleInjections on proxy objects (http://github.com/btakita/rr/issues#issue/24)
+- Fixed Bug - Can't stub attribute methods on a BelongsToAssociation (http://github.com/btakita/rr/issues#issue/24)
+
+0.10.5
+- Fixed stack overflow caused by double include in Test::Unit adapter [http://github.com/btakita/rr/issues#issue/16]. Identified by Dave Myron (http://github.com/contentfree)
+- Fixed warnings (Patch by Bryan Helmkamp)
+
+0.10.4
+- Handle lazily defined methods (where respond_to? returns true yet the method is not yet defined and the first call to method_missing defines the method). This pattern is used in ActiveRecord and ActionMailer.
+- Fixed warning about aliasing #instance_exec in jruby. http://github.com/btakita/rr/issues#issue/9 (Patch by Nathan Sobo)
+
+0.10.2
+- RR properly proxies subjects with private methods [http://github.com/btakita/rr/issues/#issue/7]. Identified by Matthew O'Connor.
+
+0.10.1
+- Fixed issue with DoubleInjection not invoking methods that are lazily created [http://github.com/btakita/rr/issues/#issue/4]. Identified by davidlee (http://github.com/davidlee)
+- Fixed issue with mock.proxy and returns [http://github.com/btakita/rr/issues/#issue/2]. Identified by trogdoro (http://github.com/trogdoro)
+
+* 0.10.0
+- Method is no longer invoked if respond_to? returns false. This was in place to support ActiveRecord association proxies, and is no longer needed. 
+
 * 0.9.0
 - instance_of Doubles now apply to methods invoked in the subject's #initialize method.
 

@@ -39,6 +39,9 @@ module RR
         @yields_value = nil
         @double_definition_creator = double_definition_creator
         @subject = subject
+        @ordered = false
+        @verbose = false
+        @verify_method_signature = false
       end
       
       attr_reader :argument_expectation
@@ -94,7 +97,7 @@ module RR
         #
         #   mock(subject).method_name.never
         def never
-          @times_matcher = TimesCalledMatchers::IntegerMatcher.new(0)
+          @times_matcher = TimesCalledMatchers::NeverMatcher.new
           self
         end
 
@@ -245,14 +248,15 @@ module RR
         #
         # Passing in an argument causes Double to return the argument.
         def returns(*args, &implementation)
-          value = args.first
           if !args.empty? && implementation
             raise ArgumentError, "returns cannot accept both an argument and a block"
           end
           if implementation
-            implemented_by implementation
+            install_method_callback implementation
           else
-            implemented_by proc {value}
+            install_method_callback(lambda do |*lambda_args|
+              args.first
+            end)
           end
           self
         end
@@ -284,11 +288,12 @@ module RR
         
         protected
         def install_method_callback(block)
-          return unless block
-          if implementation_is_original_method?
-            after_call(&block)
-          else
-            returns(&block)
+          if block
+            if implementation_is_original_method?
+              after_call(&block)
+            else
+              implemented_by block
+            end
           end
         end
       end

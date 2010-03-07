@@ -28,22 +28,6 @@ module RR
       verify_method_signature if definition.verify_method_signature?
       double_injection.register_double self
     end
-    
-    # Double#call calls the Double's implementation. The return
-    # value of the implementation is returned.
-    #
-    # A TimesCalledError is raised when the times called
-    # exceeds the expected TimesCalledExpectation.
-    def call(double_injection, *args, &block)
-      if verbose?
-        puts Double.formatted_name(double_injection.method_name, args)
-      end
-      times_called_expectation.attempt if definition.times_matcher
-      space.verify_ordered_double(self) if ordered?
-      yields!(block)
-      return_value = call_implementation(double_injection, *args, &block)
-      definition.after_call_proc ? extract_subject_from_return_value(definition.after_call_proc.call(return_value)) : return_value
-    end
 
     # Double#exact_match? returns true when the passed in arguments
     # exactly match the ArgumentEqualityExpectation arguments.
@@ -98,6 +82,18 @@ module RR
       self.class.formatted_name(method_name, expected_arguments)
     end
 
+    def method_call(args)
+      if verbose?
+        puts Double.formatted_name(method_name, args)
+      end
+      times_called_expectation.attempt if definition.times_matcher
+      space.verify_ordered_double(self) if ordered?
+    end
+
+    def implementation_is_original_method?
+      definition.implementation_is_original_method?
+    end
+
     protected
     def ordered?
       definition.ordered?
@@ -105,21 +101,6 @@ module RR
 
     def verbose?
       definition.verbose?
-    end
-    
-    def yields!(block)
-      if definition.yields_value
-        if block
-          block.call(*definition.yields_value)
-        else
-          raise ArgumentError, "A Block must be passed into the method call when using yields"
-        end
-      end
-    end
-
-    def call_implementation(double_injection, *args, &block)
-      return_value = do_call_implementation_and_get_return_value(double_injection, *args, &block)
-      extract_subject_from_return_value(return_value)
     end
 
     def verify_times_matcher_is_set
@@ -138,19 +119,19 @@ module RR
       raise RR::Errors::SubjectDoesNotImplementMethodError unless definition.subject.respond_to?(double_injection.send(:original_method_alias_name))
       raise RR::Errors::SubjectHasDifferentArityError unless arity_matches?
     end
-    
+
     def subject_arity
       definition.subject.method(double_injection.send(:original_method_alias_name)).arity
     end
-    
+
     def subject_accepts_only_varargs?
       subject_arity == -1
     end
-    
+
     def subject_accepts_varargs?
       subject_arity < 0
     end
-    
+
     def arity_matches?
       return true if subject_accepts_only_varargs?
       if subject_accepts_varargs?
@@ -159,54 +140,13 @@ module RR
         return subject_arity == args.size
       end
     end
-    
+
     def args
       definition.argument_expectation.expected_arguments
-    end
-    
-    def do_call_implementation_and_get_return_value(double_injection, *args, &block)
-      if definition.implementation_is_original_method?
-        if double_injection.object_has_original_method?
-          double_injection.call_original_method(*args, &block)
-        else
-          double_injection.subject.__send__(
-            :method_missing,
-            method_name,
-            *args,
-            &block
-          )
-        end
-      else
-        if implementation
-          if implementation.is_a?(Method)
-            implementation.call(*args, &block)
-          else
-            args << ProcFromBlock.new(&block) if block
-            implementation.call(*args)
-          end
-        else
-          nil
-        end
-      end
-    end
-
-    def extract_subject_from_return_value(return_value)
-      case return_value
-      when DoubleDefinitions::DoubleDefinition
-        return_value.root_subject
-      when DoubleDefinitions::DoubleDefinitionCreatorProxy
-        return_value.__creator__.root_subject
-      else
-        return_value
-      end
-    end
-
-    def implementation
-      definition.implementation
     end
 
     def argument_expectation
       definition.argument_expectation
-    end    
+    end
   end
 end

@@ -3,9 +3,7 @@ module RR
   class HashWithObjectIdKey < ::Hash #:nodoc:
     def initialize
       @keys = {}
-      super do |hash, subject_object|
-        hash.set_with_object_id(subject_object, {})
-      end
+      super
     end
 
     alias_method :get_with_object_id, :[]

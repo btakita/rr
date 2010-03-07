@@ -1,5 +1,6 @@
 dir = File.dirname(__FILE__)
 require 'rubygems'
+require 'forwardable'
 
 require "#{dir}/rr/errors/rr_error"
 require "#{dir}/rr/errors/subject_does_not_implement_method_error"
@@ -14,7 +15,13 @@ require "#{dir}/rr/errors/spy_verification_errors/double_injection_not_found_err
 require "#{dir}/rr/errors/spy_verification_errors/invocation_count_error"
 
 require "#{dir}/rr/space"
-require "#{dir}/rr/double_injection"
+require "#{dir}/rr/injections/injection"
+require "#{dir}/rr/injections/double_injection"
+require "#{dir}/rr/injections/method_missing_injection"
+require "#{dir}/rr/injections/singleton_method_added_injection"
+require "#{dir}/rr/method_dispatches/base_method_dispatch"
+require "#{dir}/rr/method_dispatches/method_dispatch"
+require "#{dir}/rr/method_dispatches/method_missing_dispatch"
 require "#{dir}/rr/hash_with_object_id_key"
 require "#{dir}/rr/recorded_calls"
 require "#{dir}/rr/proc_from_block"
@@ -38,6 +45,7 @@ require "#{dir}/rr/double_definitions/strategies/implementation/proxy"
 require "#{dir}/rr/double_definitions/strategies/scope/scope_strategy"
 require "#{dir}/rr/double_definitions/strategies/scope/instance"
 require "#{dir}/rr/double_definitions/strategies/scope/instance_of_class"
+require "#{dir}/rr/double_definitions/strategies/scope/any_instance_of_class"
 require "#{dir}/rr/double_matches"
 
 require "#{dir}/rr/expectations/argument_equality_expectation"
@@ -57,6 +65,7 @@ require "#{dir}/rr/wildcard_matchers/hash_including"
 require "#{dir}/rr/times_called_matchers/terminal"
 require "#{dir}/rr/times_called_matchers/non_terminal"
 require "#{dir}/rr/times_called_matchers/times_called_matcher"
+require "#{dir}/rr/times_called_matchers/never_matcher"
 require "#{dir}/rr/times_called_matchers/any_times_matcher"
 require "#{dir}/rr/times_called_matchers/integer_matcher"
 require "#{dir}/rr/times_called_matchers/range_matcher"

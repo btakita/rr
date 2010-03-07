@@ -17,7 +17,7 @@ module RR
         describe "#attempt!" do
           it "raises error that includes the double" do
             lambda {expectation.attempt}.should raise_error(
-              Errors::TimesCalledError,
+              RR::Errors::TimesCalledError,
               "#{double.formatted_name}\n#{matcher.error_message(1)}"
             )
           end
@@ -27,7 +27,7 @@ module RR
           it "raises error with passed in message prepended" do
             expectation.instance_variable_set(:@times_called, 1)
             lambda {expectation.verify!}.should raise_error(
-              Errors::TimesCalledError,
+              RR::Errors::TimesCalledError,
               "#{double.formatted_name}\n#{matcher.error_message(1)}"
             )
           end

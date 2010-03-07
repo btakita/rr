@@ -38,6 +38,14 @@ Currently RR implements mocks, stubs, proxies, and spies. Fakes usually require 
     # config.mock_with RR::Adapters::Rspec
   end
 
+== standalone
+  extend RR::Adapters::RRMethods
+  mock(object).method_name {:return_value}
+
+  object.method_name # Returns :return_value
+
+  RR.verify # Verifies the Double expectations are satisfied
+
 == Syntax between RR and other double/mock frameworks
 === Terse Syntax
 One of the goals of RR is to make doubles more scannable.
@@ -131,6 +139,15 @@ call to #render with the arguments {:partial => "user_info"} once.
 When the method is called "Information" is returned.
   view = controller.template
   mock(view).render(:partial => "user_info") {"Information"}
+
+You can also allow any number of arguments to be passed into the mock by using:
+  mock(view).render.with_any_args.twice do |*args|
+    if args.first == {:partial => "user_info}
+      "User Info"
+    else
+      "Stuff in the view #{args.inspect}"
+    end
+  end
 
 === stub
 stub replaces the method on the object with only an implementation. You
@@ -310,12 +327,15 @@ RR::WildcardMatchers for details.
   mock(object).method_name(anything).times(any_times) {return_value}
 
 == Special Thanks To
-With any development effort, there are countless people who have contributed
-to making it possible. We all are standing on the shoulders of giants.
+With any development effort, there are countless people who have contributed to making it possible. We all are standing on the shoulders of giants.
+If you have directly contributed to RR and I missed you in this list, please let me know and I will add you. Thanks!
 * Andreas Haller for patches
 * Aslak Hellesoy for Developing Rspec
+* Bryan Helmkamp for patches
+* Christopher Redinger for patches
 * Dan North for syntax ideas
 * Dave Astels for some BDD inspiration
+* Dave Myron for a bug report
 * David Chelimsky for encouragement to make the RR framework, for developing the Rspec mock framework, syntax ideas, and patches
 * Daniel Sudol for identifing performance issues with RR
 * Felix Morio for pairing with me
@@ -327,9 +347,11 @@ to making it possible. We all are standing on the shoulders of giants.
 * Matthew O'Connor for patches and pairing with me
 * Michael Niessner for patches and pairing with me
 * Mike Mangino (from Elevated Rails) for patches and pairing with me
+* Myron Marston for bug reports
 * Nick Kallen for documentation suggestions, bug reports, and patches
 * Nathan Sobo for various ideas and inspiration for cleaner and more expressive code
 * Parker Thompson for pairing with me
 * Phil Darnowsky for patches
 * Pivotal Labs for sponsoring RR development
 * Stephen Baker for Developing Rspec
+* Tatsuya Ono for patches

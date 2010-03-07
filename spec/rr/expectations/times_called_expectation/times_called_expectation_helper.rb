@@ -7,8 +7,8 @@ module RR
         @subject = Object.new
         @method_name = :foobar
         @double_injection = space.double_injection(subject, method_name)
-        @double_definition = DoubleDefinitions::DoubleDefinition.new(
-          DoubleDefinitions::DoubleDefinitionCreator.new,
+        @double_definition = RR::DoubleDefinitions::DoubleDefinition.new(
+          RR::DoubleDefinitions::DoubleDefinitionCreator.new,
           subject
         )
         @double = new_double(double_injection)
@@ -16,7 +16,7 @@ module RR
       end
 
       def raises_expectation_error(&block)
-        lambda {block.call}.should raise_error(Errors::TimesCalledError)
+        lambda {block.call}.should raise_error(RR::Errors::TimesCalledError)
       end
     end
   end

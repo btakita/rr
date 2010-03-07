@@ -24,9 +24,11 @@ module RR
       end
 
       class InvocationMatcher < SpyVerificationProxy
-        attr_reader :failure_message
+        attr_reader :failure_message, :spy_verification_proxy
  
         def initialize(method = nil)
+          @verification = nil
+          @subject = nil
           method_missing(method) if method
         end
 

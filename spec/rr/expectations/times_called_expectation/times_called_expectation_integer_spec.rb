@@ -33,7 +33,7 @@ module RR
           it "fails after attempt! called 1 time" do
             expectation.attempt
             lambda {expectation.verify!}.should raise_error(
-            Errors::TimesCalledError,
+            RR::Errors::TimesCalledError,
             "foobar()\nCalled 1 time.\nExpected 2 times."
             )
           end
@@ -43,14 +43,14 @@ module RR
             expectation.attempt
             lambda do
               expectation.attempt
-            end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 2 times.")
+            end.should raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 2 times.")
           end
 
           it "has a backtrace to where the TimesCalledExpectation was instantiated on failure" do
             error = nil
             begin
               expectation.verify!
-            rescue Errors::TimesCalledError => e
+            rescue RR::Errors::TimesCalledError => e
               error = e
             end
             e.backtrace.first.should include(__FILE__)
@@ -60,7 +60,7 @@ module RR
           it "has an error message that includes the number of times called and expected number of times" do
             lambda do
               expectation.verify!
-            end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 0 times.\nExpected 2 times.")
+            end.should raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 0 times.\nExpected 2 times.")
           end
         end
 
@@ -78,7 +78,7 @@ module RR
           it "raises error before attempted more than expected times" do
             2.times {expectation.attempt}
             lambda {expectation.attempt}.should raise_error(
-            Errors::TimesCalledError
+            RR::Errors::TimesCalledError
             )
           end
         end
@@ -89,7 +89,7 @@ module RR
             expectation.attempt
             lambda do
               expectation.attempt
-            end.should raise_error(Errors::TimesCalledError)
+            end.should raise_error(RR::Errors::TimesCalledError)
           end
         end
 

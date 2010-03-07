@@ -27,14 +27,14 @@ module RR
 
           context "when passing no args" do
             it "returns a DoubleDefinitionCreator" do
-              call_strategy.class.should == DoubleDefinitions::DoubleDefinitionCreator
+              call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreator
             end
           end
 
           context "when passed a method_name argument" do
             it "creates a mock Double for method" do
               double_definition = mock(subject, :foobar).returns {:baz}
-              double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+              double_definition.times_matcher.should == RR::TimesCalledMatchers::IntegerMatcher.new(1)
               double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
               double_definition.argument_expectation.expected_arguments.should == []
               subject.foobar.should == :baz
@@ -51,14 +51,14 @@ module RR
 
           context "when passing no args" do
             it "returns a DoubleDefinitionCreator" do
-              call_strategy.class.should == DoubleDefinitions::DoubleDefinitionCreator
+              call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreator
             end
           end
 
           context "when passed a method_name argument" do
             it "creates a stub Double for method when passed a method_name argument" do
               double_definition = stub(subject, :foobar).returns {:baz}
-              double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+              double_definition.times_matcher.should == RR::TimesCalledMatchers::AnyTimesMatcher.new
               double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
               subject.foobar.should == :baz
             end
@@ -74,19 +74,19 @@ module RR
 
           context "when passing no args" do
             it "returns a DoubleDefinitionCreator" do
-              call_strategy.class.should == DoubleDefinitions::DoubleDefinitionCreator
+              call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreator
             end
           end
 
           context "when passed a method_name argument_expectation" do
             it "creates a mock Double for method" do
               double_definition = dont_allow(subject, :foobar)
-              double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
+              double_definition.times_matcher.should == RR::TimesCalledMatchers::NeverMatcher.new
               double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
 
               lambda do
                 subject.foobar
-              end.should raise_error(Errors::TimesCalledError)
+              end.should raise_error(RR::Errors::TimesCalledError)
               RR.reset
             end
           end

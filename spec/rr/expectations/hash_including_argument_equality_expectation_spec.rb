@@ -15,11 +15,11 @@ module Expectations
       end
       
       it "returns true when passed in a HashIncluding matcher with the same hash" do
-        expectation.should be_exact_match(WildcardMatchers::HashIncluding.new(expected_hash))
+        expectation.should be_exact_match(RR::WildcardMatchers::HashIncluding.new(expected_hash))
       end
       
       it "returns false when passed in a HashIncluding matcher with a different argument list" do
-        expectation.should_not be_exact_match(WildcardMatchers::HashIncluding.new(:foo => 1))
+        expectation.should_not be_exact_match(RR::WildcardMatchers::HashIncluding.new(:foo => 1))
       end
 
       it "returns false otherwise" do

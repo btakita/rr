@@ -39,7 +39,7 @@ module RR
             context "when passed a subject and a method_name argument" do
               it "creates a mock Double for method" do
                 double_definition = creator.mock(subject, :foobar).returns {:baz}
-                double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+                double_definition.times_matcher.should == RR::TimesCalledMatchers::IntegerMatcher.new(1)
                 double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
                 double_definition.argument_expectation.expected_arguments.should == []
                 subject.foobar.should == :baz
@@ -72,7 +72,7 @@ module RR
             context "when passed subject and a method_name argument" do
               it "creates a stub Double for method when passed a method_name argument" do
                 double_definition = creator.stub(subject, :foobar).returns {:baz}
-                double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+                double_definition.times_matcher.should == RR::TimesCalledMatchers::AnyTimesMatcher.new
                 double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
                 subject.foobar.should == :baz
               end
@@ -105,18 +105,18 @@ module RR
               creator.proxy
               lambda do
                 creator.dont_allow
-              end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
+              end.should raise_error(RR::Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
             end
 
             context "when passed a subject and a method_name argument_expectation" do
               it "creates a mock Double for method" do
                 double_definition = creator.dont_allow(subject, :foobar)
-                double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(0)
+                double_definition.times_matcher.should == RR::TimesCalledMatchers::NeverMatcher.new
                 double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
 
                 lambda do
                   subject.foobar
-                end.should raise_error(Errors::TimesCalledError)
+                end.should raise_error(RR::Errors::TimesCalledError)
                 RR.reset
               end
             end
@@ -198,14 +198,14 @@ module RR
               creator.dont_allow
               lambda do
                 creator.proxy
-              end.should raise_error(Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
+              end.should raise_error(RR::Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
             end
           end
 
           context "when passed a method_name argument" do
             it "creates a proxy Double for method" do
               double_definition = creator.stub.proxy(subject, :foobar).after_call {:baz}
-              double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+              double_definition.times_matcher.should == RR::TimesCalledMatchers::AnyTimesMatcher.new
               double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
               subject.foobar.should == :baz
             end
@@ -225,7 +225,7 @@ module RR
             it "creates a proxy Double for method" do
               klass = Class.new
               double_definition = creator.stub.instance_of(klass, :foobar).returns {:baz}
-              double_definition.times_matcher.should == TimesCalledMatchers::AnyTimesMatcher.new
+              double_definition.times_matcher.should == RR::TimesCalledMatchers::AnyTimesMatcher.new
               double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
               klass.new.foobar.should == :baz
             end
@@ -247,7 +247,7 @@ module RR
             it "creates a instance_of Double for method" do
               double_definition = instance_of.mock(@klass, :foobar)
               double_definition.with(1, 2) {:baz}
-              double_definition.times_matcher.should == TimesCalledMatchers::IntegerMatcher.new(1)
+              double_definition.times_matcher.should == RR::TimesCalledMatchers::IntegerMatcher.new(1)
               double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
               double_definition.argument_expectation.expected_arguments.should == [1, 2]
 
@@ -263,7 +263,7 @@ module RR
             it "raises a DoubleDefinitionError" do
               lambda do
                 creator.create(:foobar, 1, 2)
-              end.should raise_error(Errors::DoubleDefinitionError, "This Double has no strategy")
+              end.should raise_error(RR::Errors::DoubleDefinitionError, "This Double has no strategy")
             end
           end
 
@@ -276,7 +276,7 @@ module RR
               it "sets expectation on the #subject that it will be sent the method_name once with the passed-in arguments" do
                 creator.create(:foobar, 1, 2)
                 subject.foobar(1, 2)
-                lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+                lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
               end
 
               describe "#subject.method_name being called" do
@@ -299,7 +299,7 @@ module RR
                 end
                 creator.create(:foobar, 1, 2)
                 subject.foobar(1, 2)
-                lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+                lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
               end
 
               describe "#subject.method_name being called" do
@@ -330,7 +330,7 @@ module RR
                   before do
                     @real_value = real_value = Object.new
                     (class << subject; self; end).class_eval do
-                      define_method(:foobar) {real_value}
+                      define_method(:foobar) {|arg1, arg2| real_value}
                     end
                   end
 
@@ -400,7 +400,7 @@ module RR
                     creator.create(:foobar, 1, 2) {:baz}
                     lambda do
                       subject.foobar
-                    end.should raise_error(Errors::DoubleNotFoundError)
+                    end.should raise_error(RR::Errors::DoubleNotFoundError)
                   end
                 end
               end
@@ -457,7 +457,7 @@ module RR
                     creator.create(:foobar, 1, 2) {:baz}
                     lambda do
                       subject.foobar
-                    end.should raise_error(Errors::DoubleNotFoundError)
+                    end.should raise_error(RR::Errors::DoubleNotFoundError)
                   end
                 end
               end
@@ -473,8 +473,8 @@ module RR
               describe "#subject.method_name being called with any arguments" do
                 it "raises a TimesCalledError" do
                   creator.create(:foobar)
-                  lambda {subject.foobar}.should raise_error(Errors::TimesCalledError)
-                  lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+                  lambda {subject.foobar}.should raise_error(RR::Errors::TimesCalledError)
+                  lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
                 end
               end
             end
@@ -483,14 +483,14 @@ module RR
               describe "#subject.method_name being called with the passed-in arguments" do
                 it "raises a TimesCalledError" do
                   creator.create(:foobar, 1, 2)
-                  lambda {subject.foobar(1, 2)}.should raise_error(Errors::TimesCalledError)
+                  lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
                 end
               end
 
               describe "#subject.method_name being called with different arguments" do
                 it "raises a DoubleNotFoundError" do
                   creator.create(:foobar, 1, 2)
-                  lambda {subject.foobar()}.should raise_error(Errors::DoubleNotFoundError)
+                  lambda {subject.foobar()}.should raise_error(RR::Errors::DoubleNotFoundError)
                 end
               end
             end

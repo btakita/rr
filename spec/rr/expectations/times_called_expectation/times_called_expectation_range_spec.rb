@@ -40,7 +40,7 @@ module RR
             expectation.attempt
             lambda do
               expectation.attempt
-            end.should raise_error(Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 1..2 times.")
+            end.should raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 1..2 times.")
           end
         end
 
@@ -59,7 +59,7 @@ module RR
           it "raises error before attempted more than expected times" do
             2.times {expectation.attempt}
             lambda {expectation.attempt}.should raise_error(
-            Errors::TimesCalledError
+            RR::Errors::TimesCalledError
             )
           end
         end
