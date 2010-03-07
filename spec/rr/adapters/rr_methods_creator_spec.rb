@@ -109,7 +109,7 @@ module RR
           context "when passed a method_name argument" do
             it "sets #verification_strategy to Mock" do
               proxy = mock!(:foobar)
-              proxy.double_definition_creator.verification_strategy.class.should == RR::DoubleDefinitions::Strategies::Verification::Mock
+              proxy.double_definition_create.verification_strategy.class.should == RR::DoubleDefinitions::Strategies::Verification::Mock
             end
           end
         end
@@ -124,7 +124,7 @@ module RR
           context "when passed a method_name argument" do
             it "sets #verification_strategy to Stub" do
               proxy = stub!(:foobar)
-              proxy.double_definition_creator.verification_strategy.class.should == RR::DoubleDefinitions::Strategies::Verification::Stub
+              proxy.double_definition_create.verification_strategy.class.should == RR::DoubleDefinitions::Strategies::Verification::Stub
             end
           end
         end
@@ -139,7 +139,7 @@ module RR
           context "when passed a method_name argument" do
             it "sets #verification_strategy to DontAllow" do
               proxy = dont_allow!(:foobar)
-              proxy.double_definition_creator.verification_strategy.class.should == RR::DoubleDefinitions::Strategies::Verification::DontAllow
+              proxy.double_definition_create.verification_strategy.class.should == RR::DoubleDefinitions::Strategies::Verification::DontAllow
             end
           end
         end

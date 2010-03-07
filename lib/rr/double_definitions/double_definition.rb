@@ -25,19 +25,19 @@ module RR
         :after_call_proc,
         :yields_value,
         :double,
-        :double_definition_creator,
+        :double_definition_create,
         :subject
       )
 
       include Space::Reader
 
-      def initialize(double_definition_creator, subject)
+      def initialize(double_definition_create, subject)
         @implementation = nil
         @argument_expectation = nil
         @times_matcher = nil
         @after_call_proc = nil
         @yields_value = nil
-        @double_definition_creator = double_definition_creator
+        @double_definition_create = double_definition_create
         @subject = subject
         @ordered = false
         @verbose = false
@@ -47,7 +47,7 @@ module RR
       attr_reader :argument_expectation
 
       def root_subject
-        double_definition_creator.root_subject
+        double_definition_create.root_subject
       end
       
       module ArgumentDefinitionConstructionMethods
@@ -196,7 +196,7 @@ module RR
           @ordered = true
           space.register_ordered_double(@double)
           install_method_callback return_value_block
-          DoubleDefinitionCreateBlankSlate.new(double_definition_creator)
+          DoubleDefinitionCreateBlankSlate.new(double_definition_create)
         end
         alias_method :then, :ordered
 
@@ -343,7 +343,7 @@ module RR
 
         protected
         def implementation_strategy
-          double_definition_creator.implementation_strategy
+          double_definition_create.implementation_strategy
         end
       end
       include StateQueryMethods

@@ -19,7 +19,7 @@ module RR
           def initialize(*args)
             super
 
-            if !double_definition_creator.no_subject? && !double_definition_creator.subject.is_a?(Class)
+            if !double_definition_create.no_subject? && !double_definition_create.subject.is_a?(Class)
               raise ArgumentError, "instance_of only accepts class objects"
             end
           end

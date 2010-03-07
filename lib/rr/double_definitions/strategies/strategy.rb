@@ -6,7 +6,7 @@ module RR
           attr_reader :domain_name
           def register(domain_name, *alias_method_names)
             @domain_name = domain_name
-            register_self_at_double_definition_creator(domain_name)
+            register_self_at_double_definition_create(domain_name)
             DoubleDefinitionCreate.class_eval do
               alias_method_names.each do |alias_method_name|
                 alias_method alias_method_name, domain_name
@@ -21,15 +21,15 @@ module RR
             end
           end
 
-          def register_self_at_double_definition_creator(domain_name)
+          def register_self_at_double_definition_create(domain_name)
           end
         end
 
-        attr_reader :double_definition_creator, :definition, :method_name, :args, :handler
+        attr_reader :double_definition_create, :definition, :method_name, :args, :handler
         include Space::Reader
 
-        def initialize(double_definition_creator)
-          @double_definition_creator = double_definition_creator
+        def initialize(double_definition_create)
+          @double_definition_create = double_definition_create
         end
         
         def call(definition, method_name, args, handler)
