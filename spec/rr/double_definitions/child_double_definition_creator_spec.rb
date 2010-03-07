@@ -8,7 +8,7 @@ module RR
       before(:each) do
         @parent_subject = Object.new
         @parent_double_definition_create = DoubleDefinitionCreate.new
-        @parent_double_definition = DoubleDefinition.new(parent_double_definition_create, parent_subject)
+        @parent_double_definition = DoubleDefinition.new(parent_double_definition_create)
         @child_double_definition_create = ChildDoubleDefinitionCreate.new(parent_double_definition)
       end
 

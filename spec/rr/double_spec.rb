@@ -11,7 +11,7 @@ module RR
       end
       @double_injection = create_double_injection
       @definition_creator = DoubleDefinitions::DoubleDefinitionCreate.new
-      @definition = DoubleDefinitions::DoubleDefinition.new(definition_creator, subject).
+      @definition = DoubleDefinitions::DoubleDefinition.new(definition_creator).
         any_number_of_times.
         with_any_args
       @double = Double.new(double_injection, definition)
@@ -95,7 +95,7 @@ module RR
 
         it "raises DoubleOrderError when ordered and called out of order" do
           double1 = double
-          double2 = Double.new(double_injection, DoubleDefinitions::DoubleDefinition.new(definition_creator, subject))
+          double2 = Double.new(double_injection, DoubleDefinitions::DoubleDefinition.new(definition_creator))
 
           double1.definition.with(1).returns {:return_1}.once.ordered
           double2.definition.with(2).returns {:return_2}.once.ordered

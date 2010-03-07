@@ -15,7 +15,7 @@ module RR
       it "verifies each double was met" do
         double = RR::Double.new(
           double_injection,
-          RR::DoubleDefinitions::DoubleDefinition.new(RR::DoubleDefinitions::DoubleDefinitionCreate.new, subject)
+          RR::DoubleDefinitions::DoubleDefinition.new(RR::DoubleDefinitions::DoubleDefinitionCreate.new)
         )
         double_injection.register_double double
 

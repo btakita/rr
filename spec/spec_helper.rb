@@ -99,7 +99,7 @@ class Spec::ExampleGroup
 
   def new_double(
     double_injection=double_injection,
-    double_definition=RR::DoubleDefinitions::DoubleDefinition.new(creator = RR::DoubleDefinitions::DoubleDefinitionCreate.new, subject).with_any_args.any_number_of_times
+    double_definition=RR::DoubleDefinitions::DoubleDefinition.new(creator = RR::DoubleDefinitions::DoubleDefinitionCreate.new).with_any_args.any_number_of_times
   )
     RR::Double.new(
       double_injection,

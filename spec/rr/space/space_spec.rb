@@ -227,11 +227,11 @@ module RR
       it "removes the ordered doubles" do
         double_1 = new_double(
           space.double_injection(subject_1, :foobar1),
-          RR::DoubleDefinitions::DoubleDefinition.new(creator = Object.new, subject_1)
+          RR::DoubleDefinitions::DoubleDefinition.new(creator = Object.new)
         )
         double_2 = new_double(
           space.double_injection(subject_2, :foobar2),
-          RR::DoubleDefinitions::DoubleDefinition.new(creator = Object.new, subject_2)
+          RR::DoubleDefinitions::DoubleDefinition.new(creator = Object.new)
         )
         double_1.definition.ordered
         double_2.definition.ordered

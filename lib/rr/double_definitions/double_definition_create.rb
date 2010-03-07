@@ -61,7 +61,7 @@ module RR
 
       def call(method_name, *args, &handler)
         raise DoubleDefinitionCreateError if no_subject?
-        definition = DoubleDefinition.new(self, subject)
+        definition = DoubleDefinition.new(self)
         verification_strategy ? verification_strategy.call(definition, method_name, args, handler) : no_strategy_error
         implementation_strategy.call(definition, method_name, args, handler)
         scope_strategy.call(definition, method_name, args, handler)

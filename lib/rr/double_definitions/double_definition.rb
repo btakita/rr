@@ -25,26 +25,28 @@ module RR
         :after_call_proc,
         :yields_value,
         :double,
-        :double_definition_create,
-        :subject
+        :double_definition_create
       )
 
       include Space::Reader
 
-      def initialize(double_definition_create, subject)
+      def initialize(double_definition_create)
         @implementation = nil
         @argument_expectation = nil
         @times_matcher = nil
         @after_call_proc = nil
         @yields_value = nil
         @double_definition_create = double_definition_create
-        @subject = subject
         @ordered = false
         @verbose = false
         @verify_method_signature = false
       end
       
       attr_reader :argument_expectation
+
+      def subject
+        double_definition_create.subject
+      end
 
       def root_subject
         double_definition_create.root_subject
