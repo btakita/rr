@@ -62,7 +62,8 @@ module RR
       def call(method_name, *args, &handler)
         raise DoubleDefinitionCreateError if no_subject?
         definition = DoubleDefinition.new(self)
-        verification_strategy ? verification_strategy.call(definition, method_name, args, handler) : no_strategy_error
+        verification_strategy || no_strategy_error
+        verification_strategy.call(definition, method_name, args, handler)
         implementation_strategy.call(definition, method_name, args, handler)
         scope_strategy.call(definition, method_name, args, handler)
         definition
@@ -106,9 +107,11 @@ module RR
           end
           @subject = subject
           yield
+          # TODO: Allow hash argument to simulate a Struct.
           if no_subject?
             self
           elsif method_name
+            # TODO: Pass in arguments.
             call(method_name)
           else
             DoubleDefinitionCreateBlankSlate.new(self, &definition_eval_block)
