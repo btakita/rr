@@ -23,8 +23,6 @@ module RR
             @strategy_method_name = :mock
           end
 
-          send("normal strategy definition")
-
           context "when passing no args" do
             it "returns a DoubleDefinitionCreate" do
               call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreate
@@ -47,8 +45,6 @@ module RR
             @strategy_method_name = :stub
           end
 
-          send("normal strategy definition")
-
           context "when passing no args" do
             it "returns a DoubleDefinitionCreate" do
               call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreate
@@ -69,8 +65,6 @@ module RR
           before do
             @strategy_method_name = :dont_allow
           end
-
-          send("normal strategy definition")
 
           context "when passing no args" do
             it "returns a DoubleDefinitionCreate" do
@@ -104,8 +98,6 @@ module RR
             @strategy_method_name = :mock!
           end
 
-          send("! strategy definition")
-
           context "when passed a method_name argument" do
             it "sets #verification_strategy to Mock" do
               proxy = mock!(:foobar)
@@ -119,8 +111,6 @@ module RR
             @strategy_method_name = :stub!
           end
 
-          send("! strategy definition")
-
           context "when passed a method_name argument" do
             it "sets #verification_strategy to Stub" do
               proxy = stub!(:foobar)
@@ -133,8 +123,6 @@ module RR
           before do
             @strategy_method_name = :dont_allow!
           end
-
-          send("! strategy definition")
 
           context "when passed a method_name argument" do
             it "sets #verification_strategy to DontAllow" do

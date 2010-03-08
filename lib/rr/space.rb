@@ -19,51 +19,12 @@ module RR
       end
     end
 
-    attr_reader :double_injections, :method_missing_injections, :ordered_doubles, :recorded_calls
+    attr_reader :ordered_doubles, :recorded_calls
     attr_accessor :trim_backtrace
     def initialize
-      @double_injections = HashWithObjectIdKey.new do |hash, subject_object|
-        hash.set_with_object_id(subject_object, {})
-      end
-      @method_missing_injections = HashWithObjectIdKey.new
-      @singleton_method_added_injections = HashWithObjectIdKey.new
       @ordered_doubles = []
       @trim_backtrace = false
       @recorded_calls = RR::RecordedCalls.new
-    end
-
-    # Reuses or creates, if none exists, a DoubleInjection for the passed
-    # in subject and method_name.
-    # When a DoubleInjection is created, it binds the dispatcher to the
-    # subject.
-    def double_injection(subject, method_name)
-      @double_injections[subject][method_name.to_sym] ||= begin
-        Injections::DoubleInjection.new(subject, method_name.to_sym, (class << subject; self; end)).bind
-      end
-    end
-
-    def double_injection_exists?(subject, method_name)
-      @double_injections.include?(subject) && @double_injections[subject].include?(method_name.to_sym)
-    end
-
-    def method_missing_injection(subject)
-      @method_missing_injections[subject] ||= begin
-        Injections::MethodMissingInjection.new(subject).bind
-      end
-    end
-
-    def method_missing_injection_exists?(subject)
-      @method_missing_injections.include?(subject)
-    end
-
-    def singleton_method_added_injection(subject)
-      @singleton_method_added_injections[subject] ||= begin
-        Injections::SingletonMethodAddedInjection.new(subject).bind
-      end
-    end
-
-    def singleton_method_added_injection_exists?(subject)
-      @singleton_method_added_injections.include?(subject)
     end
 
     # Registers the ordered Double to be verified.
@@ -90,20 +51,15 @@ module RR
 
     # Verifies all the DoubleInjection objects have met their
     # TimesCalledExpectations.
-    def verify_doubles(*objects)
-      objects = @double_injections.keys if objects.empty?
-      objects.each do |subject|
-        @double_injections[subject].keys.each do |method_name|
-          verify_double(subject, method_name)
-        end
-      end
+    def verify_doubles(*subjects)
+      Injections::DoubleInjection.verify(*subjects)
     end
     alias_method :verify, :verify_doubles
 
     # Resets the registered Doubles and ordered Doubles
     def reset
       reset_ordered_doubles
-      reset_double_injections
+      Injections::DoubleInjection.reset
       reset_method_missing_injections
       reset_singleton_method_added_injections
       reset_recorded_calls
@@ -111,18 +67,14 @@ module RR
 
     # Verifies the DoubleInjection for the passed in subject and method_name.
     def verify_double(subject, method_name)
-      @double_injections[subject][method_name].verify
-    ensure
-      reset_double subject, method_name
+      Injections::DoubleInjection.verify_double(subject, method_name)
     end
 
     # Resets the DoubleInjection for the passed in subject and method_name.
     def reset_double(subject, method_name)
-      double_injection = @double_injections[subject].delete(method_name)
-      @double_injections.delete(subject) if @double_injections[subject].empty?
-      double_injection.reset
+      Injections::DoubleInjection.reset_double(subject, method_name)
     end
-    
+
     def record_call(subject, method_name, arguments, block)
       @recorded_calls << [subject, method_name, arguments, block]
     end
@@ -133,27 +85,18 @@ module RR
       @ordered_doubles.clear
     end
 
-    # Resets the registered Doubles for the next test run.
-    def reset_double_injections
-      @double_injections.each do |subject, method_double_map|
-        method_double_map.keys.each do |method_name|
-          reset_double(subject, method_name)
-        end
-      end
-    end
-
     def reset_method_missing_injections
-      @method_missing_injections.each do |subject, injection|
+      Injections::MethodMissingInjection.instances.each do |subject, injection|
         injection.reset
       end
-      @method_missing_injections.clear
+      Injections::MethodMissingInjection.instances.clear
     end
 
     def reset_singleton_method_added_injections
-      @singleton_method_added_injections.each do |subject, injection|
+      Injections::SingletonMethodAddedInjection.instances.each do |subject, injection|
         injection.reset
       end
-      @singleton_method_added_injections.clear
+      Injections::SingletonMethodAddedInjection.instances.clear
     end
     
     def reset_recorded_calls

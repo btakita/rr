@@ -13,7 +13,7 @@ module RR
       end
 
       def call
-        if space.double_injection_exists?(subject, method_name)
+        if Injections::DoubleInjection.exists?(subject, method_name)
           space.record_call(subject, method_name, args, block)
           @double = find_double_to_attempt
 
@@ -50,7 +50,7 @@ module RR
       end
 
       def double_injection
-        space.double_injection(subject, method_name)
+        Injections::DoubleInjection.create(subject, method_name)
       end
 
       def_delegators 'self.class', :original_method_missing_alias_name

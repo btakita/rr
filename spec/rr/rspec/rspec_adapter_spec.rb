@@ -14,11 +14,11 @@ module RR
         end
 
         it "resets the double_injections" do
-          RR.double_injection(subject, method_name)
-          RR.double_injections.should_not be_empty
+          stub(subject).foobar
+          Injections::DoubleInjection.instances.should_not be_empty
 
           fixture.setup_mocks_for_rspec
-          RR.double_injections.should be_empty
+          Injections::DoubleInjection.instances.should be_empty
         end
       end
 
@@ -32,15 +32,12 @@ module RR
         end
 
         it "verifies the double_injections" do
-          double_injection = RR.double_injection(subject, method_name)
-          double = new_double(double_injection)
-
-          double.definition.once
+          mock(subject).foobar
 
           lambda do
             fixture.verify_mocks_for_rspec
           end.should raise_error(::RR::Errors::TimesCalledError)
-          RR.double_injections.should be_empty
+          Injections::DoubleInjection.instances.should be_empty
         end
       end
 
@@ -54,11 +51,11 @@ module RR
         end
 
         it "resets the double_injections" do
-          RR.double_injection(subject, method_name)
-          RR.double_injections.should_not be_empty
+          stub(subject).foobar
+          Injections::DoubleInjection.instances.should_not be_empty
 
           fixture.teardown_mocks_for_rspec
-          RR.double_injections.should be_empty
+          Injections::DoubleInjection.instances.should be_empty
         end
       end
     end

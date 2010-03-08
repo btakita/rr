@@ -32,7 +32,7 @@ module RR
             instance_of_subject_double_definition_create.call(:new) do |*args|
               #####
               instance = subject.allocate
-              double_injection = space.double_injection(instance, method_name)
+              double_injection = Injections::DoubleInjection.create(instance, method_name)
               Double.new(double_injection, definition)
               #####
               if args.last.is_a?(ProcFromBlock)

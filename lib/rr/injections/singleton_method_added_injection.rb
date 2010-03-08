@@ -1,6 +1,18 @@
 module RR
   module Injections
     class SingletonMethodAddedInjection < Injection
+      class << self
+        def create(subject)
+          instances[subject] ||= begin
+            new(subject).bind
+          end
+        end
+
+        def exists?(subject)
+          instances.include?(subject)
+        end
+      end
+
       def initialize(subject)
         @subject = subject
         @placeholder_method_defined = false
@@ -18,12 +30,11 @@ module RR
           end
 
           memoized_subject = subject
-          memoized_space = space
           memoized_original_method_alias_name = original_method_alias_name
           subject_class.__send__(:alias_method, original_method_alias_name, :singleton_method_added)
           subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
-            if memoized_space.double_injection_exists?(memoized_subject, method_name_arg)
-              memoized_space.double_injection(memoized_subject, method_name_arg).send(:deferred_bind_method)
+            if Injections::DoubleInjection.exists?(memoized_subject, method_name_arg)
+              Injections::DoubleInjection.create(memoized_subject, method_name_arg).send(:deferred_bind_method)
             end
             send(memoized_original_method_alias_name, method_name_arg)
           end
