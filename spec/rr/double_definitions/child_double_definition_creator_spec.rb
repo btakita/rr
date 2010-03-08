@@ -2,22 +2,22 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
 module RR
   module DoubleDefinitions
-    describe ChildDoubleDefinitionCreator do
-      attr_reader :parent_subject, :parent_double_definition_creator, :parent_double_definition, :child_double_definition_creator
+    describe ChildDoubleDefinitionCreate do
+      attr_reader :parent_subject, :parent_double_definition_create, :parent_double_definition, :child_double_definition_create
       it_should_behave_like "Swapped Space"
       before(:each) do
         @parent_subject = Object.new
-        @parent_double_definition_creator = DoubleDefinitionCreator.new
-        @parent_double_definition = DoubleDefinition.new(parent_double_definition_creator, parent_subject)
-        @child_double_definition_creator = ChildDoubleDefinitionCreator.new(parent_double_definition)
+        @parent_double_definition_create = DoubleDefinitionCreate.new
+        @parent_double_definition = DoubleDefinition.new(parent_double_definition_create)
+        @child_double_definition_create = ChildDoubleDefinitionCreate.new(parent_double_definition)
       end
 
       describe "#root_subject" do
         it "returns the #parent_double_definition.root_subject" do
           child_subject = Object.new
-          parent_double_definition_creator.stub(parent_subject)
-          child_double_definition_creator.stub(child_subject)
-          child_double_definition_creator.root_subject.should == parent_subject
+          parent_double_definition_create.stub(parent_subject)
+          child_double_definition_create.stub(child_subject)
+          child_double_definition_create.root_subject.should == parent_subject
         end
       end      
       
@@ -32,7 +32,7 @@ module RR
             context "when passed a subject" do
               it "sets #parent_double_definition.implementation to a Proc returning the passed-in subject" do
                 parent_double_definition.implementation.should be_nil
-                child_double_definition_creator.mock(child_subject)
+                child_double_definition_create.mock(child_subject)
                 parent_double_definition.implementation.call.should == child_subject
               end
             end
@@ -42,7 +42,7 @@ module RR
             context "when passed a subject" do
               it "sets #parent_double_definition.implementation to a Proc returning the passed-in subject" do
                 parent_double_definition.implementation.should be_nil
-                child_double_definition_creator.stub(child_subject)
+                child_double_definition_create.stub(child_subject)
                 parent_double_definition.implementation.call.should == child_subject
               end
             end
@@ -52,7 +52,7 @@ module RR
             context "when passed a subject" do
               it "sets #parent_double_definition.implementation to a Proc returning the passed-in subject" do
                 parent_double_definition.implementation.should be_nil
-                child_double_definition_creator.dont_allow(child_subject)
+                child_double_definition_create.dont_allow(child_subject)
                 parent_double_definition.implementation.call.should == child_subject
               end
             end
@@ -63,7 +63,7 @@ module RR
           describe "#mock!" do
             it "sets #parent_double_definition.implementation to a Proc returning the #subject" do
               parent_double_definition.implementation.should be_nil
-              child_subject = child_double_definition_creator.mock!.__creator__.subject
+              child_subject = child_double_definition_create.mock!.__double_definition_create__.subject
               parent_double_definition.implementation.call.should == child_subject
             end
           end
@@ -71,7 +71,7 @@ module RR
           describe "#stub!" do
             it "sets #parent_double_definition.implementation to a Proc returning the #subject" do
               parent_double_definition.implementation.should be_nil
-              child_subject = child_double_definition_creator.stub!.__creator__.subject
+              child_subject = child_double_definition_create.stub!.__double_definition_create__.subject
               parent_double_definition.implementation.call.should == child_subject
             end
           end
@@ -79,7 +79,7 @@ module RR
           describe "#dont_allow!" do
             it "sets #parent_double_definition.implementation to a Proc returning the #subject" do
               parent_double_definition.implementation.should be_nil
-              child_subject = child_double_definition_creator.dont_allow!.__creator__.subject
+              child_subject = child_double_definition_create.dont_allow!.__double_definition_create__.subject
               parent_double_definition.implementation.call.should == child_subject
             end
           end
@@ -91,7 +91,7 @@ module RR
           describe "#instance_of" do
             it "raises a NoMethodError" do
               lambda do
-                child_double_definition_creator.instance_of
+                child_double_definition_create.instance_of
               end.should raise_error(NoMethodError)
             end
           end
@@ -101,7 +101,7 @@ module RR
           describe "#instance_of!" do
             it "raises a NoMethodError" do
               lambda do
-                child_double_definition_creator.instance_of!
+                child_double_definition_create.instance_of!
               end.should raise_error(NoMethodError)
             end
           end

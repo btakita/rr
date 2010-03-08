@@ -4,14 +4,14 @@ module RR
       class << self
         def register_strategy_class(strategy_class, method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}(subject=DoubleDefinitionCreator::NO_SUBJECT, method_name=nil, &definition_eval_block)
-            ChildDoubleDefinitionCreator.new(self).#{method_name}(subject, method_name, &definition_eval_block)
+          def #{method_name}(subject=DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+            ChildDoubleDefinitionCreate.new(self).#{method_name}(subject, method_name, &definition_eval_block)
           end
           CLASS
 
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
           def #{method_name}!(method_name=nil, &definition_eval_block)
-            ChildDoubleDefinitionCreator.new(self).#{method_name}!(method_name, &definition_eval_block)
+            ChildDoubleDefinitionCreate.new(self).#{method_name}!(method_name, &definition_eval_block)
           end
           CLASS
         end
@@ -25,20 +25,18 @@ module RR
         :after_call_proc,
         :yields_value,
         :double,
-        :double_definition_creator,
-        :subject
+        :double_definition_create
       )
 
       include Space::Reader
 
-      def initialize(double_definition_creator, subject)
+      def initialize(double_definition_create)
         @implementation = nil
         @argument_expectation = nil
         @times_matcher = nil
         @after_call_proc = nil
         @yields_value = nil
-        @double_definition_creator = double_definition_creator
-        @subject = subject
+        @double_definition_create = double_definition_create
         @ordered = false
         @verbose = false
         @verify_method_signature = false
@@ -46,8 +44,12 @@ module RR
       
       attr_reader :argument_expectation
 
+      def subject
+        double_definition_create.subject
+      end
+
       def root_subject
-        double_definition_creator.root_subject
+        double_definition_create.root_subject
       end
       
       module ArgumentDefinitionConstructionMethods
@@ -196,7 +198,7 @@ module RR
           @ordered = true
           space.register_ordered_double(@double)
           install_method_callback return_value_block
-          DoubleDefinitionCreatorProxy.new(double_definition_creator)
+          DoubleDefinitionCreateBlankSlate.new(double_definition_create)
         end
         alias_method :then, :ordered
 
@@ -343,7 +345,7 @@ module RR
 
         protected
         def implementation_strategy
-          double_definition_creator.implementation_strategy
+          double_definition_create.implementation_strategy
         end
       end
       include StateQueryMethods

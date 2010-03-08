@@ -35,7 +35,7 @@ class Spec::ExampleGroup
         attr_reader :strategy_method_name
 
         context "when passed a subject" do
-          it "returns a DoubleDefinitionCreatorProxy" do
+          it "returns a DoubleDefinitionCreateBlankSlate" do
             double = call_strategy(subject).foobar
             double.should be_instance_of(RR::DoubleDefinitions::DoubleDefinition)
           end
@@ -56,12 +56,12 @@ class Spec::ExampleGroup
         attr_reader :strategy_method_name
 
         context "when not passed a method_name argument" do
-          it "returns a DoubleDefinitionCreatorProxy" do
+          it "returns a DoubleDefinitionCreateBlankSlate" do
             call_strategy.should respond_to(:__subject__)
           end
 
           context "when passed a definition_eval_block argument" do
-            it "calls the definition_eval_block and passes in the DoubleDefinitionCreatorProxy" do
+            it "calls the definition_eval_block and passes in the DoubleDefinitionCreateBlankSlate" do
               passed_in_proxy = nil
               proxy = call_strategy do |proxy|
                 passed_in_proxy = proxy
@@ -99,7 +99,7 @@ class Spec::ExampleGroup
 
   def new_double(
     double_injection=double_injection,
-    double_definition=RR::DoubleDefinitions::DoubleDefinition.new(creator = RR::DoubleDefinitions::DoubleDefinitionCreator.new, subject).with_any_args.any_number_of_times
+    double_definition=RR::DoubleDefinitions::DoubleDefinition.new(creator = RR::DoubleDefinitions::DoubleDefinitionCreate.new).with_any_args.any_number_of_times
   )
     RR::Double.new(
       double_injection,

@@ -12,7 +12,7 @@ module RR
         #   or
         #   proxy.stub(subject).method_name_1
         #
-        # When passed the subject, a DoubleDefinitionCreatorProxy is returned. Passing
+        # When passed the subject, a DoubleDefinitionCreateBlankSlate is returned. Passing
         # a method with arguments to the proxy will set up expectations that
         # the a call to the subject's method with the arguments will happen,
         # and return the prescribed value.

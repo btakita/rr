@@ -19,21 +19,17 @@ module RR
           def initialize(*args)
             super
 
-            if !double_definition_creator.no_subject? && !double_definition_creator.subject.is_a?(Class)
+            if !double_definition_create.no_subject? && !double_definition_create.subject.is_a?(Class)
               raise ArgumentError, "instance_of only accepts class objects"
             end
           end
 
           protected
           def do_call
-            instance_of_subject_creator = DoubleDefinitionCreator.new
-#            space.double_injection
-#            ObjectSpace
-#            space.double_injection
-
-            instance_of_subject_creator.strong if definition.verify_method_signature?
-            instance_of_subject_creator.stub(subject)
-            instance_of_subject_creator.create(:new) do |*args|
+            instance_of_subject_double_definition_create = DoubleDefinitionCreate.new
+            instance_of_subject_double_definition_create.strong if definition.verify_method_signature?
+            instance_of_subject_double_definition_create.stub(subject)
+            instance_of_subject_double_definition_create.call(:new) do |*args|
               #####
               add_double_to_instance(subject.allocate, *args)
             end

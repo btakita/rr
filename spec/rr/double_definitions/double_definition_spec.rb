@@ -3,15 +3,15 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 module RR
   module DoubleDefinitions
     describe DoubleDefinition do
-      attr_reader :subject, :double_definition_creator, :double, :definition
+      attr_reader :subject, :double_definition_create, :double, :definition
 
       it_should_behave_like "Swapped Space"
 
       before do
         @subject = Object.new
         add_original_method
-        @double_definition_creator = DoubleDefinitionCreator.new
-        @definition = double_definition_creator.stub(subject).foobar
+        @double_definition_create = DoubleDefinitionCreate.new
+        @definition = double_definition_create.stub(subject).foobar
         @double = definition.double
       end      
 
@@ -22,24 +22,24 @@ module RR
       end
       
       describe "#root_subject" do
-        it "returns #double_definition_creator.root_subject" do
-          definition.root_subject.should == definition.double_definition_creator.root_subject
+        it "returns #double_definition_create.root_subject" do
+          definition.root_subject.should == definition.double_definition_create.root_subject
           definition.root_subject.should == subject
         end
       end
 
       describe "DefinitionConstructionMethods" do
-        macro("DoubleDefinition where #double_definition_creator is a Reimplementation") do
+        macro("DoubleDefinition where #double_definition_create is a Reimplementation") do
           before do
-            definition.double_definition_creator.implementation_strategy.class.should == Strategies::Implementation::Reimplementation
+            definition.double_definition_create.implementation_strategy.class.should == Strategies::Implementation::Reimplementation
             call_double_injection
           end
         end
 
-        macro("DoubleDefinition where #double_definition_creator is a Proxy") do
+        macro("DoubleDefinition where #double_definition_create is a Proxy") do
           before do
-            definition.double_definition_creator.proxy
-            definition.double_definition_creator.implementation_strategy.class.should == Strategies::Implementation::Proxy
+            definition.double_definition_create.proxy
+            definition.double_definition_create.implementation_strategy.class.should == Strategies::Implementation::Proxy
             call_double_injection
           end
         end
@@ -77,8 +77,8 @@ module RR
               @args = actual_args
             end
 
-            context "when #double_definition_creator.implementation_strategy is a Reimplementation" do
-              send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            context "when #double_definition_create.implementation_strategy is a Reimplementation" do
+              send "DoubleDefinition where #double_definition_create is a Reimplementation"
               send "#with"
 
               describe "#subject.method_name being called" do
@@ -89,8 +89,8 @@ module RR
               end
             end
 
-            context "when #double_definition_creator.implementation_strategy is a Proxy" do
-              send "DoubleDefinition where #double_definition_creator is a Proxy"
+            context "when #double_definition_create.implementation_strategy is a Proxy" do
+              send "DoubleDefinition where #double_definition_create is a Proxy"
               send "#with"
 
               describe "#subject.method_name being called" do
@@ -134,8 +134,8 @@ module RR
               @args = actual_args
             end
 
-            context "when #double_definition_creator.implementation_strategy is a Reimplementation" do
-              send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            context "when #double_definition_create.implementation_strategy is a Reimplementation" do
+              send "DoubleDefinition where #double_definition_create is a Reimplementation"
               send "#with_any_args"
 
               describe "#subject.method_name being called" do
@@ -146,8 +146,8 @@ module RR
               end
             end
 
-            context "when #double_definition_creator.implementation_strategy is a Proxy" do
-              send "DoubleDefinition where #double_definition_creator is a Proxy"
+            context "when #double_definition_create.implementation_strategy is a Proxy" do
+              send "DoubleDefinition where #double_definition_create is a Proxy"
               send "#with_any_args"
 
               describe "#subject.method_name being called" do
@@ -196,8 +196,8 @@ module RR
               @args = actual_args
             end
 
-            context "when #double_definition_creator.implementation_strategy is a Reimplementation" do
-              send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+            context "when #double_definition_create.implementation_strategy is a Reimplementation" do
+              send "DoubleDefinition where #double_definition_create is a Reimplementation"
               send "#with_no_args"
 
               describe "#subject.method_name being called" do
@@ -208,8 +208,8 @@ module RR
               end
             end
 
-            context "when #double_definition_creator.implementation_strategy is a Proxy" do
-              send "DoubleDefinition where #double_definition_creator is a Proxy"
+            context "when #double_definition_create.implementation_strategy is a Proxy" do
+              send "DoubleDefinition where #double_definition_create is a Proxy"
               send "#with_no_args"
 
               describe "#subject.method_name being called" do
@@ -273,7 +273,7 @@ module RR
             end
 
             context "with returns block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+              send "DoubleDefinition where #double_definition_create is a Reimplementation"
               send "#once"
 
               describe "#subject.method_name being called with any arguments" do
@@ -285,7 +285,7 @@ module RR
             end
 
             context "with after_call block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Proxy"
+              send "DoubleDefinition where #double_definition_create is a Proxy"
               send "#once"
 
               describe "#subject.method_name being called with any arguments" do
@@ -333,7 +333,7 @@ module RR
             end
 
             context "with returns block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+              send "DoubleDefinition where #double_definition_create is a Reimplementation"
               send "#twice"
 
               describe "#subject.method_name being called" do
@@ -345,7 +345,7 @@ module RR
             end
 
             context "with after_call block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Proxy"
+              send "DoubleDefinition where #double_definition_create is a Proxy"
               send "#twice"
 
               describe "#subject.method_name being called" do
@@ -391,7 +391,7 @@ module RR
             end
 
             context "with returns block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+              send "DoubleDefinition where #double_definition_create is a Reimplementation"
               send "#at_least"
 
               describe "#subject.method_name being called" do
@@ -403,7 +403,7 @@ module RR
             end
 
             context "with after_call block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Proxy"
+              send "DoubleDefinition where #double_definition_create is a Proxy"
               send "#at_least"
 
               describe "#subject.method_name being called" do
@@ -452,7 +452,7 @@ module RR
             end
 
             context "with returns block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+              send "DoubleDefinition where #double_definition_create is a Reimplementation"
               send "#at_most"
 
               describe "#subject.method_name being called" do
@@ -464,7 +464,7 @@ module RR
             end
 
             context "with after_call block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Proxy"
+              send "DoubleDefinition where #double_definition_create is a Proxy"
               send "#at_most"
 
               describe "#subject.method_name being called" do
@@ -513,7 +513,7 @@ module RR
             end
 
             context "with returns block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+              send "DoubleDefinition where #double_definition_create is a Reimplementation"
               send "#times"
 
               describe "#subject.method_name being called" do
@@ -525,7 +525,7 @@ module RR
             end
 
             context "with after_call block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Proxy"
+              send "DoubleDefinition where #double_definition_create is a Proxy"
               send "#times"
 
               describe "#subject.method_name being called" do
@@ -571,7 +571,7 @@ module RR
             end
 
             context "with returns block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+              send "DoubleDefinition where #double_definition_create is a Reimplementation"
               send "#any_number_of_times"
 
               describe "#subject.method_name being called" do
@@ -583,7 +583,7 @@ module RR
             end
 
             context "with after_call block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Proxy"
+              send "DoubleDefinition where #double_definition_create is a Proxy"
               send "#any_number_of_times"
 
               describe "#subject.method_name being called" do
@@ -648,7 +648,7 @@ module RR
             end
 
             context "with returns block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+              send "DoubleDefinition where #double_definition_create is a Reimplementation"
               send "#ordered"
 
               describe "#subject.method_name being called" do
@@ -660,7 +660,7 @@ module RR
             end
 
             context "with after_call block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Proxy"
+              send "DoubleDefinition where #double_definition_create is a Proxy"
               send "#ordered"
 
               describe "#subject.method_name being called" do
@@ -717,7 +717,7 @@ module RR
             end
 
             context "with returns block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Reimplementation"
+              send "DoubleDefinition where #double_definition_create is a Reimplementation"
               send "#yields"
 
               describe "#subject.method_name being called" do
@@ -736,7 +736,7 @@ module RR
             end
 
             context "with after_call block_callback_strategy" do
-              send "DoubleDefinition where #double_definition_creator is a Proxy"
+              send "DoubleDefinition where #double_definition_create is a Proxy"
               send "#yields"
 
               describe "#subject.method_name being called" do
@@ -782,8 +782,8 @@ module RR
                 end
               end
 
-              context "when the return value of the #after_call_proc is a DoubleDefinitionCreatorProxy" do
-                it "returns the #__subject__ of the DoubleDefinitionCreatorProxy" do
+              context "when the return value of the #after_call_proc is a DoubleDefinitionCreateBlankSlate" do
+                it "returns the #__subject__ of the DoubleDefinitionCreateBlankSlate" do
                   return_value = Object.new
                   inner_double_proxy = nil
                   definition.with_any_args.returns(return_value).after_call do |value|
@@ -791,7 +791,7 @@ module RR
                   end
 
                   foobar_return_value = subject.foobar
-                  foobar_return_value.should == inner_double_proxy.__creator__.subject
+                  foobar_return_value.should == inner_double_proxy.__double_definition_create__.subject
                 end
               end
 
@@ -919,104 +919,104 @@ module RR
       end
 
       describe "NestedDoubleCreationMethods" do
-        attr_reader :child_double_definition_creator
+        attr_reader :child_double_definition_create
         after do
-          RR.verify(ChildDoubleDefinitionCreator)
-          RR.verify(child_double_definition_creator)
+          RR.verify(ChildDoubleDefinitionCreate)
+          RR.verify(child_double_definition_create)
         end
 
         describe "#mock" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #mock method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #mock method with the passed-in arguments and block" do
             child_subject = Object.new
-            child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
-              mock.proxy(child_double_definition_creator).mock(child_subject, :baz)
-              child_double_definition_creator = child_double_definition_creator
+            child_double_definition_create = nil
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_create|
+              mock.proxy(child_double_definition_create).mock(child_subject, :baz)
+              child_double_definition_create = child_double_definition_create
             end
 
             definition.mock(child_subject, :baz)
-            @child_double_definition_creator = child_double_definition_creator
+            @child_double_definition_create = child_double_definition_create
           end
         end
 
         describe "#mock!" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #mock! method with the passed-in arguments and block" do
-            child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
-              mock.proxy(child_double_definition_creator).mock!(:baz)
-              child_double_definition_creator = child_double_definition_creator
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #mock! method with the passed-in arguments and block" do
+            child_double_definition_create = nil
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_create|
+              mock.proxy(child_double_definition_create).mock!(:baz)
+              child_double_definition_create = child_double_definition_create
             end
 
             definition.mock!(:baz)
-            @child_double_definition_creator = child_double_definition_creator
+            @child_double_definition_create = child_double_definition_create
           end
         end
 
         describe "#stub" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #stub method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #stub method with the passed-in arguments and block" do
             child_subject = Object.new
-            child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
-              mock.proxy(child_double_definition_creator).stub(child_subject, :baz)
-              child_double_definition_creator = child_double_definition_creator
+            child_double_definition_create = nil
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_create|
+              mock.proxy(child_double_definition_create).stub(child_subject, :baz)
+              child_double_definition_create = child_double_definition_create
             end
 
             definition.stub(child_subject, :baz)
-            @child_double_definition_creator = child_double_definition_creator
+            @child_double_definition_create = child_double_definition_create
           end
         end
 
         describe "#stub!" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #stub! method with the passed-in arguments and block" do
-            child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
-              mock.proxy(child_double_definition_creator).stub!(:baz)
-              child_double_definition_creator = child_double_definition_creator
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #stub! method with the passed-in arguments and block" do
+            child_double_definition_create = nil
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_create|
+              mock.proxy(child_double_definition_create).stub!(:baz)
+              child_double_definition_create = child_double_definition_create
             end
 
             definition.stub!(:baz)
-            @child_double_definition_creator = child_double_definition_creator
+            @child_double_definition_create = child_double_definition_create
           end
         end
 
         describe "#dont_allow" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #dont_allow method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #dont_allow method with the passed-in arguments and block" do
             child_subject = Object.new
-            child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
-              mock.proxy(child_double_definition_creator).dont_allow(child_subject, :baz)
-              child_double_definition_creator = child_double_definition_creator
+            child_double_definition_create = nil
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_create|
+              mock.proxy(child_double_definition_create).dont_allow(child_subject, :baz)
+              child_double_definition_create = child_double_definition_create
             end
 
             definition.dont_allow(child_subject, :baz)
-            @child_double_definition_creator = child_double_definition_creator
+            @child_double_definition_create = child_double_definition_create
           end
         end
 
         describe "#dont_allow!" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #dont_allow! method with the passed-in arguments and block" do
-            child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
-              mock.proxy(child_double_definition_creator).dont_allow!(:baz)
-              child_double_definition_creator = child_double_definition_creator
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #dont_allow! method with the passed-in arguments and block" do
+            child_double_definition_create = nil
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_create|
+              mock.proxy(child_double_definition_create).dont_allow!(:baz)
+              child_double_definition_create = child_double_definition_create
             end
 
             definition.dont_allow!(:baz)
-            @child_double_definition_creator = child_double_definition_creator
+            @child_double_definition_create = child_double_definition_create
           end
         end
 
         describe "#proxy" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #proxy method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #proxy method with the passed-in arguments and block" do
             child_subject = Object.new
-            child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
-              mock.proxy(child_double_definition_creator).proxy(DoubleDefinitionCreator::NO_SUBJECT, nil)
-              child_double_definition_creator = child_double_definition_creator
+            child_double_definition_create = nil
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_create|
+              mock.proxy(child_double_definition_create).proxy(DoubleDefinitionCreate::NO_SUBJECT, nil)
+              child_double_definition_create = child_double_definition_create
             end
 
             definition.proxy.mock(child_subject)
-            @child_double_definition_creator = child_double_definition_creator
+            @child_double_definition_create = child_double_definition_create
           end
         end
 
@@ -1029,16 +1029,16 @@ module RR
         end
 
         describe "#strong" do
-          it "instantiates a ChildDoubleDefinitionCreator with self and delegates to its #strong method with the passed-in arguments and block" do
+          it "instantiates a ChildDoubleDefinitionCreate with self and delegates to its #strong method with the passed-in arguments and block" do
             child_subject = Object.new
-            child_double_definition_creator = nil
-            mock.proxy(ChildDoubleDefinitionCreator).new(definition) do |child_double_definition_creator|
-              mock.proxy(child_double_definition_creator).strong(DoubleDefinitionCreator::NO_SUBJECT, nil)
-              child_double_definition_creator = child_double_definition_creator
+            child_double_definition_create = nil
+            mock.proxy(ChildDoubleDefinitionCreate).new(definition) do |child_double_definition_create|
+              mock.proxy(child_double_definition_create).strong(DoubleDefinitionCreate::NO_SUBJECT, nil)
+              child_double_definition_create = child_double_definition_create
             end
 
             definition.strong.mock(child_subject)
-            @child_double_definition_creator = child_double_definition_creator
+            @child_double_definition_create = child_double_definition_create
           end
         end
 
