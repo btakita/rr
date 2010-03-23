@@ -80,7 +80,9 @@ module RR
     end
 
     def blank_slate_whitelist
-      @blank_slate_whitelist ||= ["object_id", "respond_to?", "method_missing", "instance_eval", "instance_exec"]
+      @blank_slate_whitelist ||= [
+        "object_id", "respond_to?", "method_missing", "instance_eval", "instance_exec", "class_eval"
+      ]
     end
 
     protected

@@ -1,3 +1,6 @@
+- Added RR.blank_slate_whitelist
+- Fixed class_eval method redefinition warning in jruby
+
 0.10.10
 - Suite passes for Ruby 1.9.1
 
