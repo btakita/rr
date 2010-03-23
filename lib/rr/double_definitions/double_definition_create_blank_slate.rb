@@ -1,20 +1,9 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinitionCreateBlankSlate
-      class << self
-        def blank_slate_methods
-          instance_methods.each do |m|
-            unless m =~ /^_/ || m.to_s == 'object_id' || m.to_s == 'respond_to?' || m.to_s == 'method_missing' || m.to_s == 'instance_eval' || m.to_s == 'instance_exec'
-              alias_method "__blank_slated_#{m}", m
-              undef_method m
-            end
-          end
-        end
-      end
-
       def initialize(double_definition_create, &block) #:nodoc:
         @double_definition_create = double_definition_create
-        respond_to?(:class) ? self.class.blank_slate_methods : __blank_slated_class.blank_slate_methods
+        BlankSlate.call(respond_to?(:class) ? self.class : __blank_slated_class)
 
         if block_given?
           if block.arity == 1
