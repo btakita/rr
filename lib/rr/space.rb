@@ -79,6 +79,10 @@ module RR
       @recorded_calls << [subject, method_name, arguments, block]
     end
 
+    def blank_slate_whitelist
+      @blank_slate_whitelist ||= ["object_id", "respond_to?", "method_missing", "instance_eval", "instance_exec"]
+    end
+
     protected
     # Removes the ordered Doubles from the list
     def reset_ordered_doubles
