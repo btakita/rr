@@ -1,3 +1,4 @@
+0.10.11
 - Added RR.blank_slate_whitelist
 - Fixed class_eval method redefinition warning in jruby
 
