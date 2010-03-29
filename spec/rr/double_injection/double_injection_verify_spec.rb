@@ -9,7 +9,7 @@ module RR
         @subject = Object.new
         @method_name = :foobar
         subject.methods.should_not include(method_name.to_s)
-        @double_injection = space.double_injection(subject, method_name)
+        @double_injection = Injections::DoubleInjection.create(subject, method_name)
       end
 
       it "verifies each double was met" do

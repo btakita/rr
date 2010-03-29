@@ -1,6 +1,12 @@
 module RR
   module Injections
     class Injection
+      class << self
+        def instances
+          @instances ||= HashWithObjectIdKey.new
+        end
+      end
+
       include Space::Reader
 
       attr_reader :subject

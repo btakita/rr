@@ -119,7 +119,7 @@ describe RR::SpyVerification do
 
     context "when the subject is expected where there is not DoubleInjection" do
       it "raises a DoubleInjectionNotFoundError" do
-        space.double_injection_exists?(subject, :method_that_does_not_exist).should be_false
+        ::RR::Injections::DoubleInjection.exists?(subject, :method_that_does_not_exist).should be_false
         lambda do
           received(subject).method_that_does_not_exist.call
         end.should raise_error(RR::Errors::SpyVerificationErrors::DoubleInjectionNotFoundError)

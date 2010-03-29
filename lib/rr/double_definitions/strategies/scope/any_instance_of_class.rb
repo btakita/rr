@@ -25,7 +25,7 @@ module RR
           end
           
           def add_double_to_instance(instance, *args)
-            double_injection = space.double_injection(instance, method_name)
+            double_injection = Injections::DoubleInjection.create(instance, method_name)
             Double.new(double_injection, definition)
             #####
             if args.last.is_a?(ProcFromBlock)

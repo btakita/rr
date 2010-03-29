@@ -4,6 +4,57 @@ module RR
     # A double_injection has 0 to many Double objects. Each Double
     # has Argument Expectations and Times called Expectations.
     class DoubleInjection < Injection
+      class << self
+        def create(subject, method_name)
+          instances[subject][method_name.to_sym] ||= begin
+            new(subject, method_name.to_sym, (class << subject; self; end)).bind
+          end
+        end
+
+        def exists?(subject, method_name)
+          instances.include?(subject) && instances[subject].include?(method_name.to_sym)
+        end
+
+        def reset
+          instances.each do |subject, method_double_map|
+            method_double_map.keys.each do |method_name|
+              reset_double(subject, method_name)
+            end
+          end
+        end
+
+        def verify(*subjects)
+          subjects = Injections::DoubleInjection.instances.keys if subjects.empty?
+          subjects.each do |subject|
+            instances.include?(subject) &&
+              instances[subject].keys.each do |method_name|
+                verify_double(subject, method_name)
+              end &&
+              instances.delete(subject)
+          end
+        end
+
+        # Verifies the DoubleInjection for the passed in subject and method_name.
+        def verify_double(subject, method_name)
+          Injections::DoubleInjection.instances[subject][method_name].verify
+        ensure
+          reset_double subject, method_name
+        end
+
+        # Resets the DoubleInjection for the passed in subject and method_name.
+        def reset_double(subject, method_name)
+          double_injection = Injections::DoubleInjection.instances[subject].delete(method_name)
+          Injections::DoubleInjection.instances.delete(subject) if Injections::DoubleInjection.instances[subject].empty?
+          double_injection.reset
+        end
+
+        def instances
+          @instances ||= HashWithObjectIdKey.new do |hash, subject_object|
+            hash.set_with_object_id(subject_object, {})
+          end
+        end
+      end
+
       attr_reader :subject_class, :method_name, :doubles
 
       MethodArguments = Struct.new(:arguments, :block)
@@ -34,8 +85,8 @@ module RR
               bind_method_with_alias
             end
           else
-            space.method_missing_injection(subject)
-            space.singleton_method_added_injection(subject)
+            Injections::MethodMissingInjection.create(subject)
+            Injections::SingletonMethodAddedInjection.create(subject)
           end
         else
           bind_method
@@ -50,6 +101,7 @@ module RR
           double.verify
         end
       end
+
       # RR::DoubleInjection#reset removes the injected dispatcher method.
 
       # It binds the original method implementation on the subject
@@ -100,7 +152,10 @@ module RR
 
       protected
       def subject_is_proxy_for_method?(method_name_in_question)
-        !(class << @subject; self; end).
+        !(
+        class << @subject;
+          self;
+        end).
           instance_methods.
           detect {|method_name| method_name.to_sym == method_name_in_question.to_sym}
       end
@@ -122,7 +177,7 @@ module RR
         subject_class.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
         def #{@method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
-          RR::Space.double_injection(#{subject}, :#{@method_name}).dispatch_method(arguments.arguments, arguments.block)
+          RR::Injections::DoubleInjection.create(#{subject}, :#{@method_name}).dispatch_method(arguments.arguments, arguments.block)
         end
         METHOD
       end

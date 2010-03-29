@@ -5,39 +5,15 @@ module RR
     describe TimesCalledExpectation do
       context "when using an AnyTimesMatcher" do
         it_should_behave_like "RR::Expectations::TimesCalledExpectation"
-        attr_reader :matcher, :expectation
-
-        before do
-          double.definition.any_number_of_times
-          @matcher = double.definition.times_matcher
-          @expectation = TimesCalledExpectation.new(double)
-        end
 
         describe "#verify!" do
           it "always passes" do
-            expectation.verify!
-            10.times {expectation.attempt}
-            expectation.verify!
-          end
-        end
+            stub(subject).foobar.any_number_of_times
+            RR.verify
 
-        describe "#attempt?" do
-          it "always returns true" do
-            expectation.should be_attempt
-            10.times {expectation.attempt}
-            expectation.should be_attempt
-          end
-        end
-
-        describe "#attempt!" do
-          it "always passes" do
-            10.times {expectation.attempt}
-          end
-        end
-
-        describe "#terminal?" do
-          it "returns false" do
-            expectation.should_not be_terminal
+            stub(subject).foobar.any_number_of_times
+            10.times {subject.foobar}
+            RR.verify
           end
         end
       end

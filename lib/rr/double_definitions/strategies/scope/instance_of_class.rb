@@ -30,13 +30,12 @@ module RR
             instance_of_subject_double_definition_create.strong if definition.verify_method_signature?
             instance_of_subject_double_definition_create.stub(subject)
             instance_of_subject_double_definition_create.call(:new) do |*args|
-              #####
               add_double_to_instance(subject.allocate, *args)
             end
           end
           
           def add_double_to_instance(instance, *args)
-            double_injection = space.double_injection(instance, method_name)
+            double_injection = Injections::DoubleInjection.create(instance, method_name)
             Double.new(double_injection, definition)
             #####
             if args.last.is_a?(ProcFromBlock)
@@ -45,7 +44,7 @@ module RR
               instance.__send__(:initialize, *args)
             end
             instance
-          end  
+          end
         end
       end
     end

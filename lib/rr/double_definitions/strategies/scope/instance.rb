@@ -5,7 +5,7 @@ module RR
         class Instance < ScopeStrategy
           protected
           def do_call
-            double_injection = space.double_injection(subject, method_name)
+            double_injection = Injections::DoubleInjection.create(subject, method_name)
             Double.new(double_injection, definition)
           end
         end

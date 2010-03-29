@@ -28,8 +28,6 @@ module RR
               @strategy_method_name = :mock
             end
 
-            send("normal strategy definition")
-
             context "when passing no args" do
               it "returns self" do
                 call_strategy.should === double_definition_create
@@ -61,8 +59,6 @@ module RR
               @strategy_method_name = :stub
             end
 
-            send("normal strategy definition")
-
             context "when passing no args" do
               it "returns self" do
                 call_strategy.should === double_definition_create
@@ -92,8 +88,6 @@ module RR
             before do
               @strategy_method_name = :dont_allow
             end
-
-            send("normal strategy definition")
 
             context "when passing no args" do
               it "returns self" do
@@ -143,12 +137,11 @@ module RR
               @strategy_method_name = :mock!
             end
 
-            send("! strategy definition")
-
             context "when passed a method_name argument" do
               it "sets #verification_strategy to Mock" do
                 double_definition_create.mock!(:foobar)
                 double_definition_create.verification_strategy.class.should == Strategies::Verification::Mock
+                lambda {RR.verify}.should raise_error(::RR::Errors::TimesCalledError)
               end
             end
           end
@@ -157,8 +150,6 @@ module RR
             before do
               @strategy_method_name = :stub!
             end
-
-            send("! strategy definition")
 
             context "when passed a method_name argument" do
               it "sets #verification_strategy to Stub" do
@@ -172,8 +163,6 @@ module RR
             before do
               @strategy_method_name = :dont_allow!
             end
-
-            send("! strategy definition")
 
             context "when passed a method_name argument" do
               it "sets #verification_strategy to DontAllow" do
@@ -274,9 +263,10 @@ module RR
               end
 
               it "sets expectation on the #subject that it will be sent the method_name once with the passed-in arguments" do
-                double_definition_create.call(:foobar, 1, 2)
+                mock(subject).foobar(1, 2)
                 subject.foobar(1, 2)
                 lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
+                lambda {RR.verify}.should raise_error(RR::Errors::TimesCalledError)
               end
 
               describe "#subject.method_name being called" do
@@ -295,11 +285,13 @@ module RR
 
               it "sets expectation on the #subject that it will be sent the method_name once with the passed-in arguments" do
                 def subject.foobar(*args)
-                  :baz;
+                  :baz
                 end
-                double_definition_create.call(:foobar, 1, 2)
+                mock(subject).foobar(1, 2)
+                
                 subject.foobar(1, 2)
                 lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
+                lambda {RR.verify}.should raise_error(RR::Errors::TimesCalledError)
               end
 
               describe "#subject.method_name being called" do

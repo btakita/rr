@@ -5,64 +5,36 @@ module RR
     describe TimesCalledExpectation do
       context "when using an AtMostMatcher" do
         it_should_behave_like "RR::Expectations::TimesCalledExpectation"
-        attr_reader :times, :at_most, :expectation
 
         before do
-          @times = 3
-          double.definition.at_most(times)
-          @at_most = double.definition.times_matcher
-          @expectation = TimesCalledExpectation.new(double)
+          stub(subject).foobar.at_most(3)
         end
 
         describe "#verify!" do
-          it "returns true when times called == times" do
-            3.times {expectation.attempt}
-            expectation.verify!
-          end
-
-          it "raises error when times called < times" do
-            2.times {expectation.attempt}
-            expectation.verify!
-          end
-        end
-
-        describe "#attempt?" do
-          it "returns true when attempted less than expected times" do
-            2.times {expectation.attempt}
-            expectation.should be_attempt
-          end
-
-          it "returns false when attempted expected times" do
-            3.times {expectation.attempt}
-            expectation.should_not be_attempt
-          end
-
-          it "raises error before attempted more than expected times" do
-            3.times {expectation.attempt}
-            lambda {expectation.attempt}.should raise_error( RR::Errors::TimesCalledError )
-          end
-        end
-
-        describe "#attempt!" do
-          it "fails when times called more than times" do
-            3.times {expectation.attempt}
-            lambda do
-              expectation.attempt
-            end.should raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 4 times.\nExpected at most 3 times.")
-          end
-
           it "passes when times called == times" do
-            3.times {expectation.attempt}
+            3.times {subject.foobar}
+            RR.verify
           end
 
           it "passes when times called < times" do
-            expectation.attempt
+            2.times {subject.foobar}
+            RR.verify
           end
-        end
 
-        describe "#terminal?" do
-          it "returns true" do
-            expectation.should be_terminal
+          it "raises error when times called > times" do
+            lambda do
+              4.times {subject.foobar}
+            end.should raise_error(
+              RR::Errors::TimesCalledError,
+              "foobar()\nCalled 4 times.\nExpected at most 3 times."
+            )
+
+            lambda do
+              RR.verify
+            end.should raise_error(
+              RR::Errors::TimesCalledError,
+              "foobar()\nCalled 4 times.\nExpected at most 3 times."
+            )
           end
         end
       end

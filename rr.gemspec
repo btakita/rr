@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rr}
-  s.version = "0.10.10"
+  s.version = "0.10.11"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Takita"]
-  s.date = %q{2010-02-25}
+  s.date = %q{2010-03-22}
   s.description = %q{RR (Double Ruby) is a double framework that features a rich selection of double techniques and a terse syntax. http://xunitpatterns.com/Test%20Double.html}
   s.email = %q{brian@pivotallabs.com}
   s.extra_rdoc_files = [
@@ -26,11 +26,12 @@ Gem::Specification.new do |s|
      "lib/rr/adapters/rr_methods.rb",
      "lib/rr/adapters/rspec.rb",
      "lib/rr/adapters/test_unit.rb",
+     "lib/rr/blank_slate.rb",
      "lib/rr/double.rb",
      "lib/rr/double_definitions/child_double_definition_create.rb",
      "lib/rr/double_definitions/double_definition.rb",
      "lib/rr/double_definitions/double_definition_create.rb",
-     "lib/rr/double_definitions/double_definition_create_proxy.rb",
+     "lib/rr/double_definitions/double_definition_create_blank_slate.rb",
      "lib/rr/double_definitions/strategies/implementation/implementation_strategy.rb",
      "lib/rr/double_definitions/strategies/implementation/proxy.rb",
      "lib/rr/double_definitions/strategies/implementation/reimplementation.rb",
@@ -91,7 +92,6 @@ Gem::Specification.new do |s|
      "lib/rr/wildcard_matchers/range.rb",
      "lib/rr/wildcard_matchers/regexp.rb",
      "lib/rr/wildcard_matchers/satisfy.rb",
-     "ruby_19_spec.rb",
      "spec/api/dont_allow/dont_allow_after_stub_spec.rb",
      "spec/api/mock/mock_spec.rb",
      "spec/api/proxy/proxy_spec.rb",
@@ -106,13 +106,11 @@ Gem::Specification.new do |s|
      "spec/rr/adapters/rr_methods_space_spec.rb",
      "spec/rr/adapters/rr_methods_spec_helper.rb",
      "spec/rr/adapters/rr_methods_times_matcher_spec.rb",
-     "spec/rr/double_definitions/child_double_definition_create_spec.rb",
-     "spec/rr/double_definitions/double_definition_create_proxy_spec.rb",
+     "spec/rr/double_definitions/child_double_definition_creator_spec.rb",
+     "spec/rr/double_definitions/double_definition_create_blank_slate_spec.rb",
      "spec/rr/double_definitions/double_definition_create_spec.rb",
-     "spec/rr/double_definitions/double_definition_spec.rb",
      "spec/rr/double_injection/double_injection_spec.rb",
      "spec/rr/double_injection/double_injection_verify_spec.rb",
-     "spec/rr/double_spec.rb",
      "spec/rr/errors/rr_error_spec.rb",
      "spec/rr/expectations/any_argument_expectation_spec.rb",
      "spec/rr/expectations/anything_argument_equality_expectation_spec.rb",
@@ -129,7 +127,6 @@ Gem::Specification.new do |s|
      "spec/rr/expectations/times_called_expectation/times_called_expectation_integer_spec.rb",
      "spec/rr/expectations/times_called_expectation/times_called_expectation_proc_spec.rb",
      "spec/rr/expectations/times_called_expectation/times_called_expectation_range_spec.rb",
-     "spec/rr/expectations/times_called_expectation/times_called_expectation_spec.rb",
      "spec/rr/rspec/invocation_matcher_spec.rb",
      "spec/rr/rspec/rspec_adapter_spec.rb",
      "spec/rr/rspec/rspec_backtrace_tweaking_spec.rb",
