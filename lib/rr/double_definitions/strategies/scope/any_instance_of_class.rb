@@ -14,7 +14,7 @@ module RR
         #     projects[0..2]
         #   end        
         class AnyInstanceOfClass < InstanceOfClass
-          register "any_instance_of"
+          register "any_instance_of", "all_instances_of"
 
           protected
           def do_call

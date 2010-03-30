@@ -14,7 +14,7 @@ module RR
         #     projects[0..2]
         #   end        
         class InstanceOfClass < ScopeStrategy
-          register "instance_of", :new_instance_of
+          register "instance_of", "new_instance_of"
 
           def initialize(*args)
             super
