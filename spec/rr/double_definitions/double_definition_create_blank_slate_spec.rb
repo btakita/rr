@@ -51,7 +51,9 @@ module RR
             end
 
             it "passes the self into the block" do
-              passed_in_argument.__double_definition_create__.should be_instance_of(DoubleDefinitions::DoubleDefinitionCreate)
+              passed_in_argument.__double_definition_create__.should be_instance_of(
+                ::RR::DoubleDefinitions::DoubleDefinitionCreate
+              )
             end
           end
 
@@ -77,7 +79,9 @@ module RR
             end
 
             it "evaluates the block with the context of self" do
-              self_value.__double_definition_create__.should be_instance_of(DoubleDefinitions::DoubleDefinitionCreate)
+              self_value.__double_definition_create__.should be_instance_of(
+                ::RR::DoubleDefinitions::DoubleDefinitionCreate
+              )
             end
           end
         end

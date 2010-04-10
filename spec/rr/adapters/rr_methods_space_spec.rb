@@ -20,7 +20,7 @@ module RR
 
       describe "#rr_verify" do
         it "verifies and deletes the double_injections" do
-          double_1 = Injections::DoubleInjection.create(subject_1, method_name)
+          double_1 = ::RR::Injections::DoubleInjection.create(subject_1, method_name)
           double_1_verify_calls = 0
           double_1_reset_calls = 0
           (
@@ -34,13 +34,10 @@ module RR
               double_1_reset_calls += 1
             end
           end
-          double_2 = Injections::DoubleInjection.create(subject_2, method_name)
+          double_2 = ::RR::Injections::DoubleInjection.create(subject_2, method_name)
           double_2_verify_calls = 0
           double_2_reset_calls = 0
-          (
-          class << double_2;
-            self;
-          end).class_eval do
+          ( class << double_2; self; end).class_eval do
             define_method(:verify) do ||
               double_2_verify_calls += 1
             end
@@ -68,21 +65,21 @@ module RR
           mock(subject_1).foobar1.ordered
           mock(subject_2).foobar2.ordered
 
-          Injections::DoubleInjection.instances.should_not be_empty
+          ::RR::Injections::DoubleInjection.instances.should_not be_empty
 
           rr_reset
-          Injections::DoubleInjection.instances.should be_empty
+          ::RR::Injections::DoubleInjection.instances.should be_empty
         end
 
         it "resets all double_injections" do
-          double_1 = Injections::DoubleInjection.create(subject_1, method_name)
+          double_1 = ::RR::Injections::DoubleInjection.create(subject_1, method_name)
           double_1_reset_calls = 0
           ( class << double_1; self; end).class_eval do
             define_method(:reset) do ||
               double_1_reset_calls += 1
             end
           end
-          double_2 = Injections::DoubleInjection.create(subject_2, method_name)
+          double_2 = ::RR::Injections::DoubleInjection.create(subject_2, method_name)
           double_2_reset_calls = 0
           ( class << double_2; self; end).class_eval do
             define_method(:reset) do ||

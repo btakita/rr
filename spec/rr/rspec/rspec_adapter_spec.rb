@@ -15,10 +15,10 @@ module RR
 
         it "resets the double_injections" do
           stub(subject).foobar
-          Injections::DoubleInjection.instances.should_not be_empty
+          ::RR::Injections::DoubleInjection.instances.should_not be_empty
 
           fixture.setup_mocks_for_rspec
-          Injections::DoubleInjection.instances.should be_empty
+          ::RR::Injections::DoubleInjection.instances.should be_empty
         end
       end
 
@@ -37,7 +37,7 @@ module RR
           lambda do
             fixture.verify_mocks_for_rspec
           end.should raise_error(::RR::Errors::TimesCalledError)
-          Injections::DoubleInjection.instances.should be_empty
+          ::RR::Injections::DoubleInjection.instances.should be_empty
         end
       end
 
@@ -52,10 +52,10 @@ module RR
 
         it "resets the double_injections" do
           stub(subject).foobar
-          Injections::DoubleInjection.instances.should_not be_empty
+          ::RR::Injections::DoubleInjection.instances.should_not be_empty
 
           fixture.teardown_mocks_for_rspec
-          Injections::DoubleInjection.instances.should be_empty
+          ::RR::Injections::DoubleInjection.instances.should be_empty
         end
       end
     end
