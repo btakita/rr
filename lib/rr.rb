@@ -85,12 +85,11 @@ module RR
   class << self
     include Adapters::RRMethods
     (RR::Space.instance_methods - Object.instance_methods).each do |method_name|
-      returns_method = <<-METHOD
+      class_eval((<<-METHOD), __FILE__, __LINE__ + 1)
         def #{method_name}(*args, &block)
           RR::Space.instance.__send__(:#{method_name}, *args, &block)
         end
       METHOD
-      class_eval(returns_method, __FILE__, __LINE__ - 4)
     end
   end
 end

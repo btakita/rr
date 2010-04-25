@@ -58,12 +58,11 @@ module RR
       end
 
       def bind_method
-        returns_method = <<-METHOD
+        subject_class.class_eval((<<-METHOD), __FILE__, __LINE__ + 1)
         def method_missing(method_name, *args, &block)
           RR::Injections::MethodMissingInjection.create(self).dispatch_method(method_name, args, block)
         end
         METHOD
-        subject_class.class_eval(returns_method, __FILE__, __LINE__ - 4)
       end
 
       def original_method_alias_name
