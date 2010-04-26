@@ -15,7 +15,7 @@ module RR
           end
           CLASS
         end
-        
+
         def register_implementation_strategy_class(strategy_class, strategy_method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
           def #{strategy_method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
@@ -45,9 +45,9 @@ module RR
         end
       end
 
-      attr_reader :subject, 
+      attr_reader :subject,
                   :verification_strategy,
-                  :implementation_strategy, 
+                  :implementation_strategy,
                   :scope_strategy
       NO_SUBJECT = Object.new
 
@@ -63,20 +63,29 @@ module RR
         raise DoubleDefinitionCreateError if no_subject?
         definition = DoubleDefinition.new(self)
         verification_strategy || no_strategy_error
-        verification_strategy.call(definition, method_name, args, handler)
-        implementation_strategy.call(definition, method_name, args, handler)
-        scope_strategy.call(definition, method_name, args, handler)
+        if subject.is_a?(PrototypeSubject)
+          subject.method_name = method_name
+          subject.double_definition = definition
+          subject.verification_strategy = verification_strategy
+          subject.implementation_strategy = implementation_strategy
+          # scope_strategy is deprecated and will not be used for PrototypeSubjects.
+          # PrototypeSubjects are used in the AnyInstanceOf scope.
+        else
+          verification_strategy.call(definition, method_name, args, handler)
+          implementation_strategy.call(definition, method_name, args, handler)
+          scope_strategy.call(definition, method_name, args, handler)
+        end
         definition
       end
-      
+
       def root_subject
         subject
       end
-      
+
       def method_name
         @verification_strategy.method_name
       end
-      
+
       module StrategySetupMethods
         def no_subject?
           subject.__id__ === NO_SUBJECT.__id__

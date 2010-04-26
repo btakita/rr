@@ -63,6 +63,7 @@ module RR
       reset_method_missing_injections
       reset_singleton_method_added_injections
       reset_recorded_calls
+      reset_any_instance_of_scopes
     end
 
     # Verifies the DoubleInjection for the passed in subject and method_name.
@@ -104,7 +105,11 @@ module RR
       end
       Injections::SingletonMethodAddedInjection.instances.clear
     end
-    
+
+    def reset_any_instance_of_scopes
+      DoubleDefinitions::Scopes::AnyInstanceOf.reset
+    end
+
     def reset_recorded_calls
       @recorded_calls.clear
     end

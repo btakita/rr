@@ -2,6 +2,7 @@ module RR
   module DoubleDefinitions
     module Strategies
       module Scope
+        # This class is Deprecated.
         # Calling instance_of will cause all instances of the passed in Class
         # to have the Double defined.
         #
@@ -14,7 +15,7 @@ module RR
         #     projects[0..2]
         #   end        
         class InstanceOfClass < ScopeStrategy
-          register "instance_of", "new_instance_of"
+          register "instance_of"
 
           def initialize(*args)
             super
