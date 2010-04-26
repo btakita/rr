@@ -1,9 +1,9 @@
 module RR
   module MethodDispatches
     class MethodDispatch < BaseMethodDispatch
-      attr_reader :double_injection
-      def initialize(double_injection, args, block)
-        @double_injection, @args, @block = double_injection, args, block
+      attr_reader :double_injection, :subject
+      def initialize(double_injection, subject, args, block)
+        @double_injection, @subject, @args, @block = double_injection, subject, args, block
         @double = find_double_to_attempt
       end
 
@@ -53,7 +53,7 @@ module RR
       end
 
       def_delegators :definition, :implementation
-      def_delegators :double_injection, :subject_has_original_method?, :subject_has_original_method_missing?, :subject, :method_name, :original_method_alias_name
+      def_delegators :double_injection, :subject_has_original_method?, :subject_has_original_method_missing?, :method_name, :original_method_alias_name
     end
   end
 end

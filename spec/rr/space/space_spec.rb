@@ -46,7 +46,7 @@ module RR
           it "returns double_injection and adds double_injection to double_injection list" do
             double_injection = Injections::DoubleInjection.create(subject, method_name)
             Injections::DoubleInjection.create(subject, method_name).should === double_injection
-            double_injection.subject.should === subject
+            double_injection.subject_class.should == (class << subject; self; end)
             double_injection.method_name.should === method_name
           end
         end
@@ -55,7 +55,7 @@ module RR
           it "returns double_injection and adds double_injection to double_injection list" do
             double_injection = Injections::DoubleInjection.create(subject, 'foobar')
             Injections::DoubleInjection.create(subject, method_name).should === double_injection
-            double_injection.subject.should === subject
+            double_injection.subject_class.should == (class << subject; self; end)
             double_injection.method_name.should === method_name
           end
         end

@@ -7,7 +7,7 @@ module RR
       class << self
         def create(subject, method_name)
           instances[subject][method_name.to_sym] ||= begin
-            new(subject, method_name.to_sym, (class << subject; self; end)).bind
+            new(class << subject; self; end, method_name.to_sym).bind(subject)
           end
         end
 
@@ -59,8 +59,7 @@ module RR
 
       MethodArguments = Struct.new(:arguments, :block)
 
-      def initialize(subject, method_name, subject_class)
-        @subject = subject
+      def initialize(subject_class, method_name)
         @subject_class = subject_class
         @method_name = method_name.to_sym
         @doubles = []
@@ -76,20 +75,20 @@ module RR
       # RR::DoubleInjection#bind injects a method that acts as a dispatcher
       # that dispatches to the matching Double when the method
       # is called.
-      def bind
-        if subject_respond_to_method?(method_name)
+      def bind(subject)
+        if subject_respond_to_method?(subject, method_name)
           if subject_has_method_defined?(method_name)
             if subject_is_proxy_for_method?(method_name)
-              bind_method
+              bind_method(subject)
             else
-              bind_method_with_alias
+              bind_method_with_alias(subject)
             end
           else
             Injections::MethodMissingInjection.create(subject)
             Injections::SingletonMethodAddedInjection.create(subject)
           end
         else
-          bind_method
+          bind_method(subject)
         end
         self
       end
@@ -118,8 +117,8 @@ module RR
         end
       end
 
-      def dispatch_method(args, block)
-        dispatch = MethodDispatches::MethodDispatch.new(self, args, block)
+      def dispatch_method(subject, args, block)
+        dispatch = MethodDispatches::MethodDispatch.new(self, subject, args, block)
         if @bypass_bound_method
           dispatch.call_original_method
         else
@@ -127,12 +126,8 @@ module RR
         end
       end
 
-      def dispatch_method_missing(method_name, args, block)
-        MethodDispatches::MethodMissingDispatch.new(subject, method_name, args, block).call
-      end
-
       def subject_has_original_method_missing?
-        subject_respond_to_method?(original_method_missing_alias_name)
+        ClassInstanceMethodDefined.call(subject_class, original_method_missing_alias_name)
       end
 
       def original_method_alias_name
@@ -152,32 +147,32 @@ module RR
 
       protected
       def subject_is_proxy_for_method?(method_name_in_question)
-        !(
-        class << @subject;
-          self;
-        end).
+        !subject_class.
           instance_methods.
           detect {|method_name| method_name.to_sym == method_name_in_question.to_sym}
       end
 
-      def deferred_bind_method
+      def deferred_bind_method(subject)
         unless subject_has_method_defined?(original_method_alias_name)
-          bind_method_with_alias
+          bind_method_with_alias(subject)
         end
         @performed_deferred_bind = true
       end
 
-      def bind_method_with_alias
+      def bind_method_with_alias(subject)
         subject_class.__send__(:alias_method, original_method_alias_name, method_name)
-        bind_method
+        bind_method(subject)
       end
 
-      def bind_method
-        subject = @subject.is_a?(Class) && !@subject.name.to_s.empty? ? @subject.name : "self"
+      def bind_method(subject)
+        subject_for_eval = subject.is_a?(Class) && !subject.name.to_s.empty? ? subject.name : "self"
         subject_class.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
         def #{@method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
-          RR::Injections::DoubleInjection.create(#{subject}, :#{@method_name}).dispatch_method(arguments.arguments, arguments.block)
+
+          RR::Injections::DoubleInjection.
+            create(#{subject_for_eval}, :#{@method_name}).
+            dispatch_method(self, arguments.arguments, arguments.block)
         end
         METHOD
       end
