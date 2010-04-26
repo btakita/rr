@@ -4,7 +4,7 @@ module RR
       class << self
         def create(subject)
           instances[subject] ||= begin
-            new(subject).bind
+            new(class << subject; self; end).bind(subject)
           end
         end
 
@@ -13,14 +13,15 @@ module RR
         end
       end
 
-      def initialize(subject)
-        @subject = subject
+      attr_reader :subject_class
+      def initialize(subject_class)
+        @subject_class = subject_class
         @placeholder_method_defined = false
       end
 
-      def bind
-        unless subject.respond_to?(original_method_alias_name)
-          unless subject.respond_to?(:singleton_method_added)
+      def bind(subject)
+        unless ClassInstanceMethodDefined.call(subject_class, original_method_alias_name)
+          unless ClassInstanceMethodDefined.call(subject_class, :singleton_method_added)
             @placeholder_method_defined = true
             subject_class.class_eval do
               def singleton_method_added(method_name)
@@ -29,12 +30,11 @@ module RR
             end
           end
 
-          memoized_subject = subject
           memoized_original_method_alias_name = original_method_alias_name
           subject_class.__send__(:alias_method, original_method_alias_name, :singleton_method_added)
           subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
-            if Injections::DoubleInjection.exists?(memoized_subject, method_name_arg)
-              Injections::DoubleInjection.create(memoized_subject, method_name_arg).send(:deferred_bind_method)
+            if Injections::DoubleInjection.exists?(subject, method_name_arg)
+              Injections::DoubleInjection.create(subject, method_name_arg).send(:deferred_bind_method, subject)
             end
             send(memoized_original_method_alias_name, method_name_arg)
           end
@@ -57,10 +57,6 @@ module RR
       end
 
       protected
-      def subject_class
-        class << subject; self; end
-      end
-
       def original_method_alias_name
         "__rr__original_singleton_method_added"
       end
