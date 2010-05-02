@@ -1,6 +1,19 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
 describe "new_instance_of" do
+  context "when passed a method chain" do
+    it "stubs the called method name with the given value" do
+      subject_class = Class.new
+      existing_subject = subject_class.new
+      new_instance_of(subject_class).foobar {:baz}
+      new_subject = subject_class.new
+
+      existing_subject.should_not respond_to(:foobar)
+
+      new_subject.foobar.should == :baz
+    end
+  end
+
   context "when passed a block" do
     it "applies to instances instantiated before the Double expection was created" do
       subject_class = Class.new

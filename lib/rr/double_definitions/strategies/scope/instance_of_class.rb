@@ -27,23 +27,21 @@ module RR
 
           protected
           def do_call
-            instance_of_subject_double_definition_create = DoubleDefinitionCreate.new
-            instance_of_subject_double_definition_create.stub(subject)
-            instance_of_subject_double_definition_create.call(:new) do |*args|
-              add_double_to_instance(subject.allocate, *args)
+            DoubleDefinitions::Scopes::NewInstanceOf.call(class << subject; self; end) do |subject_instance|
+              add_double_to_instance(subject_instance, *args)
             end
           end
           
-          def add_double_to_instance(instance, *args)
-            double_injection = Injections::DoubleInjection.find_or_create(instance, method_name)
+          def add_double_to_instance(subject_instance, *args)
+            double_injection = Injections::DoubleInjection.find_or_create(subject_instance, method_name)
             Double.new(double_injection, definition)
             #####
             if args.last.is_a?(ProcFromBlock)
-              instance.__send__(:initialize, *args[0..(args.length-2)], &args.last)
+              subject_instance.__send__(:initialize, *args[0..(args.length-2)], &args.last)
             else
-              instance.__send__(:initialize, *args)
+              subject_instance.__send__(:initialize, *args)
             end
-            instance
+            subject_instance
           end
         end
       end
