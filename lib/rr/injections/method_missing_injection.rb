@@ -2,7 +2,7 @@ module RR
   module Injections
     class MethodMissingInjection < Injection
       class << self
-        def create(subject)
+        def find_or_create(subject)
           instances[subject] ||= begin
             new(class << subject; self; end).bind
           end

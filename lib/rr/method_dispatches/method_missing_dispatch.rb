@@ -50,7 +50,7 @@ module RR
       end
 
       def double_injection
-        Injections::DoubleInjection.create(subject, method_name)
+        Injections::DoubleInjection.find_or_create(subject, method_name)
       end
 
       def_delegators 'self.class', :original_method_missing_alias_name

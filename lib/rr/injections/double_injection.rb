@@ -6,7 +6,7 @@ module RR
     class DoubleInjection < Injection
       class << self
         # TODO: Pass in subject_class
-        def create(subject, method_name)
+        def find_or_create(subject, method_name)
           instances[subject][method_name.to_sym] ||= begin
             new(class << subject; self; end, method_name.to_sym).bind(subject)
           end
@@ -97,8 +97,8 @@ module RR
               bind_method_with_alias(subject)
             end
           else
-            Injections::MethodMissingInjection.create(subject)
-            Injections::SingletonMethodAddedInjection.create(subject)
+            Injections::MethodMissingInjection.find_or_create(subject)
+            Injections::SingletonMethodAddedInjection.find_or_create(subject)
           end
         else
           bind_method(subject)
