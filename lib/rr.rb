@@ -1,5 +1,4 @@
 dir = File.dirname(__FILE__)
-require 'rubygems'
 require 'forwardable'
 
 require "#{dir}/rr/blank_slate"
