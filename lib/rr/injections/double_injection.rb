@@ -12,6 +12,17 @@ module RR
           end
         end
 
+        def dispatch_method(subject, method_name, arguments, block)
+          if exists?(subject, method_name)
+            instances[subject][method_name.to_sym].dispatch_method(subject, arguments, block)
+          else
+            injection = new(class << subject; self; end, method_name.to_sym)
+            injection.bypass_bound_method do
+              injection.dispatch_method(subject, arguments, block)
+            end
+          end
+        end
+
         def exists?(subject, method_name)
           instances.include?(subject) && instances[subject].include?(method_name.to_sym)
         end
@@ -77,6 +88,7 @@ module RR
       # that dispatches to the matching Double when the method
       # is called.
       def bind(subject)
+        # subject needed
         if subject_respond_to_method?(subject, method_name)
           if subject_has_method_defined?(method_name)
             if subject_is_proxy_for_method?(method_name)
@@ -166,14 +178,11 @@ module RR
       end
 
       def bind_method(subject)
-        subject_for_eval = subject.is_a?(Class) && !subject.name.to_s.empty? ? subject.name : "self"
         subject_class.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
         def #{@method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
 
-          RR::Injections::DoubleInjection.
-            create(#{subject_for_eval}, :#{@method_name}).
-            dispatch_method(self, arguments.arguments, arguments.block)
+          RR::Injections::DoubleInjection.dispatch_method(self, :#{method_name}, arguments.arguments, arguments.block)
         end
         METHOD
       end
