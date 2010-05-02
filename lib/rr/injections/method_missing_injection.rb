@@ -2,9 +2,9 @@ module RR
   module Injections
     class MethodMissingInjection < Injection
       class << self
-        def create(subject)
+        def find_or_create(subject)
           instances[subject] ||= begin
-            new((class << subject; self; end)).bind(subject)
+            new(class << subject; self; end).bind
           end
         end
 
@@ -19,7 +19,7 @@ module RR
         @placeholder_method_defined = false
       end
 
-      def bind(subject)
+      def bind
         unless ClassInstanceMethodDefined.call(subject_class, original_method_alias_name)
           unless ClassInstanceMethodDefined.call(subject_class, :method_missing)
             @placeholder_method_defined = true
@@ -49,15 +49,11 @@ module RR
         end
       end
 
-      def dispatch_method(subject, method_name, args, block)
-        MethodDispatches::MethodMissingDispatch.new(subject, method_name, args, block).call
-      end
-
       protected
       def bind_method
         subject_class.class_eval((<<-METHOD), __FILE__, __LINE__ + 1)
         def method_missing(method_name, *args, &block)
-          RR::Injections::MethodMissingInjection.create(self).dispatch_method(self, method_name, args, block)
+          MethodDispatches::MethodMissingDispatch.new(self, method_name, args, block).call
         end
         METHOD
       end

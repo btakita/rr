@@ -1,4 +1,5 @@
 - Added all_instances_of (aliased by any_instance_of)
+- Subclasses of a injected class do not have their methods overridden.
 
 0.10.11
 - Added RR.blank_slate_whitelist

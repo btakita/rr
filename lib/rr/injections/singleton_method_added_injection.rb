@@ -2,7 +2,7 @@ module RR
   module Injections
     class SingletonMethodAddedInjection < Injection
       class << self
-        def create(subject)
+        def find_or_create(subject)
           instances[subject] ||= begin
             new(class << subject; self; end).bind(subject)
           end
@@ -34,7 +34,7 @@ module RR
           subject_class.__send__(:alias_method, original_method_alias_name, :singleton_method_added)
           subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
             if Injections::DoubleInjection.exists?(subject, method_name_arg)
-              Injections::DoubleInjection.create(subject, method_name_arg).send(:deferred_bind_method, subject)
+              Injections::DoubleInjection.find_or_create(subject, method_name_arg).send(:deferred_bind_method, subject)
             end
             send(memoized_original_method_alias_name, method_name_arg)
           end

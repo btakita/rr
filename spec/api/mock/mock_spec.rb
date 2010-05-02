@@ -172,7 +172,7 @@ describe "mock" do
     it "should not break when it is mocked on subclass" do
       mock(SampleClass1).hello { "hi!" }
 
-      SampleClass2.hello.should == "hi!"
+      SampleClass2.hello.should == "hello!"
     end
 
     it "should not get affected from a previous example" do
