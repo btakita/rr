@@ -5,6 +5,7 @@ module RR
     # has Argument Expectations and Times called Expectations.
     class DoubleInjection < Injection
       class << self
+        # TODO: Pass in subject_class
         def create(subject, method_name)
           instances[subject][method_name.to_sym] ||= begin
             new(class << subject; self; end, method_name.to_sym).bind(subject)
