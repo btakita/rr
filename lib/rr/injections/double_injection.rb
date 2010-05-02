@@ -91,11 +91,7 @@ module RR
         # subject needed
         if subject_respond_to_method?(subject, method_name)
           if subject_has_method_defined?(method_name)
-            if subject_is_proxy_for_method?(method_name)
-              bind_method(subject)
-            else
-              bind_method_with_alias(subject)
-            end
+            bind_method_with_alias(subject)
           else
             Injections::MethodMissingInjection.find_or_create(subject)
             Injections::SingletonMethodAddedInjection.find_or_create(subject)
@@ -159,12 +155,6 @@ module RR
       end
 
       protected
-      def subject_is_proxy_for_method?(method_name_in_question)
-        !subject_class.
-          instance_methods.
-          detect {|method_name| method_name.to_sym == method_name_in_question.to_sym}
-      end
-
       def deferred_bind_method(subject)
         unless subject_has_method_defined?(original_method_alias_name)
           bind_method_with_alias(subject)
