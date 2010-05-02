@@ -28,7 +28,6 @@ module RR
           protected
           def do_call
             instance_of_subject_double_definition_create = DoubleDefinitionCreate.new
-            instance_of_subject_double_definition_create.strong if definition.verify_method_signature?
             instance_of_subject_double_definition_create.stub(subject)
             instance_of_subject_double_definition_create.call(:new) do |*args|
               add_double_to_instance(subject.allocate, *args)
