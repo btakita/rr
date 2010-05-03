@@ -27,7 +27,7 @@ module RR
 
           protected
           def do_call
-            DoubleDefinitions::Scopes::NewInstanceOf.call(class << subject; self; end) do |subject_instance|
+            DoubleDefinitions::Scopes::NewInstanceOf.call(subject) do |subject_instance|
               add_double_to_instance(subject_instance, *args)
             end
           end

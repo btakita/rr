@@ -5,10 +5,9 @@ module RR
         class << self
           include RR::Adapters::RRMethods
           def call(subject_class, stubbed_methods={})
-            DoubleDefinitionCreate.stub
-            double_definition = DoubleDefinition.new
-
+            double_definition_create = DoubleDefinitionCreate.new.stub
             stub(subject_class).new do |*args|
+              subject_instance = subject_class.allocate
               stubbed_methods.each do |name, value|
                 value_proc = value.is_a?(Proc) ? value : lambda {value}
                 stub(subject_instance, name).returns(&value_proc)
@@ -21,6 +20,7 @@ module RR
               end
               subject_instance
             end
+            DoubleDefinitionCreateBlankSlate.new(double_definition_create)
           end
         end
       end
