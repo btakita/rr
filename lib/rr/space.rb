@@ -67,12 +67,12 @@ module RR
 
     # Verifies the DoubleInjection for the passed in subject and method_name.
     def verify_double(subject, method_name)
-      Injections::DoubleInjection.verify_double(subject, method_name)
+      Injections::DoubleInjection.verify_double(class << subject; self; end, method_name)
     end
 
     # Resets the DoubleInjection for the passed in subject and method_name.
     def reset_double(subject, method_name)
-      Injections::DoubleInjection.reset_double(subject, method_name)
+      Injections::DoubleInjection.reset_double(class << subject; self; end, method_name)
     end
 
     def record_call(subject, method_name, arguments, block)
