@@ -97,22 +97,30 @@ module RR
         if subject_has_method_defined?(method_name)
           bind_method_with_alias
         else
-          if subject_respond_to_method?(subject, method_name)
-            # Going to depend on the subject to potentially lazily add the method via the MethodMissingInjection
-            Injections::MethodMissingInjection.find_or_create(subject_class)
-            Injections::SingletonMethodAddedInjection.find_or_create(subject)            
-          else
-            bind_method
-          end
+          Injections::MethodMissingInjection.find_or_create(subject_class)
+          Injections::SingletonMethodAddedInjection.find_or_create(subject)
+          bind_method_that_self_destructs_and_delegates_to_method_missing
         end
+        self
+      end
+
+      def bind_method_that_self_destructs_and_delegates_to_method_missing
+        subject_class_object_id = subject_class.object_id
+        subject_class.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
+        def #{method_name}(*args, &block)
+          ObjectSpace._id2ref(#{subject_class_object_id}).class_eval do
+            remove_method(:#{method_name})
+          end
+          method_missing(:#{method_name}, *args, &block)
+        end
+        METHOD
         self
       end
 
       def bind_method
         subject_class.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
-        def #{@method_name}(*args, &block)
+        def #{method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
-
           RR::Injections::DoubleInjection.dispatch_method(self, :#{method_name}, arguments.arguments, arguments.block)
         end
         METHOD

@@ -14,7 +14,6 @@ module RR
 
       def call
         if Injections::DoubleInjection.exists?(subject, method_name)
-          space.record_call(subject, method_name, args, block)
           @double = find_double_to_attempt
 
           if double
@@ -34,7 +33,7 @@ module RR
       end
 
       def call_original_method
-        double_injection.bypass_bound_method do
+        Injections::DoubleInjection.find_or_create(subject, method_name).bypass_bound_method do
           call_original_method_missing
         end
       end
@@ -42,11 +41,13 @@ module RR
       protected
       def call_implementation
         if implementation_is_original_method?
+          space.record_call(subject, method_name, args, block)
           double.method_call(args)
           call_original_method
         else
           if double_injection = Injections::DoubleInjection.find(subject, method_name)
             double_injection.bind_method
+            # The DoubleInjection takes care of calling double.method_call
             subject.__send__(method_name, *args, &block)
           else
             nil
