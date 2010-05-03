@@ -92,7 +92,7 @@ module RR
     end
 
     def reset_method_missing_injections
-      Injections::MethodMissingInjection.instances.each do |subject, injection|
+      Injections::MethodMissingInjection.instances.each do |subject_class, injection|
         injection.reset
       end
       Injections::MethodMissingInjection.instances.clear

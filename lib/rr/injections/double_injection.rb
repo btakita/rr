@@ -99,7 +99,7 @@ module RR
         else
           if subject_respond_to_method?(subject, method_name)
             # Going to depend on the subject to potentially lazily add the method via the MethodMissingInjection
-            Injections::MethodMissingInjection.find_or_create(subject)
+            Injections::MethodMissingInjection.find_or_create(subject_class)
             Injections::SingletonMethodAddedInjection.find_or_create(subject)            
           else
             bind_method

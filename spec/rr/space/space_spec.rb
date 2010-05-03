@@ -99,8 +99,8 @@ module RR
           (subject_1 === subject_2).should be_true
           subject_1.__id__.should_not == subject_2.__id__
 
-          injection_1 = Injections::MethodMissingInjection.find_or_create(subject_1)
-          injection_2 = Injections::MethodMissingInjection.find_or_create(subject_2)
+          injection_1 = Injections::MethodMissingInjection.find_or_create(class << subject_1; self; end)
+          injection_2 = Injections::MethodMissingInjection.find_or_create(class << subject_2; self; end)
 
           injection_1.should_not == injection_2
         end
@@ -115,7 +115,7 @@ module RR
 
         it "overrides the method when passing a block" do
           original_method = subject.method(:method_missing)
-          Injections::MethodMissingInjection.find_or_create(subject)
+          Injections::MethodMissingInjection.find_or_create(class << subject; self; end)
           subject.method(:method_missing).should_not == original_method
         end
       end
@@ -129,10 +129,10 @@ module RR
 
         context "when a DoubleInjection is registered for the subject and method_name" do
           it "returns the existing DoubleInjection" do
-            injection = Injections::MethodMissingInjection.find_or_create(subject)
+            injection = Injections::MethodMissingInjection.find_or_create(class << subject; self; end)
             injection.subject_has_original_method?.should be_true
 
-            Injections::MethodMissingInjection.find_or_create(subject).should === injection
+            Injections::MethodMissingInjection.find_or_create(class << subject; self; end).should === injection
 
             injection.reset
             subject.method_missing(:foobar).should == :original_method_missing
@@ -242,12 +242,12 @@ module RR
         subject_1.respond_to?(:method_missing).should be_false
         subject_2.respond_to?(:method_missing).should be_false
 
-        Injections::MethodMissingInjection.find_or_create(subject_1)
-        Injections::MethodMissingInjection.exists?(subject_1).should be_true
+        Injections::MethodMissingInjection.find_or_create(class << subject_1; self; end)
+        Injections::MethodMissingInjection.exists?(class << subject_1; self; end).should be_true
         subject_1.respond_to?(:method_missing).should be_true
 
-        Injections::MethodMissingInjection.find_or_create(subject_2)
-        Injections::MethodMissingInjection.exists?(subject_2).should be_true
+        Injections::MethodMissingInjection.find_or_create(class << subject_2; self; end)
+        Injections::MethodMissingInjection.exists?(class << subject_2; self; end).should be_true
         subject_2.respond_to?(:method_missing).should be_true
 
         space.reset
