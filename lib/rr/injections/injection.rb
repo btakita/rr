@@ -10,9 +10,7 @@ module RR
       include Space::Reader
 
       def subject_has_method_defined?(method_name_in_question)
-        subject_class.instance_methods.detect {|method_name| method_name.to_sym == method_name_in_question.to_sym} ||
-          subject_class.protected_instance_methods.detect {|method_name| method_name.to_sym == method_name_in_question.to_sym} ||
-          subject_class.private_instance_methods.detect {|method_name| method_name.to_sym == method_name_in_question.to_sym}
+        ClassInstanceMethodDefined.call(subject_class, method_name_in_question)
       end
 
       def subject_has_original_method?

@@ -5,16 +5,35 @@ module RR
     # has Argument Expectations and Times called Expectations.
     class DoubleInjection < Injection
       class << self
-        # TODO: Pass in subject_class
-        def find_or_create(subject, method_name)
-          instances[subject][method_name.to_sym] ||= begin
-            new(class << subject; self; end, method_name.to_sym).bind(subject)
+        def find_or_create(subject_class, method_name)
+          instances[subject_class][method_name.to_sym] ||= begin
+            new(subject_class, method_name.to_sym).bind
           end
         end
 
+        def find_or_create_by_subject(subject, method_name)
+          find_or_create(class << subject; self; end, method_name)
+        end
+
+        def find(subject_class, method_name)
+          instances[subject_class] && instances[subject_class][method_name.to_sym]
+        end
+
+        def find_by_subject(subject, method_name)
+          find(class << subject; self; end, method_name)
+        end
+
+        def exists?(subject_class, method_name)
+          !!find(subject_class, method_name)
+        end
+
+        def exists_by_subject?(subject, method_name)
+          exists?(class << subject; self; end, method_name)
+        end
+
         def dispatch_method(subject, method_name, arguments, block)
-          if exists?(subject, method_name)
-            instances[subject][method_name.to_sym].dispatch_method(subject, arguments, block)
+          if exists_by_subject?(subject, method_name)
+            find_by_subject(subject, method_name.to_sym).dispatch_method(subject, arguments, block)
           else
             injection = new(class << subject; self; end, method_name.to_sym)
             injection.bypass_bound_method do
@@ -23,41 +42,41 @@ module RR
           end
         end
 
-        def exists?(subject, method_name)
-          instances.include?(subject) && instances[subject].include?(method_name.to_sym)
-        end
-
         def reset
-          instances.each do |subject, method_double_map|
+          instances.each do |subject_class, method_double_map|
+            SingletonMethodAddedInjection.find(subject_class) && SingletonMethodAddedInjection.find(subject_class).reset
             method_double_map.keys.each do |method_name|
-              reset_double(subject, method_name)
+              reset_double(subject_class, method_name)
             end
+            Injections::DoubleInjection.instances.delete(subject_class) if Injections::DoubleInjection.instances[subject_class].empty?
           end
         end
 
         def verify(*subjects)
-          subjects = Injections::DoubleInjection.instances.keys if subjects.empty?
-          subjects.each do |subject|
-            instances.include?(subject) &&
-              instances[subject].keys.each do |method_name|
-                verify_double(subject, method_name)
+          subject_classes = subjects.empty? ?
+            Injections::DoubleInjection.instances.keys :
+            subjects.map {|subject| class << subject; self; end}
+          subject_classes.each do |subject_class|
+            instances.include?(subject_class) &&
+              instances[subject_class].keys.each do |method_name|
+                verify_double(subject_class, method_name)
               end &&
-              instances.delete(subject)
+              instances.delete(subject_class)
           end
         end
 
         # Verifies the DoubleInjection for the passed in subject and method_name.
-        def verify_double(subject, method_name)
-          Injections::DoubleInjection.instances[subject][method_name].verify
+        def verify_double(subject_class, method_name)
+          Injections::DoubleInjection.find(subject_class, method_name).verify
         ensure
-          reset_double subject, method_name
+          reset_double subject_class, method_name
         end
 
         # Resets the DoubleInjection for the passed in subject and method_name.
-        def reset_double(subject, method_name)
-          double_injection = Injections::DoubleInjection.instances[subject].delete(method_name)
-          Injections::DoubleInjection.instances.delete(subject) if Injections::DoubleInjection.instances[subject].empty?
+        def reset_double(subject_class, method_name)
+          double_injection = Injections::DoubleInjection.instances[subject_class].delete(method_name)
           double_injection.reset
+          Injections::DoubleInjection.instances.delete(subject_class) if Injections::DoubleInjection.instances[subject_class].empty?
         end
 
         def instances
@@ -87,22 +106,37 @@ module RR
       # RR::DoubleInjection#bind injects a method that acts as a dispatcher
       # that dispatches to the matching Double when the method
       # is called.
-      def bind(subject)
-        # subject needed
-        if subject_respond_to_method?(subject, method_name)
-          if subject_has_method_defined?(method_name)
-            if subject_is_proxy_for_method?(method_name)
-              bind_method(subject)
-            else
-              bind_method_with_alias(subject)
-            end
-          else
-            Injections::MethodMissingInjection.find_or_create(subject)
-            Injections::SingletonMethodAddedInjection.find_or_create(subject)
-          end
+      def bind
+        if subject_has_method_defined?(method_name)
+          bind_method_with_alias
         else
-          bind_method(subject)
+          Injections::MethodMissingInjection.find_or_create(subject_class)
+          Injections::SingletonMethodAddedInjection.find_or_create(subject_class)
+          bind_method_that_self_destructs_and_delegates_to_method_missing
         end
+        self
+      end
+
+      def bind_method_that_self_destructs_and_delegates_to_method_missing
+        subject_class_object_id = subject_class.object_id
+        subject_class.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
+        def #{method_name}(*args, &block)
+          ObjectSpace._id2ref(#{subject_class_object_id}).class_eval do
+            remove_method(:#{method_name})
+          end
+          method_missing(:#{method_name}, *args, &block)
+        end
+        METHOD
+        self
+      end
+
+      def bind_method
+        subject_class.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
+        def #{method_name}(*args, &block)
+          arguments = MethodArguments.new(args, block)
+          RR::Injections::DoubleInjection.dispatch_method(self, :#{method_name}, arguments.arguments, arguments.block)
+        end
+        METHOD
         self
       end
 
@@ -140,15 +174,11 @@ module RR
       end
 
       def subject_has_original_method_missing?
-        ClassInstanceMethodDefined.call(subject_class, original_method_missing_alias_name)
+        ClassInstanceMethodDefined.call(subject_class, MethodDispatches::MethodMissingDispatch.original_method_missing_alias_name)
       end
 
       def original_method_alias_name
         "__rr__original_#{@method_name}"
-      end
-
-      def original_method_missing_alias_name
-        MethodDispatches::MethodMissingDispatch.original_method_missing_alias_name
       end
 
       def bypass_bound_method
@@ -159,32 +189,16 @@ module RR
       end
 
       protected
-      def subject_is_proxy_for_method?(method_name_in_question)
-        !subject_class.
-          instance_methods.
-          detect {|method_name| method_name.to_sym == method_name_in_question.to_sym}
-      end
-
-      def deferred_bind_method(subject)
+      def deferred_bind_method
         unless subject_has_method_defined?(original_method_alias_name)
-          bind_method_with_alias(subject)
+          bind_method_with_alias
         end
         @performed_deferred_bind = true
       end
 
-      def bind_method_with_alias(subject)
+      def bind_method_with_alias
         subject_class.__send__(:alias_method, original_method_alias_name, method_name)
-        bind_method(subject)
-      end
-
-      def bind_method(subject)
-        subject_class.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
-        def #{@method_name}(*args, &block)
-          arguments = MethodArguments.new(args, block)
-
-          RR::Injections::DoubleInjection.dispatch_method(self, :#{method_name}, arguments.arguments, arguments.block)
-        end
-        METHOD
+        bind_method
       end
     end
   end

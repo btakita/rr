@@ -33,7 +33,7 @@ module RR
           end
           
           def add_double_to_instance(subject_instance, *args)
-            double_injection = Injections::DoubleInjection.find_or_create(subject_instance, method_name)
+            double_injection = Injections::DoubleInjection.find_or_create_by_subject(subject_instance, method_name)
             Double.new(double_injection, definition)
             #####
             if args.last.is_a?(ProcFromBlock)

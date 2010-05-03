@@ -2,10 +2,14 @@ module RR
   module Injections
     class SingletonMethodAddedInjection < Injection
       class << self
-        def find_or_create(subject)
-          instances[subject] ||= begin
-            new(class << subject; self; end).bind(subject)
+        def find_or_create(subject_class)
+          instances[subject_class] ||= begin
+            new(subject_class).bind
           end
+        end
+
+        def find(subject)
+          instances[subject]
         end
 
         def exists?(subject)
@@ -19,9 +23,9 @@ module RR
         @placeholder_method_defined = false
       end
 
-      def bind(subject)
-        unless ClassInstanceMethodDefined.call(subject_class, original_method_alias_name)
-          unless ClassInstanceMethodDefined.call(subject_class, :singleton_method_added)
+      def bind
+        unless ClassInstanceMethodDefined.call(subject_class, original_method_alias_name, false)
+          unless ClassInstanceMethodDefined.call(subject_class, :singleton_method_added, false)
             @placeholder_method_defined = true
             subject_class.class_eval do
               def singleton_method_added(method_name)
@@ -32,11 +36,13 @@ module RR
 
           memoized_original_method_alias_name = original_method_alias_name
           subject_class.__send__(:alias_method, original_method_alias_name, :singleton_method_added)
+          memoized_subject_class = subject_class
+          memoized_original_method_alias_name = original_method_alias_name
           subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
-            if Injections::DoubleInjection.exists?(subject, method_name_arg)
-              Injections::DoubleInjection.find_or_create(subject, method_name_arg).send(:deferred_bind_method, subject)
+            if Injections::DoubleInjection.exists?(memoized_subject_class, method_name_arg)
+              Injections::DoubleInjection.find_or_create(memoized_subject_class, method_name_arg).send(:deferred_bind_method)
             end
-            send(memoized_original_method_alias_name, method_name_arg)
+            __send__(memoized_original_method_alias_name, method_name_arg)
           end
         end
         self
