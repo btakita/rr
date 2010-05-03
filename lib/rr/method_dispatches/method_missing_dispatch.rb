@@ -18,7 +18,6 @@ module RR
           @double = find_double_to_attempt
 
           if double
-            double.method_call(args)
             call_yields
             return_value = extract_subject_from_return_value(call_implementation)
             if after_call_proc
@@ -43,17 +42,21 @@ module RR
       protected
       def call_implementation
         if implementation_is_original_method?
+          double.method_call(args)
           call_original_method
         else
-          nil
+          if double_injection = Injections::DoubleInjection.find(subject, method_name)
+            double_injection.bind_method
+            subject.__send__(method_name, *args, &block)
+          else
+            nil
+          end
         end
       end
 
       def double_injection
         Injections::DoubleInjection.find_or_create(subject, method_name)
       end
-
-      def_delegators 'self.class', :original_method_missing_alias_name
     end
   end
 end

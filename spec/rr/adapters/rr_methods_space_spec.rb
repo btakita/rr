@@ -68,6 +68,7 @@ module RR
           ::RR::Injections::DoubleInjection.instances.should_not be_empty
 
           rr_reset
+          ::RR::Injections::DoubleInjection.instances
           ::RR::Injections::DoubleInjection.instances.should be_empty
         end
 
