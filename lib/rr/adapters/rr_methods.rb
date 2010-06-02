@@ -5,15 +5,13 @@ module RR
         def register_strategy_class(strategy_class, method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
           def #{method_name}(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
-            double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
-            double_definition_create.#{method_name}(subject, method_name, &definition_eval_block)
+            RR::DoubleDefinitions::Scopes::Instance.call(:#{method_name}, subject, method_name, &definition_eval_block)
           end
           CLASS
 
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
           def #{method_name}!(method_name=nil, &definition_eval_block)
-            double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
-            double_definition_create.#{method_name}!(method_name, &definition_eval_block)
+            RR::DoubleDefinitions::Scopes::Instance.call(:#{method_name}!, method_name, &definition_eval_block)
           end
           CLASS
         end
