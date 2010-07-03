@@ -14,7 +14,7 @@ module RR
         #
         # When passed the subject, a DoubleDefinitionCreateBlankSlate is returned. Passing
         # a method with arguments to the proxy will set up expectations that
-        # the a call to the subject's method with the arguments will happen,
+        # a call to the subject's method with the arguments will happen,
         # and return the prescribed value.
         #   mock(subject).method_name_1 {return_value_1}
         #   mock(subject).method_name_2(arg1, arg2) {return_value_2}
@@ -29,7 +29,7 @@ module RR
         #   mock(subject) do
         #     method_name_1 {return_value_1}
         #     method_name_2(arg_1, arg_2) {return_value_2}
-        #   end        
+        #   end
         class Mock < VerificationStrategy
           register "mock"
 
