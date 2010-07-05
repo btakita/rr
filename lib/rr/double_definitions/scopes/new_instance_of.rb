@@ -25,11 +25,12 @@ module RR
           end
 
           def add_method_chain_definition(subject_instance, double_definition_create)
-            if double_definition_create.implementation_strategy.method_name
+            implementation_strategy = double_definition_create.implementation_strategy
+            if implementation_strategy.method_name
               stub(subject_instance).method_missing(
-                double_definition_create.implementation_strategy.method_name,
-                *double_definition_create.implementation_strategy.args,
-                &double_definition_create.implementation_strategy.handler
+                implementation_strategy.method_name,
+                *implementation_strategy.args,
+                &implementation_strategy.handler
               )
             end
           end
