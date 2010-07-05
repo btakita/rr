@@ -60,7 +60,6 @@ module RR
       end
 
       def call(method_name, *args, &handler)
-        raise DoubleDefinitionCreateError if no_subject?
         definition = DoubleDefinition.new(self)
         verification_strategy || no_strategy_error
         if subject.is_a?(PrototypeSubject)
