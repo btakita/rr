@@ -48,7 +48,7 @@ module RR
             method_double_map.keys.each do |method_name|
               reset_double(subject_class, method_name)
             end
-            Injections::DoubleInjection.instances.delete(subject_class) if Injections::DoubleInjection.instances[subject_class].empty?
+            Injections::DoubleInjection.instances.delete(subject_class) if Injections::DoubleInjection.instances.has_key?(subject_class)
           end
         end
 
