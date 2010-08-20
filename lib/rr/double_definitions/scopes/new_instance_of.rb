@@ -2,7 +2,7 @@ module RR
   module DoubleDefinitions
     module Scopes
       class NewInstanceOf
-        class << self
+        extend(Module.new do
           include RR::Adapters::RRMethods
           def call(subject_class, stubbed_methods={})
             double_definition_create = DoubleDefinitionCreate.new.stub
@@ -43,7 +43,7 @@ module RR
             end
             subject_instance
           end
-        end
+        end)
       end
     end
   end

@@ -2,7 +2,7 @@ module RR
   module DoubleDefinitions
     module Scopes
       class AnyInstanceOf
-        class << self
+        extend(Module.new do
           include RR::Adapters::RRMethods
 
           def call(subject_class, stubbed_methods=nil, &block)
@@ -48,7 +48,7 @@ module RR
               subject_class_original_methods.delete(subject_class)
             end
           end
-        end
+        end)
       end
     end
   end
