@@ -82,7 +82,7 @@ module RR
 
     def blank_slate_whitelist
       @blank_slate_whitelist ||= [
-        "object_id", "respond_to?", "method_missing", "instance_eval", "instance_exec", "class_eval"
+        "object_id", "respond_to?", "respond_to_missing?", "method_missing", "instance_eval", "instance_exec", "class_eval"
       ]
     end
 

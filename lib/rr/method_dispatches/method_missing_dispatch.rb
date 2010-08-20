@@ -1,11 +1,11 @@
 module RR
   module MethodDispatches
     class MethodMissingDispatch < BaseMethodDispatch
-      class << self
+      extend(Module.new do
         def original_method_missing_alias_name
           "__rr__original_method_missing"
         end
-      end
+      end)
 
       attr_reader :subject, :method_name
       def initialize(subject, method_name, args, block)

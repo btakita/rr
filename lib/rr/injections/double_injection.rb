@@ -4,7 +4,7 @@ module RR
     # A double_injection has 0 to many Double objects. Each Double
     # has Argument Expectations and Times called Expectations.
     class DoubleInjection < Injection
-      class << self
+      extend(Module.new do
         def find_or_create(subject_class, method_name)
           instances[subject_class][method_name.to_sym] ||= begin
             new(subject_class, method_name.to_sym).bind
@@ -48,7 +48,7 @@ module RR
             method_double_map.keys.each do |method_name|
               reset_double(subject_class, method_name)
             end
-            Injections::DoubleInjection.instances.delete(subject_class) if Injections::DoubleInjection.instances[subject_class].empty?
+            Injections::DoubleInjection.instances.delete(subject_class) if Injections::DoubleInjection.instances.has_key?(subject_class)
           end
         end
 
@@ -84,7 +84,7 @@ module RR
             hash.set_with_object_id(subject_object, {})
           end
         end
-      end
+      end)
 
       attr_reader :subject_class, :method_name, :doubles
 

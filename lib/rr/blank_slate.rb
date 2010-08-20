@@ -1,6 +1,6 @@
 module RR
   module BlankSlate
-    class << self
+    extend(Module.new do
       def call(klass)
         klass.instance_eval do
           instance_methods.each do |unformatted_method_name|
@@ -12,6 +12,6 @@ module RR
           end
         end
       end
-    end
+    end)
   end
 end

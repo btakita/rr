@@ -13,6 +13,10 @@ module RR
       super(key.__id__)
     end
 
+    def has_key?(key)
+      super(key.__id__)
+    end
+
     alias_method :set_with_object_id, :[]=
 
     def []=(key, value)

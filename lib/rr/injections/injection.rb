@@ -1,11 +1,11 @@
 module RR
   module Injections
     class Injection
-      class << self
+      extend(Module.new do
         def instances
           @instances ||= HashWithObjectIdKey.new
         end
-      end
+      end)
 
       include Space::Reader
 

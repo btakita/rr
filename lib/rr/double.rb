@@ -3,7 +3,7 @@ module RR
   # It has the ArgumentEqualityExpectation, TimesCalledExpectation,
   # and the implementation.
   class Double
-    class << self
+    extend(Module.new do
       def formatted_name(method_name, args)
         formatted_errors = args.collect {|arg| arg.inspect}.join(', ')
         "#{method_name}(#{formatted_errors})"
@@ -14,7 +14,7 @@ module RR
           "- #{formatted_name(double.method_name, double.expected_arguments)}"
         end.join("\n")
       end
-    end
+    end)
 
     attr_reader :times_called, :double_injection, :definition, :times_called_expectation
     include Space::Reader

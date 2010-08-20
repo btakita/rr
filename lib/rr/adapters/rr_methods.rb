@@ -1,7 +1,7 @@
 module RR
   module Adapters
     module RRMethods
-      class << self
+      extend(Module.new do
         def register_strategy_class(strategy_class, method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
           def #{method_name}(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
@@ -15,7 +15,7 @@ module RR
           end
           CLASS
         end
-      end
+      end)
 
       # Verifies all the DoubleInjection objects have met their
       # TimesCalledExpectations.

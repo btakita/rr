@@ -1,7 +1,7 @@
 module RR
   module Injections
     class SingletonMethodAddedInjection < Injection
-      class << self
+      extend(Module.new do
         def find_or_create(subject_class)
           instances[subject_class] ||= begin
             new(subject_class).bind
@@ -15,7 +15,7 @@ module RR
         def exists?(subject)
           instances.include?(subject)
         end
-      end
+      end)
 
       attr_reader :subject_class
       def initialize(subject_class)

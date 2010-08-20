@@ -2,7 +2,7 @@ module RR
   module DoubleDefinitions
     module Strategies
       class Strategy
-        class << self
+        extend(Module.new do
           attr_reader :strategy_method_name
           def register(strategy_method_name, *alias_method_names)
             @strategy_method_name = strategy_method_name
@@ -23,7 +23,7 @@ module RR
 
           def register_self_at_double_definition_create(strategy_method_name)
           end
-        end
+        end)
 
         attr_reader :double_definition_create, :definition, :method_name, :args, :handler
         include Space::Reader
