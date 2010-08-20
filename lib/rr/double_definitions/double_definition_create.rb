@@ -1,7 +1,7 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinitionCreate # :nodoc
-      class << self
+      extend(Module.new do
         def register_verification_strategy_class(strategy_class, strategy_method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
           def #{strategy_method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
@@ -43,7 +43,7 @@ module RR
           end
           CLASS
         end
-      end
+      end)
 
       attr_reader :subject, 
                   :verification_strategy,

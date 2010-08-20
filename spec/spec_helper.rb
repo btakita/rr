@@ -23,13 +23,13 @@ describe "Swapped Space", :shared => true do
 end
 
 class Spec::ExampleGroup
-  class << self
+  extend(Module.new do
     def macro(name, &implementation)
       (class << self; self; end).class_eval do
         define_method(name, &implementation)
       end
     end
-  end
+  end)
 
   def eigen(object)
     class << object; self; end

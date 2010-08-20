@@ -1,7 +1,7 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinition #:nodoc:
-      class << self
+      extend(Module.new do
         def register_strategy_class(strategy_class, method_name)
           class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
           def #{method_name}(subject=DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
@@ -15,7 +15,7 @@ module RR
           end
           CLASS
         end
-      end
+      end)
 
       ORIGINAL_METHOD = Object.new
       attr_accessor(
