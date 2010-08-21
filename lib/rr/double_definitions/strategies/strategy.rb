@@ -6,7 +6,6 @@ module RR
           attr_reader :strategy_method_name
           def register(strategy_method_name, *alias_method_names)
             @strategy_method_name = strategy_method_name
-            register_self_at_double_definition_create(strategy_method_name)
             DoubleDefinitionCreate.class_eval do
               alias_method_names.each do |alias_method_name|
                 alias_method alias_method_name, strategy_method_name
@@ -19,9 +18,6 @@ module RR
                 alias_method alias_method_name, strategy_method_name
               end
             end
-          end
-
-          def register_self_at_double_definition_create(strategy_method_name)
           end
         end)
 
