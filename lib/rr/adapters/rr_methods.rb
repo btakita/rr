@@ -1,23 +1,81 @@
 module RR
   module Adapters
     module RRMethods
-      extend(Module.new do
-        def register_strategy_class(strategy_class, method_name)
-          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
-            double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
-            double_definition_create.#{method_name}(subject, method_name, &definition_eval_block)
-          end
-          CLASS
+      def mock(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.mock(subject, method_name, &definition_eval_block)
+      end
 
-          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}!(method_name=nil, &definition_eval_block)
-            double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
-            double_definition_create.#{method_name}!(method_name, &definition_eval_block)
-          end
-          CLASS
-        end
-      end)
+      def mock!(method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.mock!(method_name, &definition_eval_block)
+      end
+
+      def stub(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.stub(subject, method_name, &definition_eval_block)
+      end
+
+      def stub!(method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.stub!(method_name, &definition_eval_block)
+      end
+
+      def dont_allow(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.dont_allow(subject, method_name, &definition_eval_block)
+      end
+
+      def dont_allow!(method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.dont_allow!(method_name, &definition_eval_block)
+      end
+
+      def proxy(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.proxy(subject, method_name, &definition_eval_block)
+      end
+      alias_method :probe, :proxy
+
+      def proxy!(method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.proxy!(method_name, &definition_eval_block)
+      end
+      alias_method :probe!, :proxy!
+
+      def strong(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.strong(subject, method_name, &definition_eval_block)
+      end
+
+      def strong!(method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.strong!(method_name, &definition_eval_block)
+      end
+
+      def any_instance_of(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.any_instance_of(subject, method_name, &definition_eval_block)
+      end
+      alias_method :all_instances_of, :any_instance_of
+
+      def any_instance_of!(method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.any_instance_of!(method_name, &definition_eval_block)
+      end
+      alias_method :all_instances_of!, :any_instance_of!
+
+      def instance_of(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.instance_of(subject, method_name, &definition_eval_block)
+      end
+      alias_method :new_instance_of, :instance_of
+
+      def instance_of!(method_name=nil, &definition_eval_block)
+        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
+        double_definition_create.instance_of!(method_name, &definition_eval_block)
+      end
+      alias_method :new_instance_of!, :instance_of!
 
       # Verifies all the DoubleInjection objects have met their
       # TimesCalledExpectations.

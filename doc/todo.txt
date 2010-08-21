@@ -1,2 +1,2 @@
-Remove DoubleDefinitionCreate.register_ and ChildDoubleDefinitionCreate.register_ methods
+Inline DoubleDefinitions.register_strategy_class
 Remove all strategy classes and define a module with mock/stub/etc methods.
