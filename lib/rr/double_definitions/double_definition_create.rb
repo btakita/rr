@@ -18,7 +18,6 @@ module RR
       def call(method_name, *args, &handler)
         raise DoubleDefinitionCreateError if no_subject?
         definition = DoubleDefinition.new(self)
-        verification_strategy || no_strategy_error
         verification_strategy.call(definition, method_name, args, handler)
         implementation_strategy.call(definition, method_name, args, handler)
         scope_strategy.call(definition, method_name, args, handler)
@@ -75,51 +74,16 @@ module RR
         end
 
         def verification_strategy=(verification_strategy)
-          verify_no_verification_strategy
-          verify_not_proxy_and_dont_allow(verification_strategy, implementation_strategy)
           @verification_strategy = verification_strategy
           verification_strategy
         end
 
         def implementation_strategy=(implementation_strategy)
-          verify_not_proxy_and_dont_allow(verification_strategy, implementation_strategy)
           @implementation_strategy = implementation_strategy
         end
 
         def scope_strategy=(scope_strategy)
-          verify_not_proxy_and_dont_allow(verification_strategy, implementation_strategy)
           @scope_strategy = scope_strategy
-        end
-
-        def verify_no_verification_strategy
-          strategy_already_defined_error if verification_strategy
-        end
-
-        def strategy_already_defined_error
-          raise(
-            Errors::DoubleDefinitionError,
-            "This Double already has a #{verification_strategy.name} strategy"
-          )
-        end
-
-        def verify_not_proxy_and_dont_allow(verification_strategy, implementation_strategy)
-          proxy_when_dont_allow_error if
-            verification_strategy.is_a?(Strategies::Verification::DontAllow) &&
-            implementation_strategy.is_a?(Strategies::Implementation::Proxy)
-        end
-
-        def proxy_when_dont_allow_error
-          raise(
-            Errors::DoubleDefinitionError,
-            "Doubles cannot be proxied when using dont_allow strategy"
-          )
-        end
-
-        def no_strategy_error
-          raise(
-            Errors::DoubleDefinitionError,
-            "This Double has no strategy"
-          )
         end
       end
       include StrategySetupMethods

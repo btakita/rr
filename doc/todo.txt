@@ -1,1 +1,3 @@
+Removed Strategy#name
+Removed Strategy.register
 Remove all strategy classes and define a module with mock/stub/etc methods.

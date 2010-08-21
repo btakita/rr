@@ -43,15 +43,6 @@ module RR
                 subject.foobar.should == :baz
               end
             end
-
-            context "when already using an ImplementationStrategy" do
-              it "raises a DoubleDefinitionError" do
-                double_definition_create.mock
-                lambda do
-                  call_strategy
-                end.should raise_error(RR::Errors::DoubleDefinitionError, "This Double already has a mock strategy")
-              end
-            end
           end
 
           describe "#stub" do
@@ -73,15 +64,6 @@ module RR
                 subject.foobar.should == :baz
               end
             end
-
-            context "when already using an ImplementationStrategy" do
-              it "raises a DoubleDefinitionError" do
-                double_definition_create.mock
-                lambda do
-                  call_strategy
-                end.should raise_error(RR::Errors::DoubleDefinitionError, "This Double already has a mock strategy")
-              end
-            end
           end
 
           describe "#dont_allow" do
@@ -95,13 +77,6 @@ module RR
               end
             end
 
-            it "raises error when proxied" do
-              double_definition_create.proxy
-              lambda do
-                double_definition_create.dont_allow
-              end.should raise_error(RR::Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
-            end
-
             context "when passed a subject and a method_name argument_expectation" do
               it "creates a mock Double for method" do
                 double_definition = double_definition_create.dont_allow(subject, :foobar)
@@ -112,15 +87,6 @@ module RR
                   subject.foobar
                 end.should raise_error(RR::Errors::TimesCalledError)
                 RR.reset
-              end
-            end
-
-            context "when already using an ImplementationStrategy" do
-              it "raises a DoubleDefinitionError" do
-                double_definition_create.mock
-                lambda do
-                  call_strategy
-                end.should raise_error(RR::Errors::DoubleDefinitionError, "This Double already has a mock strategy")
               end
             end
           end
@@ -182,15 +148,6 @@ module RR
             end
           end
 
-          context "when already using Strategies::Verification::DontAllow" do
-            it "raises error" do
-              double_definition_create.dont_allow
-              lambda do
-                double_definition_create.proxy
-              end.should raise_error(RR::Errors::DoubleDefinitionError, "Doubles cannot be proxied when using dont_allow strategy")
-            end
-          end
-
           context "when passed a method_name argument" do
             it "creates a proxy Double for method" do
               double_definition = double_definition_create.stub.proxy(subject, :foobar).after_call {:baz}
@@ -248,14 +205,6 @@ module RR
 
       describe "StrategyExecutionMethods" do
         describe "#create" do
-          context "when #verification_strategy is not set" do
-            it "raises a DoubleDefinitionError" do
-              lambda do
-                double_definition_create.call(:foobar, 1, 2)
-              end.should raise_error(RR::Errors::DoubleDefinitionError, "This Double has no strategy")
-            end
-          end
-
           context "when #verification_strategy is a Mock" do
             context "when #implementation_strategy is a Reimplementation" do
               before do

@@ -26,10 +26,6 @@ module RR
           do_call
         end
 
-        def name
-          self.class.strategy_method_name
-        end
-
         def verify_subject(subject)
         end  
 
