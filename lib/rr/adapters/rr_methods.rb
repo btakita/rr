@@ -25,11 +25,13 @@ module RR
         double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
         double_definition_create.dont_allow(subject, method_name, &definition_eval_block)
       end
+      alias_method :do_not_allow, :dont_allow
 
       def dont_allow!(method_name=nil, &definition_eval_block)
         double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
         double_definition_create.dont_allow!(method_name, &definition_eval_block)
       end
+      alias_method :do_not_allow!, :dont_allow!
 
       def proxy(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
         double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new

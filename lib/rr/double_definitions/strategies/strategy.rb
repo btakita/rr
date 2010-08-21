@@ -11,7 +11,6 @@ module RR
                 alias_method alias_method_name, strategy_method_name
               end
             end
-            DoubleDefinition.register_strategy_class(self, strategy_method_name)
           end
         end)
 
