@@ -5,9 +5,9 @@ module RR
     # has Argument Expectations and Times called Expectations.
     class DoubleInjection < Injection
       extend(Module.new do
-        def find_or_create(subject, method_name)
+        def find_or_create(subject, method_name, subject_class = (class << subject; self; end))
           instances[subject][method_name.to_sym] ||= begin
-            new(subject, method_name.to_sym).bind
+            new(subject, method_name.to_sym, subject_class).bind
           end
         end
 
@@ -75,9 +75,9 @@ module RR
 
       MethodArguments = Struct.new(:arguments, :block)
 
-      def initialize(subject, method_name)
+      def initialize(subject, method_name, subject_class=(class << subject; self; end))
         @subject = subject
-        @subject_class = (class << subject; self; end)
+        @subject_class = subject_class
         @method_name = method_name.to_sym
         @doubles = []
         @dispatch_method_delegates_to_dispatch_original_method = nil
