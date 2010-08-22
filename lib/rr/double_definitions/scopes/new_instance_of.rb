@@ -4,14 +4,14 @@ module RR
       class NewInstanceOf
         extend(Module.new do
           include RR::Adapters::RRMethods
-          def call(subject_class, stubbed_methods={})
+          def call(subject, stubbed_methods={})
             double_definition_create = DoubleDefinitionCreate.new.stub
-            stub(subject_class).new do |*args|
-              subject_instance = subject_class.allocate
-              add_stubbed_methods(subject_instance, stubbed_methods)
-              add_method_chain_definition(subject_instance, double_definition_create)
-              yield(subject_instance) if block_given?
-              initialize_subject_instance(subject_instance, args)
+            stub(subject).new do |*args| # TODO: Need to stub allocate instead of new
+              subject = subject.allocate
+              add_stubbed_methods(subject, stubbed_methods)
+              add_method_chain_definition(subject, double_definition_create)
+              yield(subject) if block_given?
+              initialize_subject_instance(subject, args)
             end
             DoubleDefinitionCreateBlankSlate.new(double_definition_create)
           end

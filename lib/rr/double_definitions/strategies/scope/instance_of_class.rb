@@ -25,8 +25,8 @@ module RR
 
           protected
           def do_call
-            DoubleDefinitions::Scopes::NewInstanceOf.call(subject) do |subject_instance|
-              add_double_to_instance(subject_instance, *args)
+            DoubleDefinitions::Scopes::NewInstanceOf.call(subject) do |subject|
+              add_double_to_instance(subject, *args)
             end
           end
           
@@ -35,11 +35,11 @@ module RR
             Double.new(double_injection, definition)
             #####
             if args.last.is_a?(ProcFromBlock)
-              subject_instance.__send__(:initialize, *args[0..(args.length-2)], &args.last)
+              subject.__send__(:initialize, *args[0..(args.length-2)], &args.last)
             else
-              subject_instance.__send__(:initialize, *args)
+              subject.__send__(:initialize, *args)
             end
-            subject_instance
+            subject
           end
         end
       end

@@ -98,71 +98,36 @@ module RR
       end
 
       # Verification Strategies
+      include ::RR::DoubleDefinitions::Strategies::StrategyMethods
       def mock(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
         self.add_verification_strategy(::RR::DoubleDefinitions::Strategies::Verification::Mock, subject, method_name, &definition_eval_block)
-      end
-
-      def mock!(method_name=nil, &definition_eval_block)
-        mock(Object.new, method_name, &definition_eval_block)
       end
 
       def stub(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
         self.add_verification_strategy(::RR::DoubleDefinitions::Strategies::Verification::Stub, subject, method_name, &definition_eval_block)
       end
 
-      def stub!(method_name=nil, &definition_eval_block)
-        stub(Object.new, method_name, &definition_eval_block)
-      end
-
       def dont_allow(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
         self.add_verification_strategy(::RR::DoubleDefinitions::Strategies::Verification::DontAllow, subject, method_name, &definition_eval_block)
       end
-      alias_method :do_not_allow, :dont_allow
-
-      def dont_allow!(method_name=nil, &definition_eval_block)
-        dont_allow(Object.new, method_name, &definition_eval_block)
-      end
-      alias_method :do_not_allow!, :dont_allow!
 
       # Implementation Strategies
       def proxy(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
         self.add_implementation_strategy(::RR::DoubleDefinitions::Strategies::Implementation::Proxy, subject, method_name, &definition_eval_block)
       end
-      alias_method :probe, :proxy
-
-      def proxy!(method_name=nil, &definition_eval_block)
-        proxy(Object.new, method_name, &definition_eval_block)
-      end
-      alias_method :probe!, :proxy!
 
       def strong(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
         self.add_implementation_strategy(::RR::DoubleDefinitions::Strategies::Implementation::StronglyTypedReimplementation, subject, method_name, &definition_eval_block)
-      end
-
-      def strong!(method_name=nil, &definition_eval_block)
-        strong(Object.new, method_name, &definition_eval_block)
       end
 
       # Scope Strategies
       def any_instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
         self.add_scope_strategy(::RR::DoubleDefinitions::Strategies::Scope::AnyInstanceOfClass, subject, method_name, &definition_eval_block)
       end
-      alias_method :all_instances_of, :any_instance_of
-
-      def any_instance_of!(method_name=nil, &definition_eval_block)
-        any_instance_of(Object.new, method_name, &definition_eval_block)
-      end
-      alias_method :all_instances_of!, :any_instance_of!
 
       def instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
         self.add_scope_strategy(::RR::DoubleDefinitions::Strategies::Scope::InstanceOfClass, subject, method_name, &definition_eval_block)
       end
-      alias_method :new_instance_of, :instance_of
-
-      def instance_of!(method_name=nil, &definition_eval_block)
-        instance_of(Object.new, method_name, &definition_eval_block)
-      end
-      alias_method :new_instance_of!, :instance_of!
     end
   end
 end
