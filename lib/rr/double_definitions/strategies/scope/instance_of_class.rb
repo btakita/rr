@@ -35,11 +35,11 @@ module RR
             Double.new(double_injection, definition)
             #####
             if args.last.is_a?(ProcFromBlock)
-              subject.__send__(:initialize, *args[0..(args.length-2)], &args.last)
+              instance.__send__(:initialize, *args[0..(args.length-2)], &args.last)
             else
-              subject.__send__(:initialize, *args)
+              instance.__send__(:initialize, *args)
             end
-            subject
+            instance
           end
         end
       end
