@@ -1,6 +1,6 @@
 module RR
   module DoubleDefinitions
-    module Scopes
+    module DoubleInjections
       class NewInstanceOf
         extend(Module.new do
           include RR::Adapters::RRMethods

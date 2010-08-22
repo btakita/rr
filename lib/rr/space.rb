@@ -107,7 +107,7 @@ module RR
     end
 
     def reset_any_instance_of_scopes
-      DoubleDefinitions::Scopes::AnyInstanceOf.reset
+      DoubleDefinitions::DoubleInjections::AnyInstanceOf.reset
     end
 
     def reset_recorded_calls

@@ -1,7 +1,7 @@
 module RR
   module DoubleDefinitions
     module Strategies
-      module Scope
+      module DoubleInjection
         # This class is Deprecated.
         # Calling instance_of will cause all instances of the passed in Class
         # to have the Double defined.
@@ -14,7 +14,7 @@ module RR
         #   mock.instance_of(User).projects do |projects|
         #     projects[0..2]
         #   end        
-        class InstanceOfClass < ScopeStrategy
+        class InstanceOfClass < DoubleInjectionStrategy
           def initialize(*args)
             super
 
@@ -25,7 +25,7 @@ module RR
 
           protected
           def do_call
-            DoubleDefinitions::Scopes::NewInstanceOf.call(subject) do |subject|
+            DoubleDefinitions::DoubleInjections::NewInstanceOf.call(subject) do |subject|
               add_double_to_instance(subject, *args)
             end
           end
