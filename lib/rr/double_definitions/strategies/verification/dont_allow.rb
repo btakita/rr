@@ -19,8 +19,6 @@ module RR
         #      m.method3.with_no_args # Do not allow method3 with no arguments
         #    end        
         class DontAllow < VerificationStrategy
-          register("dont_allow", :do_not_allow, :dont_call, :do_not_call)
-
           protected
           def do_call
             definition.never

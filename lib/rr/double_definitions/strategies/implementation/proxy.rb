@@ -48,8 +48,6 @@ module RR
         #     "My new return value"
         #   end        
         class Proxy < ImplementationStrategy
-          register("proxy", :probe)
-
           protected
           def do_call
             definition.implemented_by_original_method

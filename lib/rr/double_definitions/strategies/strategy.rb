@@ -2,18 +2,6 @@ module RR
   module DoubleDefinitions
     module Strategies
       class Strategy
-        extend(Module.new do
-          attr_reader :strategy_method_name
-          def register(strategy_method_name, *alias_method_names)
-            @strategy_method_name = strategy_method_name
-            DoubleDefinitionCreate.class_eval do
-              alias_method_names.each do |alias_method_name|
-                alias_method alias_method_name, strategy_method_name
-              end
-            end
-          end
-        end)
-
         attr_reader :double_definition_create, :definition, :method_name, :args, :handler
         include Space::Reader
 
