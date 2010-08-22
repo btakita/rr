@@ -13,7 +13,7 @@ module RR
       end
 
       def call
-        if Injections::DoubleInjection.exists_by_subject?(subject, method_name)
+        if Injections::DoubleInjection.exists?(subject, method_name)
           @double = find_double_to_attempt
 
           if double
@@ -33,7 +33,7 @@ module RR
       end
 
       def call_original_method
-        Injections::DoubleInjection.find_or_create_by_subject(subject, method_name).bypass_bound_method do
+        Injections::DoubleInjection.find_or_create(subject, method_name).dispatch_method_delegates_to_dispatch_original_method do
           call_original_method_missing
         end
       end
@@ -45,7 +45,7 @@ module RR
           double.method_call(args)
           call_original_method
         else
-          if double_injection = Injections::DoubleInjection.find_by_subject(subject, method_name)
+          if double_injection = Injections::DoubleInjection.find(subject, method_name)
             double_injection.bind_method
             # The DoubleInjection takes care of calling double.method_call
             subject.__send__(method_name, *args, &block)
@@ -56,7 +56,7 @@ module RR
       end
 
       def double_injection
-        Injections::DoubleInjection.find_or_create_by_subject(subject, method_name)
+        Injections::DoubleInjection.find_or_create(subject, method_name)
       end
     end
   end

@@ -15,8 +15,6 @@ module RR
         #     projects[0..2]
         #   end        
         class InstanceOfClass < ScopeStrategy
-          register "instance_of"
-
           def initialize(*args)
             super
 
@@ -32,8 +30,8 @@ module RR
             end
           end
           
-          def add_double_to_instance(subject_instance, *args)
-            double_injection = Injections::DoubleInjection.find_or_create_by_subject(subject_instance, method_name)
+          def add_double_to_instance(instance, *args)
+            double_injection = Injections::DoubleInjection.find_or_create(instance, method_name)
             Double.new(double_injection, definition)
             #####
             if args.last.is_a?(ProcFromBlock)

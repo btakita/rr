@@ -1,0 +1,1 @@
+DoubleInjection binds to the class instead of the eigenclass.

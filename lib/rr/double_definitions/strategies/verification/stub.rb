@@ -31,8 +31,6 @@ module RR
         #     method_name_2(arg_1, arg_2) {return_value_2}
         #   end        
         class Stub < VerificationStrategy
-          register "stub"
-
           protected
           def do_call
             definition.any_number_of_times

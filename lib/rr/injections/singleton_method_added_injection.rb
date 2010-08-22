@@ -2,9 +2,9 @@ module RR
   module Injections
     class SingletonMethodAddedInjection < Injection
       extend(Module.new do
-        def find_or_create(subject_class)
-          instances[subject_class] ||= begin
-            new(subject_class).bind
+        def find_or_create(subject)
+          instances[subject] ||= begin
+            new(subject).bind
           end
         end
 
@@ -17,9 +17,10 @@ module RR
         end
       end)
 
-      attr_reader :subject_class
-      def initialize(subject_class)
-        @subject_class = subject_class
+      attr_reader :subject, :subject_class
+      def initialize(subject)
+        @subject = subject
+        @subject_class = (class << subject; self; end)
         @placeholder_method_defined = false
       end
 
@@ -36,11 +37,11 @@ module RR
 
           memoized_original_method_alias_name = original_method_alias_name
           subject_class.__send__(:alias_method, original_method_alias_name, :singleton_method_added)
-          memoized_subject_class = subject_class
+          memoized_subject = subject
           memoized_original_method_alias_name = original_method_alias_name
           subject_class.__send__(:define_method, :singleton_method_added) do |method_name_arg|
-            if Injections::DoubleInjection.exists?(memoized_subject_class, method_name_arg)
-              Injections::DoubleInjection.find_or_create(memoized_subject_class, method_name_arg).send(:deferred_bind_method)
+            if Injections::DoubleInjection.exists?(memoized_subject, method_name_arg)
+              Injections::DoubleInjection.find_or_create(memoized_subject, method_name_arg).send(:deferred_bind_method)
             end
             __send__(memoized_original_method_alias_name, method_name_arg)
           end

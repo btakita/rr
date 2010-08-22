@@ -1,22 +1,6 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinition #:nodoc:
-      extend(Module.new do
-        def register_strategy_class(strategy_class, method_name)
-          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}(subject=DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
-            ChildDoubleDefinitionCreate.new(self).#{method_name}(subject, method_name, &definition_eval_block)
-          end
-          CLASS
-
-          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{method_name}!(method_name=nil, &definition_eval_block)
-            ChildDoubleDefinitionCreate.new(self).#{method_name}!(method_name, &definition_eval_block)
-          end
-          CLASS
-        end
-      end)
-
       ORIGINAL_METHOD = Object.new
       attr_accessor(
         :argument_expectation,
@@ -349,6 +333,70 @@ module RR
         end
       end
       include StateQueryMethods
+
+      def mock(subject=DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).mock(subject, method_name, &definition_eval_block)
+      end
+
+      def mock!(method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).mock!(method_name, &definition_eval_block)
+      end
+
+      def stub(subject=DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).stub(subject, method_name, &definition_eval_block)
+      end
+
+      def stub!(method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).stub!(method_name, &definition_eval_block)
+      end
+
+      def dont_allow(subject=DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).dont_allow(subject, method_name, &definition_eval_block)
+      end
+      alias_method :do_not_allow, :dont_allow
+
+      def dont_allow!(method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).dont_allow!(method_name, &definition_eval_block)
+      end
+      alias_method :do_not_allow!, :dont_allow!
+
+      def proxy(subject=DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).proxy(subject, method_name, &definition_eval_block)
+      end
+      alias_method :probe, :proxy
+
+      def proxy!(method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).proxy!(method_name, &definition_eval_block)
+      end
+      alias_method :probe!, :proxy!
+
+      def strong(subject=DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).strong(subject, method_name, &definition_eval_block)
+      end
+
+      def strong!(method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).strong!(method_name, &definition_eval_block)
+      end
+
+      def any_instance_of(subject=DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).any_instance_of(subject, method_name, &definition_eval_block)
+      end
+      alias_method :all_instances_of, :any_instance_of
+
+      def any_instance_of!(method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).any_instance_of!(method_name, &definition_eval_block)
+      end
+      alias_method :all_instances_of!, :any_instance_of!
+
+      def instance_of(subject=DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).instance_of(subject, method_name, &definition_eval_block)
+      end
+      alias_method :new_instance_of, :instance_of
+
+      def instance_of!(method_name=nil, &definition_eval_block)
+        ChildDoubleDefinitionCreate.new(self).instance_of!(method_name, &definition_eval_block)
+      end
+      alias_method :new_instance_of!, :instance_of!
     end
   end
 end

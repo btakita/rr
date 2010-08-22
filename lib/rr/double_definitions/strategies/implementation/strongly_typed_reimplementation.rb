@@ -3,8 +3,6 @@ module RR
     module Strategies
       module Implementation
         class StronglyTypedReimplementation < Reimplementation
-          register("strong")
-
           protected
           def do_call
             super

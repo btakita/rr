@@ -1,54 +1,7 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinitionCreate # :nodoc
-      extend(Module.new do
-        def register_verification_strategy_class(strategy_class, strategy_method_name)
-          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{strategy_method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-            self.add_verification_strategy(#{strategy_class.name}, subject, method_name, &definition_eval_block)
-          end
-          CLASS
-
-          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{strategy_method_name}!(method_name=nil, &definition_eval_block)
-            #{strategy_method_name}(Object.new, method_name, &definition_eval_block)
-          end
-          CLASS
-        end
-
-        def register_implementation_strategy_class(strategy_class, strategy_method_name)
-          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{strategy_method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-            self.add_implementation_strategy(#{strategy_class.name}, subject, method_name, &definition_eval_block)
-          end
-          CLASS
-
-          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{strategy_method_name}!(method_name=nil, &definition_eval_block)
-            #{strategy_method_name}(Object.new, method_name, &definition_eval_block)
-          end
-          CLASS
-        end
-
-        def register_scope_strategy_class(strategy_class, strategy_method_name)
-          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{strategy_method_name}(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-            self.add_scope_strategy(#{strategy_class.name}, subject, method_name, &definition_eval_block)
-          end
-          CLASS
-
-          class_eval((<<-CLASS), __FILE__, __LINE__ + 1)
-          def #{strategy_method_name}!(method_name=nil, &definition_eval_block)
-            #{strategy_method_name}(Object.new, method_name, &definition_eval_block)
-          end
-          CLASS
-        end
-      end)
-
-      attr_reader :subject,
-                  :verification_strategy,
-                  :implementation_strategy,
-                  :scope_strategy
+      attr_reader :subject, :verification_strategy, :implementation_strategy, :scope_strategy
       NO_SUBJECT = Object.new
 
       include Space::Reader
@@ -127,57 +80,89 @@ module RR
         end
 
         def verification_strategy=(verification_strategy)
-          verify_no_verification_strategy
-          verify_not_proxy_and_dont_allow(verification_strategy, implementation_strategy)
           @verification_strategy = verification_strategy
           verification_strategy
         end
 
         def implementation_strategy=(implementation_strategy)
-          verify_not_proxy_and_dont_allow(verification_strategy, implementation_strategy)
           @implementation_strategy = implementation_strategy
         end
 
         def scope_strategy=(scope_strategy)
-          verify_not_proxy_and_dont_allow(verification_strategy, implementation_strategy)
           @scope_strategy = scope_strategy
-        end
-
-        def verify_no_verification_strategy
-          strategy_already_defined_error if verification_strategy
-        end
-
-        def strategy_already_defined_error
-          raise(
-            Errors::DoubleDefinitionError,
-            "This Double already has a #{verification_strategy.name} strategy"
-          )
-        end
-
-        def verify_not_proxy_and_dont_allow(verification_strategy, implementation_strategy)
-          proxy_when_dont_allow_error if
-            verification_strategy.is_a?(Strategies::Verification::DontAllow) &&
-            implementation_strategy.is_a?(Strategies::Implementation::Proxy)
-        end
-
-        def proxy_when_dont_allow_error
-          raise(
-            Errors::DoubleDefinitionError,
-            "Doubles cannot be proxied when using dont_allow strategy"
-          )
-        end
-
-        def no_strategy_error
-          raise(
-            Errors::DoubleDefinitionError,
-            "This Double has no strategy"
-          )
         end
       end
       include StrategySetupMethods
 
       class DoubleDefinitionCreateError < Errors::RRError
       end
+
+      # Verification Strategies
+      def mock(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+        self.add_verification_strategy(::RR::DoubleDefinitions::Strategies::Verification::Mock, subject, method_name, &definition_eval_block)
+      end
+
+      def mock!(method_name=nil, &definition_eval_block)
+        mock(Object.new, method_name, &definition_eval_block)
+      end
+
+      def stub(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+        self.add_verification_strategy(::RR::DoubleDefinitions::Strategies::Verification::Stub, subject, method_name, &definition_eval_block)
+      end
+
+      def stub!(method_name=nil, &definition_eval_block)
+        stub(Object.new, method_name, &definition_eval_block)
+      end
+
+      def dont_allow(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+        self.add_verification_strategy(::RR::DoubleDefinitions::Strategies::Verification::DontAllow, subject, method_name, &definition_eval_block)
+      end
+      alias_method :do_not_allow, :dont_allow
+
+      def dont_allow!(method_name=nil, &definition_eval_block)
+        dont_allow(Object.new, method_name, &definition_eval_block)
+      end
+      alias_method :do_not_allow!, :dont_allow!
+
+      # Implementation Strategies
+      def proxy(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+        self.add_implementation_strategy(::RR::DoubleDefinitions::Strategies::Implementation::Proxy, subject, method_name, &definition_eval_block)
+      end
+      alias_method :probe, :proxy
+
+      def proxy!(method_name=nil, &definition_eval_block)
+        proxy(Object.new, method_name, &definition_eval_block)
+      end
+      alias_method :probe!, :proxy!
+
+      def strong(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+        self.add_implementation_strategy(::RR::DoubleDefinitions::Strategies::Implementation::StronglyTypedReimplementation, subject, method_name, &definition_eval_block)
+      end
+
+      def strong!(method_name=nil, &definition_eval_block)
+        strong(Object.new, method_name, &definition_eval_block)
+      end
+
+      # Scope Strategies
+      def any_instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+        self.add_scope_strategy(::RR::DoubleDefinitions::Strategies::Scope::AnyInstanceOfClass, subject, method_name, &definition_eval_block)
+      end
+      alias_method :all_instances_of, :any_instance_of
+
+      def any_instance_of!(method_name=nil, &definition_eval_block)
+        any_instance_of(Object.new, method_name, &definition_eval_block)
+      end
+      alias_method :all_instances_of!, :any_instance_of!
+
+      def instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+        self.add_scope_strategy(::RR::DoubleDefinitions::Strategies::Scope::InstanceOfClass, subject, method_name, &definition_eval_block)
+      end
+      alias_method :new_instance_of, :instance_of
+
+      def instance_of!(method_name=nil, &definition_eval_block)
+        instance_of(Object.new, method_name, &definition_eval_block)
+      end
+      alias_method :new_instance_of!, :instance_of!
     end
   end
 end
