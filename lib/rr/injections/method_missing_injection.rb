@@ -14,8 +14,9 @@ module RR
       end)
 
       attr_reader :subject_class
-      def initialize(subject)
-        @subject_class = (class << subject; self; end)
+      def initialize(subject, subject_class=(class << subject; self; end))
+        @subject = subject
+        @subject_class = subject_class
         @placeholder_method_defined = false
       end
 
