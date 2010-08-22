@@ -1,1 +1,1 @@
-Remove all strategy classes and define a module with mock/stub/etc methods.
+DoubleInjection binds to the class instead of the eigenclass.

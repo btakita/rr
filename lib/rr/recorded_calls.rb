@@ -40,7 +40,7 @@ module RR
     attr_accessor :ordered_index
 
     def double_injection_exists_error(spy_verification)
-      unless Injections::DoubleInjection.exists_by_subject?(spy_verification.subject, spy_verification.method_name)
+      unless Injections::DoubleInjection.exists?(spy_verification.subject, spy_verification.method_name)
         RR::Errors::SpyVerificationErrors::DoubleInjectionNotFoundError.new(
           "A Double Injection for the subject and method call:\n" <<
           "#{spy_verification.subject.inspect}\n" <<
