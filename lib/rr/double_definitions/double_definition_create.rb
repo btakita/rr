@@ -1,6 +1,22 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinitionCreate # :nodoc
+      extend(Module.new do
+        def default_double_injection_strategy_class
+          @default_double_injection_strategy_class ||= Strategies::DoubleInjection::Instance
+        end
+
+        def set_default_double_injection_strategy_class(strategy_class)
+          original_strategy_class = default_double_injection_strategy_class
+          begin
+            @default_double_injection_strategy_class = strategy_class
+            yield
+          ensure
+            @default_double_injection_strategy_class = original_strategy_class
+          end
+        end
+      end)
+
       attr_reader :subject, :verification_strategy, :implementation_strategy, :double_injection_strategy
       NO_SUBJECT = Object.new
 
@@ -9,7 +25,7 @@ module RR
       def initialize
         @verification_strategy = nil
         @implementation_strategy = Strategies::Implementation::Reimplementation.new(self)
-        @double_injection_strategy = Strategies::DoubleInjection::Instance.new(self)
+        @double_injection_strategy = self.class.default_double_injection_strategy_class.new(self)
       end
 
       def call(method_name, *args, &handler)
