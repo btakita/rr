@@ -1,7 +1,7 @@
 module RR
   module DoubleDefinitions
     module Strategies
-      module Scope
+      module DoubleInjection
         # Calling instance_of will cause all instances of the passed in Class
         # to have the Double defined.
         #
@@ -13,7 +13,7 @@ module RR
         #   mock.instance_of(User).projects do |projects|
         #     projects[0..2]
         #   end        
-        class InstanceOfClass < ScopeStrategy
+        class InstanceOfClass < DoubleInjectionStrategy
           def initialize(*args)
             super
 

@@ -1,8 +1,8 @@
 module RR
   module DoubleDefinitions
     module Strategies
-      module Scope
-        class ScopeStrategy < Strategy
+      module DoubleInjection
+        class DoubleInjectionStrategy < Strategy
         end
       end
     end
