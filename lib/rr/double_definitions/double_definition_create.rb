@@ -1,10 +1,7 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinitionCreate # :nodoc
-      attr_reader :subject, 
-                  :verification_strategy,
-                  :implementation_strategy, 
-                  :scope_strategy
+      attr_reader :subject, :verification_strategy, :implementation_strategy, :scope_strategy
       NO_SUBJECT = Object.new
 
       include Space::Reader
@@ -23,15 +20,15 @@ module RR
         scope_strategy.call(definition, method_name, args, handler)
         definition
       end
-      
+
       def root_subject
         subject
       end
-      
+
       def method_name
         @verification_strategy.method_name
       end
-      
+
       module StrategySetupMethods
         def no_subject?
           subject.__id__ === NO_SUBJECT.__id__
