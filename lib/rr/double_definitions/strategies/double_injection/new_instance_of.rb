@@ -14,7 +14,7 @@ module RR
         #   mock.instance_of(User).projects do |projects|
         #     projects[0..2]
         #   end        
-        class InstanceOfClass < DoubleInjectionStrategy
+        class NewInstanceOf < DoubleInjectionStrategy
           def initialize(*args)
             super
 

@@ -126,7 +126,7 @@ module RR
       end
 
       def instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-        self.add_double_injection_strategy(::RR::DoubleDefinitions::Strategies::DoubleInjection::InstanceOfClass, subject, method_name, &definition_eval_block)
+        self.add_double_injection_strategy(::RR::DoubleDefinitions::Strategies::DoubleInjection::NewInstanceOf, subject, method_name, &definition_eval_block)
       end
     end
   end

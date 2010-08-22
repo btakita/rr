@@ -29,7 +29,7 @@ require "#{dir}/rr/double_definitions/strategies/implementation/strongly_typed_r
 require "#{dir}/rr/double_definitions/strategies/implementation/proxy"
 require "#{dir}/rr/double_definitions/strategies/double_injection/double_injection_strategy"
 require "#{dir}/rr/double_definitions/strategies/double_injection/instance"
-require "#{dir}/rr/double_definitions/strategies/double_injection/instance_of_class"
+require "#{dir}/rr/double_definitions/strategies/double_injection/new_instance_of"
 require "#{dir}/rr/double_definitions/prototype_subject"
 require "#{dir}/rr/adapters/rr_methods"
 require "#{dir}/rr/double_definitions/double_injections/instance"
