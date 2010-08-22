@@ -294,7 +294,7 @@ module RR
 
         @double_injection = Injections::DoubleInjection.find_or_create(subject, method_name)
         Injections::DoubleInjection.instances.keys.should include(subject)
-        Injections::DoubleInjection.find_by_subject(subject, method_name).should_not be_nil
+        Injections::DoubleInjection.find(subject, method_name).should_not be_nil
         subject.method(method_name).should_not == original_method
 
         space.reset_double(subject, method_name)
@@ -308,13 +308,13 @@ module RR
           double_2 = Injections::DoubleInjection.find_or_create(subject, :foobar2)
 
           Injections::DoubleInjection.instances.include?(subject).should == true
-          Injections::DoubleInjection.find_by_subject(subject, :foobar1).should_not be_nil
-          Injections::DoubleInjection.find_by_subject(subject, :foobar2).should_not be_nil
+          Injections::DoubleInjection.find(subject, :foobar1).should_not be_nil
+          Injections::DoubleInjection.find(subject, :foobar2).should_not be_nil
 
           space.reset_double(subject, :foobar1)
           Injections::DoubleInjection.instances.include?(subject).should == true
-          Injections::DoubleInjection.find_by_subject(subject, :foobar1).should be_nil
-          Injections::DoubleInjection.find_by_subject(subject, :foobar2).should_not be_nil
+          Injections::DoubleInjection.find(subject, :foobar1).should be_nil
+          Injections::DoubleInjection.find(subject, :foobar2).should_not be_nil
 
           space.reset_double(subject, :foobar2)
           Injections::DoubleInjection.instances.include?(subject).should == false
@@ -545,7 +545,7 @@ module RR
 
       it "verifies and deletes the double_injection" do
         @double_injection = Injections::DoubleInjection.find_or_create(subject, method_name)
-        Injections::DoubleInjection.find_by_subject(subject, method_name).should === double_injection
+        Injections::DoubleInjection.find(subject, method_name).should === double_injection
 
         verify_call_count = 0
         ( class << double_injection; self; end).class_eval do
@@ -556,7 +556,7 @@ module RR
         space.verify_double(subject, method_name)
         verify_call_count.should == 1
 
-        Injections::DoubleInjection.find_by_subject(subject, method_name).should be_nil
+        Injections::DoubleInjection.find(subject, method_name).should be_nil
       end
 
       context "when verifying the double_injection raises an error" do
@@ -566,7 +566,7 @@ module RR
           @double_injection = Injections::DoubleInjection.find_or_create(subject, method_name)
           subject.method(method_name).should_not == original_method
 
-          Injections::DoubleInjection.find_by_subject(subject, method_name).should === double_injection
+          Injections::DoubleInjection.find(subject, method_name).should === double_injection
 
           verify_called = true
           ( class << double_injection; self; end).class_eval do
@@ -578,7 +578,7 @@ module RR
           lambda {space.verify_double(subject, method_name)}.should raise_error
           verify_called.should be_true
 
-          Injections::DoubleInjection.find_by_subject(subject, method_name).should be_nil
+          Injections::DoubleInjection.find(subject, method_name).should be_nil
           subject.method(method_name).should == original_method
         end
       end

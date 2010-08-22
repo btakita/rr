@@ -15,22 +15,15 @@ module RR
           instances[subject] && instances[subject][method_name.to_sym]
         end
 
-        def find_by_subject(subject, method_name)
-          find(subject, method_name)
-        end
-
         def exists?(subject, method_name)
           !!find(subject, method_name)
         end
 
         def dispatch_method(subject, method_name, arguments, block)
           if exists?(subject, method_name)
-            find_by_subject(subject, method_name.to_sym).dispatch_method(subject, arguments, block)
+            find(subject, method_name.to_sym).dispatch_method(subject, arguments, block)
           else
-            injection = new(subject, method_name.to_sym)
-            injection.bypass_bound_method do
-              injection.dispatch_method(subject, arguments, block)
-            end
+            new(subject, method_name.to_sym).dispatch_original_method(subject, arguments, block)
           end
         end
 
@@ -87,7 +80,7 @@ module RR
         @subject_class = (class << subject; self; end)
         @method_name = method_name.to_sym
         @doubles = []
-        @bypass_bound_method = nil
+        @dispatch_method_delegates_to_dispatch_original_method = nil
       end
 
       # RR::DoubleInjection#register_double adds the passed in Double
@@ -158,12 +151,17 @@ module RR
       end
 
       def dispatch_method(subject, args, block)
-        dispatch = MethodDispatches::MethodDispatch.new(self, subject, args, block)
-        if @bypass_bound_method
-          dispatch.call_original_method
+        if @dispatch_method_delegates_to_dispatch_original_method
+          dispatch_original_method(subject, args, block)
         else
+          dispatch = MethodDispatches::MethodDispatch.new(self, subject, args, block)
           dispatch.call
         end
+      end
+
+      def dispatch_original_method(subject, args, block)
+        dispatch = MethodDispatches::MethodDispatch.new(self, subject, args, block)
+        dispatch.call_original_method
       end
 
       def subject_has_original_method_missing?
@@ -174,11 +172,11 @@ module RR
         "__rr__original_#{@method_name}"
       end
 
-      def bypass_bound_method
-        @bypass_bound_method = true
+      def dispatch_method_delegates_to_dispatch_original_method
+        @dispatch_method_delegates_to_dispatch_original_method = true
         yield
       ensure
-        @bypass_bound_method = nil
+        @dispatch_method_delegates_to_dispatch_original_method = nil
       end
 
       protected
