@@ -1,7 +1,7 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinitionCreate # :nodoc
-      attr_reader :subject, :verification_strategy, :implementation_strategy, :scope_strategy
+      attr_reader :subject, :verification_strategy, :implementation_strategy, :double_injection_strategy
       NO_SUBJECT = Object.new
 
       include Space::Reader
@@ -9,7 +9,7 @@ module RR
       def initialize
         @verification_strategy = nil
         @implementation_strategy = Strategies::Implementation::Reimplementation.new(self)
-        @scope_strategy = Strategies::Scope::Instance.new(self)
+        @double_injection_strategy = Strategies::DoubleInjection::Instance.new(self)
       end
 
       def call(method_name, *args, &handler)
@@ -17,7 +17,7 @@ module RR
         definition = DoubleDefinition.new(self)
         verification_strategy.call(definition, method_name, args, handler)
         implementation_strategy.call(definition, method_name, args, handler)
-        scope_strategy.call(definition, method_name, args, handler)
+        double_injection_strategy.call(definition, method_name, args, handler)
         definition
       end
 
@@ -47,9 +47,9 @@ module RR
           end
         end
 
-        def add_scope_strategy(scope_strategy_class, subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+        def add_double_injection_strategy(double_injection_strategy_class, subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
           add_strategy(subject, method_name, definition_eval_block) do
-            self.scope_strategy = scope_strategy_class.new(self)
+            self.double_injection_strategy = double_injection_strategy_class.new(self)
           end
         end
 
@@ -79,8 +79,8 @@ module RR
           @implementation_strategy = implementation_strategy
         end
 
-        def scope_strategy=(scope_strategy)
-          @scope_strategy = scope_strategy
+        def double_injection_strategy=(double_injection_strategy)
+          @double_injection_strategy = double_injection_strategy
         end
       end
       include StrategySetupMethods
@@ -111,13 +111,13 @@ module RR
         self.add_implementation_strategy(::RR::DoubleDefinitions::Strategies::Implementation::StronglyTypedReimplementation, subject, method_name, &definition_eval_block)
       end
 
-      # Scope Strategies
+      # DoubleInjection Strategies
       def any_instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-        self.add_scope_strategy(::RR::DoubleDefinitions::Strategies::Scope::AnyInstanceOfClass, subject, method_name, &definition_eval_block)
+        self.add_double_injection_strategy(::RR::DoubleDefinitions::Strategies::DoubleInjection::AnyInstanceOfClass, subject, method_name, &definition_eval_block)
       end
 
       def instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-        self.add_scope_strategy(::RR::DoubleDefinitions::Strategies::Scope::InstanceOfClass, subject, method_name, &definition_eval_block)
+        self.add_double_injection_strategy(::RR::DoubleDefinitions::Strategies::DoubleInjection::InstanceOfClass, subject, method_name, &definition_eval_block)
       end
     end
   end

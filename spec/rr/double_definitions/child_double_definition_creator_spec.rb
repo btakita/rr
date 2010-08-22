@@ -86,7 +86,7 @@ module RR
         end
       end
 
-      describe "Strategies::Scope definitions" do
+      describe "Strategies::DoubleInjection definitions" do
         describe "methods without !" do
           describe "#instance_of" do
             it "raises a NoMethodError" do
