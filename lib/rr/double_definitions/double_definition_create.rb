@@ -32,18 +32,9 @@ module RR
 
       def call(method_name, *args, &handler)
         definition = DoubleDefinition.new(self)
-        if subject.is_a?(PrototypeSubject)
-          subject.method_name = method_name
-          subject.double_definition = definition
-          subject.verification_strategy = verification_strategy
-          subject.implementation_strategy = implementation_strategy
-          # double_injection_strategy is deprecated and will not be used for PrototypeSubjects.
-          # PrototypeSubjects are used in the AnyInstanceOf double_injection.
-        else
-          verification_strategy.call(definition, method_name, args, handler)
-          implementation_strategy.call(definition, method_name, args, handler)
-          double_injection_strategy.call(definition, method_name, args, handler)
-        end
+        verification_strategy.call(definition, method_name, args, handler)
+        implementation_strategy.call(definition, method_name, args, handler)
+        double_injection_strategy.call(definition, method_name, args, handler)
         definition
       end
 

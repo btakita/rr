@@ -31,7 +31,6 @@ require "#{dir}/rr/double_definitions/strategies/double_injection/double_injecti
 require "#{dir}/rr/double_definitions/strategies/double_injection/instance"
 require "#{dir}/rr/double_definitions/strategies/double_injection/any_instance_of"
 require "#{dir}/rr/double_definitions/strategies/double_injection/new_instance_of"
-require "#{dir}/rr/double_definitions/prototype_subject"
 require "#{dir}/rr/adapters/rr_methods"
 require "#{dir}/rr/double_definitions/double_injections/instance"
 require "#{dir}/rr/double_definitions/double_injections/any_instance_of"

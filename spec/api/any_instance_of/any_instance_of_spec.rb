@@ -12,20 +12,18 @@ describe "any_instance_of" do
         stub(o).foobar {:baz}
       end
 
-      pending "Compeltion of any_instance_of" do
-        subject.to_s.should == "Subject is stubbed"
-        subject.class.should == subject_class
-        class_called.should == true
-        subject.foobar.should == :baz
+      subject.to_s.should == "Subject is stubbed"
+      subject.class.should == subject_class
+      class_called.should == true
+      subject.foobar.should == :baz
 
-        RR.reset
+      RR.reset
 
-        subject.to_s.should_not == "Subject is stubbed"
-        class_called = false
-        subject.class.should == subject_class
-        class_called.should == false
-        subject.should_not respond_to(:baz)
-      end
+      subject.to_s.should_not == "Subject is stubbed"
+      class_called = false
+      subject.class.should == subject_class
+      class_called.should == false
+      subject.should_not respond_to(:baz)
     end
   end
 

@@ -17,9 +17,7 @@ module RR
                   end
                 end
               else
-                prototype = PrototypeSubject.new
-                block.call(prototype)
-                prototype.double_definition
+                block.call(subject_class)
               end
             end
           end
