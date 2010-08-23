@@ -169,7 +169,7 @@ describe "mock" do
       SampleClass1.hello.should == "hola!"
     end
 
-    it "should not break when it is mocked on subclass" do
+    it "does not override subclasses" do
       mock(SampleClass1).hello { "hi!" }
 
       SampleClass2.hello.should == "hello!"

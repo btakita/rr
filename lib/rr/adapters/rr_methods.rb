@@ -120,7 +120,7 @@ module RR
 
       def spy(subject)
         methods_to_stub = subject.public_methods.map {|method_name| method_name.to_sym} -
-          [:methods, :==, :__send__, :__id__, :object_id]
+          [:methods, :==, :__send__, :__id__, :object_id, :class]
         methods_to_stub.each do |method|
           stub.proxy(subject, method)
         end
