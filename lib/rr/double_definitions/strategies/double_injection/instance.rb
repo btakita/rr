@@ -6,7 +6,7 @@ module RR
           protected
           def do_call
             double_injection = Injections::DoubleInjection.find_or_create(
-              subject, method_name, (class << subject; self; end)
+              (class << subject; self; end), method_name
             )
             Double.new(double_injection, definition)
           end

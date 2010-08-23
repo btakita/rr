@@ -7,7 +7,7 @@ module RR
       end
     end
 
-    extend(Module.new do
+    class << self
       def instance
         @instance ||= new
       end
@@ -17,7 +17,7 @@ module RR
       def method_missing(method_name, *args, &block)
         instance.__send__(method_name, *args, &block)
       end
-    end)
+    end
 
     attr_reader :ordered_doubles, :recorded_calls
     attr_accessor :trim_backtrace
@@ -67,12 +67,12 @@ module RR
 
     # Verifies the DoubleInjection for the passed in subject and method_name.
     def verify_double(subject, method_name)
-      Injections::DoubleInjection.verify_double(subject, method_name)
+      Injections::DoubleInjection.verify_double(class << subject; self; end, method_name)
     end
 
     # Resets the DoubleInjection for the passed in subject and method_name.
     def reset_double(subject, method_name)
-      Injections::DoubleInjection.reset_double(subject, method_name)
+      Injections::DoubleInjection.reset_double(class << subject; self; end, method_name)
     end
 
     def record_call(subject, method_name, arguments, block)
@@ -92,7 +92,7 @@ module RR
     end
 
     def reset_method_missing_injections
-      Injections::MethodMissingInjection.instances.each do |subject, injection|
+      Injections::MethodMissingInjection.instances.each do |subject_class, injection|
         injection.reset
       end
       Injections::MethodMissingInjection.instances.clear
