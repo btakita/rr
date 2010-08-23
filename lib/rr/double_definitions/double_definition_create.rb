@@ -32,7 +32,6 @@ module RR
 
       def call(method_name, *args, &handler)
         definition = DoubleDefinition.new(self)
-        verification_strategy
         if subject.is_a?(PrototypeSubject)
           subject.method_name = method_name
           subject.double_definition = definition
