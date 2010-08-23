@@ -2,9 +2,9 @@ module RR
   module Injections
     class MethodMissingInjection < Injection
       extend(Module.new do
-        def find_or_create(subject)
-          instances[subject] ||= begin
-            new(subject).bind
+        def find_or_create(subject_class)
+          instances[subject_class] ||= begin
+            new(subject_class).bind
           end
         end
 
@@ -14,8 +14,7 @@ module RR
       end)
 
       attr_reader :subject_class
-      def initialize(subject, subject_class=(class << subject; self; end))
-        @subject = subject
+      def initialize(subject_class)
         @subject_class = subject_class
         @placeholder_method_defined = false
       end
