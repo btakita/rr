@@ -1,5 +1,7 @@
-- Added all_instances_of (aliased by any_instance_of)
+1.0.0
+- Added any_instance_of (aliased by all_instances_of), which binds methods directly to the class (instead of the eigenclass).
 - Subclasses of a injected class do not have their methods overridden.
+- any_instance_of and new_instance_of now have a block syntax
 
 0.10.11
 - Added RR.blank_slate_whitelist
