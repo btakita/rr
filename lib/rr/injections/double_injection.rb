@@ -31,9 +31,8 @@ module RR
           exists?((class << subject; self; end), method_name)
         end
 
-        def dispatch_method(subject, method_name, arguments, block)
-          subject_class = (class << subject; self; end)
-          if exists?(subject_class, method_name)
+        def dispatch_method(subject, subject_class, method_name, arguments, block)
+          if exists?(subject_class, method_name) && (subject.class != Class || subject_class == (class << subject; self; end))
             find(subject_class, method_name.to_sym).dispatch_method(subject, arguments, block)
           else
             new(subject_class, method_name.to_sym).dispatch_original_method(subject, arguments, block)
@@ -78,8 +77,8 @@ module RR
         end
 
         def instances
-          @instances ||= HashWithObjectIdKey.new do |hash, subject_object|
-            hash.set_with_object_id(subject_object, {})
+          @instances ||= HashWithObjectIdKey.new do |hash, subject_class|
+            hash.set_with_object_id(subject_class, {})
           end
         end
       end)
@@ -129,10 +128,11 @@ module RR
       end
 
       def bind_method
+        subject_class_object_id = subject_class.object_id
         subject_class.class_eval(<<-METHOD, __FILE__, __LINE__ + 1)
         def #{method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
-          RR::Injections::DoubleInjection.dispatch_method(self, :#{method_name}, arguments.arguments, arguments.block)
+          RR::Injections::DoubleInjection.dispatch_method(self, ObjectSpace._id2ref(#{subject_class_object_id}), :#{method_name}, arguments.arguments, arguments.block)
         end
         METHOD
         self
