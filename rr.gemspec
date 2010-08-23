@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rr}
-  s.version = "0.10.11"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Takita"]
-  s.date = %q{2010-03-22}
+  s.date = %q{2010-08-23}
   s.description = %q{RR (Double Ruby) is a double framework that features a rich selection of double techniques and a terse syntax. http://xunitpatterns.com/Test%20Double.html}
   s.email = %q{brian@pivotallabs.com}
   s.extra_rdoc_files = [
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "CHANGES",
+     "Gemfile",
      "LICENSE",
      "README.rdoc",
      "Rakefile",
@@ -27,19 +28,25 @@ Gem::Specification.new do |s|
      "lib/rr/adapters/rspec.rb",
      "lib/rr/adapters/test_unit.rb",
      "lib/rr/blank_slate.rb",
+     "lib/rr/class_instance_method_defined.rb",
      "lib/rr/double.rb",
      "lib/rr/double_definitions/child_double_definition_create.rb",
      "lib/rr/double_definitions/double_definition.rb",
      "lib/rr/double_definitions/double_definition_create.rb",
      "lib/rr/double_definitions/double_definition_create_blank_slate.rb",
+     "lib/rr/double_definitions/double_injections/any_instance_of.rb",
+     "lib/rr/double_definitions/double_injections/instance.rb",
+     "lib/rr/double_definitions/double_injections/new_instance_of.rb",
+     "lib/rr/double_definitions/strategies/double_injection/any_instance_of.rb",
+     "lib/rr/double_definitions/strategies/double_injection/double_injection_strategy.rb",
+     "lib/rr/double_definitions/strategies/double_injection/instance.rb",
+     "lib/rr/double_definitions/strategies/double_injection/new_instance_of.rb",
      "lib/rr/double_definitions/strategies/implementation/implementation_strategy.rb",
      "lib/rr/double_definitions/strategies/implementation/proxy.rb",
      "lib/rr/double_definitions/strategies/implementation/reimplementation.rb",
      "lib/rr/double_definitions/strategies/implementation/strongly_typed_reimplementation.rb",
-     "lib/rr/double_definitions/strategies/double_injection/instance.rb",
-     "lib/rr/double_definitions/strategies/double_injection/instance_of_class.rb",
-     "lib/rr/double_definitions/strategies/double_injection/double_injection_strategy.rb",
      "lib/rr/double_definitions/strategies/strategy.rb",
+     "lib/rr/double_definitions/strategies/strategy_methods.rb",
      "lib/rr/double_definitions/strategies/verification/dont_allow.rb",
      "lib/rr/double_definitions/strategies/verification/mock.rb",
      "lib/rr/double_definitions/strategies/verification/stub.rb",
@@ -92,8 +99,13 @@ Gem::Specification.new do |s|
      "lib/rr/wildcard_matchers/range.rb",
      "lib/rr/wildcard_matchers/regexp.rb",
      "lib/rr/wildcard_matchers/satisfy.rb",
+     "scratch.rb",
+     "spec/api/any_instance_of/all_instances_of_spec.rb",
+     "spec/api/any_instance_of/any_instance_of_spec.rb",
      "spec/api/dont_allow/dont_allow_after_stub_spec.rb",
      "spec/api/mock/mock_spec.rb",
+     "spec/api/new_instance_of/instance_of_spec.rb",
+     "spec/api/new_instance_of/new_instance_of_spec.rb",
      "spec/api/proxy/proxy_spec.rb",
      "spec/api/spy/spy_spec.rb",
      "spec/api/strong/strong_spec.rb",
@@ -162,19 +174,19 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--main", "README.rdoc", "--inline-source", "--line-numbers"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{pivotalrb}
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{RR (Double Ruby) is a double framework that features a rich selection of double techniques and a terse syntax. http://xunitpatterns.com/Test%20Double.html}
   s.test_files = [
     "spec/spy_verification_spec.rb",
-     "spec/rr_spec.rb",
-     "spec/proc_from_block_spec.rb"
+     "spec/proc_from_block_spec.rb",
+     "spec/rr_spec.rb"
   ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
     else
     end
   else
