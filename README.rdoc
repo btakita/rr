@@ -3,18 +3,6 @@
 RR (Double Ruby) is a test double framework that features a rich
 selection of double techniques and a terse syntax.
 
-== Notes by Developer
-
-There has been a major architectural issues and refactorings involved with introducing the all_instances_of feature.
-Basically, I need to bind RR's dispaching to the class instead of the Eigenclass of each instance, just like Mocha does.
-Unfortunately, it's not obviously feasible (without an ObjectSpace lookup) to support all of RR's methods (such as mocking).
-
-Of course ObjectSpace is not readily supported in jRuby, since it causes general slowness in the intreperter.
-I'm of the opinion that test speed is more important than having mocks on all instances of a class.
-
-Thanks for your patience,
-- Brian
-
 == More Information
 === Mailing Lists
 * double-ruby-users@rubyforge.org
@@ -225,9 +213,33 @@ renders the partial.
     html
   end
 
-=== instance_of
-Put double scenarios on instances of a Class.
+=== any_instance_of
+Allows stubs to be added to all instances of a class. It works by binding to methods from the class itself, rather than the eigenclass.
+This allows all instances (excluding instances with the method redefined in the eigenclass) to get the change.
 
+Due to Ruby runtime limitations, mocks will not work as expected. It's not obviously feasible (without an ObjectSpace lookup) to support all of RR's methods (such as mocking).
+ObjectSpace is not readily supported in jRuby, since it causes general slowness in the intreperter.
+I'm of the opinion that test speed is more important than having mocks on all instances of a class.
+If there is another solution, I'd be willing to add it.
+
+  any_instance_of(User) do |u|
+    stub(u).valid? {false}
+  end
+  # or
+  any_instance_of(User, :valid? => false)
+  # or
+  any_instance_of(User, :valid? => lambda {false})
+
+=== new_instance_of
+Stubs the new method of the class and allows doubles to be bound to new instances.
+
+Mocks can be used, because new instances are deterministically bound.
+
+  new_instance_of(User) do |u|
+    mock(u).valid? {false}
+  end
+
+  # Deprecated syntax
   mock.instance_of(User).valid? {false}
 
 === Spies
