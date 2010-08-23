@@ -21,19 +21,13 @@ module RR
               raise ArgumentError, "instance_of only accepts class objects"
             end
             DoubleDefinitions::DoubleInjections::NewInstanceOf.call(subject) do |subject|
-              add_double_to_instance(subject, *args)
+              add_double_to_instance(subject)
             end
           end
           
-          def add_double_to_instance(instance, *args)
+          def add_double_to_instance(instance)
             double_injection = Injections::DoubleInjection.find_or_create((class << instance; self; end), method_name)
             Double.new(double_injection, definition)
-            #####
-            if args.last.is_a?(ProcFromBlock)
-              instance.__send__(:initialize, *args[0..(args.length-2)], &args.last)
-            else
-              instance.__send__(:initialize, *args)
-            end
             instance
           end
         end
