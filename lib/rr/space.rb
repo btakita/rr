@@ -104,7 +104,7 @@ module RR
       end
       Injections::SingletonMethodAddedInjection.instances.clear
     end
-    
+
     def reset_recorded_calls
       @recorded_calls.clear
     end

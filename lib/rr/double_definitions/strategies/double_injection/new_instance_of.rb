@@ -2,6 +2,7 @@ module RR
   module DoubleDefinitions
     module Strategies
       module DoubleInjection
+        # This class is Deprecated.
         # Calling instance_of will cause all instances of the passed in Class
         # to have the Double defined.
         #
@@ -13,21 +14,14 @@ module RR
         #   mock.instance_of(User).projects do |projects|
         #     projects[0..2]
         #   end        
-        class InstanceOfClass < DoubleInjectionStrategy
-          def initialize(*args)
-            super
-
+        class NewInstanceOf < DoubleInjectionStrategy
+          protected
+          def do_call
             if !double_definition_create.no_subject? && !double_definition_create.subject.is_a?(Class)
               raise ArgumentError, "instance_of only accepts class objects"
             end
-          end
-
-          protected
-          def do_call
-            instance_of_subject_double_definition_create = DoubleDefinitionCreate.new
-            instance_of_subject_double_definition_create.stub(subject)
-            instance_of_subject_double_definition_create.call(:new) do |*args|
-              add_double_to_instance(subject.allocate, *args)
+            DoubleDefinitions::DoubleInjections::NewInstanceOf.call(subject) do |subject|
+              add_double_to_instance(subject, *args)
             end
           end
           

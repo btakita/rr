@@ -162,7 +162,7 @@ module RR
           context "when not passed a class" do
             it "raises an ArgumentError" do
               lambda do
-                double_definition_create.instance_of(Object.new)
+                double_definition_create.instance_of(Object.new).foobar
               end.should raise_error(ArgumentError, "instance_of only accepts class objects")
             end
           end

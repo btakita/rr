@@ -1,19 +1,36 @@
 module RR
   module DoubleDefinitions
     class DoubleDefinitionCreate # :nodoc
+      extend(Module.new do
+        def default_double_injection_strategy
+          @default_double_injection_strategy ||= lambda do |double_injection_create|
+            Strategies::DoubleInjection::Instance.new(double_injection_create)
+          end
+        end
+
+        def set_default_double_injection_strategy(strategy_lambda)
+          original_strategy_lambda = default_double_injection_strategy
+          begin
+            @default_double_injection_strategy = strategy_lambda
+            yield
+          ensure
+            @default_double_injection_strategy = original_strategy_lambda
+          end
+        end
+      end)
+
       attr_reader :subject, :verification_strategy, :implementation_strategy, :double_injection_strategy
       NO_SUBJECT = Object.new
 
       include Space::Reader
 
       def initialize
-        @verification_strategy = nil
+        @verification_strategy = Strategies::Verification::Stub.new(self)
         @implementation_strategy = Strategies::Implementation::Reimplementation.new(self)
-        @double_injection_strategy = Strategies::DoubleInjection::Instance.new(self)
+        @double_injection_strategy = self.class.default_double_injection_strategy.call(self)
       end
 
       def call(method_name, *args, &handler)
-        raise DoubleDefinitionCreateError if no_subject?
         definition = DoubleDefinition.new(self)
         verification_strategy.call(definition, method_name, args, handler)
         implementation_strategy.call(definition, method_name, args, handler)
@@ -113,11 +130,11 @@ module RR
 
       # DoubleInjection Strategies
       def any_instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-        self.add_double_injection_strategy(::RR::DoubleDefinitions::Strategies::DoubleInjection::AnyInstanceOfClass, subject, method_name, &definition_eval_block)
+        self.add_double_injection_strategy(::RR::DoubleDefinitions::Strategies::DoubleInjection::AnyInstanceOf, subject, method_name, &definition_eval_block)
       end
 
       def instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-        self.add_double_injection_strategy(::RR::DoubleDefinitions::Strategies::DoubleInjection::InstanceOfClass, subject, method_name, &definition_eval_block)
+        self.add_double_injection_strategy(::RR::DoubleDefinitions::Strategies::DoubleInjection::NewInstanceOf, subject, method_name, &definition_eval_block)
       end
     end
   end

@@ -3,6 +3,18 @@
 RR (Double Ruby) is a test double framework that features a rich
 selection of double techniques and a terse syntax.
 
+== Notes by Developer
+
+There has been a major architectural issues and refactorings involved with introducing the all_instances_of feature.
+Basically, I need to bind RR's dispaching to the class instead of the Eigenclass of each instance, just like Mocha does.
+Unfortunately, it's not obviously feasible (without an ObjectSpace lookup) to support all of RR's methods (such as mocking).
+
+Of course ObjectSpace is not readily supported in jRuby, since it causes general slowness in the intreperter.
+I'm of the opinion that test speed is more important than having mocks on all instances of a class.
+
+Thanks for your patience,
+- Brian
+
 == More Information
 === Mailing Lists
 * double-ruby-users@rubyforge.org

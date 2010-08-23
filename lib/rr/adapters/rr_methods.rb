@@ -130,6 +130,14 @@ module RR
         RR::SpyVerificationProxy.new(subject)
       end
 
+      def new_instance_of(*args, &block)
+        RR::DoubleDefinitions::DoubleInjections::NewInstanceOf.call(*args, &block)
+      end
+
+      def any_instance_of(*args, &block)
+        RR::DoubleDefinitions::DoubleInjections::AnyInstanceOf.call(*args, &block)
+      end
+
       instance_methods.each do |name|
         alias_method "rr_#{name}", name
       end

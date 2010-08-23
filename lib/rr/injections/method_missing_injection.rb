@@ -51,9 +51,10 @@ module RR
 
       protected
       def bind_method
+        subject_class_object_id = subject_class.object_id
         subject_class.class_eval((<<-METHOD), __FILE__, __LINE__ + 1)
         def method_missing(method_name, *args, &block)
-          MethodDispatches::MethodMissingDispatch.new(self, method_name, args, block).call
+          MethodDispatches::MethodMissingDispatch.new(self, ObjectSpace._id2ref(#{subject_class_object_id}), method_name, args, block).call
         end
         METHOD
       end
