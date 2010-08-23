@@ -14,15 +14,8 @@ module RR
                 memoized_subject_class_original_methods[subject_class] ||= {}
                 subject_class.class_eval do
                   stubbed_methods.each do |name, value|
-                    unless memoized_subject_class_original_methods[subject_class].has_key?(name)
-                      if method_defined?(name) || protected_method_defined?(name) || private_method_defined?(name)
-                        memoized_subject_class_original_methods[subject_class][name] = instance_method(name)
-                      else
-                        memoized_subject_class_original_methods[subject_class][name] = nil
-                      end
-                    end
                     value_proc = value.is_a?(Proc) ? value : lambda {value}
-                    define_method(name, &value_proc)
+                    RR.stub(subject_class, name).returns(&value_proc)
                   end
                 end
               else

@@ -32,7 +32,8 @@ module RR
         end
 
         def dispatch_method(subject, subject_class, method_name, arguments, block)
-          if exists?(subject_class, method_name) && (subject_class == (class << subject; self; end))
+          subject_eigenclass = (class << subject; self; end)
+          if exists?(subject_class, method_name) && (subject_class == subject_eigenclass || subject_eigenclass.superclass != (class << Class; self; end))
             find(subject_class, method_name.to_sym).dispatch_method(subject, arguments, block)
           else
             new(subject_class, method_name.to_sym).dispatch_original_method(subject, arguments, block)

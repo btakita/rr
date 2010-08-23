@@ -1,3 +1,2 @@
-any_instance_of should use the DoubleInjection strategies.
 Replace usage of PrototypeSubject in the instance DoubleBinding process with a Class-based DoubleBinding process.
 DoubleInjection binds to the class instead of the eigenclass.
