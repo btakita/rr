@@ -6,11 +6,14 @@ describe "new_instance_of" do
       subject_class = Class.new
       existing_subject = subject_class.new
       new_instance_of(subject_class).foobar {:baz}
-      new_subject = subject_class.new
 
+      subject_new = subject_class.new
       existing_subject.should_not respond_to(:foobar)
+      subject_new.foobar.should == :baz
 
-      new_subject.foobar.should == :baz
+      subject_allocate = subject_class.allocate
+      existing_subject.should_not respond_to(:foobar)
+      subject_allocate.foobar.should == :baz
     end
   end
 
@@ -23,13 +26,17 @@ describe "new_instance_of" do
         stub(o).to_s {"Subject is stubbed"}
         stub.proxy(o).class {|klass| class_called = true; klass}
       end
-      new_subject = subject_class.new
 
       existing_subject.to_s.should_not == "Subject is stubbed"
 
-      new_subject.to_s.should == "Subject is stubbed"
-      new_subject.class.should == subject_class
+      subject_new = subject_class.new
+      subject_new.to_s.should == "Subject is stubbed"
+      subject_new.class.should == subject_class
       class_called.should be_true
+
+      subject_allocate = subject_class.allocate
+      subject_allocate.to_s.should == "Subject is stubbed"
+      subject_allocate.class.should == subject_class
     end
   end
 
@@ -38,13 +45,17 @@ describe "new_instance_of" do
       subject_class = Class.new
       existing_subject = subject_class.new
       new_instance_of(subject_class, :to_s => "Subject is stubbed", :foobar => lambda {:baz})
-      new_subject = subject_class.new
 
       existing_subject.to_s.should_not == "Subject is stubbed"
       existing_subject.should_not respond_to(:foobar)
 
-      new_subject.to_s.should == "Subject is stubbed"
-      new_subject.foobar.should == :baz
+      subject_new = subject_class.new
+      subject_new.to_s.should == "Subject is stubbed"
+      subject_new.foobar.should == :baz
+      
+      subject_allocate = subject_class.allocate
+      subject_allocate.to_s.should == "Subject is stubbed"
+      subject_allocate.foobar.should == :baz
     end
   end
 end

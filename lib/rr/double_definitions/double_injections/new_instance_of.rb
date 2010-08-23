@@ -6,12 +6,15 @@ module RR
           include RR::Adapters::RRMethods
           def call(subject, stubbed_methods={})
             double_definition_create = DoubleDefinitionCreate.new.stub
-            stub(subject).new do |*args| # TODO: Need to stub allocate instead of new
-              subject = subject.allocate
-              add_stubbed_methods(subject, stubbed_methods)
-              add_method_chain_definition(subject, double_definition_create)
-              yield(subject) if block_given?
-              initialize_subject_instance(subject, args)
+            stub.proxy(subject).allocate do |instance|
+              add_stubbed_methods(instance, stubbed_methods)
+              add_method_chain_definition(instance, double_definition_create)
+              yield(instance) if block_given?
+              instance
+            end
+            stub(subject).new do |*args|
+              instance = subject.allocate
+              initialize_subject_instance(instance, args)
             end
             DoubleDefinitionCreateBlankSlate.new(double_definition_create)
           end
