@@ -16,7 +16,6 @@ module RR
         if Injections::DoubleInjection.exists?(subject_class, method_name)
           @double = find_double_to_attempt
           if double
-            call_yields
             return_value = extract_subject_from_return_value(call_implementation)
             if after_call_proc
               extract_subject_from_return_value(after_call_proc.call(return_value))

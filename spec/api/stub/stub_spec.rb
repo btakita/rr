@@ -123,4 +123,30 @@ describe "stub" do
       subject.foobar(4).should == :baz
     end
   end
+
+  context "stub that yields" do
+    context "when yields called without any arguments" do
+      it "yields only once" do
+        called_from_block = mock!.foo.once.subject
+        block_caller = stub!.bar.yields.subject
+        block_caller.bar { called_from_block.foo }
+      end
+    end
+
+    context "when yields called with an argument" do
+      it "yields only once" do
+        called_from_block = mock!.foo(1).once.subject
+        block_caller = stub!.bar.yields(1).subject
+        block_caller.bar { |argument| called_from_block.foo(argument) }
+      end
+    end
+
+    context "when yields calls are chained" do
+      it "yields several times" do
+        called_from_block = mock!.foo(1).once.then.foo(2).once.subject
+        block_caller = stub!.bar.yields(1).yields(2).subject
+        block_caller.bar { |argument| called_from_block.foo(argument) }
+      end
+    end
+  end
 end
