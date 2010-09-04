@@ -99,7 +99,6 @@ Gem::Specification.new do |s|
      "lib/rr/wildcard_matchers/range.rb",
      "lib/rr/wildcard_matchers/regexp.rb",
      "lib/rr/wildcard_matchers/satisfy.rb",
-     "scratch.rb",
      "spec/api/any_instance_of/all_instances_of_spec.rb",
      "spec/api/any_instance_of/any_instance_of_spec.rb",
      "spec/api/dont_allow/dont_allow_after_stub_spec.rb",
