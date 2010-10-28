@@ -1,6 +1,7 @@
 dir = File.dirname(__FILE__)
 require 'forwardable'
 
+require "#{dir}/rr/class_instance_method_defined"
 require "#{dir}/rr/blank_slate"
 
 require "#{dir}/rr/errors/rr_error"
@@ -47,7 +48,6 @@ require "#{dir}/rr/method_dispatches/method_missing_dispatch"
 require "#{dir}/rr/hash_with_object_id_key"
 require "#{dir}/rr/recorded_calls"
 require "#{dir}/rr/proc_from_block"
-require "#{dir}/rr/class_instance_method_defined"
 
 require "#{dir}/rr/double_definitions/double_definition_create_blank_slate"
 require "#{dir}/rr/double_definitions/double_definition_create"

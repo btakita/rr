@@ -16,6 +16,7 @@ module RR
           instances.include?(subject)
         end
       end)
+      include ClassInstanceMethodDefined
 
       attr_reader :subject_class
       def initialize(subject_class)
@@ -24,8 +25,8 @@ module RR
       end
 
       def bind
-        unless ClassInstanceMethodDefined.call(subject_class, original_method_alias_name, false)
-          unless ClassInstanceMethodDefined.call(subject_class, :singleton_method_added, false)
+        unless class_instance_method_defined(subject_class, original_method_alias_name, false)
+          unless class_instance_method_defined(subject_class, :singleton_method_added, false)
             @placeholder_method_defined = true
             subject_class.class_eval do
               def singleton_method_added(method_name)

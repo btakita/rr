@@ -12,6 +12,7 @@ module RR
           instances.include?(subject)
         end
       end)
+      include ClassInstanceMethodDefined
 
       attr_reader :subject_class
       def initialize(subject_class)
@@ -20,8 +21,8 @@ module RR
       end
 
       def bind
-        unless ClassInstanceMethodDefined.call(subject_class, original_method_alias_name)
-          unless ClassInstanceMethodDefined.call(subject_class, :method_missing)
+        unless class_instance_method_defined(subject_class, original_method_alias_name)
+          unless class_instance_method_defined(subject_class, :method_missing)
             @placeholder_method_defined = true
             subject_class.class_eval do
               def method_missing(method_name, *args, &block)

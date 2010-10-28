@@ -83,6 +83,7 @@ module RR
           end
         end
       end)
+      include ClassInstanceMethodDefined
 
       attr_reader :subject_class, :method_name, :doubles
 
@@ -178,7 +179,7 @@ module RR
       end
 
       def subject_has_original_method_missing?
-        ClassInstanceMethodDefined.call(subject_class, MethodDispatches::MethodMissingDispatch.original_method_missing_alias_name)
+        class_instance_method_defined(subject_class, MethodDispatches::MethodMissingDispatch.original_method_missing_alias_name)
       end
 
       def original_method_alias_name
