@@ -1,6 +1,6 @@
 module RR
   module Expectations
-    describe TimesCalledExpectation, :shared => true do
+    shared_examples_for TimesCalledExpectation do
       attr_reader :subject
       it_should_behave_like "Swapped Space"
       before do
