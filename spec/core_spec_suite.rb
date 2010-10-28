@@ -1,5 +1,4 @@
-require "rubygems"
-require "spec"
+require "#{File.dirname(__FILE__)}/spec_helper"
 
 class CoreExampleSuite
   def run
@@ -8,7 +7,7 @@ class CoreExampleSuite
     files.delete_if {|file| file.include?('test_unit/')}
     puts "Running Rspec Example Suite"
     files.each do |file|
-      require file
+      require File.expand_path(file)
 #      puts "require '#{file}'"
     end
   end
