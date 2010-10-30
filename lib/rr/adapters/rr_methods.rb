@@ -27,15 +27,12 @@ module RR
         double_definition_create.strong(subject, method_name, &definition_eval_block)
       end
 
-      def any_instance_of(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
-        double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
-        double_definition_create.any_instance_of(subject, method_name, &definition_eval_block)
-      end
-
       def instance_of(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
         double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
         double_definition_create.instance_of(subject, method_name, &definition_eval_block)
       end
+      alias_method :any_instance_of, :instance_of
+      alias_method :all_instances_of, :instance_of
 
       # Verifies all the DoubleInjection objects have met their
       # TimesCalledExpectations.

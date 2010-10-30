@@ -129,13 +129,11 @@ module RR
       end
 
       # DoubleInjection Strategies
-      def any_instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
+      def instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
         self.add_double_injection_strategy(::RR::DoubleDefinitions::Strategies::DoubleInjection::AnyInstanceOf, subject, method_name, &definition_eval_block)
       end
-
-      def instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
-        self.add_double_injection_strategy(::RR::DoubleDefinitions::Strategies::DoubleInjection::NewInstanceOf, subject, method_name, &definition_eval_block)
-      end
+      alias_method :any_instance_of, :instance_of
+      alias_method :all_instances_of, :instance_of
     end
   end
 end
