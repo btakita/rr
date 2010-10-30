@@ -7,7 +7,7 @@ class RspecExampleSuite
     dir = File.dirname(__FILE__)
     Dir["#{dir}/rr/rspec/**/*_spec.rb"].each do |file|
 #      puts "require '#{file}'"
-      require file
+      require File.expand_path(file)
     end
   end
 end

@@ -11,7 +11,7 @@ class TestUnitTestSuite
   def require_tests
     dir = File.dirname(__FILE__)
     Dir["#{dir}/rr/test_unit/**/*_test.rb"].each do |file|
-      require file
+      require File.expand_path(file)
     end
   end
 end
