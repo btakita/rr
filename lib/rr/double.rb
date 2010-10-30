@@ -116,12 +116,14 @@ module RR
     end
 
     def verify_method_signature
-      raise RR::Errors::SubjectDoesNotImplementMethodError unless definition.subject.respond_to?(double_injection.send(:original_method_alias_name))
+      unless double_injection.subject_has_original_method?
+        raise RR::Errors::SubjectDoesNotImplementMethodError
+      end
       raise RR::Errors::SubjectHasDifferentArityError unless arity_matches?
     end
 
     def subject_arity
-      definition.subject.method(double_injection.send(:original_method_alias_name)).arity
+      double_injection.original_method.arity
     end
 
     def subject_accepts_only_varargs?

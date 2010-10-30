@@ -20,7 +20,6 @@ module RR
             if !double_definition_create.no_subject? && !double_definition_create.subject.is_a?(Class)
               raise ArgumentError, "instance_of only accepts class objects"
             end
-#            subject, method_name
             double_injection = Injections::DoubleInjection.find_or_create(subject, method_name)
             Double.new(double_injection, definition)
           end

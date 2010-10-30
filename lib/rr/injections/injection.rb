@@ -18,6 +18,10 @@ module RR
         subject_has_method_defined?(original_method_alias_name)
       end
 
+      def original_method
+        subject_class.instance_method(original_method_alias_name)
+      end
+
       protected
       def subject_respond_to_method?(subject, method_name)
         subject_has_method_defined?(method_name) ||
