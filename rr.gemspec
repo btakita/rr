@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rr}
-  s.version = "1.0.0"
+  s.version = "1.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Takita"]
-  s.date = %q{2010-08-23}
+  s.date = %q{2010-10-30}
   s.description = %q{RR (Double Ruby) is a double framework that features a rich selection of double techniques and a terse syntax. http://xunitpatterns.com/Test%20Double.html}
   s.email = %q{brian@pivotallabs.com}
   s.extra_rdoc_files = [
@@ -36,11 +36,9 @@ Gem::Specification.new do |s|
      "lib/rr/double_definitions/double_definition_create_blank_slate.rb",
      "lib/rr/double_definitions/double_injections/any_instance_of.rb",
      "lib/rr/double_definitions/double_injections/instance.rb",
-     "lib/rr/double_definitions/double_injections/new_instance_of.rb",
      "lib/rr/double_definitions/strategies/double_injection/any_instance_of.rb",
      "lib/rr/double_definitions/strategies/double_injection/double_injection_strategy.rb",
      "lib/rr/double_definitions/strategies/double_injection/instance.rb",
-     "lib/rr/double_definitions/strategies/double_injection/new_instance_of.rb",
      "lib/rr/double_definitions/strategies/implementation/implementation_strategy.rb",
      "lib/rr/double_definitions/strategies/implementation/proxy.rb",
      "lib/rr/double_definitions/strategies/implementation/reimplementation.rb",
@@ -102,10 +100,9 @@ Gem::Specification.new do |s|
      "scratch.rb",
      "spec/api/any_instance_of/all_instances_of_spec.rb",
      "spec/api/any_instance_of/any_instance_of_spec.rb",
+     "spec/api/any_instance_of/instance_of_spec.rb",
      "spec/api/dont_allow/dont_allow_after_stub_spec.rb",
      "spec/api/mock/mock_spec.rb",
-     "spec/api/new_instance_of/instance_of_spec.rb",
-     "spec/api/new_instance_of/new_instance_of_spec.rb",
      "spec/api/proxy/proxy_spec.rb",
      "spec/api/spy/spy_spec.rb",
      "spec/api/strong/strong_spec.rb",
