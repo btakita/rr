@@ -183,11 +183,11 @@ module RR
             @klass = Class.new
           end
 
-          context "when passed no arguments" do
-            it "returns a DoubleDefinitiondouble_definition_create" do
-              instance_of.instance_of.should be_instance_of(DoubleDefinitionCreate)
-            end
-          end
+#          context "when passed no arguments" do
+#            it "returns a DoubleDefinitiondouble_definition_create" do
+#              instance_of.instance_of.should be_instance_of(DoubleDefinitionCreate)
+#            end
+#          end
 
           context "when passed a method_name argument" do
             it "creates a instance_of Double for method" do
@@ -237,7 +237,7 @@ module RR
                   :baz
                 end
                 mock(subject).foobar(1, 2)
-                
+
                 subject.foobar(1, 2)
                 lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
                 lambda {RR.verify}.should raise_error(RR::Errors::TimesCalledError)
