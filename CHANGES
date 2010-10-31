@@ -1,3 +1,7 @@
+1.0.1
+- Removed new_instance_of for Ruby 1.9.2 compatibility. instance_of is now an alias for any_instance_of.
+- Compatible with Ruby 1.9.2
+
 1.0.0
 - Added any_instance_of (aliased by all_instances_of), which binds methods directly to the class (instead of the eigenclass).
 - Subclasses of a injected class do not have their methods overridden.
