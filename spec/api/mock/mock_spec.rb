@@ -156,6 +156,16 @@ describe "mock" do
     end.should raise_error(RR::Errors::DoubleNotFoundError)
   end
 
+  it "expects a method call to a mock via another mock's block yield only once" do
+    cage = Object.new
+    cat = Object.new
+    mock(cat).miau    # should be expected to be called only once
+    mock(cage).find_cat.yields(cat)
+    mock(cage).cats
+    cage.find_cat { |c| c.miau }
+    cage.cats
+  end
+
   describe "on class method" do
     class SampleClass1
       def self.hello; "hello!"; end
