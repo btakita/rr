@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rr}
-  s.version = "1.0.1"
+  s.version = "1.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Takita"]
-  s.date = %q{2010-10-30}
+  s.date = %q{2010-11-01}
   s.description = %q{RR (Double Ruby) is a double framework that features a rich selection of double techniques and a terse syntax. http://xunitpatterns.com/Test%20Double.html}
   s.email = %q{brian@pivotallabs.com}
   s.extra_rdoc_files = [
@@ -97,6 +97,7 @@ Gem::Specification.new do |s|
      "lib/rr/wildcard_matchers/range.rb",
      "lib/rr/wildcard_matchers/regexp.rb",
      "lib/rr/wildcard_matchers/satisfy.rb",
+     "scratch.rb",
      "spec/api/any_instance_of/all_instances_of_spec.rb",
      "spec/api/any_instance_of/any_instance_of_spec.rb",
      "spec/api/any_instance_of/instance_of_spec.rb",
