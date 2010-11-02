@@ -1,3 +1,6 @@
+1.0.2
+- Fixed Two calls recorded to a mock expecting only one call when called via another mock's yield block (http://github.com/btakita/rr/issues/closed#issue/42). Patch by Eugene Pimenov (http://github.com/libc).
+
 1.0.1
 - Removed new_instance_of for Ruby 1.9.2 compatibility. instance_of is now an alias for any_instance_of.
 - Compatible with Ruby 1.9.2
