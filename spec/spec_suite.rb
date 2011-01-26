@@ -1,4 +1,5 @@
 require "rubygems"
+require "bundler"
 require "session"
 
 class ExampleSuite
