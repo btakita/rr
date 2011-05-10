@@ -29,9 +29,9 @@ module RR
           unless class_instance_method_defined(subject_class, :singleton_method_added, false)
             @placeholder_method_defined = true
             subject_class.class_eval do
-              def singleton_method_added(method_name)
-                super
-              end
+              #def singleton_method_added(method_name)
+              #  super
+              #end
             end
           end
 
