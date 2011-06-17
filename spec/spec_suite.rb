@@ -12,6 +12,7 @@ class ExampleSuite
     run_core_examples
     run_rspec_examples
     run_test_unit_examples
+    run_minitest_examples
   end
 
   def run_core_examples
@@ -24,6 +25,10 @@ class ExampleSuite
 
   def run_test_unit_examples
     run_suite("#{dir}/test_unit_spec_suite.rb") || raise("Test::Unit suite Failed")
+  end
+
+  def run_minitest_examples
+    run_suite("#{dir}/minitest_spec_suite.rb") || raise("MiniTest suite Failed")
   end
 
   def run_suite(path)
