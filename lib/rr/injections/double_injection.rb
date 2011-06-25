@@ -119,11 +119,15 @@ module RR
         self
       end
 
+      BoundObjects = {}
+
       def bind_method_that_self_destructs_and_delegates_to_method_missing
-        subject_class_object_id = subject_class.object_id
+        id = BoundObjects.size
+        BoundObjects[id] = subject_class
+
         subject_class.class_eval(<<-RUBY, __FILE__, __LINE__ + 1)
         def #{method_name}(*args, &block)
-          ObjectSpace._id2ref(#{subject_class_object_id}).class_eval do
+          ::RR::Injections::DoubleInjection::BoundObjects[#{id}].class_eval do
             remove_method(:#{method_name})
           end
           method_missing(:#{method_name}, *args, &block)
@@ -133,11 +137,14 @@ module RR
       end
 
       def bind_method
-        subject_class_object_id = subject_class.object_id
+        id = BoundObjects.size
+        BoundObjects[id] = subject_class
+
         subject_class.class_eval(<<-RUBY, __FILE__, __LINE__ + 1)
         def #{method_name}(*args, &block)
           arguments = MethodArguments.new(args, block)
-          RR::Injections::DoubleInjection.dispatch_method(self, ObjectSpace._id2ref(#{subject_class_object_id}), :#{method_name}, arguments.arguments, arguments.block)
+          obj = ::RR::Injections::DoubleInjection::BoundObjects[#{id}]
+          RR::Injections::DoubleInjection.dispatch_method(self, obj, :#{method_name}, arguments.arguments, arguments.block)
         end
         RUBY
         self
