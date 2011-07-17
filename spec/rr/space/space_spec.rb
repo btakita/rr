@@ -279,6 +279,13 @@ module RR
         subject_2.respond_to?(:singleton_method_added).should be_false
         Injections::SingletonMethodAddedInjection.exists?(subject_2).should be_false
       end
+
+      it "clears RR::Injections::DoubleInjection::BoundObjects" do
+        stub(subject).foobar
+        RR::Injections::DoubleInjection::BoundObjects.should_not be_empty
+        space.reset
+        RR::Injections::DoubleInjection::BoundObjects.should be_empty
+      end
     end
 
     describe "#reset_double" do
