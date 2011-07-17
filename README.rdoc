@@ -360,6 +360,7 @@ If you have directly contributed to RR and I missed you in this list, please let
 * Andreas Haller for patches
 * Aslak Hellesoy for Developing Rspec
 * Bryan Helmkamp for patches
+* Caleb Spare for patches
 * Christopher Redinger for patches
 * Dan North for syntax ideas
 * Dave Astels for some BDD inspiration
@@ -368,8 +369,10 @@ If you have directly contributed to RR and I missed you in this list, please let
 * Daniel Sudol for identifing performance issues with RR
 * Dmitry Ratnikov for patches
 * Eugene Pimenov for patches
+* Evan Phoenix for patches
 * Felix Morio for pairing with me
 * Gabriel Horner for patches
+* Gavin Miller for patches
 * Gerard Meszaros for his excellent book "xUnit Test Patterns"
 * James Mead for developing Mocha
 * Jeff Whitmire for documentation suggestions
