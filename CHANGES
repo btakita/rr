@@ -1,3 +1,9 @@
+1.0.3
+- Eliminate usage of ObjectSpace._id2ref (Patch Evan Phoenix)
+- Added minitest adapter (Patch Caleb Spare)
+- Added instructions on installing the gem (Patch Gavin Miller)
+- delete missing scratch.rb file from gemspec (Patch bonkydog)
+
 1.0.2
 - Fixed Two calls recorded to a mock expecting only one call when called via another mock's yield block (http://github.com/btakita/rr/issues/closed#issue/42). Patch by Eugene Pimenov (http://github.com/libc).
 
