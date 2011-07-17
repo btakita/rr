@@ -4,7 +4,7 @@ module RR
   module Injections
     describe DoubleInjection, "#verify" do
       it_should_behave_like "Swapped Space"
-      attr_reader :space, :subject, :method_name, :double_injection
+      attr_reader :subject, :method_name, :double_injection
       before do
         @subject = Object.new
         @method_name = :foobar

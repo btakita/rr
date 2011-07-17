@@ -26,8 +26,6 @@ module RR
         @verify_method_signature = false
       end
       
-      attr_reader :argument_expectation
-
       def subject
         double_definition_create.subject
       end
