@@ -222,7 +222,7 @@ Allows stubs to be added to all instances of a class. It works by binding to met
 This allows all instances (excluding instances with the method redefined in the eigenclass) to get the change.
 
 Due to Ruby runtime limitations, mocks will not work as expected. It's not obviously feasible (without an ObjectSpace lookup) to support all of RR's methods (such as mocking).
-ObjectSpace is not readily supported in jRuby, since it causes general slowness in the intreperter.
+ObjectSpace is not readily supported in jRuby, since it causes general slowness in the interpreter.
 I'm of the opinion that test speed is more important than having mocks on all instances of a class.
 If there is another solution, I'd be willing to add it.
 
