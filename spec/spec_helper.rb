@@ -10,7 +10,11 @@ Spec::Runner.configure do |config|
 end
 
 describe "Swapped Space", :shared => true do
-  attr_reader :space, :original_space
+  attr_reader :original_space
+  unless instance_methods.include?(:space)
+    attr_reader :space
+  end
+
   before do
     @original_space = RR::Space.instance
     RR::Space.instance = RR::Space.new
