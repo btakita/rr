@@ -111,7 +111,9 @@ module RR
     end
 
     def reset_bound_objects
-      RR::Injections::DoubleInjection::BoundObjects.clear
+      # TODO: Figure out how to clear and reset these bindings
+      #RR::Injections::DoubleInjection::BoundObjects.clear
+      #RR::Injections::DoubleInjection::MethodMissingInjection.clear
     end
   end
 end
