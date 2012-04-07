@@ -115,6 +115,14 @@ Rspec mocks:
   my_object.should_receive(:hello).with('bob', 'jane').and_return('Hello Bob and Jane')
   my_object.should_receive(:hello).with('bob', 'jane') {'Hello Bob and Jane'} #rspec also supports blocks for the return value
 
+=== mocking method which yields a block
+RR supports mocking methods call which yields a passed block.
+
+  mock(my_object).method_with_block.yields(yield_arg) {return_value}
+  my_object.method_with_block do |something|
+    # do some stuff
+  end
+
 == Using RR
 To create a double on an object, you can use the following methods:
 * mock or mock!
