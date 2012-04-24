@@ -91,6 +91,28 @@ module RR
               subject.methods.should_not include('foobar')
             end
           end
+
+        end
+
+        context "when the subject is using method missing" do
+          it "properly resets the mocked method" do
+            delegator = Class.new{
+              def initialize other
+                @other = other
+              end
+              def method_missing method, *args, &block
+                @other.send(method, *args, &block)
+              end
+            }
+            array_delegator = delegator.new([1,2,3])
+
+            array_delegator.size.should == 3
+            mock(array_delegator).size{ 12 }
+            array_delegator.size.should == 12
+            RR.reset
+            array_delegator.size.should == 3
+          end
+
         end
 
         context "when the subject redefines respond_to?" do
