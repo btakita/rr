@@ -8,3 +8,4 @@ previous_failures.txt
 pkg
 pmip
 scratch.rb
+Gemfile.lock
