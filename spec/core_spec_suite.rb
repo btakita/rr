@@ -1,5 +1,4 @@
-require "rubygems"
-require "spec"
+require "#{File.dirname(__FILE__)}/spec_helper"
 
 class CoreExampleSuite
   def run
