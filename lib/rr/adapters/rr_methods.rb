@@ -36,12 +36,12 @@ module RR
 
       # Verifies all the DoubleInjection objects have met their
       # TimesCalledExpectations.
-      def verify
+      def verify_rr
         RR::Space.instance.verify_doubles
       end
 
       # Resets the registered Doubles and ordered Doubles
-      def reset
+      def reset_rr
         RR::Space.instance.reset
       end
 
