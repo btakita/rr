@@ -42,6 +42,19 @@ Currently RR implements mocks, stubs, proxies, and spies. Fakes usually require 
     # config.mock_with RR::Adapters::Rspec
   end
 
+=== minitest
+  class MiniTest::Unit::TestCase
+    include RR::Adapters::MiniTest
+  end
+
+=== minispec
+  class MockSpec < MiniTest::Spec
+    include RR::Adapters::RRMethods
+  end
+
+  # include RR mocks in every description
+  MiniTest::Spec.register_spec_type(/.*/, MockSpec)
+
 == standalone
   extend RR::Adapters::RRMethods
   mock(object).method_name {:return_value}
