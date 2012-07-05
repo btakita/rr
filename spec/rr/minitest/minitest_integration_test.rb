@@ -42,7 +42,7 @@ class MiniTestIntegrationTest < MiniTest::Unit::TestCase
 
   def test_times_called_verification
     mock(@subject).foobar(1, 2) {:baz}
-    assert_raises RR::Errors::TimesCalledError do
+    assert_raises MiniTest::Assertion do
       teardown
     end
   end
