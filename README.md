@@ -10,9 +10,9 @@ gem install rr
 ~~~
 
 
-## More Information
+## More information
 
-### Mailing Lists
+### Mailing lists
 
 * double-ruby-users@rubyforge.org
 * double-ruby-devel@rubyforge.org
@@ -22,7 +22,7 @@ gem install rr
 * http://rubyforge.org/projects/double-ruby
 * http://github.com/btakita/rr
 
-## What is a Test Double?
+## What is a test double?
 
 A test double is a generalization of something that replaces a real
 object to make it easier to test another object. Its like a stunt
@@ -40,7 +40,7 @@ Currently RR implements mocks, stubs, proxies, and spies. Fakes usually require
 custom code, so it is beyond the scope of RR.
 
 
-## Using RR
+## Plugging RR into your test framework
 
 ### Test::Unit
 
@@ -70,23 +70,28 @@ RR.verify   # Verifies the Double expectations are satisfied
 ~~~
 
 
-## Syntax Between RR and Other Double/Mock Frameworks
+## Syntax between RR and other double/mock frameworks
 
-### Terse Syntax
+### Terse syntax
 
 One of the goals of RR is to make doubles more scannable. This is accomplished
 by making the double declaration look as much as the actual method invocation as
 possible. Here is RR compared to other mock frameworks:
 
 ~~~ ruby
-flexmock(User).should_receive(:find).with('42').and_return(jane)  # Flexmock
-User.should_receive(:find).with('42').and_return(jane)  # RSpec
-User.expects(:find).with('42').returns {jane}  # Mocha
-User.should_receive(:find).with('42') {jane}  # RSpec using return value blocks
-mock(User).find('42') {jane}  # RR
+# Flexmock
+flexmock(User).should_receive(:find).with('42').and_return(jane)
+# RSpec
+User.should_receive(:find).with('42').and_return(jane)
+# Mocha
+User.expects(:find).with('42').returns { jane }
+# rspec-mocks (using return value blocks)
+User.should_receive(:find).with('42') { jane }
+# RR
+mock(User).find('42') { jane }
 ~~~
 
-### Double Injections (aka Partial Mocking)
+### Double injections (aka partial mocking)
 
 RR utilizes a technique known as "double injection".
 
@@ -102,7 +107,7 @@ my_mocked_object = mock()
 my_mocked_object.expects(:hello)
 ~~~
 
-### Pure Mock Objects
+### Pure mock objects
 
 If you wish to use objects for the sole purpose of being a mock, you can do so
 by creating an empty object:
@@ -111,24 +116,24 @@ by creating an empty object:
 mock(my_mock_object = Object.new).hello
 ~~~
 
-or by using `mock!`:
+or by using #mock!:
 
 ~~~ ruby
 # Mocks the #hello method and retrieves that object via the #subject method
 my_mock_object = mock!.hello.subject
 ~~~
 
-### No `should_receive` or `expects` method
+### No #should_receive or #expects method
 
 RR uses method_missing to set your method expectation. This means you do not
-need to use a method such as `should_receive` or `expects`.
+need to use a method such as #should_receive or #expects.
 
 ~~~ ruby
-# In Mocha, #expects sets the #hello method expectation
+# In Mocha, #expects sets the #hello method expectation:
 my_object.expects(:hello)
-# Using rspec-mocks, #should_receive sets the #hello method expectation
+# Using rspec-mocks, #should_receive sets the #hello method expectation:
 my_object.should_receive(:hello)
-# Here's how you say it using RR
+# And here's how you say it using RR:
 mock(my_object).hello
 ~~~
 
@@ -180,7 +185,7 @@ with #mock or #stub. You can also chain #proxy and #instance_of together.
 The ! (bang) version of these methods causes the subject object of the Double to
 be instantiated.
 
-### mock
+### #mock
 
 \#mock replaces the method on the object with an expectation and implementation.
 The expectations are a mock will be called with certain arguments a certain
@@ -192,19 +197,19 @@ mock is.
 
 The following example sets an expectation that the view will receive a method
 call to #render with the arguments `{:partial => "user_info"}` once. When the
-method is called, "Information" is returned.
+method is called, `"Information"` is returned.
 
 ~~~ ruby
 view = controller.template
 mock(view).render(:partial => "user_info") {"Information"}
 ~~~
 
-You can also allow any number of arguments to be passed into the mock. Like
+You can also allow any number of arguments to be passed into the mock like
 this:
 
 ~~~ ruby
 mock(view).render.with_any_args.twice do |*args|
-  if args.first == {:partial => "user_info}
+  if args.first == {:partial => "user_info"}
     "User Info"
   else
     "Stuff in the view #{args.inspect}"
@@ -212,7 +217,7 @@ mock(view).render.with_any_args.twice do |*args|
 end
 ~~~
 
-### stub
+### #stub
 
 \#stub replaces the method on the object with only an implementation. You can
 still use arguments to differentiate which stub gets invoked.
@@ -234,9 +239,9 @@ stub(User).find do |id|
 end
 ~~~
 
-### dont_allow (aliased with do_not_allow, dont_call, and do_not_call)
+### #dont_allow (aliased with #do_not_allow, #dont_call, and #do_not_call)
 
-dont_allow sets an expectation on the Double that it will never be called. If
+\#dont_allow sets an expectation on the Double that it will never be called. If
 the Double actually does end up being called, a TimesCalledError is raised.
 
 ~~~ ruby
@@ -244,18 +249,18 @@ dont_allow(User).find('42')
 User.find('42') # raises a TimesCalledError
 ~~~
 
-### mock.proxy
+### `mock.proxy`
 
-mock.proxy replaces the method on the object with an expectation,
-implementation, and also invokes the actual method. mock.proxy also intercepts
+`mock.proxy` replaces the method on the object with an expectation,
+implementation, and also invokes the actual method. `mock.proxy` also intercepts
 the return value and passes it into the return value block.
 
 The following example makes sets an expectation that `view.render({:partial =>
 "right_navigation"})` gets called once and returns the actual content of the
 rendered partial template. A call to `view.render({:partial => "user_info"})`
-will render the user_info partial template and send the content into the block
-and is represented by the `html` variable. An assertion is done on the html and
-"Different html" is returned.
+will render the "user_info" partial template and send the content into the block
+and is represented by the `html` variable. An assertion is done on the value of
+`html` and `"Different html"` is returned.
 
 ~~~ ruby
 view = controller.template
@@ -266,10 +271,10 @@ mock.proxy(view).render(:partial => "user_info") do |html|
 end
 ~~~
 
-You can also use mock.proxy to set expectations on the returned value. In the
+You can also use `mock.proxy` to set expectations on the returned value. In the
 following example, a call to User.find('5') does the normal ActiveRecord
 implementation and passes the actual value, represented by the variable `bob`,
-into the block. `bob` is then set with a mock.proxy for projects to return only
+into the block. `bob` is then set with a `mock.proxy` for projects to return only
 the first 3 projects. `bob` is also mocked so that #valid? returns false.
 
 ~~~ ruby
@@ -282,10 +287,10 @@ mock.proxy(User).find('5') do |bob|
 end
 ~~~
 
-### stub.proxy
+### `stub.proxy`
 
 Intercept the return value of a method call. The following example verifies
-render partial will be called and renders the partial.
+`render(:partial)` will be called and renders the partial.
 
 ~~~ ruby
 view = controller.template
@@ -295,7 +300,7 @@ stub.proxy(view).render(:partial => "user_info") do |html|
 end
 ~~~
 
-### any_instance_of
+### #any_instance_of
 
 Allows stubs to be added to all instances of a class. It works by binding to
 methods from the class itself, rather than the eigenclass. This allows all
@@ -304,14 +309,14 @@ get the change.
 
 Due to Ruby runtime limitations, mocks will not work as expected. It's not
 obviously feasible (without an ObjectSpace lookup) to support all of RR's
-methods (such as mocking). ObjectSpace is not readily supported in jRuby, since
+methods (such as mocking). ObjectSpace is not readily supported in JRuby, since
 it causes general slowness in the interpreter. I'm of the opinion that test
 speed is more important than having mocks on all instances of a class. If there
 is another solution, I'd be willing to add it.
 
 ~~~ ruby
 any_instance_of(User) do |u|
-  stub(u).valid? {false}
+  stub(u).valid? { false }
 end
 # or
 any_instance_of(User, :valid? => false)
@@ -319,7 +324,7 @@ any_instance_of(User, :valid? => false)
 any_instance_of(User, :valid? => lambda { false })
 ~~~
 
-### new_instance_of
+### #new_instance_of
 
 Stubs the new method of the class and allows doubles to be bound to new instances.
 
@@ -335,8 +340,8 @@ mock.instance_of(User).valid? { false }
 
 ### Spies
 
-Adding a DoubleInjection to an Object + Method (done by stub, mock, or
-dont_allow) causes RR to record any method invocations to the Object + method.
+Adding a DoubleInjection to an object + method (done by #stub, #mock, or
+\#dont_allow) causes RR to record any method invocations to the object + method.
 Assertions can then be made on the recorded method calls.
 
 #### Test::Unit
@@ -345,8 +350,8 @@ Assertions can then be made on the recorded method calls.
 subject = Object.new
 stub(subject).foo
 subject.foo(1)
-assert_received(subject) {|subject| subject.foo(1)}
-assert_received(subject) {|subject| subject.bar} # This fails
+assert_received(subject) {|subject| subject.foo(1) }
+assert_received(subject) {|subject| subject.bar }  # This fails
 ~~~
 
 #### RSpec
@@ -356,12 +361,12 @@ subject = Object.new
 stub(subject).foo
 subject.foo(1)
 subject.should have_received.foo(1)
-subject.should have_received.bar # this fails
+subject.should have_received.bar  # This fails
 ~~~
 
-### Block Syntax
+### Block syntax
 
-The block syntax has two modes
+The block syntax has two modes:
 
 * A normal block mode with a DoubleDefinitionCreatorProxy argument:
 
@@ -386,10 +391,10 @@ The block syntax has two modes
   end
   ~~~
 
-### Block Syntax with explicit DoubleDefinitionCreatorProxy argument
+### Block syntax with explicit DoubleDefinitionCreatorProxy argument
 
 
-### Double Graphs
+### Double graphs
 
 RR has a method-chaining API support for double graphs. For example, let's say
 you want an object to receive a method call to #foo, and have the return value
@@ -398,48 +403,48 @@ receive a method call to #bar.
 In RR, you would do:
 
 ~~~ ruby
-stub(object).foo.stub!.bar {:baz}
-object.foo.bar # :baz
-# or
-stub(object).foo {stub!.bar {:baz}}
-object.foo.bar # :baz
-# or
-bar = stub!.bar {:baz}
-stub(object).foo {bar}
-object.foo.bar # :baz
+stub(object).foo.stub!.bar { :baz }
+object.foo.bar  #=> :baz
+# or:
+stub(object).foo { stub!.bar {:baz} }
+object.foo.bar  #=> :baz
+# or:
+bar = stub!.bar { :baz }
+stub(object).foo { bar }
+object.foo.bar  #=> :baz
 ~~~
 
-### Argument Wildcard matchers
+### Argument wildcard matchers
 
-#### anything
+#### #anything
 
 ~~~ ruby
 mock(object).foobar(1, anything)
 object.foobar(1, :my_symbol)
 ~~~
 
-#### is_a
+#### #is_a
 
 ~~~ ruby
 mock(object).foobar(is_a(Time))
 object.foobar(Time.now)
 ~~~
 
-#### numeric
+#### #numeric
 
 ~~~ ruby
 mock(object).foobar(numeric)
 object.foobar(99)
 ~~~~
 
-#### boolean
+#### #boolean
 
 ~~~ ruby
 mock(object).foobar(boolean)
 object.foobar(false)
 ~~~
 
-#### duck_type
+#### #duck_type
 
 ~~~ ruby
 mock(object).foobar(duck_type(:walk, :talk))
@@ -463,35 +468,35 @@ mock(object).foobar(/on/)
 object.foobar("ruby on rails")
 ~~~
 
-#### hash_including
+#### #hash_including
 
 ~~~ ruby
 mock(object).foobar(hash_including(:red => "#FF0000", :blue => "#0000FF"))
 object.foobar({:red => "#FF0000", :blue => "#0000FF", :green => "#00FF00"})
 ~~~
 
-#### satisfy
+#### #satisfy
 
 ~~~ ruby
 mock(object).foobar(satisfy {|arg| arg.length == 2})
 object.foobar("xy")
 ~~~
 
-#### Writing your own Argument Matchers
+#### Writing your own argument matchers
 
 Writing a custom argument wildcard matcher is not difficult.  See
 RR::WildcardMatchers for details.
 
-### Invocation Amount Wildcard Matchers
+### Invocation amount wildcard matchers
 
-#### any_times
+#### #any_times
 
 ~~~ ruby
-mock(object).method_name(anything).times(any_times) {return_value}
+mock(object).method_name(anything).times(any_times) { return_value }
 ~~~
 
 
-## Special Thanks To
+## Special thanks to
 
 With any development effort, there are countless people who have contributed to
 making it possible. We all are standing on the shoulders of giants. If you have
@@ -499,7 +504,7 @@ directly contributed to RR and I missed you in this list, please let me know and
 I will add you. Thanks!
 
 * Andreas Haller for patches
-* Aslak Hellesoy for Developing Rspec
+* Aslak Hellesoy for Developing RSpec
 * Bryan Helmkamp for patches
 * Caleb Spare for patches
 * Christopher Redinger for patches
@@ -529,6 +534,7 @@ I will add you. Thanks!
 * Parker Thompson for pairing with me
 * Phil Darnowsky for patches
 * Pivotal Labs for sponsoring RR development
-* Steven Baker for Developing Rspec
+* Steven Baker for Developing RSpec
 * Tatsuya Ono for patches
 * Tuomas Kareinen for a bug report
+
