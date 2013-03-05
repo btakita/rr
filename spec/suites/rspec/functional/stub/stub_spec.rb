@@ -23,6 +23,11 @@ describe "stub" do
 
   subject { Object.new }
 
+  it "creates a stub DoubleInjection Double" do
+    stub(subject).foobar {:baz}
+    expect(subject.foobar("any", "thing")).to eq :baz
+  end
+
   it "stubs via inline call" do
     stub(subject).to_s {"a value"}
     expect(subject.to_s).to eq "a value"

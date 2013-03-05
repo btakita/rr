@@ -9,6 +9,11 @@ describe "mock" do
 
   subject { Object.new }
 
+  it "creates a mock DoubleInjection Double" do
+    mock(subject).foobar(1, 2) {:baz}
+    expect(subject.foobar(1, 2)).to eq :baz
+  end
+
   it "mocks via inline call" do
     mock(subject).to_s {"a value"}
     expect(subject.to_s).to eq "a value"
