@@ -2,6 +2,7 @@ module RR
   module MethodDispatches
     class MethodDispatch < BaseMethodDispatch
       attr_reader :double_injection, :subject
+
       def initialize(double_injection, subject, args, block)
         @double_injection, @subject, @args, @block = double_injection, subject, args, block
         @double = find_double_to_attempt
@@ -34,7 +35,7 @@ module RR
         end
       end
 
-      protected
+    protected
       def call_implementation
         if implementation_is_original_method?
           call_original_method

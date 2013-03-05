@@ -22,7 +22,7 @@ module RR
         subject_class.instance_method(original_method_alias_name)
       end
 
-      protected
+    protected
       def subject_respond_to_method?(subject, method_name)
         subject_has_method_defined?(method_name) ||
           class_instance_method_defined(subject_class, :respond_to?) &&

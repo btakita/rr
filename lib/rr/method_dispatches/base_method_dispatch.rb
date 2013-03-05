@@ -10,7 +10,7 @@ module RR
         raise NotImplementedError
       end
 
-      protected
+    protected
       def find_double_to_attempt
         matches = DoubleMatches.new(doubles).find_all_matches(args)
 

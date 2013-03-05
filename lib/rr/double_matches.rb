@@ -5,6 +5,7 @@ module RR
                 :exact_non_terminal_doubles_to_attempt,
                 :wildcard_terminal_doubles_to_attempt,
                 :wildcard_non_terminal_doubles_to_attempt
+
     def initialize(doubles) #:nodoc:
       @doubles = doubles
       @matching_doubles = []

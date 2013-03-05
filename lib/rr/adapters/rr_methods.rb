@@ -2,6 +2,7 @@ module RR
   module Adapters
     module RRMethods
       include ::RR::DoubleDefinitions::Strategies::StrategyMethods
+
       def mock(subject=DoubleDefinitions::DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)
         double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
         double_definition_create.mock(subject, method_name, &definition_eval_block)
@@ -140,6 +141,7 @@ module RR
       end
     end
   end
+
   module Extensions
     InstanceMethods = Adapters::RRMethods
   end

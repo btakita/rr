@@ -2,6 +2,7 @@ module RR
   module DoubleDefinitions
     class DoubleDefinition #:nodoc:
       ORIGINAL_METHOD = Object.new
+
       attr_accessor(
         :argument_expectation,
         :times_matcher,
@@ -25,7 +26,7 @@ module RR
         @verbose = false
         @verify_method_signature = false
       end
-      
+
       def subject
         double_definition_create.subject
       end
@@ -33,14 +34,14 @@ module RR
       def root_subject
         double_definition_create.root_subject
       end
-      
+
       module ArgumentDefinitionConstructionMethods
         # Double#with sets the expectation that the Double will receive
         # the passed in arguments.
         #
         # Passing in a block sets the return value.
         #
-        #   mock(subject).method_name.with(1, 2) {:return_value}        
+        #   mock(subject).method_name.with(1, 2) {:return_value}
         def with(*args, &return_value_block)
           @argument_expectation = Expectations::ArgumentEqualityExpectation.new(*args)
           install_method_callback return_value_block
@@ -69,7 +70,7 @@ module RR
           @argument_expectation = Expectations::ArgumentEqualityExpectation.new()
           install_method_callback return_value_block
           self
-        end        
+        end
       end
       include ArgumentDefinitionConstructionMethods
 
@@ -102,7 +103,7 @@ module RR
         #
         # Passing in a block sets the return value.
         #
-        #   mock(subject).method_name.twice {:return_value}        
+        #   mock(subject).method_name.twice {:return_value}
         def twice(&return_value_block)
           @times_matcher = TimesCalledMatchers::IntegerMatcher.new(2)
           install_method_callback return_value_block
@@ -128,7 +129,7 @@ module RR
         #
         # Passing in a block sets the return value.
         #
-        #   mock(subject).method_name.at_most(4) {:return_value}        
+        #   mock(subject).method_name.at_most(4) {:return_value}
         def at_most(number, &return_value_block)
           @times_matcher = TimesCalledMatchers::AtMostMatcher.new(number)
           install_method_callback return_value_block
@@ -141,7 +142,7 @@ module RR
         #
         # Passing in a block sets the return value.
         #
-        #   mock(subject).method_name.any_number_of_times        
+        #   mock(subject).method_name.any_number_of_times
         def any_number_of_times(&return_value_block)
           @times_matcher = TimesCalledMatchers::AnyTimesMatcher.new
           install_method_callback return_value_block
@@ -154,7 +155,7 @@ module RR
         #
         # Passing in a block sets the return value.
         #
-        #   mock(subject).method_name.times(4) {:return_value}        
+        #   mock(subject).method_name.times(4) {:return_value}
         def times(matcher_value, &return_value_block)
           @times_matcher = TimesCalledMatchers::TimesCalledMatcher.create(matcher_value)
           install_method_callback return_value_block
@@ -269,8 +270,8 @@ module RR
           self
         end
         alias_method :strong, :verify_method_signature
-        
-        protected
+
+      protected
         def install_method_callback(block)
           if block
             if implementation_is_original_method?
@@ -323,14 +324,15 @@ module RR
         def verify_method_signature?
           !!@verify_method_signature
         end
-        alias_method :strong?, :verify_method_signature?        
+        alias_method :strong?, :verify_method_signature?
 
-        protected
+      protected
         def implementation_strategy
           double_definition_create.implementation_strategy
         end
       end
       include StateQueryMethods
+
       include ::RR::DoubleDefinitions::Strategies::StrategyMethods
 
       def mock(subject=DoubleDefinitionCreate::NO_SUBJECT, method_name=nil, &definition_eval_block)

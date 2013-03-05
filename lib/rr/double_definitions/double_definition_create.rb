@@ -51,7 +51,7 @@ module RR
           subject.__id__ === NO_SUBJECT.__id__
         end
 
-        protected
+      protected
         def add_verification_strategy(verification_strategy_class, subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
           add_strategy(subject, method_name, definition_eval_block) do
             self.verification_strategy = verification_strategy_class.new(self)
@@ -105,8 +105,10 @@ module RR
       class DoubleDefinitionCreateError < Errors::RRError
       end
 
-      # Verification Strategies
+      ## Verification Strategies
+
       include ::RR::DoubleDefinitions::Strategies::StrategyMethods
+
       def mock(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
         self.add_verification_strategy(::RR::DoubleDefinitions::Strategies::Verification::Mock, subject, method_name, &definition_eval_block)
       end
@@ -119,7 +121,8 @@ module RR
         self.add_verification_strategy(::RR::DoubleDefinitions::Strategies::Verification::DontAllow, subject, method_name, &definition_eval_block)
       end
 
-      # Implementation Strategies
+      ## Implementation Strategies
+
       def proxy(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
         self.add_implementation_strategy(::RR::DoubleDefinitions::Strategies::Implementation::Proxy, subject, method_name, &definition_eval_block)
       end
@@ -128,7 +131,8 @@ module RR
         self.add_implementation_strategy(::RR::DoubleDefinitions::Strategies::Implementation::StronglyTypedReimplementation, subject, method_name, &definition_eval_block)
       end
 
-      # DoubleInjection Strategies
+      ## DoubleInjection Strategies
+
       def instance_of(subject=NO_SUBJECT, method_name=nil, &definition_eval_block)
         self.add_double_injection_strategy(::RR::DoubleDefinitions::Strategies::DoubleInjection::AnyInstanceOf, subject, method_name, &definition_eval_block)
       end

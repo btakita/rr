@@ -14,7 +14,7 @@ module RR
         'boolean'
       end
 
-      protected
+    protected
       def is_a_boolean?(subject)
         subject.is_a?(TrueClass) || subject.is_a?(FalseClass)
       end

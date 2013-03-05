@@ -13,7 +13,7 @@ module RR
       end
       attr_writer :instance
 
-      protected
+    protected
       def method_missing(method_name, *args, &block)
         instance.__send__(method_name, *args, &block)
       end
@@ -21,6 +21,7 @@ module RR
 
     attr_reader :ordered_doubles, :recorded_calls
     attr_accessor :trim_backtrace
+
     def initialize
       @ordered_doubles = []
       @trim_backtrace = false
@@ -86,7 +87,7 @@ module RR
       ]
     end
 
-    protected
+  protected
     # Removes the ordered Doubles from the list
     def reset_ordered_doubles
       @ordered_doubles.clear

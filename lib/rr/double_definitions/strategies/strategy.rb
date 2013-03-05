@@ -3,21 +3,22 @@ module RR
     module Strategies
       class Strategy
         attr_reader :double_definition_create, :definition, :method_name, :args, :handler
+
         include Space::Reader
 
         def initialize(double_definition_create)
           @double_definition_create = double_definition_create
         end
-        
+
         def call(definition, method_name, args, handler)
           @definition, @method_name, @args, @handler = definition, method_name, args, handler
           do_call
         end
 
         def verify_subject(subject)
-        end  
+        end
 
-        protected
+      protected
         def do_call
           raise NotImplementedError
         end

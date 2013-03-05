@@ -2,6 +2,7 @@ module RR
   module Adapters
     module MiniTest
       include RRMethods
+
       def self.included(mod)
         RR.trim_backtrace = true
         mod.class_eval do

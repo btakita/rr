@@ -6,9 +6,10 @@ module RR
           include RR::Adapters::RRMethods
 
           def call(subject_class, stubbed_methods=nil, &block)
-            ::RR::DoubleDefinitions::DoubleDefinitionCreate.set_default_double_injection_strategy(lambda do |double_definition_create|
+            strategy_lambda = lambda do |double_definition_create|
               ::RR::DoubleDefinitions::Strategies::DoubleInjection::AnyInstanceOf.new(double_definition_create)
-            end) do
+            end
+            ::RR::DoubleDefinitions::DoubleDefinitionCreate.set_default_double_injection_strategy(strategy_lambda) do
               if stubbed_methods
                 subject_class.class_eval do
                   stubbed_methods.each do |name, value|

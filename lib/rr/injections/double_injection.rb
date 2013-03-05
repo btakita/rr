@@ -86,6 +86,7 @@ module RR
           end
         end
       end)
+
       include ClassInstanceMethodDefined
 
       attr_reader :subject_class, :method_name, :doubles
@@ -141,11 +142,11 @@ module RR
         BoundObjects[id] = subject_class
 
         subject_class.class_eval(<<-RUBY, __FILE__, __LINE__ + 1)
-        def #{method_name}(*args, &block)
-          arguments = MethodArguments.new(args, block)
-          obj = ::RR::Injections::DoubleInjection::BoundObjects[#{id}]
-          RR::Injections::DoubleInjection.dispatch_method(self, obj, :#{method_name}, arguments.arguments, arguments.block)
-        end
+          def #{method_name}(*args, &block)
+            arguments = MethodArguments.new(args, block)
+            obj = ::RR::Injections::DoubleInjection::BoundObjects[#{id}]
+            RR::Injections::DoubleInjection.dispatch_method(self, obj, :#{method_name}, arguments.arguments, arguments.block)
+          end
         RUBY
         self
       end
@@ -203,7 +204,7 @@ module RR
         @dispatch_method_delegates_to_dispatch_original_method = nil
       end
 
-      protected
+    protected
       def deferred_bind_method
         unless subject_has_method_defined?(original_method_alias_name)
           bind_method_with_alias

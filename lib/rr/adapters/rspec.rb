@@ -9,12 +9,15 @@ module RR
       end
 
       include RRMethods
+
       def setup_mocks_for_rspec
         RR.reset
       end
+
       def verify_mocks_for_rspec
         RR.verify
       end
+
       def teardown_mocks_for_rspec
         RR.reset
       end

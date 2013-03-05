@@ -8,6 +8,7 @@ module RR
       end)
 
       attr_reader :subject, :subject_class, :method_name
+
       def initialize(subject, subject_class, method_name, args, block)
         @subject, @subject_class, @method_name, @args, @block = subject, subject_class, method_name, args, block
       end
@@ -36,7 +37,7 @@ module RR
         end
       end
 
-      protected
+    protected
       def call_implementation
         if implementation_is_original_method?
           space.record_call(subject, method_name, args, block)

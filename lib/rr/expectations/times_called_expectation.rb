@@ -40,7 +40,7 @@ module RR
         times_matcher.terminal?
       end
 
-      protected
+    protected
       def times_matcher
         double.definition.times_matcher
       end

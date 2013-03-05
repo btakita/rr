@@ -17,6 +17,7 @@ module RR
     end)
 
     attr_reader :times_called, :double_injection, :definition, :times_called_expectation
+
     include Space::Reader
 
     def initialize(double_injection, definition)
@@ -94,7 +95,7 @@ module RR
       definition.implementation_is_original_method?
     end
 
-    protected
+  protected
     def ordered?
       definition.ordered?
     end

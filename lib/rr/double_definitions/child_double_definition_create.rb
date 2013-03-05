@@ -2,6 +2,7 @@ module RR
   module DoubleDefinitions
     class ChildDoubleDefinitionCreate < DoubleDefinitionCreate # :nodoc
       attr_reader :parent_double_definition
+
       def initialize(parent_double_definition)
         @parent_double_definition = parent_double_definition
         super()
@@ -15,11 +16,11 @@ module RR
         raise NoMethodError
       end
 
-      protected
+    protected
       def add_strategy(subject, method_name, definition_eval_block, &block)
         super do
           block.call
-          parent_double_definition.implemented_by(lambda {|*args|subject})
+          parent_double_definition.implemented_by(lambda {|*args| subject })
         end
       end
     end

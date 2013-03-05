@@ -35,7 +35,7 @@ module RR
         "#{@times.inspect} times"
       end
 
-      protected
+    protected
       def pluralized_time(times_called)
         (times_called == 1) ? "time" : "times"
       end

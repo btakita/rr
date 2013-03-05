@@ -4,10 +4,10 @@ module RR
       module StrategyMethods
         extend(Module.new do
           def lately_bound_alias_method(target_method_name, source_method_name)
-            module_eval((<<-METHOD), __FILE__, __LINE__+1)
-            def #{target_method_name}(*args, &block)
-              #{source_method_name}(*args, &block)
-            end
+            module_eval(<<-METHOD, __FILE__, __LINE__+1)
+              def #{target_method_name}(*args, &block)
+                #{source_method_name}(*args, &block)
+              end
             METHOD
           end
         end)

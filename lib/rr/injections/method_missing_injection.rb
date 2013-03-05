@@ -12,9 +12,13 @@ module RR
           instances.include?(subject)
         end
       end)
+
+      BoundObjects = {}
+
       include ClassInstanceMethodDefined
 
       attr_reader :subject_class
+
       def initialize(subject_class)
         @subject_class = subject_class
         @placeholder_method_defined = false
@@ -62,9 +66,7 @@ module RR
         end
       end
 
-      protected
-      BoundObjects = {}
-
+    protected
       def bind_method
         id = BoundObjects.size
         BoundObjects[id] = subject_class

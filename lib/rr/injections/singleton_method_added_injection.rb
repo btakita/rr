@@ -16,9 +16,11 @@ module RR
           instances.include?(subject)
         end
       end)
+
       include ClassInstanceMethodDefined
 
       attr_reader :subject_class
+
       def initialize(subject_class)
         @subject_class = subject_class
         @placeholder_method_defined = false
@@ -63,7 +65,7 @@ module RR
         end
       end
 
-      protected
+    protected
       def original_method_alias_name
         "__rr__original_singleton_method_added"
       end
