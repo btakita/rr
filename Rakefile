@@ -1,22 +1,28 @@
-require "rake"
-require 'rake/contrib/rubyforgepublisher'
-require 'rake/clean'
-require 'rake/testtask'
-require 'rdoc/task'
+require 'rake'
 
-desc "Runs the Rspec suite"
-task(:default) do
-  run_suite
+require File.expand_path('../spec/runner.rb', __FILE__)
+
+task :default => :spec
+
+desc "Runs all of the tests"
+task :spec do
+  ARGV.clear
+  unless SuitesRunner.new.run
+    raise "Spec Suite failed"
+  end
 end
 
-desc "Runs the Rspec suite"
-task(:spec) do
-  run_suite
-end
-
-def run_suite
-  dir = File.dirname(__FILE__)
-  system("ruby #{dir}/spec/spec_suite.rb") || raise("Spec Suite failed")
+namespace :spec do
+  SuitesRunner::TEST_SUITES.each do |path, class_fragment, desc|
+    desc "Runs all of the #{desc} tests"
+    task path do
+      ARGV.clear
+      require File.expand_path("../spec/suites/#{path}/runner.rb", __FILE__)
+      unless Object.const_get("#{class_fragment}SuiteRunner").new.run
+        raise "#{desc} Suite failed"
+      end
+    end
+  end
 end
 
 begin
@@ -86,3 +92,4 @@ class Jeweler
     end
   end
 end
+
