@@ -10,17 +10,17 @@ module RR
 
       describe "#expected_arguments" do
         it "returns an empty array" do
-          expectation.expected_arguments.should == []
+          expect(expectation.expected_arguments).to eq []
         end
       end
 
       describe "==" do
         it "returns true when comparing with another AnyArgumentExpectation" do
-          expectation.should == AnyArgumentExpectation.new
+          expect(expectation).to eq AnyArgumentExpectation.new
         end
 
         it "returns false when comparing with ArgumentEqualityExpectation" do
-          expectation.should_not == ArgumentEqualityExpectation.new(1)
+          expect(expectation).to_not eq ArgumentEqualityExpectation.new(1)
         end
       end
 
@@ -37,9 +37,9 @@ module RR
       describe "#wildcard_match?" do
         it "returns true" do
           expectation = AnyArgumentExpectation.new
-          expectation.should be_wildcard_match(1, 2, 3)
-          expectation.should be_wildcard_match("whatever")
-          expectation.should be_wildcard_match("whatever", "else")
+          expect(expectation).to be_wildcard_match(1, 2, 3)
+          expect(expectation).to be_wildcard_match("whatever")
+          expect(expectation).to be_wildcard_match("whatever", "else")
         end
       end
     end

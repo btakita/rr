@@ -14,7 +14,7 @@ module RR
         object = Object.new
         block = lambda {}
         space.record_call(object, :to_s, [], block)
-        space.recorded_calls.should == RR::RecordedCalls.new([[object, :to_s, [], block]])
+        expect(space.recorded_calls).to eq RR::RecordedCalls.new([[object, :to_s, [], block]])
       end
     end
 
@@ -23,13 +23,13 @@ module RR
         it "creates a new DoubleInjection" do
           subject_1 = []
           subject_2 = []
-          (subject_1 === subject_2).should be_true
-          subject_1.__id__.should_not == subject_2.__id__
+          expect((subject_1 === subject_2)).to be_true
+          expect(subject_1.__id__).to_not eq subject_2.__id__
 
           injection_1 = Injections::DoubleInjection.find_or_create_by_subject(subject_1, :foobar)
           injection_2 = Injections::DoubleInjection.find_or_create_by_subject(subject_2, :foobar)
 
-          injection_1.should_not == injection_2
+          expect(injection_1).to_not eq injection_2
         end
       end
 
@@ -45,25 +45,25 @@ module RR
         context "when method_name is a symbol" do
           it "returns double_injection and adds double_injection to double_injection list" do
             double_injection = Injections::DoubleInjection.find_or_create_by_subject(subject, method_name)
-            Injections::DoubleInjection.find_or_create_by_subject(subject, method_name).should === double_injection
-            double_injection.subject_class.should == (class << subject; self; end)
-            double_injection.method_name.should === method_name
+            expect(Injections::DoubleInjection.find_or_create_by_subject(subject, method_name)).to equal double_injection
+            expect(double_injection.subject_class).to eq(class << subject; self; end)
+            expect(double_injection.method_name).to equal method_name
           end
         end
 
         context "when method_name is a string" do
           it "returns double_injection and adds double_injection to double_injection list" do
             double_injection = Injections::DoubleInjection.find_or_create_by_subject(subject, 'foobar')
-            Injections::DoubleInjection.find_or_create_by_subject(subject, method_name).should === double_injection
-            double_injection.subject_class.should == (class << subject; self; end)
-            double_injection.method_name.should === method_name
+            expect(Injections::DoubleInjection.find_or_create_by_subject(subject, method_name)).to equal double_injection
+            expect(double_injection.subject_class).to eq(class << subject; self; end)
+            expect(double_injection.method_name).to equal method_name
           end
         end
 
         it "overrides the method when passing a block" do
           original_method = subject.method(:foobar)
           Injections::DoubleInjection.find_or_create_by_subject(subject, method_name)
-          subject.method(:foobar).should_not == original_method
+          expect(subject.method(:foobar)).to_not eq original_method
         end
       end
 
@@ -80,12 +80,12 @@ module RR
           it "returns the existing DoubleInjection" do
             @double_injection = Injections::DoubleInjection.find_or_create_by_subject(subject, 'foobar')
 
-            double_injection.subject_has_original_method?.should be_true
+            expect(double_injection.subject_has_original_method?).to be_true
 
-            Injections::DoubleInjection.find_or_create_by_subject(subject, 'foobar').should === double_injection
+            expect(Injections::DoubleInjection.find_or_create_by_subject(subject, 'foobar')).to equal double_injection
 
             double_injection.reset
-            subject.foobar.should == :original_foobar
+            expect(subject.foobar).to eq :original_foobar
           end
         end
       end
@@ -96,13 +96,13 @@ module RR
         it "creates a new DoubleInjection" do
           subject_1 = []
           subject_2 = []
-          (subject_1 === subject_2).should be_true
-          subject_1.__id__.should_not == subject_2.__id__
+          expect((subject_1 === subject_2)).to be_true
+          expect(subject_1.__id__).to_not eq subject_2.__id__
 
           injection_1 = Injections::MethodMissingInjection.find_or_create(class << subject_1; self; end)
           injection_2 = Injections::MethodMissingInjection.find_or_create(class << subject_2; self; end)
 
-          injection_1.should_not == injection_2
+          expect(injection_1).to_not eq injection_2
         end
       end
 
@@ -116,7 +116,7 @@ module RR
         it "overrides the method when passing a block" do
           original_method = subject.method(:method_missing)
           Injections::MethodMissingInjection.find_or_create(class << subject; self; end)
-          subject.method(:method_missing).should_not == original_method
+          expect(subject.method(:method_missing)).to_not eq original_method
         end
       end
 
@@ -130,12 +130,12 @@ module RR
         context "when a DoubleInjection is registered for the subject and method_name" do
           it "returns the existing DoubleInjection" do
             injection = Injections::MethodMissingInjection.find_or_create(class << subject; self; end)
-            injection.subject_has_original_method?.should be_true
+            expect(injection.subject_has_original_method?).to be_true
 
-            Injections::MethodMissingInjection.find_or_create(class << subject; self; end).should === injection
+            expect(Injections::MethodMissingInjection.find_or_create(class << subject; self; end)).to equal injection
 
             injection.reset
-            subject.method_missing(:foobar).should == :original_method_missing
+            expect(subject.method_missing(:foobar)).to eq :original_method_missing
           end
         end
       end
@@ -146,13 +146,13 @@ module RR
         it "creates a new DoubleInjection" do
           subject_1 = []
           subject_2 = []
-          (subject_1 === subject_2).should be_true
-          subject_1.__id__.should_not == subject_2.__id__
+          expect((subject_1 === subject_2)).to be_true
+          expect(subject_1.__id__).to_not eq subject_2.__id__
 
           injection_1 = Injections::SingletonMethodAddedInjection.find_or_create(class << subject_1; self; end)
           injection_2 = Injections::SingletonMethodAddedInjection.find_or_create(class << subject_2; self; end)
 
-          injection_1.should_not == injection_2
+          expect(injection_1).to_not eq injection_2
         end
       end
 
@@ -166,7 +166,7 @@ module RR
         it "overrides the method when passing a block" do
           original_method = subject.method(:singleton_method_added)
           Injections::SingletonMethodAddedInjection.find_or_create(class << subject; self; end)
-          subject.method(:singleton_method_added).should_not == original_method
+          expect(subject.method(:singleton_method_added)).to_not eq original_method
         end
       end
 
@@ -180,12 +180,12 @@ module RR
         context "when a DoubleInjection is registered for the subject and method_name" do
           it "returns the existing DoubleInjection" do
             injection = Injections::SingletonMethodAddedInjection.find_or_create(class << subject; self; end)
-            injection.subject_has_original_method?.should be_true
+            expect(injection.subject_has_original_method?).to be_true
 
-            Injections::SingletonMethodAddedInjection.find_or_create(class << subject; self; end).should === injection
+            expect(Injections::SingletonMethodAddedInjection.find_or_create(class << subject; self; end)).to equal injection
 
             injection.reset
-            subject.singleton_method_added(:foobar).should == :original_singleton_method_added
+            expect(subject.singleton_method_added(:foobar)).to eq :original_singleton_method_added
           end
         end
       end
@@ -204,7 +204,7 @@ module RR
         space.record_call(object, :to_s, [], nil)
 
         space.reset
-        space.recorded_calls.should == RR::RecordedCalls.new([])
+        expect(space.recorded_calls).to eq RR::RecordedCalls.new([])
       end
 
       it "removes the ordered doubles" do
@@ -214,70 +214,70 @@ module RR
         space.ordered_doubles.should_not be_empty
 
         space.reset
-        space.ordered_doubles.should be_empty
+        expect(space.ordered_doubles).to be_empty
       end
 
       it "resets all double_injections" do
-        subject_1.respond_to?(method_name).should be_false
-        subject_2.respond_to?(method_name).should be_false
+        expect(subject_1.respond_to?(method_name)).to be_false
+        expect(subject_2.respond_to?(method_name)).to be_false
 
         Injections::DoubleInjection.find_or_create_by_subject(subject_1, method_name)
-        Injections::DoubleInjection.exists_by_subject?(subject_1, method_name).should be_true
-        subject_1.respond_to?(method_name).should be_true
+        expect(Injections::DoubleInjection.exists_by_subject?(subject_1, method_name)).to be_true
+        expect(subject_1.respond_to?(method_name)).to be_true
 
         Injections::DoubleInjection.find_or_create_by_subject(subject_2, method_name)
-        Injections::DoubleInjection.exists_by_subject?(subject_2, method_name).should be_true
-        subject_2.respond_to?(method_name).should be_true
+        expect(Injections::DoubleInjection.exists_by_subject?(subject_2, method_name)).to be_true
+        expect(subject_2.respond_to?(method_name)).to be_true
 
         space.reset
 
-        subject_1.respond_to?(method_name).should be_false
-        Injections::DoubleInjection.exists?(subject_1, method_name).should be_false
+        expect(subject_1.respond_to?(method_name)).to be_false
+        expect(Injections::DoubleInjection.exists?(subject_1, method_name)).to be_false
 
-        subject_2.respond_to?(method_name).should be_false
-        Injections::DoubleInjection.exists?(subject_2, method_name).should be_false
+        expect(subject_2.respond_to?(method_name)).to be_false
+        expect(Injections::DoubleInjection.exists?(subject_2, method_name)).to be_false
       end
 
       it "resets all method_missing_injections" do
-        subject_1.respond_to?(:method_missing).should be_false
-        subject_2.respond_to?(:method_missing).should be_false
+        expect(subject_1.respond_to?(:method_missing)).to be_false
+        expect(subject_2.respond_to?(:method_missing)).to be_false
 
         Injections::MethodMissingInjection.find_or_create(class << subject_1; self; end)
-        Injections::MethodMissingInjection.exists?(class << subject_1; self; end).should be_true
-        subject_1.respond_to?(:method_missing).should be_true
+        expect(Injections::MethodMissingInjection.exists?(class << subject_1; self; end)).to be_true
+        expect(subject_1.respond_to?(:method_missing)).to be_true
 
         Injections::MethodMissingInjection.find_or_create(class << subject_2; self; end)
-        Injections::MethodMissingInjection.exists?(class << subject_2; self; end).should be_true
-        subject_2.respond_to?(:method_missing).should be_true
+        expect(Injections::MethodMissingInjection.exists?(class << subject_2; self; end)).to be_true
+        expect(subject_2.respond_to?(:method_missing)).to be_true
 
         space.reset
 
-        subject_1.respond_to?(:method_missing).should be_false
-        Injections::MethodMissingInjection.exists?(subject_1).should be_false
+        expect(subject_1.respond_to?(:method_missing)).to be_false
+        expect(Injections::MethodMissingInjection.exists?(subject_1)).to be_false
 
-        subject_2.respond_to?(:method_missing).should be_false
-        Injections::MethodMissingInjection.exists?(subject_2).should be_false
+        expect(subject_2.respond_to?(:method_missing)).to be_false
+        expect(Injections::MethodMissingInjection.exists?(subject_2)).to be_false
       end
 
       it "resets all singleton_method_added_injections" do
-        subject_1.respond_to?(:singleton_method_added).should be_false
-        subject_2.respond_to?(:singleton_method_added).should be_false
+        expect(subject_1.respond_to?(:singleton_method_added)).to be_false
+        expect(subject_2.respond_to?(:singleton_method_added)).to be_false
 
         Injections::SingletonMethodAddedInjection.find_or_create(class << subject_1; self; end)
-        Injections::SingletonMethodAddedInjection.exists?(class << subject_1; self; end).should be_true
-        subject_1.respond_to?(:singleton_method_added).should be_true
+        expect(Injections::SingletonMethodAddedInjection.exists?(class << subject_1; self; end)).to be_true
+        expect(subject_1.respond_to?(:singleton_method_added)).to be_true
 
         Injections::SingletonMethodAddedInjection.find_or_create(class << subject_2; self; end)
-        Injections::SingletonMethodAddedInjection.exists?(class << subject_2; self; end).should be_true
-        subject_2.respond_to?(:singleton_method_added).should be_true
+        expect(Injections::SingletonMethodAddedInjection.exists?(class << subject_2; self; end)).to be_true
+        expect(subject_2.respond_to?(:singleton_method_added)).to be_true
 
         space.reset
 
-        subject_1.respond_to?(:singleton_method_added).should be_false
-        Injections::SingletonMethodAddedInjection.exists?(subject_1).should be_false
+        expect(subject_1.respond_to?(:singleton_method_added)).to be_false
+        expect(Injections::SingletonMethodAddedInjection.exists?(subject_1)).to be_false
 
-        subject_2.respond_to?(:singleton_method_added).should be_false
-        Injections::SingletonMethodAddedInjection.exists?(subject_2).should be_false
+        expect(subject_2.respond_to?(:singleton_method_added)).to be_false
+        expect(Injections::SingletonMethodAddedInjection.exists?(subject_2)).to be_false
       end
 
       it "clears RR::Injections::DoubleInjection::BoundObjects" do
@@ -285,7 +285,7 @@ module RR
         RR::Injections::DoubleInjection::BoundObjects.should_not be_empty
         space.reset
         pending "Clearing BoundObjects" do
-          RR::Injections::DoubleInjection::BoundObjects.should be_empty
+          expect(RR::Injections::DoubleInjection::BoundObjects).to be_empty
         end
       end
     end
@@ -302,31 +302,31 @@ module RR
         original_method = subject.method(method_name)
 
         @double_injection = Injections::DoubleInjection.find_or_create_by_subject(subject, method_name)
-        Injections::DoubleInjection.instances.keys.should include(class << subject; self; end)
+        expect(Injections::DoubleInjection.instances.keys).to include(class << subject; self; end)
         Injections::DoubleInjection.find_by_subject(subject, method_name).should_not be_nil
-        subject.method(method_name).should_not == original_method
+        expect(subject.method(method_name)).to_not eq original_method
 
         space.reset_double(subject, method_name)
         Injections::DoubleInjection.instances.keys.should_not include(subject)
-        subject.method(method_name).should == original_method
+        expect(subject.method(method_name)).to eq original_method
       end
 
       context "when it has no double_injections" do
         it "removes the subject from the double_injections map" do
-          double_1 = Injections::DoubleInjection.find_or_create_by_subject(subject, :foobar1)
-          double_2 = Injections::DoubleInjection.find_or_create_by_subject(subject, :foobar2)
+          Injections::DoubleInjection.find_or_create_by_subject(subject, :foobar1)
+          Injections::DoubleInjection.find_or_create_by_subject(subject, :foobar2)
 
-          Injections::DoubleInjection.instances.include?(class << subject; self; end).should == true
+          expect(Injections::DoubleInjection.instances.include?(class << subject; self; end)).to eq true
           Injections::DoubleInjection.find_by_subject(subject, :foobar1).should_not be_nil
           Injections::DoubleInjection.find_by_subject(subject, :foobar2).should_not be_nil
 
           space.reset_double(subject, :foobar1)
-          Injections::DoubleInjection.instances.include?(class << subject; self; end).should == true
-          Injections::DoubleInjection.find_by_subject(subject, :foobar1).should be_nil
+          expect(Injections::DoubleInjection.instances.include?(class << subject; self; end)).to eq true
+          expect(Injections::DoubleInjection.find_by_subject(subject, :foobar1)).to be_nil
           Injections::DoubleInjection.find_by_subject(subject, :foobar2).should_not be_nil
 
           space.reset_double(subject, :foobar2)
-          Injections::DoubleInjection.instances.include?(subject).should == false
+          expect(Injections::DoubleInjection.instances.include?(subject)).to eq false
         end
       end
     end
@@ -356,8 +356,8 @@ module RR
         end
 
         Injections::DoubleInjection.reset
-        double_1_reset_call_count.should == 1
-        double_2_reset_call_count.should == 1
+        expect(double_1_reset_call_count).to eq 1
+        expect(double_2_reset_call_count).to eq 1
       end
     end
 
@@ -404,10 +404,10 @@ module RR
           end
 
           space.verify_doubles
-          double_1_verify_call_count.should == 1
-          double_2_verify_call_count.should == 1
-          double_1_reset_call_count.should == 1
-          double_1_reset_call_count.should == 1
+          expect(double_1_verify_call_count).to eq 1
+          expect(double_2_verify_call_count).to eq 1
+          expect(double_1_reset_call_count).to eq 1
+          expect(double_1_reset_call_count).to eq 1
         end
       end
 
@@ -443,10 +443,10 @@ module RR
 
           space.verify_doubles(subject_1)
 
-          double_1_verify_call_count.should == 1
-          double_1_reset_call_count.should == 1
-          double_2_verify_call_count.should == 0
-          double_2_reset_call_count.should == 0
+          expect(double_1_verify_call_count).to eq 1
+          expect(double_1_reset_call_count).to eq 1
+          expect(double_2_verify_call_count).to eq 0
+          expect(double_2_reset_call_count).to eq 0
         end
       end
 
@@ -487,12 +487,12 @@ module RR
 
           space.verify_doubles(subject_1, subject_2)
 
-          double_1_verify_call_count.should == 1
-          double_1_reset_call_count.should == 1
-          double_2_verify_call_count.should == 1
-          double_2_reset_call_count.should == 1
-          double3_verify_call_count.should == 0
-          double3_reset_call_count.should == 0
+          expect(double_1_verify_call_count).to eq 1
+          expect(double_1_reset_call_count).to eq 1
+          expect(double_2_verify_call_count).to eq 1
+          expect(double_2_reset_call_count).to eq 1
+          expect(double3_verify_call_count).to eq 0
+          expect(double3_reset_call_count).to eq 0
         end
       end
 
@@ -534,12 +534,12 @@ module RR
           no_double_injection_object = Object.new
           space.verify_doubles(no_double_injection_object)
 
-          double_1_verify_call_count.should == 0
-          double_1_reset_call_count.should == 0
-          double_2_verify_call_count.should == 0
-          double_2_reset_call_count.should == 0
-          double3_verify_call_count.should == 0
-          double3_reset_call_count.should == 0
+          expect(double_1_verify_call_count).to eq 0
+          expect(double_1_reset_call_count).to eq 0
+          expect(double_2_verify_call_count).to eq 0
+          expect(double_2_reset_call_count).to eq 0
+          expect(double3_verify_call_count).to eq 0
+          expect(double3_reset_call_count).to eq 0
         end
       end
     end
@@ -554,7 +554,7 @@ module RR
 
       it "verifies and deletes the double_injection" do
         @double_injection = Injections::DoubleInjection.find_or_create_by_subject(subject, method_name)
-        Injections::DoubleInjection.find_by_subject(subject, method_name).should === double_injection
+        expect(Injections::DoubleInjection.find_by_subject(subject, method_name)).to equal double_injection
 
         verify_call_count = 0
         ( class << double_injection; self; end).class_eval do
@@ -563,9 +563,9 @@ module RR
           end
         end
         space.verify_double(subject, method_name)
-        verify_call_count.should == 1
+        expect(verify_call_count).to eq 1
 
-        Injections::DoubleInjection.find(subject, method_name).should be_nil
+        expect(Injections::DoubleInjection.find(subject, method_name)).to be_nil
       end
 
       context "when verifying the double_injection raises an error" do
@@ -573,9 +573,9 @@ module RR
           original_method = subject.method(method_name)
 
           @double_injection = Injections::DoubleInjection.find_or_create_by_subject(subject, method_name)
-          subject.method(method_name).should_not == original_method
+          expect(subject.method(method_name)).to_not eq original_method
 
-          Injections::DoubleInjection.find_by_subject(subject, method_name).should === double_injection
+          expect(Injections::DoubleInjection.find_by_subject(subject, method_name)).to equal double_injection
 
           verify_called = true
           ( class << double_injection; self; end).class_eval do
@@ -584,11 +584,11 @@ module RR
               raise "An Error"
             end
           end
-          lambda {space.verify_double(subject, method_name)}.should raise_error
-          verify_called.should be_true
+          expect { space.verify_double(subject, method_name) }.to raise_error
+          expect(verify_called).to be_true
 
-          Injections::DoubleInjection.find(subject, method_name).should be_nil
-          subject.method(method_name).should == original_method
+          expect(Injections::DoubleInjection.find(subject, method_name)).to be_nil
+          expect(subject.method(method_name)).to eq original_method
         end
       end
     end

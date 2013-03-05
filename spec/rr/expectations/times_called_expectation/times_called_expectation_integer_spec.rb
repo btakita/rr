@@ -19,7 +19,7 @@ module RR
 
           it "fails after attempt! called 1 time" do
             subject.foobar
-            lambda {RR.verify}.should raise_error(
+            expect { RR.verify }.to raise_error(
               RR::Errors::TimesCalledError,
               "foobar()\nCalled 1 time.\nExpected 2 times."
             )
@@ -28,12 +28,12 @@ module RR
           it "can't be called when attempt! is called 3 times" do
             subject.foobar
             subject.foobar
-            lambda do
+            expect {
               subject.foobar
-            end.should raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 2 times.")
-            lambda do
+            }.to raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 2 times.")
+            expect {
               RR.verify
-            end.should raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 2 times.")
+            }.to raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 2 times.")
           end
 
           it "has a backtrace to where the TimesCalledExpectation was instantiated on failure" do
@@ -43,13 +43,13 @@ module RR
             rescue RR::Errors::TimesCalledError => e
               error = e
             end
-            e.backtrace.join("\n").should include(__FILE__)
+            expect(e.backtrace.join("\n")).to include(__FILE__)
           end
 
           it "has an error message that includes the number of times called and expected number of times" do
-            lambda do
+            expect {
               RR.verify
-            end.should raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 0 times.\nExpected 2 times.")
+            }.to raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 0 times.\nExpected 2 times.")
           end
         end
       end

@@ -27,7 +27,7 @@ describe "stub" do
 
   it "stubs via inline call" do
     stub(subject).to_s {"a value"}
-    subject.to_s.should == "a value"
+    expect(subject.to_s).to eq "a value"
   end
 
   describe ".once.ordered" do
@@ -35,8 +35,8 @@ describe "stub" do
       stub(subject).to_s {"value 1"}.once.ordered
       stub(subject).to_s {"value 2"}.once.ordered
 
-      subject.to_s.should == "value 1"
-      subject.to_s.should == "value 2"
+      expect(subject.to_s).to eq "value 1"
+      expect(subject.to_s).to eq "value 2"
     end
   end
 
@@ -59,10 +59,10 @@ describe "stub" do
           @target.send(method_name, *args, &block)
         end
       end.new(proxy_target)
-      proxy.methods.should =~ proxy_target.methods
+      expect(proxy.methods).to match_array(proxy_target.methods)
 
       stub(proxy).foobar {:new_foobar}
-      proxy.foobar.should == :new_foobar
+      expect(proxy.foobar).to eq :new_foobar
     end
   end
 
@@ -71,8 +71,8 @@ describe "stub" do
       d.to_s {"a value"}
       d.to_sym {:crazy}
     end
-    subject.to_s.should == "a value"
-    subject.to_sym.should == :crazy
+    expect(subject.to_s).to eq "a value"
+    expect(subject.to_sym).to eq :crazy
   end
 
   it "stubs via block without argument" do
@@ -80,20 +80,20 @@ describe "stub" do
       to_s {"a value"}
       to_sym {:crazy}
     end
-    subject.to_s.should == "a value"
-    subject.to_sym.should == :crazy
+    expect(subject.to_s).to eq "a value"
+    expect(subject.to_sym).to eq :crazy
   end
 
   it "stubs instance_of" do
     stub.instance_of(StubSpecFixture) do |o|
       o.to_s {"High Level Spec"}
     end
-    StubSpecFixture.new.to_s.should == "High Level Spec"
+    expect(StubSpecFixture.new.to_s).to eq "High Level Spec"
   end
 
   it "stubs methods without letters" do
     stub(subject).__send__(:==) {:equality}
-    (subject == 55).should == :equality
+    expect((subject == 55)).to eq :equality
   end
 
   it "stubs methods invoked in #initialize while passing along the #initialize arg" do
@@ -102,7 +102,7 @@ describe "stub" do
       o.method_run_in_initialize {method_run_in_initialize_stubbed = true}
     end
     StubSpecFixture.new
-    method_run_in_initialize_stubbed.should be_true
+    expect(method_run_in_initialize_stubbed).to be_true
   end
 
   it "passed the arguments and block passed to #initialize" do
@@ -111,16 +111,16 @@ describe "stub" do
       o.method_run_in_initialize
     end
     instance = StubSpecFixture.new(1, 2) {block_called = true}
-    instance.initialize_arguments.should == [1, 2]
-    block_called.should be_true
+    expect(instance.initialize_arguments).to eq [1, 2]
+    expect(block_called).to be_true
   end
 
   context "mock then stub" do
     it "stubs any calls not matching the mock" do
       mock(subject).foobar(3) {:baz3}
       stub(subject).foobar {:baz}
-      subject.foobar(3).should == :baz3
-      subject.foobar(4).should == :baz
+      expect(subject.foobar(3)).to eq :baz3
+      expect(subject.foobar(4)).to eq :baz
     end
   end
 

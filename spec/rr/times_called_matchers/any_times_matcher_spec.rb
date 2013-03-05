@@ -10,22 +10,22 @@ module RR
 
       describe AnyTimesMatcher, "#possible_match?" do
         it "always returns true" do
-          matcher.should be_possible_match(0)
-          matcher.should be_possible_match(99999)
+          expect(matcher).to be_possible_match(0)
+          expect(matcher).to be_possible_match(99999)
         end
       end
 
       describe AnyTimesMatcher, "#matches?" do
         it "always returns true" do
-          matcher.should be_matches(0)
-          matcher.should be_matches(99999)
+          expect(matcher).to be_matches(0)
+          expect(matcher).to be_matches(99999)
         end
       end
 
       describe AnyTimesMatcher, "#attempt?" do
         it "always returns true" do
-          matcher.should be_attempt(0)
-          matcher.should be_attempt(99999)
+          expect(matcher).to be_attempt(0)
+          expect(matcher).to be_attempt(99999)
         end
       end
 
@@ -37,9 +37,8 @@ module RR
 
       describe AnyTimesMatcher, "#error_message" do
         it "has an error message" do
-          matcher.error_message(2).should == (
-          "Called 2 times.\nExpected any number of times."
-          )
+          expect(matcher.error_message(2)).to eq \
+            "Called 2 times.\nExpected any number of times."
         end
       end
     end

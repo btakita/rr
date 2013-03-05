@@ -24,7 +24,7 @@ module RR
           end
 
           it "uses the invoked method as the expected method" do
-            @result.should be
+            expect(@result).to be
           end
         end
 
@@ -50,7 +50,7 @@ module RR
           end
 
           it "does match" do
-            @result.should be
+            expect(@result).to be
           end
         end
 
@@ -78,7 +78,7 @@ module RR
           end
 
           it "does match" do
-            @result.should be
+            expect(@result).to be
           end
         end
 
@@ -92,7 +92,7 @@ module RR
           end
 
           it "does match" do
-            @result.should be
+            expect(@result).to be
           end
         end
 
@@ -119,7 +119,7 @@ module RR
           end
 
           it "does match" do
-            @result.should be
+            expect(@result).to be
           end
         end
 
@@ -132,7 +132,7 @@ module RR
           end
 
           it "does match" do
-            @result.should be
+            expect(@result).to be
           end
         end
 
@@ -145,7 +145,7 @@ module RR
           end
 
           it "does match" do
-            @result.should be
+            expect(@result).to be
           end
         end
 
@@ -185,7 +185,7 @@ module RR
           end
 
           it "does match" do
-            @result.should be
+            expect(@result).to be
           end
         end
 
@@ -198,7 +198,7 @@ module RR
           end
 
           it "does match" do
-            @result.should be
+            expect(@result).to be
           end
         end
 
@@ -224,7 +224,7 @@ module RR
           end
 
           it "does match" do
-            @result.should be
+            expect(@result).to be
           end
         end
 
@@ -250,7 +250,7 @@ module RR
           end
 
           it "does match" do
-            @result.should be
+            expect(@result).to be
           end
         end
 
@@ -270,7 +270,7 @@ module RR
           end
 
           it "returns a failure messsage" do
-            @matcher.failure_message.should == @message
+            expect(@matcher.failure_message).to eq @message
           end
         end
       end

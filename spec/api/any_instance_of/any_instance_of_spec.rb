@@ -12,18 +12,18 @@ describe "any_instance_of" do
         stub(o).foobar {:baz}
       end
 
-      subject.to_s.should == "Subject is stubbed"
-      subject.class.should == subject_class
-      class_called.should == true
-      subject.foobar.should == :baz
+      expect(subject.to_s).to eq "Subject is stubbed"
+      expect(subject.class).to eq subject_class
+      expect(class_called).to eq true
+      expect(subject.foobar).to eq :baz
 
       RR.reset
 
-      subject.to_s.should_not == "Subject is stubbed"
+      expect(subject.to_s).to_not eq "Subject is stubbed"
       class_called = false
-      subject.class.should == subject_class
-      class_called.should == false
-      subject.should_not respond_to(:baz)
+      expect(subject.class).to eq subject_class
+      expect(class_called).to eq false
+      expect(subject).to_not respond_to(:baz)
     end
   end
 
@@ -31,17 +31,17 @@ describe "any_instance_of" do
     it "stubs methods (key) with the value on instances instantiated before the Double expection was created" do
       subject_class = Class.new
       subject = subject_class.new
-      subject.should_not respond_to(:baz)
+      expect(subject).to_not respond_to(:baz)
 
       any_instance_of(subject_class, :to_s => "Subject is stubbed", :foobar => lambda {:baz})
 
-      subject.to_s.should == "Subject is stubbed"
-      subject.foobar.should == :baz
+      expect(subject.to_s).to eq "Subject is stubbed"
+      expect(subject.foobar).to eq :baz
 
       RR.reset
 
-      subject.to_s.should_not == "Subject is stubbed"
-      subject.should_not respond_to(:baz)
+      expect(subject.to_s).to_not eq "Subject is stubbed"
+      expect(subject).to_not respond_to(:baz)
     end
   end
 end

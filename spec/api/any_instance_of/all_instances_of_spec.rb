@@ -7,6 +7,6 @@ describe "all_instances_of" do
     all_instances_of(subject_class) do |o|
       o.to_s {"Subject is stubbed"}
     end
-    subject.to_s.should == "Subject is stubbed"
+    expect(subject.to_s).to eq "Subject is stubbed"
   end
 end

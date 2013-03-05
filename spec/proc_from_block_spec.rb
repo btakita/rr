@@ -5,9 +5,9 @@ module RR
     describe "#==" do
       it "acts the same as #== on a Proc" do
         original_proc = lambda {}
-        Proc.new(&original_proc).should == original_proc
-        
-        ProcFromBlock.new(&original_proc).should == original_proc
+        expect(Proc.new(&original_proc)).to eq original_proc
+
+        expect(ProcFromBlock.new(&original_proc)).to eq original_proc
       end
     end
   end

@@ -11,7 +11,7 @@ module RR
       describe "#wildcard_match?" do
         context "when passed an instance of the expected Module" do
           it "returns true" do
-            matcher.should be_wildcard_match(:a_symbol)
+            expect(matcher).to be_wildcard_match(:a_symbol)
           end
         end
 
@@ -24,7 +24,7 @@ module RR
 
       describe "#inspect" do
         it "returns the is_a(ClassName)" do
-          matcher.inspect.should == "is_a(Symbol)"
+          expect(matcher.inspect).to eq "is_a(Symbol)"
         end
       end
     end

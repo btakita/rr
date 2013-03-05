@@ -1,5 +1,3 @@
-require "rubygems"
-require "spec"
 
 class MiniTestTestSuite
   def run

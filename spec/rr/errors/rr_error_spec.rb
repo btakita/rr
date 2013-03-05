@@ -40,14 +40,14 @@ module RR
           end
           backtrace = error.backtrace.join("\n")
 
-          backtrace.should include("lib/rr")
+          expect(backtrace).to include("lib/rr")
         end
 
         it "returns custom backtrace when backtrace is set" do
           error = RRError.new
           custom_backtrace = caller
           error.backtrace = custom_backtrace
-          error.backtrace.should == custom_backtrace
+          expect(error.backtrace).to eq custom_backtrace
         end
 
         it "returns normal backtrace when backtrace is not set" do
@@ -58,8 +58,8 @@ module RR
           rescue RRError => e
             error = e
           end
-          error.backtrace.first.should include(__FILE__)
-          error.backtrace.first.should include(expected_line.to_s)
+          expect(error.backtrace.first).to include(__FILE__)
+          expect(error.backtrace.first).to include(expected_line.to_s)
         end
       end
     end

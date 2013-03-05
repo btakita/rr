@@ -13,18 +13,18 @@ describe "mock" do
 
   it "mocks via inline call" do
     mock(subject).to_s {"a value"}
-    subject.to_s.should == "a value"
-    lambda {subject.to_s}.should raise_error(RR::Errors::TimesCalledError)
+    expect(subject.to_s).to eq "a value"
+    expect { subject.to_s }.to raise_error(RR::Errors::TimesCalledError)
   end
 
   describe ".once.ordered" do
     it "returns the values in the ordered called" do
       mock(subject).to_s {"value 1"}.ordered
       mock(subject).to_s {"value 2"}.twice
-      subject.to_s.should == "value 1"
-      subject.to_s.should == "value 2"
-      subject.to_s.should == "value 2"
-      lambda {subject.to_s}.should raise_error(RR::Errors::TimesCalledError)
+      expect(subject.to_s).to eq "value 1"
+      expect(subject.to_s).to eq "value 2"
+      expect(subject.to_s).to eq "value 2"
+      expect { subject.to_s }.to raise_error(RR::Errors::TimesCalledError)
     end
   end
 
@@ -47,28 +47,28 @@ describe "mock" do
           @target.send(method_name, *args, &block)
         end
       end.new(proxy_target)
-      proxy.methods.should =~ proxy_target.methods
+      expect(proxy.methods).to match_array(proxy_target.methods)
 
       mock(proxy).foobar {:new_foobar}
-      proxy.foobar.should == :new_foobar
+      expect(proxy.foobar).to eq :new_foobar
     end
   end
 
   it 'allows terse chaining' do
     mock(subject).first(1) {mock(Object.new).second(2) {mock(Object.new).third(3) {4}}}
-    subject.first(1).second(2).third(3).should == 4
+    expect(subject.first(1).second(2).third(3)).to eq 4
 
     mock(subject).first(1) {mock!.second(2) {mock!.third(3) {4}}}
-    subject.first(1).second(2).third(3).should == 4
+    expect(subject.first(1).second(2).third(3)).to eq 4
 
     mock(subject).first(1) {mock!.second(2).mock!.third(3) {4}}
-    subject.first(1).second(2).third(3).should == 4
+    expect(subject.first(1).second(2).third(3)).to eq 4
 
     mock(subject).first(1) {mock!.second(2).mock! {third(3) {4}}}
-    subject.first(1).second(2).third(3).should == 4
+    expect(subject.first(1).second(2).third(3)).to eq 4
 
     mock(subject).first(1).mock!.second(2).mock!.third(3) {4}
-    subject.first(1).second(2).third(3).should == 4
+    expect(subject.first(1).second(2).third(3)).to eq 4
   end
 
   it 'allows chaining with proxy' do
@@ -83,7 +83,7 @@ describe "mock" do
     end
 
     mock.proxy(subject).find('1').mock.proxy!.child
-    subject.find('1').child.should == :the_child
+    expect(subject.find('1').child).to eq :the_child
   end
 
   it 'allows branched chaining' do
@@ -94,17 +94,17 @@ describe "mock" do
       end
     end
     o = subject.first
-    o.branch1.branch11.should == 11
-    o.branch2.branch22.should == 22
+    expect(o.branch1.branch11).to eq 11
+    expect(o.branch2.branch22).to eq 22
   end
 
   it 'allows chained ordering' do
     mock(subject).to_s {"value 1"}.then.to_s {"value 2"}.twice.then.to_s {"value 3"}.once
-    subject.to_s.should == "value 1"
-    subject.to_s.should == "value 2"
-    subject.to_s.should == "value 2"
-    subject.to_s.should == "value 3"
-    lambda {subject.to_s}.should raise_error(RR::Errors::TimesCalledError)
+    expect(subject.to_s).to eq "value 1"
+    expect(subject.to_s).to eq "value 2"
+    expect(subject.to_s).to eq "value 2"
+    expect(subject.to_s).to eq "value 3"
+    expect { subject.to_s }.to raise_error(RR::Errors::TimesCalledError)
   end
 
   it "mocks via block with argument" do
@@ -112,8 +112,8 @@ describe "mock" do
       c.to_s {"a value"}
       c.to_sym {:crazy}
     end
-    subject.to_s.should == "a value"
-    subject.to_sym.should == :crazy
+    expect(subject.to_s).to eq "a value"
+    expect(subject.to_sym).to eq :crazy
   end
 
   it "mocks via block without argument" do
@@ -121,8 +121,8 @@ describe "mock" do
       to_s {"a value"}
       to_sym {:crazy}
     end
-    subject.to_s.should == "a value"
-    subject.to_sym.should == :crazy
+    expect(subject.to_s).to eq "a value"
+    expect(subject.to_sym).to eq :crazy
   end
 
   it "has wildcard matchers" do
@@ -141,19 +141,19 @@ describe "mock" do
       false,
       "My String",
       "Tabcola"
-    ).should == "value 1"
-    lambda do
+    ).to eq "value 1"
+    expect {
       subject.foobar(:failure)
-    end.should raise_error( RR::Errors::DoubleNotFoundError )
+    }.to raise_error( RR::Errors::DoubleNotFoundError )
   end
 
   it "mocks methods without letters" do
     mock(subject, :==).with(55)
 
     subject == 55
-    lambda do
+    expect {
       subject == 99
-    end.should raise_error(RR::Errors::DoubleNotFoundError)
+    }.to raise_error(RR::Errors::DoubleNotFoundError)
   end
 
   it "expects a method call to a mock via another mock's block yield only once" do
@@ -176,17 +176,17 @@ describe "mock" do
     it "can mock" do
       mock(SampleClass1).hello { "hola!" }
 
-      SampleClass1.hello.should == "hola!"
+      expect(SampleClass1.hello).to eq "hola!"
     end
 
     it "does not override subclasses" do
       mock(SampleClass1).hello { "hi!" }
 
-      SampleClass2.hello.should == "hello!"
+      expect(SampleClass2.hello).to eq "hello!"
     end
 
     it "should not get affected from a previous example" do
-      SampleClass2.hello.should == "hello!"
+      expect(SampleClass2.hello).to eq "hello!"
     end
 
   end

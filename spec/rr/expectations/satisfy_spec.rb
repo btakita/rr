@@ -6,7 +6,7 @@ module RR
       describe "#inspect" do
         it "returns satisfy string" do
           matcher = Satisfy.new(lambda {})
-          matcher.inspect.should == "satisfy {block}"
+          expect(matcher.inspect).to eq "satisfy {block}"
         end
       end
     end

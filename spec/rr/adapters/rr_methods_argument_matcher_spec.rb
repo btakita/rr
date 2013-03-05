@@ -7,11 +7,11 @@ module RR
         it_should_behave_like "RR::Adapters::RRMethods"
 
         it "returns an Anything matcher" do
-          anything.should == RR::WildcardMatchers::Anything.new
+          expect(anything).to eq RR::WildcardMatchers::Anything.new
         end
 
         it "rr_anything returns an Anything matcher" do
-          rr_anything.should == RR::WildcardMatchers::Anything.new
+          expect(rr_anything).to eq RR::WildcardMatchers::Anything.new
         end
       end
 
@@ -19,11 +19,11 @@ module RR
         it_should_behave_like "RR::Adapters::RRMethods"
 
         it "returns an IsA matcher" do
-          is_a(Integer).should == RR::WildcardMatchers::IsA.new(Integer)
+          expect(is_a(Integer)).to eq RR::WildcardMatchers::IsA.new(Integer)
         end
 
         it "rr_is_a returns an IsA matcher" do
-          rr_is_a(Integer).should == RR::WildcardMatchers::IsA.new(Integer)
+          expect(rr_is_a(Integer)).to eq RR::WildcardMatchers::IsA.new(Integer)
         end
       end
 
@@ -31,11 +31,11 @@ module RR
         it_should_behave_like "RR::Adapters::RRMethods"
 
         it "returns an Numeric matcher" do
-          numeric.should == RR::WildcardMatchers::Numeric.new
+          expect(numeric).to eq RR::WildcardMatchers::Numeric.new
         end
 
         it "rr_numeric returns an Numeric matcher" do
-          rr_numeric.should == RR::WildcardMatchers::Numeric.new
+          expect(rr_numeric).to eq RR::WildcardMatchers::Numeric.new
         end
       end
 
@@ -43,11 +43,11 @@ module RR
         it_should_behave_like "RR::Adapters::RRMethods"
 
         it "returns an Boolean matcher" do
-          boolean.should == RR::WildcardMatchers::Boolean.new
+          expect(boolean).to eq RR::WildcardMatchers::Boolean.new
         end
 
         it "rr_boolean returns an Boolean matcher" do
-          rr_boolean.should == RR::WildcardMatchers::Boolean.new
+          expect(rr_boolean).to eq RR::WildcardMatchers::Boolean.new
         end
       end
 
@@ -55,11 +55,11 @@ module RR
         it_should_behave_like "RR::Adapters::RRMethods"
 
         it "returns a DuckType matcher" do
-          duck_type(:one, :two).should == RR::WildcardMatchers::DuckType.new(:one, :two)
+          expect(duck_type(:one, :two)).to eq RR::WildcardMatchers::DuckType.new(:one, :two)
         end
 
         it "rr_duck_type returns a DuckType matcher" do
-          rr_duck_type(:one, :two).should == RR::WildcardMatchers::DuckType.new(:one, :two)
+          expect(rr_duck_type(:one, :two)).to eq RR::WildcardMatchers::DuckType.new(:one, :two)
         end
       end
     end

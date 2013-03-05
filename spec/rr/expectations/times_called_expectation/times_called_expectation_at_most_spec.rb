@@ -22,16 +22,16 @@ module RR
           end
 
           it "raises error when times called > times" do
-            lambda do
+            expect {
               4.times {subject.foobar}
-            end.should raise_error(
+            }.to raise_error(
               RR::Errors::TimesCalledError,
               "foobar()\nCalled 4 times.\nExpected at most 3 times."
             )
 
-            lambda do
+            expect {
               RR.verify
-            end.should raise_error(
+            }.to raise_error(
               RR::Errors::TimesCalledError,
               "foobar()\nCalled 4 times.\nExpected at most 3 times."
             )

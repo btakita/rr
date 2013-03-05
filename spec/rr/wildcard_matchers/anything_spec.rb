@@ -10,13 +10,13 @@ module RR
 
       describe "#wildcard_match?" do
         it "returns true" do
-          matcher.should be_wildcard_match(Object.new)
+          expect(matcher).to be_wildcard_match(Object.new)
         end
       end
 
       describe "#inspect" do
         it "returns anything" do
-          matcher.inspect.should == "anything"
+          expect(matcher.inspect).to eq "anything"
         end
       end
     end

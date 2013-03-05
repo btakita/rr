@@ -14,8 +14,8 @@ describe "proxy" do
   it "proxies via inline call" do
     expected_to_s_value = subject.to_s
     mock.proxy(subject).to_s
-    subject.to_s.should == expected_to_s_value
-    lambda {subject.to_s}.should raise_error
+    expect(subject.to_s).to eq expected_to_s_value
+    expect { subject.to_s }.to raise_error
   end
 
   it "proxy allows ordering" do
@@ -25,10 +25,10 @@ describe "proxy" do
     mock.proxy(subject).to_s(:foo).ordered
     mock.proxy(subject).to_s(:bar).twice.ordered
 
-    subject.to_s(:foo).should == "Original to_s with arg foo"
-    subject.to_s(:bar).should == "Original to_s with arg bar"
-    subject.to_s(:bar).should == "Original to_s with arg bar"
-    lambda {subject.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
+    expect(subject.to_s(:foo)).to eq "Original to_s with arg foo"
+    expect(subject.to_s(:bar)).to eq "Original to_s with arg bar"
+    expect(subject.to_s(:bar)).to eq "Original to_s with arg bar"
+    expect { subject.to_s(:bar) }.to raise_error(RR::Errors::TimesCalledError)
   end
 
   it "proxy allows ordering" do
@@ -38,10 +38,10 @@ describe "proxy" do
     mock.proxy(subject).to_s(:foo).ordered
     mock.proxy(subject).to_s(:bar).twice.ordered
 
-    subject.to_s(:foo).should == "Original to_s with arg foo"
-    subject.to_s(:bar).should == "Original to_s with arg bar"
-    subject.to_s(:bar).should == "Original to_s with arg bar"
-    lambda {subject.to_s(:bar)}.should raise_error(RR::Errors::TimesCalledError)
+    expect(subject.to_s(:foo)).to eq "Original to_s with arg foo"
+    expect(subject.to_s(:bar)).to eq "Original to_s with arg bar"
+    expect(subject.to_s(:bar)).to eq "Original to_s with arg bar"
+    expect { subject.to_s(:bar) }.to raise_error(RR::Errors::TimesCalledError)
   end
 
   it "proxies via block with argument" do
@@ -57,11 +57,11 @@ describe "proxy" do
       c.foobar_1(1)
       c.foobar_2
     end
-    subject.foobar_1(1).should == :original_value_1
-    lambda {subject.foobar_1(:blah)}.should raise_error
+    expect(subject.foobar_1(1)).to eq :original_value_1
+    expect { subject.foobar_1(:blah) }.to raise_error
 
-    subject.foobar_2.should == :original_value_2
-    lambda {subject.foobar_2(:blah)}.should raise_error
+    expect(subject.foobar_2).to eq :original_value_2
+    expect { subject.foobar_2(:blah) }.to raise_error
   end
 
   it "proxies via block without argument" do
@@ -77,11 +77,11 @@ describe "proxy" do
       foobar_1(1)
       foobar_2
     end
-    subject.foobar_1(1).should == :original_value_1
-    lambda {subject.foobar_1(:blah)}.should raise_error
+    expect(subject.foobar_1(1)).to eq :original_value_1
+    expect { subject.foobar_1(:blah) }.to raise_error
 
-    subject.foobar_2.should == :original_value_2
-    lambda {subject.foobar_2(:blah)}.should raise_error
+    expect(subject.foobar_2).to eq :original_value_2
+    expect { subject.foobar_2(:blah) }.to raise_error
   end
 
   # bug #44

@@ -25,17 +25,17 @@ module RR
 
           context "when passing no args" do
             it "returns a DoubleDefinitionCreate" do
-              call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreate
+              expect(call_strategy.class).to eq RR::DoubleDefinitions::DoubleDefinitionCreate
             end
           end
 
           context "when passed a method_name argument" do
             it "creates a mock Double for method" do
               double_definition = mock(subject, :foobar).returns {:baz}
-              double_definition.times_matcher.should == RR::TimesCalledMatchers::IntegerMatcher.new(1)
-              double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-              double_definition.argument_expectation.expected_arguments.should == []
-              subject.foobar.should == :baz
+              expect(double_definition.times_matcher).to eq RR::TimesCalledMatchers::IntegerMatcher.new(1)
+              expect(double_definition.argument_expectation.class).to eq RR::Expectations::ArgumentEqualityExpectation
+              expect(double_definition.argument_expectation.expected_arguments).to eq []
+              expect(subject.foobar).to eq :baz
             end
           end
         end
@@ -47,16 +47,16 @@ module RR
 
           context "when passing no args" do
             it "returns a DoubleDefinitionCreate" do
-              call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreate
+              expect(call_strategy.class).to eq RR::DoubleDefinitions::DoubleDefinitionCreate
             end
           end
 
           context "when passed a method_name argument" do
             it "creates a stub Double for method when passed a method_name argument" do
               double_definition = stub(subject, :foobar).returns {:baz}
-              double_definition.times_matcher.should == RR::TimesCalledMatchers::AnyTimesMatcher.new
-              double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
-              subject.foobar.should == :baz
+              expect(double_definition.times_matcher).to eq RR::TimesCalledMatchers::AnyTimesMatcher.new
+              expect(double_definition.argument_expectation.class).to eq RR::Expectations::AnyArgumentExpectation
+              expect(subject.foobar).to eq :baz
             end
           end
         end
@@ -68,19 +68,19 @@ module RR
 
           context "when passing no args" do
             it "returns a DoubleDefinitionCreate" do
-              call_strategy.class.should == RR::DoubleDefinitions::DoubleDefinitionCreate
+              expect(call_strategy.class).to eq RR::DoubleDefinitions::DoubleDefinitionCreate
             end
           end
 
           context "when passed a method_name argument_expectation" do
             it "creates a mock Double for method" do
               double_definition = dont_allow(subject, :foobar)
-              double_definition.times_matcher.should == RR::TimesCalledMatchers::NeverMatcher.new
-              double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
+              expect(double_definition.times_matcher).to eq RR::TimesCalledMatchers::NeverMatcher.new
+              expect(double_definition.argument_expectation.class).to eq RR::Expectations::AnyArgumentExpectation
 
-              lambda do
+              expect {
                 subject.foobar
-              end.should raise_error(RR::Errors::TimesCalledError)
+              }.to raise_error(RR::Errors::TimesCalledError)
               RR.reset
             end
           end
@@ -101,7 +101,7 @@ module RR
           context "when passed a method_name argument" do
             it "sets #verification_strategy to Mock" do
               proxy = mock!(:foobar)
-              proxy.double_definition_create.verification_strategy.class.should == RR::DoubleDefinitions::Strategies::Verification::Mock
+              expect(proxy.double_definition_create.verification_strategy.class).to eq RR::DoubleDefinitions::Strategies::Verification::Mock
             end
           end
         end
@@ -114,7 +114,7 @@ module RR
           context "when passed a method_name argument" do
             it "sets #verification_strategy to Stub" do
               proxy = stub!(:foobar)
-              proxy.double_definition_create.verification_strategy.class.should == RR::DoubleDefinitions::Strategies::Verification::Stub
+              expect(proxy.double_definition_create.verification_strategy.class).to eq RR::DoubleDefinitions::Strategies::Verification::Stub
             end
           end
         end
@@ -127,7 +127,7 @@ module RR
           context "when passed a method_name argument" do
             it "sets #verification_strategy to DontAllow" do
               proxy = dont_allow!(:foobar)
-              proxy.double_definition_create.verification_strategy.class.should == RR::DoubleDefinitions::Strategies::Verification::DontAllow
+              expect(proxy.double_definition_create.verification_strategy.class).to eq RR::DoubleDefinitions::Strategies::Verification::DontAllow
             end
           end
         end

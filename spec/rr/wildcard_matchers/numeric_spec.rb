@@ -11,7 +11,7 @@ module RR
       describe "#wildcard_match?" do
         context "when passed a Numeric" do
           it "returns true" do
-            matcher.should be_wildcard_match(99)
+            expect(matcher).to be_wildcard_match(99)
           end
         end
 
@@ -24,7 +24,7 @@ module RR
 
       describe "#inspect" do
         it "returns numeric" do
-          matcher.inspect.should == "numeric"
+          expect(matcher.inspect).to eq "numeric"
         end
       end
     end

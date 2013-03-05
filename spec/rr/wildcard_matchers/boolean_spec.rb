@@ -12,8 +12,8 @@ module RR
       describe "#wildcard_match?" do
         context "when passed a Boolean" do
           it "returns true" do
-            matcher.should be_wildcard_match(true)
-            matcher.should be_wildcard_match(false)
+            expect(matcher).to be_wildcard_match(true)
+            expect(matcher).to be_wildcard_match(false)
           end
         end
 
@@ -27,7 +27,7 @@ module RR
       describe Boolean do
         describe "#inspect" do
           it "returns boolean" do
-            matcher.inspect.should == "boolean"
+            expect(matcher.inspect).to eq "boolean"
           end
         end
       end

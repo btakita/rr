@@ -10,27 +10,27 @@ module RR
 
       describe "#expected_arguments" do
         it "returns the passed in expected_arguments" do
-          expectation.expected_arguments.should == [1, 2, 3]
+          expect(expectation.expected_arguments).to eq [1, 2, 3]
         end
       end
 
       describe "==" do
         it "returns true when passed in expected_arguments are equal" do
-          expectation.should == ArgumentEqualityExpectation.new(1, 2, 3)
+          expect(expectation).to eq ArgumentEqualityExpectation.new(1, 2, 3)
         end
 
         it "returns false when passed in expected_arguments are not equal" do
-          expectation.should_not == ArgumentEqualityExpectation.new(1, 2)
-          expectation.should_not == ArgumentEqualityExpectation.new(1)
-          expectation.should_not == ArgumentEqualityExpectation.new(:something)
-          expectation.should_not == ArgumentEqualityExpectation.new()
+          expect(expectation).to_not eq ArgumentEqualityExpectation.new(1, 2)
+          expect(expectation).to_not eq ArgumentEqualityExpectation.new(1)
+          expect(expectation).to_not eq ArgumentEqualityExpectation.new(:something)
+          expect(expectation).to_not eq ArgumentEqualityExpectation.new()
         end
       end
 
       describe "#exact_match?" do
         context "when all arguments exactly match" do
           it "returns true" do
-            expectation.should be_exact_match(1, 2, 3)
+            expect(expectation).to be_exact_match(1, 2, 3)
           end
         end
 
@@ -57,7 +57,7 @@ module RR
         context "when an exact match" do
           it "returns true" do
             expectation = ArgumentEqualityExpectation.new(1, 2)
-            expectation.should be_wildcard_match(1, 2)
+            expect(expectation).to be_wildcard_match(1, 2)
             expectation.should_not be_wildcard_match(1)
             expectation.should_not be_wildcard_match("whatever", "else")
           end
@@ -99,11 +99,11 @@ module RR
           it "does not have infinite recursion" do
             mock.proxy(@predicate1) == @predicate1
             mock.proxy(@predicate2) == @predicate2
-            ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2).should == ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2)
+            expect(ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2)).to eq ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2)
 
             mock.proxy(@predicate1) == @predicate1
             mock.proxy(@predicate2) == @predicate3
-            ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2).should_not == ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate3)
+            expect(ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2)).to_not eq ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate3)
           end
 
           it "matches Hashes properly (using ==)" do
@@ -116,7 +116,7 @@ module RR
           it "does not have infinite recursion" do
             mock.proxy(@predicate1).eql? @predicate1
             mock.proxy(@predicate2).eql? @predicate2
-            ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2).should be_eql(ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2))
+            expect(ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2)).to be_eql(ArgumentEqualityFunctionalFixture.new(@predicate1, @predicate2))
 
             mock.proxy(@predicate1).eql? @predicate1
             mock.proxy(@predicate2).eql? @predicate3

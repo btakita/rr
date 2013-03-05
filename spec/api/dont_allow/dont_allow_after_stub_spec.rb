@@ -6,9 +6,9 @@ describe "dont_allow called after stub" do
       subject = Object.new
       stub(subject).foobar
       dont_allow(subject).foobar
-      lambda do
+      expect {
         subject.foobar
-      end.should raise_error(RR::Errors::TimesCalledError)
+      }.to raise_error(RR::Errors::TimesCalledError)
     end
   end
 end

@@ -18,7 +18,7 @@ module RR
           ::RR::Injections::DoubleInjection.instances.should_not be_empty
 
           fixture.setup_mocks_for_rspec
-          ::RR::Injections::DoubleInjection.instances.should be_empty
+          expect(::RR::Injections::DoubleInjection.instances).to be_empty
         end
       end
 
@@ -34,10 +34,10 @@ module RR
         it "verifies the double_injections" do
           mock(subject).foobar
 
-          lambda do
+          expect {
             fixture.verify_mocks_for_rspec
-          end.should raise_error(::RR::Errors::TimesCalledError)
-          ::RR::Injections::DoubleInjection.instances.should be_empty
+          }.to raise_error(::RR::Errors::TimesCalledError)
+          expect(::RR::Injections::DoubleInjection.instances).to be_empty
         end
       end
 
@@ -55,7 +55,7 @@ module RR
           ::RR::Injections::DoubleInjection.instances.should_not be_empty
 
           fixture.teardown_mocks_for_rspec
-          ::RR::Injections::DoubleInjection.instances.should be_empty
+          expect(::RR::Injections::DoubleInjection.instances).to be_empty
         end
       end
     end

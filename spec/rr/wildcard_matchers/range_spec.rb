@@ -10,7 +10,7 @@ describe Range do
   describe "#wildcard_match?" do
     context "when passed-in number falls within the Range" do
       it "returns true" do
-        matcher.should be_wildcard_match(3)
+        expect(matcher).to be_wildcard_match(3)
       end
     end
 
@@ -25,11 +25,11 @@ describe Range do
         matcher.should_not be_wildcard_match("Not a number")
       end
     end
-  end  
-  
+  end
+
   describe "#inspect" do
     it "returns the range" do
-      matcher.inspect.should == "2..3"
+      expect(matcher.inspect).to eq "2..3"
     end
   end
 end

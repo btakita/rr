@@ -9,14 +9,14 @@ describe RR do
   describe "#mock" do
     it "creates a mock DoubleInjection Double" do
       mock(subject).foobar(1, 2) {:baz}
-      subject.foobar(1, 2).should == :baz
+      expect(subject.foobar(1, 2)).to eq :baz
     end
   end
 
   describe "#stub" do
     it "creates a stub DoubleInjection Double" do
       stub(subject).foobar {:baz}
-      subject.foobar("any", "thing").should == :baz
+      expect(subject.foobar("any", "thing")).to eq :baz
     end
   end
 
@@ -29,7 +29,7 @@ describe RR do
 
     it "creates a proxy DoubleInjection Double" do
       mock.proxy(subject).foobar
-      subject.foobar.should == :baz
+      expect(subject.foobar).to eq :baz
     end
   end
 
@@ -42,7 +42,7 @@ describe RR do
 
     it "creates a proxy DoubleInjection Double" do
       stub.proxy(subject).foobar
-      subject.foobar.should == :baz
+      expect(subject.foobar).to eq :baz
     end
   end
 
@@ -55,7 +55,7 @@ describe RR do
 
     it "creates a proxy DoubleInjection Double" do
       stub.proxy(subject).foobar
-      subject.foobar.should == :baz
+      expect(subject.foobar).to eq :baz
     end
   end
 
@@ -64,10 +64,10 @@ describe RR do
       stub(subject).foobar
       subject.foobar(1, 2)
 
-      subject.should have_received.foobar(1, 2)
-      lambda do
-        subject.should have_received.foobar(1, 2, 3)
-      end.should raise_error(Spec::Expectations::ExpectationNotMetError)
+      expect(subject).to have_received.foobar(1, 2)
+      expect {
+        expect(subject).to have_received.foobar(1, 2, 3)
+      }.to raise_error(Spec::Expectations::ExpectationNotMetError)
     end
   end
 
@@ -75,12 +75,12 @@ describe RR do
     method  = :test
     matcher = 'fake'
     mock(RR::Adapters::Rspec::InvocationMatcher).new(method) { matcher }
-    have_received(method).should == matcher
+    expect(have_received(method)).to eq matcher
   end
 
   it "creates an invocation matcher without a method name" do
     matcher = 'fake'
     mock(RR::Adapters::Rspec::InvocationMatcher).new(nil) { matcher }
-    have_received.should == matcher
+    expect(have_received).to eq matcher
   end
 end

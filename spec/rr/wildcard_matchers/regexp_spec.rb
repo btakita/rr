@@ -24,7 +24,7 @@ describe Regexp do
 
     context "when passed-in String matches the Regexp" do
       it "returns true" do
-        matcher.should be_wildcard_match("foobarbaz")
+        expect(matcher).to be_wildcard_match("foobarbaz")
       end
     end
 
@@ -34,10 +34,10 @@ describe Regexp do
       end
     end
   end
-  
+
   describe "#inspect" do
     it "returns the regexp" do
-      matcher.inspect.should == "/foo/"
+      expect(matcher.inspect).to eq "/foo/"
     end
   end
 end

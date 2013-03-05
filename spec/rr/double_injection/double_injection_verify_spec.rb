@@ -20,9 +20,9 @@ module RR
         double_injection.register_double double
 
         double.definition.with(1).once.returns {nil}
-        lambda {double_injection.verify}.should raise_error(RR::Errors::TimesCalledError)
+        expect { double_injection.verify }.to raise_error(RR::Errors::TimesCalledError)
         subject.foobar(1)
-        lambda {double_injection.verify}.should_not raise_error
+        expect { double_injection.verify }.to_not raise_error
       end
     end
   end

@@ -13,10 +13,10 @@ module RR
       describe "#root_subject" do
         it "returns #subject" do
           double_definition_create.stub(subject).foobar
-          double_definition_create.root_subject.should == subject
+          expect(double_definition_create.root_subject).to eq subject
         end
       end
-      
+
       describe "StrategySetupMethods" do
         describe "normal strategy definitions" do
           def call_strategy(*args, &block)
@@ -30,17 +30,17 @@ module RR
 
             context "when passing no args" do
               it "returns self" do
-                call_strategy.should === double_definition_create
+                expect(call_strategy).to equal double_definition_create
               end
             end
 
             context "when passed a subject and a method_name argument" do
               it "creates a mock Double for method" do
                 double_definition = double_definition_create.mock(subject, :foobar).returns {:baz}
-                double_definition.times_matcher.should == RR::TimesCalledMatchers::IntegerMatcher.new(1)
-                double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-                double_definition.argument_expectation.expected_arguments.should == []
-                subject.foobar.should == :baz
+                expect(double_definition.times_matcher).to eq RR::TimesCalledMatchers::IntegerMatcher.new(1)
+                expect(double_definition.argument_expectation.class).to eq RR::Expectations::ArgumentEqualityExpectation
+                expect(double_definition.argument_expectation.expected_arguments).to eq []
+                expect(subject.foobar).to eq :baz
               end
             end
           end
@@ -52,16 +52,16 @@ module RR
 
             context "when passing no args" do
               it "returns self" do
-                call_strategy.should === double_definition_create
+                expect(call_strategy).to equal double_definition_create
               end
             end
 
             context "when passed subject and a method_name argument" do
               it "creates a stub Double for method when passed a method_name argument" do
                 double_definition = double_definition_create.stub(subject, :foobar).returns {:baz}
-                double_definition.times_matcher.should == RR::TimesCalledMatchers::AnyTimesMatcher.new
-                double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
-                subject.foobar.should == :baz
+                expect(double_definition.times_matcher).to eq RR::TimesCalledMatchers::AnyTimesMatcher.new
+                expect(double_definition.argument_expectation.class).to eq RR::Expectations::AnyArgumentExpectation
+                expect(subject.foobar).to eq :baz
               end
             end
           end
@@ -73,19 +73,19 @@ module RR
 
             context "when passing no args" do
               it "returns self" do
-                call_strategy.should === double_definition_create
+                expect(call_strategy).to equal double_definition_create
               end
             end
 
             context "when passed a subject and a method_name argument_expectation" do
               it "creates a mock Double for method" do
                 double_definition = double_definition_create.dont_allow(subject, :foobar)
-                double_definition.times_matcher.should == RR::TimesCalledMatchers::NeverMatcher.new
-                double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
+                expect(double_definition.times_matcher).to eq RR::TimesCalledMatchers::NeverMatcher.new
+                expect(double_definition.argument_expectation.class).to eq RR::Expectations::AnyArgumentExpectation
 
-                lambda do
+                expect {
                   subject.foobar
-                end.should raise_error(RR::Errors::TimesCalledError)
+                }.to raise_error(RR::Errors::TimesCalledError)
                 RR.reset
               end
             end
@@ -106,8 +106,8 @@ module RR
             context "when passed a method_name argument" do
               it "sets #verification_strategy to Mock" do
                 double_definition_create.mock!(:foobar)
-                double_definition_create.verification_strategy.class.should == Strategies::Verification::Mock
-                lambda {RR.verify}.should raise_error(::RR::Errors::TimesCalledError)
+                expect(double_definition_create.verification_strategy.class).to eq Strategies::Verification::Mock
+                expect { RR.verify }.to raise_error(::RR::Errors::TimesCalledError)
               end
             end
           end
@@ -120,7 +120,7 @@ module RR
             context "when passed a method_name argument" do
               it "sets #verification_strategy to Stub" do
                 double_definition_create.stub!(:foobar)
-                double_definition_create.verification_strategy.class.should == Strategies::Verification::Stub
+                expect(double_definition_create.verification_strategy.class).to eq Strategies::Verification::Stub
               end
             end
           end
@@ -133,7 +133,7 @@ module RR
             context "when passed a method_name argument" do
               it "sets #verification_strategy to DontAllow" do
                 double_definition_create.dont_allow!(:foobar)
-                double_definition_create.verification_strategy.class.should == Strategies::Verification::DontAllow
+                expect(double_definition_create.verification_strategy.class).to eq Strategies::Verification::DontAllow
               end
             end
           end
@@ -151,9 +151,9 @@ module RR
           context "when passed a method_name argument" do
             it "creates a proxy Double for method" do
               double_definition = double_definition_create.stub.proxy(subject, :foobar).after_call {:baz}
-              double_definition.times_matcher.should == RR::TimesCalledMatchers::AnyTimesMatcher.new
-              double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
-              subject.foobar.should == :baz
+              expect(double_definition.times_matcher).to eq RR::TimesCalledMatchers::AnyTimesMatcher.new
+              expect(double_definition.argument_expectation.class).to eq RR::Expectations::AnyArgumentExpectation
+              expect(subject.foobar).to eq :baz
             end
           end
         end
@@ -161,9 +161,9 @@ module RR
         describe "#instance_of" do
           context "when not passed a class" do
             it "raises an ArgumentError" do
-              lambda do
+              expect {
                 double_definition_create.instance_of(Object.new).foobar
-              end.should raise_error(ArgumentError, "instance_of only accepts class objects")
+              }.to raise_error(ArgumentError, "instance_of only accepts class objects")
             end
           end
 
@@ -171,9 +171,9 @@ module RR
             it "creates a proxy Double for method" do
               klass = Class.new
               double_definition = double_definition_create.stub.instance_of(klass, :foobar).returns {:baz}
-              double_definition.times_matcher.should == RR::TimesCalledMatchers::AnyTimesMatcher.new
-              double_definition.argument_expectation.class.should == RR::Expectations::AnyArgumentExpectation
-              klass.new.foobar.should == :baz
+              expect(double_definition.times_matcher).to eq RR::TimesCalledMatchers::AnyTimesMatcher.new
+              expect(double_definition.argument_expectation.class).to eq RR::Expectations::AnyArgumentExpectation
+              expect(klass.new.foobar).to eq :baz
             end
           end
         end
@@ -185,7 +185,7 @@ module RR
 
 #          context "when passed no arguments" do
 #            it "returns a DoubleDefinitiondouble_definition_create" do
-#              instance_of.instance_of.should be_instance_of(DoubleDefinitionCreate)
+#              expect(instance_of.instance_of).to be_instance_of(DoubleDefinitionCreate)
 #            end
 #          end
 
@@ -193,11 +193,11 @@ module RR
             it "creates a instance_of Double for method" do
               double_definition = instance_of.mock(@klass, :foobar)
               double_definition.with(1, 2) {:baz}
-              double_definition.times_matcher.should == RR::TimesCalledMatchers::IntegerMatcher.new(1)
-              double_definition.argument_expectation.class.should == RR::Expectations::ArgumentEqualityExpectation
-              double_definition.argument_expectation.expected_arguments.should == [1, 2]
+              expect(double_definition.times_matcher).to eq RR::TimesCalledMatchers::IntegerMatcher.new(1)
+              expect(double_definition.argument_expectation.class).to eq RR::Expectations::ArgumentEqualityExpectation
+              expect(double_definition.argument_expectation.expected_arguments).to eq [1, 2]
 
-              @klass.new.foobar(1, 2).should == :baz
+              expect(@klass.new.foobar(1, 2)).to eq :baz
             end
           end
         end
@@ -214,14 +214,14 @@ module RR
               it "sets expectation on the #subject that it will be sent the method_name once with the passed-in arguments" do
                 mock(subject).foobar(1, 2)
                 subject.foobar(1, 2)
-                lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
-                lambda {RR.verify}.should raise_error(RR::Errors::TimesCalledError)
+                expect { subject.foobar(1, 2) }.to raise_error(RR::Errors::TimesCalledError)
+                expect { RR.verify }.to raise_error(RR::Errors::TimesCalledError)
               end
 
               describe "#subject.method_name being called" do
                 it "returns the return value of the Double#returns block" do
                   double_definition_create.call(:foobar, 1, 2) {:baz}
-                  subject.foobar(1, 2).should == :baz
+                  expect(subject.foobar(1, 2)).to eq :baz
                 end
               end
             end
@@ -239,8 +239,8 @@ module RR
                 mock(subject).foobar(1, 2)
 
                 subject.foobar(1, 2)
-                lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
-                lambda {RR.verify}.should raise_error(RR::Errors::TimesCalledError)
+                expect { subject.foobar(1, 2) }.to raise_error(RR::Errors::TimesCalledError)
+                expect { RR.verify }.to raise_error(RR::Errors::TimesCalledError)
               end
 
               describe "#subject.method_name being called" do
@@ -253,7 +253,7 @@ module RR
                   end
                   double_definition_create.call(:foobar, 1, 2)
                   subject.foobar(1, 2)
-                  original_method_called.should be_true
+                  expect(original_method_called).to be_true
                 end
 
                 context "when not passed a block" do
@@ -262,7 +262,7 @@ module RR
                       :baz;
                     end
                     double_definition_create.call(:foobar, 1, 2)
-                    subject.foobar(1, 2).should == :baz
+                    expect(subject.foobar(1, 2)).to eq :baz
                   end
                 end
 
@@ -281,14 +281,14 @@ module RR
                       value
                     end
                     subject.foobar(1, 2)
-                    real_value.a_method.should == 99
+                    expect(real_value.a_method).to eq 99
                   end
 
                   it "returns the return value of the block" do
                     double_definition_create.call(:foobar, 1, 2) do |value|
                       :something_else
                     end
-                    subject.foobar(1, 2).should == :something_else
+                    expect(subject.foobar(1, 2)).to eq :something_else
                   end
                 end
               end
@@ -304,7 +304,7 @@ module RR
               context "when not passed a block" do
                 it "returns nil" do
                   double_definition_create.call(:foobar)
-                  subject.foobar.should be_nil
+                  expect(subject.foobar).to be_nil
                 end
               end
 
@@ -312,7 +312,7 @@ module RR
                 describe "#subject.method_name being called" do
                   it "returns the return value of the block" do
                     double_definition_create.call(:foobar) {:baz}
-                    subject.foobar.should == :baz
+                    expect(subject.foobar).to eq :baz
                   end
                 end
               end
@@ -321,9 +321,9 @@ module RR
                 describe "#subject.method_name being called with any arguments" do
                   it "invokes the implementation of the Stub" do
                     double_definition_create.call(:foobar) {:baz}
-                    subject.foobar(1, 2).should == :baz
-                    subject.foobar().should == :baz
-                    subject.foobar([]).should == :baz
+                    expect(subject.foobar(1, 2)).to eq :baz
+                    expect(subject.foobar()).to eq :baz
+                    expect(subject.foobar([])).to eq :baz
                   end
                 end
               end
@@ -332,16 +332,16 @@ module RR
                 describe "#subject.method_name being called with the passed-in arguments" do
                   it "invokes the implementation of the Stub" do
                     double_definition_create.call(:foobar, 1, 2) {:baz}
-                    subject.foobar(1, 2).should == :baz
+                    expect(subject.foobar(1, 2)).to eq :baz
                   end
                 end
 
                 describe "#subject.method_name being called with different arguments" do
                   it "raises a DoubleNotFoundError" do
                     double_definition_create.call(:foobar, 1, 2) {:baz}
-                    lambda do
+                    expect {
                       subject.foobar
-                    end.should raise_error(RR::Errors::DoubleNotFoundError)
+                    }.to raise_error(RR::Errors::DoubleNotFoundError)
                   end
                 end
               end
@@ -360,7 +360,7 @@ module RR
                 describe "#subject.method_name being called" do
                   it "invokes the original implementanion" do
                     double_definition_create.call(:foobar)
-                    subject.foobar.should == :original_return_value
+                    expect(subject.foobar).to eq :original_return_value
                   end
                 end
               end
@@ -373,14 +373,14 @@ module RR
                       passed_in_value = original_return_value
                     end
                     subject.foobar
-                    passed_in_value.should == :original_return_value
+                    expect(passed_in_value).to eq :original_return_value
                   end
 
                   it "returns the return value of the block" do
                     double_definition_create.call(:foobar) do |original_return_value|
                       :new_return_value
                     end
-                    subject.foobar.should == :new_return_value
+                    expect(subject.foobar).to eq :new_return_value
                   end
                 end
               end
@@ -389,16 +389,16 @@ module RR
                 describe "#subject.method_name being called with the passed-in arguments" do
                   it "invokes the implementation of the Stub" do
                     double_definition_create.call(:foobar, 1, 2) {:baz}
-                    subject.foobar(1, 2).should == :baz
+                    expect(subject.foobar(1, 2)).to eq :baz
                   end
                 end
 
                 describe "#subject.method_name being called with different arguments" do
                   it "raises a DoubleNotFoundError" do
                     double_definition_create.call(:foobar, 1, 2) {:baz}
-                    lambda do
+                    expect {
                       subject.foobar
-                    end.should raise_error(RR::Errors::DoubleNotFoundError)
+                    }.to raise_error(RR::Errors::DoubleNotFoundError)
                   end
                 end
               end
@@ -414,8 +414,8 @@ module RR
               describe "#subject.method_name being called with any arguments" do
                 it "raises a TimesCalledError" do
                   double_definition_create.call(:foobar)
-                  lambda {subject.foobar}.should raise_error(RR::Errors::TimesCalledError)
-                  lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
+                  expect { subject.foobar }.to raise_error(RR::Errors::TimesCalledError)
+                  expect { subject.foobar(1, 2) }.to raise_error(RR::Errors::TimesCalledError)
                 end
               end
             end
@@ -424,14 +424,14 @@ module RR
               describe "#subject.method_name being called with the passed-in arguments" do
                 it "raises a TimesCalledError" do
                   double_definition_create.call(:foobar, 1, 2)
-                  lambda {subject.foobar(1, 2)}.should raise_error(RR::Errors::TimesCalledError)
+                  expect { subject.foobar(1, 2) }.to raise_error(RR::Errors::TimesCalledError)
                 end
               end
 
               describe "#subject.method_name being called with different arguments" do
                 it "raises a DoubleNotFoundError" do
                   double_definition_create.call(:foobar, 1, 2)
-                  lambda {subject.foobar()}.should raise_error(RR::Errors::DoubleNotFoundError)
+                  expect { subject.foobar() }.to raise_error(RR::Errors::DoubleNotFoundError)
                 end
               end
             end

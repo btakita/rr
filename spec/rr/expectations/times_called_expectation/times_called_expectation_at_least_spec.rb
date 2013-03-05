@@ -23,11 +23,11 @@ module RR
 
           it "raises error when times called < times" do
             subject.foobar
-            lambda do
+            expect {
               RR.verify
-            end.should raise_error(
-            RR::Errors::TimesCalledError,
-            "foobar()\nCalled 1 time.\nExpected at least 3 times."
+            }.to raise_error(
+              RR::Errors::TimesCalledError,
+              "foobar()\nCalled 1 time.\nExpected at least 3 times."
             )
           end
         end

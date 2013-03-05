@@ -5,7 +5,7 @@ module RR
     describe Rspec do
       describe "#trim_backtrace" do
         it "does not set trim_backtrace" do
-          RR.trim_backtrace.should == false
+          expect(RR.trim_backtrace).to eq false
         end
       end
 

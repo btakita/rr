@@ -6,8 +6,8 @@ module RR
       attr_reader :subject, :method_name, :double_injection
       macro("sets up subject and method_name") do
         it "sets up subject and method_name" do
-          double_injection.subject.should === subject
-          double_injection.method_name.should == method_name.to_sym
+          expect(double_injection.subject).to equal subject
+          expect(double_injection.method_name).to eq method_name.to_sym
         end
       end
 
@@ -27,24 +27,24 @@ module RR
               end
             end
 
-            subject.should respond_to(:foobar)
-            (!!subject.methods.detect {|method| method.to_sym == :foobar}).should be_true
+            expect(subject).to respond_to(:foobar)
+            expect(!!subject.methods.detect {|method| method.to_sym == :foobar}).to be_true
             stub(subject).foobar {:new_foobar}
           end
 
           describe "being bound" do
             it "sets __rr__original_{method_name} to the original method" do
-              subject.__rr__original_foobar.should == :original_foobar
+              expect(subject.__rr__original_foobar).to eq :original_foobar
             end
 
             describe "being called" do
               it "returns the return value of the block" do
-                subject.foobar.should == :new_foobar
+                expect(subject.foobar).to eq :new_foobar
               end
 
               it "does not call the original method" do
                 subject.foobar
-                subject.original_foobar_called.should be_nil
+                expect(subject.original_foobar_called).to be_nil
               end
             end
 
@@ -54,7 +54,7 @@ module RR
               end
 
               it "rebinds the original method" do
-                subject.foobar.should == :original_foobar
+                expect(subject.foobar).to eq :original_foobar
               end
 
               it "removes __rr__original_{method_name}" do
@@ -77,7 +77,7 @@ module RR
 
           describe "being called" do
             it "calls the newly defined method" do
-              subject.foobar.should == :new_foobar
+              expect(subject.foobar).to eq :new_foobar
             end
           end
 
@@ -101,7 +101,7 @@ module RR
               end
             end
             mock(@subject).foobar
-            @subject.foobar.should == nil
+            expect(@subject.foobar).to eq nil
           end
         end
       end
@@ -115,25 +115,25 @@ module RR
                   :original_foobar
                 end
 
-                subject.should respond_to(:foobar)
-                (!!subject.methods.detect {|method| method.to_sym == :foobar}).should be_true
+                expect(subject).to respond_to(:foobar)
+                expect(!!subject.methods.detect {|method| method.to_sym == :foobar}).to be_true
                 stub.proxy(subject).foobar {:new_foobar}
               end
 
               it "aliases the original method to __rr__original_{method_name}" do
-                subject.__rr__original_foobar.should == :original_foobar
+                expect(subject.__rr__original_foobar).to eq :original_foobar
               end
 
               it "replaces the original method with the new method" do
-                subject.foobar.should == :new_foobar
+                expect(subject.foobar).to eq :new_foobar
               end
 
               describe "being called" do
                 it "calls the original method first and sends it into the block" do
                   original_return_value = nil
                   stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
-                  subject.foobar.should == :new_foobar
-                  original_return_value.should == :original_foobar
+                  expect(subject.foobar).to eq :new_foobar
+                  expect(original_return_value).to eq :original_foobar
                 end
               end
 
@@ -143,7 +143,7 @@ module RR
                 end
 
                 it "rebinds the original method" do
-                  subject.foobar.should == :original_foobar
+                  expect(subject.foobar).to eq :original_foobar
                 end
 
                 it "removes __rr__original_{method_name}" do
@@ -159,7 +159,7 @@ module RR
                 before do
                   setup_subject
 
-                  subject.should respond_to(:foobar)
+                  expect(subject).to respond_to(:foobar)
                   stub.proxy(subject).foobar {:new_foobar}
                 end
 
@@ -187,15 +187,15 @@ module RR
 
                   describe "being called" do
                     it "defines __rr__original_{method_name} to be the lazily created method" do
-                      (!!subject.methods.detect {|method| method.to_sym == :__rr__original_foobar}).should be_true
-                      subject.__rr__original_foobar.should == :original_foobar
+                      expect((!!subject.methods.detect {|method| method.to_sym == :__rr__original_foobar})).to be_true
+                      expect(subject.__rr__original_foobar).to eq :original_foobar
                     end
 
                     it "calls the original method first and sends it into the block" do
                       original_return_value = nil
                       stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
-                      subject.foobar.should == :new_foobar
-                      original_return_value.should == :original_foobar
+                      expect(subject.foobar).to eq :new_foobar
+                      expect(original_return_value).to eq :original_foobar
                     end
                   end
 
@@ -205,7 +205,7 @@ module RR
                     end
 
                     it "rebinds the original method" do
-                      subject.foobar.should == :original_foobar
+                      expect(subject.foobar).to eq :original_foobar
                     end
 
                     it "removes __rr__original_{method_name}" do
@@ -234,15 +234,15 @@ module RR
                     describe "being called" do
                       it "defines __rr__original_{method_name} to be the lazily created method" do
                         subject.foobar
-                        (!!subject.methods.detect {|method| method.to_sym == :__rr__original_foobar}).should be_true
-                        subject.__rr__original_foobar.should == :original_foobar
+                        expect((!!subject.methods.detect {|method| method.to_sym == :__rr__original_foobar})).to be_true
+                        expect(subject.__rr__original_foobar).to eq :original_foobar
                       end
 
                       it "calls the lazily created method and returns the injected method return value" do
                         original_return_value = nil
                         stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
-                        subject.foobar.should == :new_foobar
-                        original_return_value.should == :original_foobar
+                        expect(subject.foobar).to eq :new_foobar
+                        expect(original_return_value).to eq :original_foobar
                       end
                     end
 
@@ -253,7 +253,7 @@ module RR
                         end
 
                         it "rebinds the original method" do
-                          subject.foobar.should == :original_foobar
+                          expect(subject.foobar).to eq :original_foobar
                         end
 
                         it "removes __rr__original_{method_name}" do
@@ -284,8 +284,8 @@ module RR
                       it "calls the lazily created method and returns the injected method return value" do
                         original_return_value = nil
                         stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
-                        subject.foobar.should == :new_foobar
-                        original_return_value.should == :original_foobar
+                        expect(subject.foobar).to eq :new_foobar
+                        expect(original_return_value).to eq :original_foobar
                       end
                     end
 
@@ -295,7 +295,7 @@ module RR
                       end
 
                       it "rebinds the original method" do
-                        subject.foobar.should == :original_foobar
+                        expect(subject.foobar).to eq :original_foobar
                       end
 
                       it "removes __rr__original_{method_name}" do
@@ -310,7 +310,7 @@ module RR
                 before do
                   setup_subject
 
-                  subject.should respond_to(:foobar)
+                  expect(subject).to respond_to(:foobar)
                   stub.proxy(subject).baz {:new_baz}
                   stub.proxy(subject).foobar {:new_foobar}
                 end
@@ -339,15 +339,15 @@ module RR
 
                   describe "being called" do
                     it "defines __rr__original_{method_name} to be the lazily created method" do
-                      (!!subject.methods.detect {|method| method.to_sym == :__rr__original_foobar}).should be_true
-                      subject.__rr__original_foobar.should == :original_foobar
+                      expect((!!subject.methods.detect {|method| method.to_sym == :__rr__original_foobar})).to be_true
+                      expect(subject.__rr__original_foobar).to eq :original_foobar
                     end
 
                     it "calls the original method first and sends it into the block" do
                       original_return_value = nil
                       stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
-                      subject.foobar.should == :new_foobar
-                      original_return_value.should == :original_foobar
+                      expect(subject.foobar).to eq :new_foobar
+                      expect(original_return_value).to eq :original_foobar
                     end
                   end
 
@@ -357,7 +357,7 @@ module RR
                     end
 
                     it "rebinds the original method" do
-                      subject.foobar.should == :original_foobar
+                      expect(subject.foobar).to eq :original_foobar
                     end
 
                     it "removes __rr__original_{method_name}" do
@@ -386,15 +386,15 @@ module RR
                     describe "being called" do
                       it "defines __rr__original_{method_name} to be the lazily created method" do
                         subject.foobar
-                        (!!subject.methods.detect {|method| method.to_sym == :__rr__original_foobar}).should be_true
-                        subject.__rr__original_foobar.should == :original_foobar
+                        expect((!!subject.methods.detect {|method| method.to_sym == :__rr__original_foobar})).to be_true
+                        expect(subject.__rr__original_foobar).to eq :original_foobar
                       end
 
                       it "calls the lazily created method and returns the injected method return value" do
                         original_return_value = nil
                         stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
-                        subject.foobar.should == :new_foobar
-                        original_return_value.should == :original_foobar
+                        expect(subject.foobar).to eq :new_foobar
+                        expect(original_return_value).to eq :original_foobar
                       end
                     end
 
@@ -405,7 +405,7 @@ module RR
                         end
 
                         it "rebinds the original method" do
-                          subject.foobar.should == :original_foobar
+                          expect(subject.foobar).to eq :original_foobar
                         end
 
                         it "removes __rr__original_{method_name}" do
@@ -436,8 +436,8 @@ module RR
                       it "calls the lazily created method and returns the injected method return value" do
                         original_return_value = nil
                         stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
-                        subject.foobar.should == :new_foobar
-                        original_return_value.should == :original_foobar
+                        expect(subject.foobar).to eq :new_foobar
+                        expect(original_return_value).to eq :original_foobar
                       end
                     end
 
@@ -447,7 +447,7 @@ module RR
                       end
 
                       it "rebinds the original method" do
-                        subject.foobar.should == :original_foobar
+                        expect(subject.foobar).to eq :original_foobar
                       end
 
                       it "removes __rr__original_{method_name}" do
@@ -480,16 +480,16 @@ module RR
               end
 
               it "adds the method to the subject" do
-                subject.should respond_to(:foobar)
-                (!!subject.methods.detect {|method| method.to_sym == :foobar}).should be_true
+                expect(subject).to respond_to(:foobar)
+                expect((!!subject.methods.detect {|method| method.to_sym == :foobar})).to be_true
               end
 
               describe "being called" do
                 it "calls the original method first and sends it into the block" do
                   original_return_value = nil
                   stub.proxy(subject).foobar {|arg| original_return_value = arg; :new_foobar}
-                  subject.foobar.should == :new_foobar
-                  original_return_value.should == :original_foobar
+                  expect(subject.foobar).to eq :new_foobar
+                  expect(original_return_value).to eq :original_foobar
                 end
               end
 
@@ -515,15 +515,15 @@ module RR
               end
 
               it "adds the method to the subject" do
-                subject.should respond_to(:foobar)
-                (!!subject.methods.detect {|method| method.to_sym == :foobar}).should be_true
+                expect(subject).to respond_to(:foobar)
+                expect((!!subject.methods.detect {|method| method.to_sym == :foobar})).to be_true
               end
 
               describe "being called" do
                 it "raises a NoMethodError" do
-                  lambda do
+                  expect {
                     subject.foobar
-                  end.should raise_error(NoMethodError)
+                  }.to raise_error(NoMethodError)
                 end
               end
 

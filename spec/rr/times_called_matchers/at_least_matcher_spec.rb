@@ -8,10 +8,10 @@ module RR
         @times = 3
         @matcher = AtLeastMatcher.new(times)
       end
-      
+
       describe "#possible_match?" do
         it "always returns true" do
-          matcher.should be_possible_match(99999)
+          expect(matcher).to be_possible_match(99999)
         end
       end
 
@@ -21,18 +21,18 @@ module RR
         end
 
         it "returns true when times_called == times" do
-          matcher.should be_matches(3)
+          expect(matcher).to be_matches(3)
         end
 
         it "returns true when times_called > times" do
-          matcher.should be_matches(4)
+          expect(matcher).to be_matches(4)
         end
       end
 
       describe "#attempt?" do
         it "always returns true" do
-          matcher.should be_attempt(1)
-          matcher.should be_attempt(100000)
+          expect(matcher).to be_attempt(1)
+          expect(matcher).to be_attempt(100000)
         end
       end
 
@@ -44,9 +44,8 @@ module RR
 
       describe "#error_message" do
         it "has an error message" do
-          matcher.error_message(2).should == (
-          "Called 2 times.\nExpected at least 3 times."
-          )
+          expect(matcher.error_message(2)).to eq \
+            "Called 2 times.\nExpected at least 3 times."
         end
       end
     end

@@ -17,10 +17,10 @@ module RR
           child_subject = Object.new
           parent_double_definition_create.stub(parent_subject)
           child_double_definition_create.stub(child_subject)
-          child_double_definition_create.root_subject.should == parent_subject
+          expect(child_double_definition_create.root_subject).to eq parent_subject
         end
-      end      
-      
+      end
+
       describe "Strategies::Verification definitions" do
         describe "methods without !" do
           attr_reader :child_subject
@@ -31,9 +31,9 @@ module RR
           describe "#mock" do
             context "when passed a subject" do
               it "sets #parent_double_definition.implementation to a Proc returning the passed-in subject" do
-                parent_double_definition.implementation.should be_nil
+                expect(parent_double_definition.implementation).to be_nil
                 child_double_definition_create.mock(child_subject)
-                parent_double_definition.implementation.call.should == child_subject
+                expect(parent_double_definition.implementation.call).to eq child_subject
               end
             end
           end
@@ -41,9 +41,9 @@ module RR
           describe "#stub" do
             context "when passed a subject" do
               it "sets #parent_double_definition.implementation to a Proc returning the passed-in subject" do
-                parent_double_definition.implementation.should be_nil
+                expect(parent_double_definition.implementation).to be_nil
                 child_double_definition_create.stub(child_subject)
-                parent_double_definition.implementation.call.should == child_subject
+                expect(parent_double_definition.implementation.call).to eq child_subject
               end
             end
           end
@@ -51,9 +51,9 @@ module RR
           describe "#dont_allow" do
             context "when passed a subject" do
               it "sets #parent_double_definition.implementation to a Proc returning the passed-in subject" do
-                parent_double_definition.implementation.should be_nil
+                expect(parent_double_definition.implementation).to be_nil
                 child_double_definition_create.dont_allow(child_subject)
-                parent_double_definition.implementation.call.should == child_subject
+                expect(parent_double_definition.implementation.call).to eq child_subject
               end
             end
           end
@@ -62,25 +62,25 @@ module RR
         describe "methods with !" do
           describe "#mock!" do
             it "sets #parent_double_definition.implementation to a Proc returning the #subject" do
-              parent_double_definition.implementation.should be_nil
+              expect(parent_double_definition.implementation).to be_nil
               child_subject = child_double_definition_create.mock!.__double_definition_create__.subject
-              parent_double_definition.implementation.call.should == child_subject
+              expect(parent_double_definition.implementation.call).to eq child_subject
             end
           end
 
           describe "#stub!" do
             it "sets #parent_double_definition.implementation to a Proc returning the #subject" do
-              parent_double_definition.implementation.should be_nil
+              expect(parent_double_definition.implementation).to be_nil
               child_subject = child_double_definition_create.stub!.__double_definition_create__.subject
-              parent_double_definition.implementation.call.should == child_subject
+              expect(parent_double_definition.implementation.call).to eq child_subject
             end
           end
 
           describe "#dont_allow!" do
             it "sets #parent_double_definition.implementation to a Proc returning the #subject" do
-              parent_double_definition.implementation.should be_nil
+              expect(parent_double_definition.implementation).to be_nil
               child_subject = child_double_definition_create.dont_allow!.__double_definition_create__.subject
-              parent_double_definition.implementation.call.should == child_subject
+              expect(parent_double_definition.implementation.call).to eq child_subject
             end
           end
         end
@@ -90,9 +90,9 @@ module RR
         describe "methods without !" do
           describe "#instance_of" do
             it "raises a NoMethodError" do
-              lambda do
+              expect {
                 child_double_definition_create.instance_of
-              end.should raise_error(NoMethodError)
+              }.to raise_error(NoMethodError)
             end
           end
         end
@@ -100,9 +100,9 @@ module RR
         describe "methods with !" do
           describe "#instance_of!" do
             it "raises a NoMethodError" do
-              lambda do
+              expect {
                 child_double_definition_create.instance_of!
-              end.should raise_error(NoMethodError)
+              }.to raise_error(NoMethodError)
             end
           end
         end

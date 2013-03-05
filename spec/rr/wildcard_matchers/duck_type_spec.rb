@@ -25,7 +25,7 @@ module RR
 
         context "when passed-in object matches all required methods" do
           it "returns true" do
-            matcher.should be_wildcard_match(@matching_object)
+            expect(matcher).to be_wildcard_match(@matching_object)
           end
         end
 
@@ -44,7 +44,7 @@ module RR
 
       describe "#inspect" do
         it "returns duck_type with methods" do
-          matcher.inspect.should == "duck_type(:quack, :waddle)"
+          expect(matcher.inspect).to eq "duck_type(:quack, :waddle)"
         end
       end
     end

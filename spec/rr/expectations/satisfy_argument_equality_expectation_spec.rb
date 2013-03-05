@@ -17,7 +17,7 @@ module Expectations
       end
       
       it "returns true when passed a Satisfy matcher with the same proc" do
-        expectation.should be_exact_match(RR::WildcardMatchers::Satisfy.new(expectation_proc))
+        expect(expectation).to be_exact_match(RR::WildcardMatchers::Satisfy.new(expectation_proc))
       end
       
       it "returns false when passed a Satisfy matcher with another proc" do
@@ -36,17 +36,17 @@ module Expectations
 
     describe "#wildcard_match?" do
       it "returns true when the proc returns a truthy value" do
-        (!!expectation_proc.call(expected_value)).should be_true
-        expectation.should be_wildcard_match(expected_value)
+        expect((!!expectation_proc.call(expected_value))).to be_true
+        expect(expectation).to be_wildcard_match(expected_value)
       end
       
       it "returns false when the proc returns a falsey value" do
-        (!!expectation_proc.call(:bar)).should be_false
+        expect((!!expectation_proc.call(:bar))).to be_false
         expectation.should_not be_wildcard_match(:bar)
       end
       
       it "returns true when an exact match" do
-        expectation.should be_wildcard_match(satisfy_matcher)
+        expect(expectation).to be_wildcard_match(satisfy_matcher)
       end
 
       it "returns false when not passed correct number of arguments" do

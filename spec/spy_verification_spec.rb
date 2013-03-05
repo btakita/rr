@@ -23,9 +23,9 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             received(subject).foobar(1, 2).call
             subject.foobar(1, 2)
-            lambda do
+            expect {
               received(subject).foobar(1, 2).call
-            end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
+            }.to raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
           end
         end
       end
@@ -36,18 +36,18 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             received(subject).foobar(1, 2).once.call
             subject.foobar(1, 2)
-            lambda do
+            expect {
               received(subject).foobar(1, 2).once.call
-            end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
+            }.to raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
           end
         end
 
         context "as an at least matcher" do
           it "verifies that the method with arugments was called at least the specified number of times" do
             subject.foobar(1, 2)
-            lambda do
+            expect {
               received(subject).foobar(1, 2).at_least(2).call
-            end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
+            }.to raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
             subject.foobar(1, 2)
             received(subject).foobar(1, 2).at_least(2).call
             subject.foobar(1, 2)
@@ -64,9 +64,9 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             received(subject).foobar(1, is_a(Fixnum)).call
             subject.foobar(1, 2)
-            lambda do
+            expect {
               received(subject).foobar(1, is_a(Fixnum)).call
-            end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
+            }.to raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
           end
         end
       end
@@ -77,18 +77,18 @@ describe RR::SpyVerification do
             subject.foobar(1, 2)
             received(subject).foobar(1, is_a(Fixnum)).once.call
             subject.foobar(1, 2)
-            lambda do
+            expect {
               received(subject).foobar(1, is_a(Fixnum)).once.call
-            end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
+            }.to raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
           end
         end
 
         context "as an at least matcher" do
           it "verifies that the method with arugments was called at least the specified number of times" do
             subject.foobar(1, is_a(Fixnum))
-            lambda do
+            expect {
               received(subject).foobar(1, is_a(Fixnum)).at_least(2).call
-            end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
+            }.to raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
             subject.foobar(1, 2)
             received(subject).foobar(1, is_a(Fixnum)).at_least(2).call
             subject.foobar(1, 2)
@@ -102,10 +102,10 @@ describe RR::SpyVerification do
       it "when the order is incorrect; raises an error" do
         subject.foobar(3, 4)
         subject.foobar(1, 2)
-        lambda do
+        expect {
           received(subject).foobar(1, 2).ordered.call
           received(subject).foobar(3, 4).ordered.call
-        end.should raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
+        }.to raise_error(RR::Errors::SpyVerificationErrors::InvocationCountError)
       end
 
       it "when the order is correct; does not raise an error" do
@@ -119,10 +119,10 @@ describe RR::SpyVerification do
 
     context "when the subject is expected where there is not DoubleInjection" do
       it "raises a DoubleInjectionNotFoundError" do
-        ::RR::Injections::DoubleInjection.exists?(subject, :method_that_does_not_exist).should be_false
-        lambda do
+        expect(::RR::Injections::DoubleInjection.exists?(subject, :method_that_does_not_exist)).to be_false
+        expect {
           received(subject).method_that_does_not_exist.call
-        end.should raise_error(RR::Errors::SpyVerificationErrors::DoubleInjectionNotFoundError)
+        }.to raise_error(RR::Errors::SpyVerificationErrors::DoubleInjectionNotFoundError)
       end
     end
   end

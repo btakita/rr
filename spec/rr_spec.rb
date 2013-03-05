@@ -21,7 +21,7 @@ describe "RR" do
 
     rr_instance_methods = RR.methods(false)
     space_instance_methods.each do |space_instance_method|
-      rr_instance_methods.should include(space_instance_method)
+      expect(rr_instance_methods).to include(space_instance_method)
     end
     RR.verify
   end

@@ -14,7 +14,7 @@ module RR
 
       describe "#verify" do
         it "aliases #rr_verify" do
-          RRMethods.instance_method("verify").should == RRMethods.instance_method("rr_verify")
+          expect(RRMethods.instance_method("verify")).to eq RRMethods.instance_method("rr_verify")
         end
       end
 
@@ -47,16 +47,16 @@ module RR
           end
 
           rr_verify
-          double_1_verify_calls.should == 1
-          double_2_verify_calls.should == 1
-          double_1_reset_calls.should == 1
-          double_1_reset_calls.should == 1
+          expect(double_1_verify_calls).to eq 1
+          expect(double_2_verify_calls).to eq 1
+          expect(double_1_reset_calls).to eq 1
+          expect(double_1_reset_calls).to eq 1
         end
       end
 
       describe "#reset" do
         it "aliases #rr_reset" do
-          RRMethods.instance_method("reset").should == RRMethods.instance_method("rr_reset")
+          expect(RRMethods.instance_method("reset")).to eq RRMethods.instance_method("rr_reset")
         end
       end
 
@@ -69,7 +69,7 @@ module RR
 
           rr_reset
           ::RR::Injections::DoubleInjection.instances
-          ::RR::Injections::DoubleInjection.instances.should be_empty
+          expect(::RR::Injections::DoubleInjection.instances).to be_empty
         end
 
         it "resets all double_injections" do
@@ -89,8 +89,8 @@ module RR
           end
 
           rr_reset
-          double_1_reset_calls.should == 1
-          double_2_reset_calls.should == 1
+          expect(double_1_reset_calls).to eq 1
+          expect(double_2_reset_calls).to eq 1
         end
       end
     end

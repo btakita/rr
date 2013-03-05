@@ -15,7 +15,7 @@ module RR
       describe ".new" do
         it "does not undefine object_id" do
           blank_slate = DoubleDefinitionCreateBlankSlate.new(double_definition_create)
-          blank_slate.object_id.class.should == Fixnum
+          expect(blank_slate.object_id.class).to eq Fixnum
         end
 
         context "without block" do
@@ -24,7 +24,7 @@ module RR
           end
 
           it "clears out all methods from proxy" do
-            stub(subject).i_should_be_a_double.should be_instance_of(DoubleDefinition)
+            expect(stub(subject).i_should_be_a_double).to be_instance_of(DoubleDefinition)
           end
         end
 
@@ -44,14 +44,14 @@ module RR
             end
 
             it "creates double_injections" do
-              subject.foobar(1, 2).should == :one_two
-              subject.foobar(1).should == :one
-              subject.foobar(:something).should == :default
-              subject.baz.should == :baz_result
+              expect(subject.foobar(1, 2)).to eq :one_two
+              expect(subject.foobar(1)).to eq :one
+              expect(subject.foobar(:something)).to eq :default
+              expect(subject.baz).to eq :baz_result
             end
 
             it "passes the self into the block" do
-              passed_in_argument.__double_definition_create__.should be_instance_of(
+              expect(passed_in_argument.__double_definition_create__).to be_instance_of(
                 ::RR::DoubleDefinitions::DoubleDefinitionCreate
               )
             end
@@ -72,20 +72,20 @@ module RR
             end
 
             it "creates double_injections" do
-              subject.foobar(1, 2).should == :one_two
-              subject.foobar(1).should == :one
-              subject.foobar(:something).should == :default
-              subject.baz.should == :baz_result
+              expect(subject.foobar(1, 2)).to eq :one_two
+              expect(subject.foobar(1)).to eq :one
+              expect(subject.foobar(:something)).to eq :default
+              expect(subject.baz).to eq :baz_result
             end
 
             it "evaluates the block with the context of self" do
-              self_value.__double_definition_create__.should be_instance_of(
+              expect(self_value.__double_definition_create__).to be_instance_of(
                 ::RR::DoubleDefinitions::DoubleDefinitionCreate
               )
             end
           end
         end
       end
-    end    
+    end
   end
 end

@@ -10,14 +10,14 @@ module RR
         array_2 = []
         hash[array_2] = 2
 
-        hash[array_1].should_not == hash[array_2]
+        expect(hash[array_1]).to_not eq hash[array_2]
       end
 
       it "stores the passed in object" do
         hash = HashWithObjectIdKey.new
         obj = Object.new
         hash[obj] = 1
-        hash.instance_eval {@keys}.should == {obj.__id__ => obj}
+        expect(hash.instance_eval {@keys}).to eq({obj.__id__ => obj})
       end
     end
 
@@ -34,8 +34,8 @@ module RR
           values << value
         end
 
-        keys.sort.should == ['one', 'two']
-        values.sort.should == [1, 2]
+        expect(keys.sort).to eq ['one', 'two']
+        expect(values.sort).to eq [1, 2]
       end
     end
 
@@ -48,12 +48,12 @@ module RR
 
       it "removes the object from the hash" do
         @hash.delete(@key)
-        @hash[@key].should be_nil
+        expect(@hash[@key]).to be_nil
       end
 
       it "removes the object from the keys hash" do
         @hash.delete(@key)
-        @hash.instance_eval {@keys}.should == {}
+        expect(@hash.instance_eval {@keys}).to eq {}
       end
     end
 
@@ -65,7 +65,7 @@ module RR
       end
 
       it "returns an array of the keys" do
-        @hash.keys.should == [@key]
+        expect(@hash.keys).to eq [@key]
       end
     end
 
@@ -77,11 +77,11 @@ module RR
       end
 
       it "returns true when the key is in the Hash" do
-        @hash.include?(@key).should be_true
+        expect(@hash.include?(@key)).to be_true
       end
 
       it "returns false when the key is not in the Hash" do
-        @hash.include?(Object.new).should be_false
+        expect(@hash.include?(Object.new)).to be_false
       end
     end
   end

@@ -30,9 +30,9 @@ describe "strong" do
 
   context "when the method does not exist" do
     it "raises an exception" do
-      lambda do
+      expect {
         strong.stub(StrongSpecFixture.new).something
-      end.should raise_error(RR::Errors::SubjectDoesNotImplementMethodError)
+      }.to raise_error(RR::Errors::SubjectDoesNotImplementMethodError)
     end
   end
 
@@ -44,9 +44,9 @@ describe "strong" do
 
   context "when the method has a different arity" do
     it "raises an exception" do
-      lambda do
+      expect {
         strong.stub(StrongSpecFixture.new).method_with_one_argument
-      end.should raise_error(RR::Errors::SubjectHasDifferentArityError)
+      }.to raise_error(RR::Errors::SubjectHasDifferentArityError)
     end
   end
 
@@ -58,9 +58,9 @@ describe "strong" do
 
   context "when the method does not provide the required parameters before varargs" do
     it "raises an exception" do
-      lambda do
+      expect {
         strong.stub(StrongSpecFixture.new).method_with_three_arguments_including_varargs
-      end.should raise_error(RR::Errors::SubjectHasDifferentArityError)
+      }.to raise_error(RR::Errors::SubjectHasDifferentArityError)
     end
   end
 
@@ -72,10 +72,10 @@ describe "strong" do
 
   context "when using instance_of and the method does not exist" do
     it "raises an exception" do
-      lambda do
+      expect {
         strong.stub.instance_of(StrongSpecFixture).something
         StrongSpecFixture.new
-      end.should raise_error(RR::Errors::SubjectDoesNotImplementMethodError)
+      }.to raise_error(RR::Errors::SubjectDoesNotImplementMethodError)
     end
   end
 

@@ -19,14 +19,14 @@ module RR
 
           it "fails after attempt! called 1 time" do
             subject.foobar
-            lambda {RR.verify}.should raise_error(RR::Errors::TimesCalledError)
+            expect { RR.verify }.to raise_error(RR::Errors::TimesCalledError)
           end
 
           it "fails after attempt! called 3 times" do
             subject.foobar
             subject.foobar
             subject.foobar
-            lambda {RR.verify}.should raise_error(RR::Errors::TimesCalledError)
+            expect { RR.verify }.to raise_error(RR::Errors::TimesCalledError)
           end
         end
       end

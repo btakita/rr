@@ -25,12 +25,12 @@ module RR
           it "can't be called when attempt! is called 3 times" do
             subject.foobar
             subject.foobar
-            lambda do
+            expect {
               subject.foobar
-            end.should raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 1..2 times.")
-            lambda do
+            }.to raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 1..2 times.")
+            expect {
               RR.verify
-            end.should raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 1..2 times.")
+            }.to raise_error(RR::Errors::TimesCalledError, "foobar()\nCalled 3 times.\nExpected 1..2 times.")
           end
         end
       end

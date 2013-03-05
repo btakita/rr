@@ -11,14 +11,10 @@ module RR
         end
 
         describe "#wildcard_match?" do
-          before do
-            expectation = ArgumentEqualityExpectation.new(boolean)
-          end
-
           context "when passed a Boolean" do
             it "returns true" do
-              expectation.should be_wildcard_match(true)
-              expectation.should be_wildcard_match(false)
+              expect(expectation).to be_wildcard_match(true)
+              expect(expectation).to be_wildcard_match(false)
             end
           end
 

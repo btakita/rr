@@ -11,11 +11,11 @@ module RR
 
       describe "#possible_match?" do
         it "returns true when times called < times" do
-          matcher.should be_possible_match(2)
+          expect(matcher).to be_possible_match(2)
         end
 
         it "returns true when times called == times" do
-          matcher.should be_possible_match(3)
+          expect(matcher).to be_possible_match(3)
         end
 
         it "returns false when times called > times" do
@@ -29,7 +29,7 @@ module RR
         end
 
         it "returns true when times_called == times" do
-          matcher.should be_matches(3)
+          expect(matcher).to be_matches(3)
         end
 
         it "returns false when times_called > times" do
@@ -39,7 +39,7 @@ module RR
 
       describe "#attempt?" do
         it "returns true when less than expected times" do
-          matcher.should be_attempt(2)
+          expect(matcher).to be_attempt(2)
         end
 
         it "returns false when == expected times" do
@@ -53,15 +53,14 @@ module RR
 
       describe AnyTimesMatcher, "#terminal?" do
         it "returns true" do
-          matcher.should be_terminal
+          expect(matcher).to be_terminal
         end
       end
 
       describe "#error_message" do
         it "has an error message" do
-          matcher.error_message(2).should == (
-          "Called 2 times.\nExpected 3 times."
-          )
+          expect(matcher.error_message(2)).to eq \
+            "Called 2 times.\nExpected 3 times."
         end
       end
     end
