@@ -1,8 +1,6 @@
 shared_examples_for "RR::Expectations::TimesCalledExpectation" do
   attr_reader :subject
-
   it_should_behave_like "Swapped Space"
-
   before do
     @subject = Object.new
   end

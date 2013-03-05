@@ -1,11 +1,14 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../../../spec_helper")
 
 module RR
   module Adapters
     describe RRMethods do
       attr_reader :space, :subject_1, :subject_2, :method_name
+
       it_should_behave_like "Swapped Space"
-      it_should_behave_like "RR::Adapters::RRMethods"
+
+      include RR::Adapters::RRMethods
+
       before do
         @subject_1 = Object.new
         @subject_2 = Object.new

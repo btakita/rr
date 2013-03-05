@@ -1,11 +1,11 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../../../spec_helper")
 
 module RR
   module Adapters
     describe RRMethods do
-      describe "#anything" do
-        it_should_behave_like "RR::Adapters::RRMethods"
+      include RR::Adapters::RRMethods
 
+      describe "#anything" do
         it "returns an Anything matcher" do
           expect(anything).to eq RR::WildcardMatchers::Anything.new
         end
@@ -16,8 +16,6 @@ module RR
       end
 
       describe "#is_a" do
-        it_should_behave_like "RR::Adapters::RRMethods"
-
         it "returns an IsA matcher" do
           expect(is_a(Integer)).to eq RR::WildcardMatchers::IsA.new(Integer)
         end
@@ -28,8 +26,6 @@ module RR
       end
 
       describe "#numeric" do
-        it_should_behave_like "RR::Adapters::RRMethods"
-
         it "returns an Numeric matcher" do
           expect(numeric).to eq RR::WildcardMatchers::Numeric.new
         end
@@ -40,8 +36,6 @@ module RR
       end
 
       describe "#boolean" do
-        it_should_behave_like "RR::Adapters::RRMethods"
-
         it "returns an Boolean matcher" do
           expect(boolean).to eq RR::WildcardMatchers::Boolean.new
         end
@@ -52,8 +46,6 @@ module RR
       end
 
       describe "#duck_type" do
-        it_should_behave_like "RR::Adapters::RRMethods"
-
         it "returns a DuckType matcher" do
           expect(duck_type(:one, :two)).to eq RR::WildcardMatchers::DuckType.new(:one, :two)
         end
@@ -61,6 +53,16 @@ module RR
         it "rr_duck_type returns a DuckType matcher" do
           expect(rr_duck_type(:one, :two)).to eq RR::WildcardMatchers::DuckType.new(:one, :two)
         end
+      end
+    end
+
+    describe "#any_times" do
+      it "returns an AnyTimesMatcher" do
+        expect(any_times).to eq RR::TimesCalledMatchers::AnyTimesMatcher.new
+      end
+
+      it "rr_any_times returns an AnyTimesMatcher" do
+        expect(rr_any_times).to eq RR::TimesCalledMatchers::AnyTimesMatcher.new
       end
     end
   end

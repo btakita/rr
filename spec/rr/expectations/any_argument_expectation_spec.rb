@@ -4,6 +4,7 @@ module RR
   module Expectations
     describe AnyArgumentExpectation do
       attr_reader :expectation
+
       before do
         @expectation = AnyArgumentExpectation.new
       end
