@@ -2,7 +2,7 @@ require "rake"
 require 'rake/contrib/rubyforgepublisher'
 require 'rake/clean'
 require 'rake/testtask'
-require 'rake/rdoctask'
+require 'rdoc/task'
 
 desc "Runs the Rspec suite"
 task(:default) do
