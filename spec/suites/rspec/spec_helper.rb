@@ -1,5 +1,7 @@
 require File.expand_path('../../../global_helper', __FILE__)
 
+require 'rspec/core'
+require 'rspec/expectations'
 require 'rspec/autorun'
 
 module ExampleMethods
@@ -16,10 +18,11 @@ module ExampleGroupMethods
   end
 end
 
-
 RSpec.configure do |c|
   c.include ExampleMethods
   c.extend ExampleGroupMethods
+
+  c.mock_with :nothing
   c.include RR::Adapters::RSpec2
 end
 
