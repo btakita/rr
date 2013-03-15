@@ -32,8 +32,10 @@ module RR
         double_definition_create = DoubleDefinitions::DoubleDefinitionCreate.new
         double_definition_create.instance_of(subject, method_name, &definition_eval_block)
       end
-      alias_method :any_instance_of, :instance_of
-      alias_method :all_instances_of, :instance_of
+
+      def any_instance_of(*args, &block)
+        RR::DoubleDefinitions::DoubleInjections::AnyInstanceOf.call(*args, &block)
+      end
 
       # Verifies all the DoubleInjection objects have met their
       # TimesCalledExpectations.
@@ -126,10 +128,6 @@ module RR
 
       def received(subject)
         RR::SpyVerificationProxy.new(subject)
-      end
-
-      def any_instance_of(*args, &block)
-        RR::DoubleDefinitions::DoubleInjections::AnyInstanceOf.call(*args, &block)
       end
 
       instance_methods.each do |name|
