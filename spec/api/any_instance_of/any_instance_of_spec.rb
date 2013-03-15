@@ -43,5 +43,31 @@ describe "any_instance_of" do
       subject.to_s.should_not == "Subject is stubbed"
       subject.should_not respond_to(:baz)
     end
+
+    context "with a class hierarchy" do
+
+      before :each do
+        class ParentClass; end
+        class SubjectClass < ParentClass; end
+        any_instance_of(ParentClass, :to_s => "Subject is stubbed")
+        any_instance_of(ParentClass, :foobar => lambda {:baz})
+      end
+
+      it "stubs methods" do
+        any_instance_of(SubjectClass, :to_s => "Subject is stubbed")
+
+        subject = SubjectClass.new
+        subject.should_not respond_to(:baz)
+
+        ParentClass.new.to_s.should == "Subject is stubbed"
+        subject.to_s.should == "Subject is stubbed"
+        subject.foobar.should == :baz
+
+        RR.reset
+
+        subject.to_s.should_not == "Subject is stubbed"
+        subject.should_not respond_to(:baz)
+      end
+    end
   end
 end
