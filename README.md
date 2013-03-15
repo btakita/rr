@@ -324,20 +324,6 @@ any_instance_of(User, :valid? => false)
 any_instance_of(User, :valid? => lambda { false })
 ~~~
 
-### #new_instance_of
-
-Stubs the new method of the class and allows doubles to be bound to new instances.
-
-Mocks can be used, because new instances are deterministically bound.
-
-~~~ ruby
-new_instance_of(User) do |u|
-  mock(u).valid? { false }
-end
-# Deprecated syntax
-mock.instance_of(User).valid? { false }
-~~~
-
 ### Spies
 
 Adding a DoubleInjection to an object + method (done by #stub, #mock, or
