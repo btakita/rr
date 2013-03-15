@@ -385,6 +385,6 @@ If you have directly contributed to RR and I missed you in this list, please let
 * Parker Thompson for pairing with me
 * Phil Darnowsky for patches
 * Pivotal Labs for sponsoring RR development
-* Stephen Baker for Developing Rspec
+* Steven Baker for Developing Rspec
 * Tatsuya Ono for patches
 * Tuomas Kareinen for a bug report
