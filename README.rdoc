@@ -4,7 +4,7 @@ RR (Double Ruby) is a test double framework that features a rich
 selection of double techniques and a terse syntax.
 
 To get started, install RR from the command prompt:
-  
+
     gem install rr
 
 == More Information
@@ -269,12 +269,12 @@ invocations to the Object + method. Assertions can then be made on the recorded 
 The block syntax has two modes
 * A normal block mode with a DoubleDefinitionCreatorProxy argument
 
-  script = MyScript.new
-  mock(script) do |expect|
-    expect.system("cd #{RAILS_ENV}") {true}
-    expect.system("rake foo:bar") {true}
-    expect.system("rake baz") {true}
-  end
+    script = MyScript.new
+    mock(script) do |expect|
+      expect.system("cd #{RAILS_ENV}") {true}
+      expect.system("rake foo:bar") {true}
+      expect.system("rake baz") {true}
+    end
 
 * An instance_eval mode where the DoubleDefinitionCreatorProxy is instance_evaled
 
