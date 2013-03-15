@@ -16,11 +16,11 @@ class ExampleSuite
   end
 
   def run_core_examples
-    run_suite("#{dir}/core_spec_suite.rb #{spec_opts}") || raise("Core suite Failed")
+    run_suite("#{dir}/core_spec_suite.rb") || raise("Core suite Failed")
   end
 
   def run_rspec_examples
-    run_suite("#{dir}/rspec_spec_suite.rb #{spec_opts}") || raise("Rspec suite Failed")
+    run_suite("#{dir}/rspec_spec_suite.rb") || raise("Rspec suite Failed")
   end
 
   def run_test_unit_examples
@@ -38,10 +38,6 @@ class ExampleSuite
     status = bash.execute("echo $STATUS")[0].to_s.strip.to_i
     bash.execute "exec 3>&-", :out => STDOUT, :err => STDERR
     return status == 0
-  end
-
-  def spec_opts
-    File.read("#{dir}/spec.opts").split("\n").join(" ")
   end
 
   def dir
