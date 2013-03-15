@@ -45,8 +45,6 @@ module RR
         def instance_of!(method_name=nil, &definition_eval_block)
           instance_of(Object.new, method_name, &definition_eval_block)
         end
-        lately_bound_alias_method :new_instance_of, :instance_of
-        lately_bound_alias_method :new_instance_of!, :instance_of!
       end
     end
   end
