@@ -126,12 +126,12 @@ module RR
         BoundObjects[id] = subject_class
 
         subject_class.class_eval(<<-RUBY, __FILE__, __LINE__ + 1)
-        def #{method_name}(*args, &block)
-          ::RR::Injections::DoubleInjection::BoundObjects[#{id}].class_eval do
-            remove_method(:#{method_name})
+          def #{method_name}(*args, &block)
+            ::RR::Injections::DoubleInjection::BoundObjects[#{id}].class_eval do
+              remove_method(:#{method_name})
+            end
+            method_missing(:#{method_name}, *args, &block)
           end
-          method_missing(:#{method_name}, *args, &block)
-        end
         RUBY
         self
       end

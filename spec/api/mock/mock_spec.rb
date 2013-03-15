@@ -190,4 +190,43 @@ describe "mock" do
     end
 
   end
+
+  # bug #44
+  describe 'when wrapped in an array that is then flattened' do
+    context 'when the method being mocked is not defined' do
+      it "does not raise an error" do
+        mock(subject).foo
+        expect([subject].flatten).to eq [subject]
+      end
+
+      it "honors a #to_ary that already exists" do
+        subject.instance_eval do
+          def to_ary; []; end
+        end
+        mock(subject).foo
+        expect([subject].flatten).to eq []
+      end
+    end
+
+    context 'when the method being mocked is defined' do
+      before do
+        subject.instance_eval do
+          def foo; end
+        end
+      end
+
+      it "does not raise an error" do
+        mock(subject).foo
+        expect([subject].flatten).to eq [subject]
+      end
+
+      it "honors a #to_ary that already exists" do
+        subject.singleton_class.class_eval do
+          def to_ary; []; end
+        end
+        mock(subject).foo
+        expect([subject].flatten).to eq []
+      end
+    end
+  end
 end

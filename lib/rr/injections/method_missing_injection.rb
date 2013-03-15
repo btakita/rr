@@ -30,6 +30,18 @@ module RR
               end
             end
           end
+          # Ruby 1.9 will raise a NoMethodError when #method_missing is defined
+          # on the subject, but #to_ary isn't. #method_missing will always be
+          # defined thanks to BasicObject, but #to_ary may not, so in this case
+          # we need to supply our own. Furthermore, Ruby has special logic to
+          # handle the return value of #to_ary; if it is nil, then it tells Ruby
+          # to ignore #to_ary altogether and use a default rule to arrayify the
+          # object in question.
+          unless class_instance_method_defined(subject_class, :to_ary)
+            subject_class.class_eval do
+              def to_ary; nil; end
+            end
+          end
           subject_class.__send__(:alias_method, original_method_alias_name, :method_missing)
           bind_method
         end
@@ -58,10 +70,10 @@ module RR
         BoundObjects[id] = subject_class
 
         subject_class.class_eval((<<-METHOD), __FILE__, __LINE__ + 1)
-        def method_missing(method_name, *args, &block)
-          obj = ::RR::Injections::MethodMissingInjection::BoundObjects[#{id}]
-          MethodDispatches::MethodMissingDispatch.new(self, obj, method_name, args, block).call
-        end
+          def method_missing(method_name, *args, &block)
+            obj = ::RR::Injections::MethodMissingInjection::BoundObjects[#{id}]
+            MethodDispatches::MethodMissingDispatch.new(self, obj, method_name, args, block).call
+          end
         METHOD
       end
 
