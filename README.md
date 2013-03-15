@@ -377,9 +377,6 @@ The block syntax has two modes:
   end
   ~~~
 
-### Block syntax with explicit DoubleDefinitionCreatorProxy argument
-
-
 ### Double graphs
 
 RR has a method-chaining API support for double graphs. For example, let's say
