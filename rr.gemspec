@@ -4,30 +4,30 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{rr}
+  s.name = "rr"
   s.version = "1.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Takita"]
-  s.date = %q{2011-06-16}
-  s.description = %q{RR (Double Ruby) is a double framework that features a rich selection of double techniques and a terse syntax. http://xunitpatterns.com/Test%20Double.html}
-  s.email = %q{brian@pivotallabs.com}
+  s.date = "2013-03-15"
+  s.description = "RR (Double Ruby) is a double framework that features a rich selection of double techniques and a terse syntax. http://xunitpatterns.com/Test%20Double.html"
+  s.email = "brian@pivotallabs.com"
   s.extra_rdoc_files = [
-    "CHANGES",
-    "README.rdoc"
+    "LICENSE",
+    "README.md"
   ]
   s.files = [
     "CHANGES",
     "Gemfile",
-    "Gemfile.lock",
     "LICENSE",
-    "README.rdoc",
     "Rakefile",
-    "VERSION.yml",
+    "VERSION",
+    "introducting_rr.txt",
     "lib/rr.rb",
     "lib/rr/adapters/minitest.rb",
     "lib/rr/adapters/rr_methods.rb",
     "lib/rr/adapters/rspec.rb",
+    "lib/rr/adapters/rspec2.rb",
     "lib/rr/adapters/test_unit.rb",
     "lib/rr/blank_slate.rb",
     "lib/rr/class_instance_method_defined.rb",
@@ -89,6 +89,7 @@ Gem::Specification.new do |s|
     "lib/rr/times_called_matchers/range_matcher.rb",
     "lib/rr/times_called_matchers/terminal.rb",
     "lib/rr/times_called_matchers/times_called_matcher.rb",
+    "lib/rr/version.rb",
     "lib/rr/wildcard_matchers.rb",
     "lib/rr/wildcard_matchers/anything.rb",
     "lib/rr/wildcard_matchers/boolean.rb",
@@ -98,94 +99,24 @@ Gem::Specification.new do |s|
     "lib/rr/wildcard_matchers/numeric.rb",
     "lib/rr/wildcard_matchers/range.rb",
     "lib/rr/wildcard_matchers/regexp.rb",
-    "lib/rr/wildcard_matchers/satisfy.rb",
-    "spec/api/any_instance_of/all_instances_of_spec.rb",
-    "spec/api/any_instance_of/any_instance_of_spec.rb",
-    "spec/api/any_instance_of/instance_of_spec.rb",
-    "spec/api/dont_allow/dont_allow_after_stub_spec.rb",
-    "spec/api/mock/mock_spec.rb",
-    "spec/api/proxy/proxy_spec.rb",
-    "spec/api/spy/spy_spec.rb",
-    "spec/api/strong/strong_spec.rb",
-    "spec/api/stub/stub_spec.rb",
-    "spec/core_spec_suite.rb",
-    "spec/environment_fixture_setup.rb",
-    "spec/minitest_spec_suite.rb",
-    "spec/proc_from_block_spec.rb",
-    "spec/rr/adapters/rr_methods_argument_matcher_spec.rb",
-    "spec/rr/adapters/rr_methods_creator_spec.rb",
-    "spec/rr/adapters/rr_methods_space_spec.rb",
-    "spec/rr/adapters/rr_methods_spec_helper.rb",
-    "spec/rr/adapters/rr_methods_times_matcher_spec.rb",
-    "spec/rr/double_definitions/child_double_definition_creator_spec.rb",
-    "spec/rr/double_definitions/double_definition_create_blank_slate_spec.rb",
-    "spec/rr/double_definitions/double_definition_create_spec.rb",
-    "spec/rr/double_injection/double_injection_spec.rb",
-    "spec/rr/double_injection/double_injection_verify_spec.rb",
-    "spec/rr/errors/rr_error_spec.rb",
-    "spec/rr/expectations/any_argument_expectation_spec.rb",
-    "spec/rr/expectations/anything_argument_equality_expectation_spec.rb",
-    "spec/rr/expectations/argument_equality_expectation_spec.rb",
-    "spec/rr/expectations/boolean_argument_equality_expectation_spec.rb",
-    "spec/rr/expectations/hash_including_argument_equality_expectation_spec.rb",
-    "spec/rr/expectations/hash_including_spec.rb",
-    "spec/rr/expectations/satisfy_argument_equality_expectation_spec.rb",
-    "spec/rr/expectations/satisfy_spec.rb",
-    "spec/rr/expectations/times_called_expectation/times_called_expectation_any_times_spec.rb",
-    "spec/rr/expectations/times_called_expectation/times_called_expectation_at_least_spec.rb",
-    "spec/rr/expectations/times_called_expectation/times_called_expectation_at_most_spec.rb",
-    "spec/rr/expectations/times_called_expectation/times_called_expectation_helper.rb",
-    "spec/rr/expectations/times_called_expectation/times_called_expectation_integer_spec.rb",
-    "spec/rr/expectations/times_called_expectation/times_called_expectation_proc_spec.rb",
-    "spec/rr/expectations/times_called_expectation/times_called_expectation_range_spec.rb",
-    "spec/rr/minitest/minitest_integration_test.rb",
-    "spec/rr/minitest/test_helper.rb",
-    "spec/rr/rspec/invocation_matcher_spec.rb",
-    "spec/rr/rspec/rspec_adapter_spec.rb",
-    "spec/rr/rspec/rspec_backtrace_tweaking_spec.rb",
-    "spec/rr/rspec/rspec_backtrace_tweaking_spec_fixture.rb",
-    "spec/rr/rspec/rspec_usage_spec.rb",
-    "spec/rr/space/hash_with_object_id_key_spec.rb",
-    "spec/rr/space/space_spec.rb",
-    "spec/rr/test_unit/test_helper.rb",
-    "spec/rr/test_unit/test_unit_backtrace_test.rb",
-    "spec/rr/test_unit/test_unit_integration_test.rb",
-    "spec/rr/times_called_matchers/any_times_matcher_spec.rb",
-    "spec/rr/times_called_matchers/at_least_matcher_spec.rb",
-    "spec/rr/times_called_matchers/at_most_matcher_spec.rb",
-    "spec/rr/times_called_matchers/integer_matcher_spec.rb",
-    "spec/rr/times_called_matchers/proc_matcher_spec.rb",
-    "spec/rr/times_called_matchers/range_matcher_spec.rb",
-    "spec/rr/times_called_matchers/times_called_matcher_spec.rb",
-    "spec/rr/wildcard_matchers/anything_spec.rb",
-    "spec/rr/wildcard_matchers/boolean_spec.rb",
-    "spec/rr/wildcard_matchers/duck_type_spec.rb",
-    "spec/rr/wildcard_matchers/is_a_spec.rb",
-    "spec/rr/wildcard_matchers/numeric_spec.rb",
-    "spec/rr/wildcard_matchers/range_spec.rb",
-    "spec/rr/wildcard_matchers/regexp_spec.rb",
-    "spec/rr_spec.rb",
-    "spec/rspec_spec_suite.rb",
-    "spec/spec_helper.rb",
-    "spec/spec_suite.rb",
-    "spec/spy_verification_spec.rb",
-    "spec/test_unit_spec_suite.rb"
+    "lib/rr/wildcard_matchers/satisfy.rb"
   ]
-  s.homepage = %q{http://pivotallabs.com}
-  s.rdoc_options = ["--main", "README.rdoc", "--inline-source", "--line-numbers"]
+  s.homepage = "http://pivotallabs.com"
   s.require_paths = ["lib"]
-  s.rubyforge_project = %q{pivotalrb}
-  s.rubygems_version = %q{1.6.2}
-  s.summary = %q{RR (Double Ruby) is a double framework that features a rich selection of double techniques and a terse syntax. http://xunitpatterns.com/Test%20Double.html}
-  s.test_files = ["spec/proc_from_block_spec.rb", "spec/rr_spec.rb", "spec/spy_verification_spec.rb"]
+  s.rubygems_version = "1.8.23"
+  s.summary = "RR (Double Ruby) is a double framework that features a rich selection of double techniques and a terse syntax. http://xunitpatterns.com/Test%20Double.html"
+  s.test_files = ["spec/runner.rb"]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_development_dependency(%q<jeweler>, ["~> 1.8.4"])
     else
+      s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
     end
   else
+    s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
   end
 end
 
