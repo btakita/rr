@@ -12,7 +12,7 @@ describe RR do
       expect(subject).to have_received.foobar(1, 2)
       expect {
         expect(subject).to have_received.foobar(1, 2, 3)
-      }.to raise_error(Spec::Expectations::ExpectationNotMetError)
+      }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
     end
   end
 end
