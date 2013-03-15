@@ -1,6 +1,7 @@
 require 'rake'
 
 require File.expand_path('../spec/runner.rb', __FILE__)
+require File.expand_path('../lib/rr/version.rb', __FILE__)
 
 task :default => :spec
 
@@ -39,15 +40,16 @@ begin
                     "http://xunitpatterns.com/Test%20Double.html"
     s.authors = ["Brian Takita"]
     s.files = FileList[
-      '[A-Z]*',
-      '*.rb',
-      'lib/**/*.rb',
-      'spec/**/*.rb'
+      'CHANGES',
+      'Gemfile',
+      'introducting_rr.txt',
+      'LICENSE',
+      'Rakefile',
+      'README.rdoc',
+      'VERSION',
+      'lib/**/*.rb'
     ].to_a
-    s.test_files = Dir.glob('spec/*_spec.rb')
-    s.has_rdoc = true
-    s.extra_rdoc_files = [ "README.rdoc", "CHANGES" ]
-    s.rdoc_options = ["--main", "README.rdoc", "--inline-source", "--line-numbers"]
+    s.test_files = 'spec/runner.rb'
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"
