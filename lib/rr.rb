@@ -87,6 +87,8 @@ require "#{dir}/rr/adapters/rspec2"
 require "#{dir}/rr/adapters/test_unit"
 require "#{dir}/rr/adapters/minitest"
 
+require "#{dir}/rr/version"
+
 module RR
   class << self
     include Adapters::RRMethods
