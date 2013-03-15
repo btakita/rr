@@ -16,6 +16,11 @@ module RR
             alias_method :teardown_without_rr, :teardown
             def teardown_with_rr
               RR.verify
+            rescue RR::Errors::RRError => rr_error
+              assertion = ::MiniTest::Assertion.new(rr_error.message)
+              assertion.set_backtrace(rr_error.backtrace)
+              raise assertion
+            ensure
               teardown_without_rr
             end
             alias_method :teardown, :teardown_with_rr
