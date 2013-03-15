@@ -39,12 +39,12 @@ module RR
         def any_instance_of!(method_name=nil, &definition_eval_block)
           any_instance_of(Object.new, method_name, &definition_eval_block)
         end
-        lately_bound_alias_method :all_instances_of, :any_instance_of
-        lately_bound_alias_method :all_instances_of!, :any_instance_of!
 
         def instance_of!(method_name=nil, &definition_eval_block)
           instance_of(Object.new, method_name, &definition_eval_block)
         end
+        lately_bound_alias_method :all_instances_of, :instance_of
+        lately_bound_alias_method :all_instances_of!, :instance_of!
       end
     end
   end
