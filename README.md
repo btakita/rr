@@ -46,17 +46,6 @@ RSpec.configure do |config|
 end
 ~~~
 
-### Standalone
-
-~~~ ruby
-extend RR::Adapters::RRMethods
-mock(object).method_name { :return_value }
-
-object.method_name   # Returns :return_value
-
-RR.verify   # Verifies the Double expectations are satisfied
-~~~
-
 
 ## Syntax between RR and other double/mock frameworks
 
