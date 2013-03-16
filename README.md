@@ -46,23 +46,12 @@ RSpec.configure do |config|
 end
 ~~~
 
-### MiniTest
+### MiniTest / MiniSpec
 
 ~~~ ruby
 class MiniTest::Unit::TestCase
   include RR::Adapters::MiniTest
 end
-~~~
-
-### MiniSpec
-
-~~~ ruby
-class MockSpec < MiniTest::Spec
-  include RR::Adapters::RRMethods
-end
-
-# Include RR mocks in every description
-MiniTest::Spec.register_spec_type(/.*/, MockSpec)
 ~~~
 
 
