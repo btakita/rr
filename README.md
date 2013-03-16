@@ -12,9 +12,9 @@ gem install rr
 
 ## What is a test double?
 
-A test double is a generalization of something that replaces a real
-object to make it easier to test another object. Its like a stunt
-double for tests. The following are test doubles:
+A test double is a generalization of something that replaces a real object to
+make it easier to test another object. It's like a stunt double for tests. The
+following are test doubles:
 
 * Mocks
 * Stubs
@@ -22,13 +22,13 @@ double for tests. The following are test doubles:
 * Spies
 * Proxies
 
-<http://xunitpatterns.com/Test%20Double.html>
+*Learn more: <http://xunitpatterns.com/Test%20Double.html>*
 
 Currently RR implements mocks, stubs, proxies, and spies. Fakes usually require
 custom code, so it is beyond the scope of RR.
 
 
-## Plugging RR into your test framework
+## Using RR with your test framework
 
 ### Test::Unit
 
@@ -160,11 +160,11 @@ mock(my_object).hello('bob', 'jane') { 'Hello Bob and Jane' }   # shorter way
 
 To create a double on an object, you can use the following methods:
 
-* mock / mock!
-* stub / stub!
-* dont_allow / dont_allow!
-* proxy / proxy!
-* instance_of / instance_of!
+* #mock / #mock!
+* #stub / #stub!
+* #dont_allow / #dont_allow!
+* #proxy / #proxy!
+* #instance_of / #instance_of!
 
 These methods are composable. #mock, #stub, and #dont_allow can be used by
 themselves and are mutually exclusive. #proxy and #instance_of must be chained
@@ -180,8 +180,7 @@ The expectations are a mock will be called with certain arguments a certain
 number of times (the default is once). You can also set the return value of the
 method invocation.
 
-See <http://xunitpatterns.com/Mock%20Object.html> for more information on what a
-mock is.
+*Learn more: <http://xunitpatterns.com/Mock%20Object.html>*
 
 The following example sets an expectation that the view will receive a method
 call to #render with the arguments `{:partial => "user_info"}` once. When the
@@ -210,8 +209,7 @@ end
 \#stub replaces the method on the object with only an implementation. You can
 still use arguments to differentiate which stub gets invoked.
 
-See <http://xunitpatterns.com/Test%20Stub.html> for more information on what a
-stub is.
+*Learn more: <http://xunitpatterns.com/Test%20Stub.html>*
 
 The following example makes the User.find method return `jane` when passed "42"
 and returns `bob` when passed "99". If another id is passed to User.find, an
@@ -227,10 +225,11 @@ stub(User).find do |id|
 end
 ~~~
 
-### #dont_allow (aliased with #do_not_allow, #dont_call, and #do_not_call)
+### #dont_allow (aliased to #do_not_allow, #dont_call, and #do_not_call)
 
-\#dont_allow sets an expectation on the Double that it will never be called. If
-the Double actually does end up being called, a TimesCalledError is raised.
+\#dont_allow is the opposite of #mock -- it sets an expectation on the Double
+that it will never be called. If the Double actually does end up being called, a
+TimesCalledError is raised.
 
 ~~~ ruby
 dont_allow(User).find('42')
@@ -449,7 +448,7 @@ object.foobar({:red => "#FF0000", :blue => "#0000FF", :green => "#00FF00"})
 #### #satisfy
 
 ~~~ ruby
-mock(object).foobar(satisfy {|arg| arg.length == 2})
+mock(object).foobar(satisfy {|arg| arg.length == 2 })
 object.foobar("xy")
 ~~~
 
