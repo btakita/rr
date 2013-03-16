@@ -10,18 +10,6 @@ gem install rr
 ~~~
 
 
-## More information
-
-### Mailing lists
-
-* double-ruby-users@rubyforge.org
-* double-ruby-devel@rubyforge.org
-
-### Websites
-
-* http://rubyforge.org/projects/double-ruby
-* http://github.com/btakita/rr
-
 ## What is a test double?
 
 A test double is a generalization of something that replaces a real
