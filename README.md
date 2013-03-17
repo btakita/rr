@@ -40,9 +40,13 @@ end
 
 ### RSpec
 
+RR actually has two adapters, one for the newest version of RSpec (2) and
+another for the older version (1). Currently RSpec targets RR's RSpec-1 adapter
+and so until this is fixed you will need to specify the RSpec-2 adapter:
+
 ~~~ ruby
 RSpec.configure do |config|
-  config.mock_framework = :rr
+  config.include(RR::Adapters::RSpec2)
 end
 ~~~
 
