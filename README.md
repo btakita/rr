@@ -101,16 +101,17 @@ by creating an empty object:
 mock(my_mock_object = Object.new).hello
 ~~~
 
-or by using #mock!:
+However as a shortcut you can also use #mock!:
 
 ~~~ ruby
-# Mocks the #hello method and retrieves that object via the #subject method
+# Create a new mock object with an empty #hello method, then retrieve that mock
+# object via the #subject method
 my_mock_object = mock!.hello.subject
 ~~~
 
 ### No #should_receive or #expects method
 
-RR uses method_missing to set your method expectation. This means you do not
+RR uses #method_missing to set your method expectation. This means you do not
 need to use a method such as #should_receive or #expects.
 
 ~~~ ruby
@@ -124,9 +125,9 @@ mock(my_object).hello
 
 ### #with method call is not necessary
 
-Since RR uses method_missing, it also makes using the #with method unnecessary
-in most circumstances to set the argument expectation (although you can still
-use if you want):
+The fact that RR uses #method_missing also makes using the #with method
+unnecessary in most circumstances to set the argument expectation itself
+(although you can still use it if you want):
 
 ~~~ ruby
 # Mocha
@@ -140,18 +141,18 @@ mock(my_object).hello.with('bob', 'jane')  # same thing, just more verbose
 
 ### Using a block to set the return value
 
-RR supports using a block to set the return value. RR also has the #returns
-method.
+RR supports using a block to set the return value as opposed to a specific
+method call (although again, you can use #returns if you like):
 
 ~~~ ruby
 # Mocha
 my_object.expects(:hello).with('bob', 'jane').returns('Hello Bob and Jane')
 # rspec-mocks
-my_object.should_receive(:hello).with('bob', 'jane').and_return('Hello Bob and Jane')
-my_object.should_receive(:hello).with('bob', 'jane') { 'Hello Bob and Jane' }   # shorter way
+my_object.should_receive(:hello).with('bob', 'jane') { 'Hello Bob and Jane' }
+my_object.should_receive(:hello).with('bob', 'jane').and_return('Hello Bob and Jane')  # same thing, just more verbose
 # RR
-mock(my_object).hello('bob', 'jane').returns('Hello Bob and Jane')
-mock(my_object).hello('bob', 'jane') { 'Hello Bob and Jane' }   # shorter way
+mock(my_object).hello('bob', 'jane') { 'Hello Bob and Jane' }
+mock(my_object).hello('bob', 'jane').returns('Hello Bob and Jane')  # same thing, just more verbose
 ~~~
 
 
@@ -456,6 +457,8 @@ return a second value if the method is called a second way. For example:
 ~~~ ruby
 stub(object).foo { 'bar' }
 stub(object).foo(1, 2) { 'baz' }
+object.foo        #=> 'bar'
+object.foo(1, 2)  #=> 'baz'
 ~~~
 
 This works for mocks as well as stubs.
@@ -647,11 +650,29 @@ object.foo
 ...
 ~~~
 
+You can also use #times + the argument invocation #any_times matcher:
+
+~~~ ruby
+mock(object).foo.times(any_times)
+object.foo
+object.foo
+object.foo
+...
+~~~
+
 
 
 ### Argument wildcard matchers
 
+RR also has several methods which you can use with argument expectations which
+act as placeholders for arguments. When RR goes to verify the argument
+expectation it will compare the placeholders with the actual arguments the
+method was called with, and if they match then the test passes (hence
+"matchers").
+
 #### #anything
+
+Matches any value.
 
 ~~~ ruby
 mock(object).foobar(1, anything)
@@ -660,12 +681,16 @@ object.foobar(1, :my_symbol)
 
 #### #is_a
 
+Matches an object which `.is_a?(*Class*)`.
+
 ~~~ ruby
 mock(object).foobar(is_a(Time))
 object.foobar(Time.now)
 ~~~
 
 #### #numeric
+
+Matches a value which `.is_a?(Numeric)`.
 
 ~~~ ruby
 mock(object).foobar(numeric)
@@ -674,12 +699,16 @@ object.foobar(99)
 
 #### #boolean
 
+Matches true or false.
+
 ~~~ ruby
 mock(object).foobar(boolean)
 object.foobar(false)
 ~~~
 
 #### #duck_type
+
+Matches an object which responds to certain methods.
 
 ~~~ ruby
 mock(object).foobar(duck_type(:walk, :talk))
@@ -691,12 +720,16 @@ object.foobar(arg)
 
 #### Ranges
 
+Matches a number within a certain range.
+
 ~~~ ruby
 mock(object).foobar(1..10)
 object.foobar(5)
 ~~~
 
 #### Regexps
+
+Matches a string which matches a certain regex.
 
 ~~~ ruby
 mock(object).foobar(/on/)
@@ -705,12 +738,16 @@ object.foobar("ruby on rails")
 
 #### #hash_including
 
+Matches a hash which contains a subset of keys and values.
+
 ~~~ ruby
 mock(object).foobar(hash_including(:red => "#FF0000", :blue => "#0000FF"))
 object.foobar({:red => "#FF0000", :blue => "#0000FF", :green => "#00FF00"})
 ~~~
 
 #### #satisfy
+
+Matches an argument which satisfies a custom requirement.
 
 ~~~ ruby
 mock(object).foobar(satisfy {|arg| arg.length == 2 })
@@ -726,8 +763,14 @@ RR::WildcardMatchers for details.
 
 #### #any_times
 
+Only used with #times and matches any number.
+
 ~~~ ruby
-mock(object).method_name(anything).times(any_times) { return_value }
+mock(object).foo.times(any_times) { return_value }
+object.foo
+object.foo
+object.foo
+...
 ~~~
 
 
