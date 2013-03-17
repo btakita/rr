@@ -125,7 +125,8 @@ mock(my_object).hello
 ### #with method call is not necessary
 
 Since RR uses method_missing, it also makes using the #with method unnecessary
-in most circumstances to set the argument expectations.
+in most circumstances to set the argument expectation (although you can still
+use if you want):
 
 ~~~ ruby
 # Mocha
@@ -134,6 +135,7 @@ my_object.expects(:hello).with('bob', 'jane')
 my_object.should_receive(:hello).with('bob', 'jane')
 # RR
 mock(my_object).hello('bob', 'jane')
+mock(my_object).hello.with('bob', 'jane')  # same thing, just more verbose
 ~~~
 
 ### Using a block to set the return value
@@ -380,6 +382,272 @@ bar = stub!.bar { :baz }
 stub(object).foo { bar }
 object.foo.bar  #=> :baz
 ~~~
+
+### Modifying doubles
+
+Whenever you create a double by calling a method on an object you've wrapped,
+you get back a special object: a DoubleDefinition. In other words:
+
+~~~ ruby
+stub(object).foo     #=> RR::DoubleDefinitions::DoubleDefinition
+~~~
+
+There are several ways you can modify the behavior of these doubles via the
+DoubleDefinition API, and they are listed in this section.
+
+Quick note: all of these methods accept blocks as a shortcut for setting the
+return value at the same time. In other words, if you have something like this:
+
+~~~ ruby
+mock(object).foo { 'bar' }
+~~~
+
+you can modify the mock and keep the return value like so:
+
+~~~ ruby
+mock(object).foo.times(2) { 'bar' }
+~~~
+
+You can even flip around the block:
+
+~~~ ruby
+mock(object).foo { 'bar' }.times(2)
+~~~
+
+And as we explain below, this is just a shortcut for:
+
+~~~ ruby
+mock(object).foo.returns { 'bar' }.times(2)
+~~~
+
+#### Stubbing method implementation / return value
+
+There are two ways here. We have already covered this usage:
+
+~~~ ruby
+stub(object).foo { 'bar' }
+~~~
+
+However, you can also use #returns if it's more clear to you:
+
+~~~ ruby
+stub(object).foo.returns { 'bar' }
+~~~
+
+Regardless, keep in mind that you're actually supplying the implementation of
+the method in question here, so you can put whatever you want in this block:
+
+~~~ ruby
+stub(object).foo { |age, count|
+  raise 'hell' if age < 16
+  ret = yield count
+  blue? ? ret : 'whatever'
+}
+~~~
+
+This works for mocks as well as stubs.
+
+#### Stubbing method implementation based on argument expectation
+
+A double's implementation is always tied to its argument expectation. This means
+that it is possible to return one value if the method is called one way and
+return a second value if the method is called a second way. For example:
+
+~~~ ruby
+stub(object).foo { 'bar' }
+stub(object).foo(1, 2) { 'baz' }
+~~~
+
+This works for mocks as well as stubs.
+
+#### Stubbing method to yield given block
+
+If you need to stub a method such that a block given to it is guaranteed to be
+called when the method is called, then use #yields.
+
+~~~ ruby
+# This outputs: [1, 2, 3]
+stub(object).foo.yields(1, 2, 3)
+object.foo {|*args| pp args }
+~~~
+
+This works for mocks as well as stubs.
+
+#### Expecting method to be called with exact argument list
+
+There are two ways to do this. Here is the way we have shown before:
+
+~~~ ruby
+mock(object).foo(1, 2)
+object.foo(1, 2)   # ok
+object.foo(3)      # fails
+~~~
+
+But if this is not clear enough to you, you can use #with:
+
+~~~ ruby
+mock(object).foo.with(1, 2)
+object.foo(1, 2)   # ok
+object.foo(3)      # fails
+~~~
+
+As seen above, if you create an the expectation for a set of arguments and the
+method is called with another set of arguments, even if *those* arguments are of
+a completely different size, you will need to create another expectation for
+them somehow. A simple way to do this is to #stub the method beforehand:
+
+~~~ ruby
+stub(object).foo
+mock(object).foo(1, 2)
+object.foo(1, 2)   # ok
+object.foo(3)      # ok too
+~~~
+
+#### Expecting method to be called with any arguments
+
+Use #with_any_args:
+
+~~~ ruby
+mock(object).foo.with_any_args
+object.foo        # ok
+object.foo(1)     # also ok
+object.foo(1, 2)  # also ok
+                  # ... you get the idea
+~~~
+
+#### Expecting method to be called with no arguments
+
+Use #with_no_args:
+
+~~~ ruby
+mock(object).foo.with_no_args
+object.foo        # ok
+object.foo(1)     # fails
+~~~
+
+#### Expecting method to never be called
+
+Use #never:
+
+~~~ ruby
+mock(object).foo.never
+object.foo        # fails
+~~~
+
+You can also narrow the negative expectation to a specific set of arguments.
+Of course, you will still need to set explicit expectations for any other ways
+that your method could be called. For instance:
+
+~~~ ruby
+mock(object).foo.with(1, 2).never
+object.foo(3, 4)  # fails
+~~~
+
+RR will complain here that this is an unexpected invocation, so we need to add
+an expectation for this beforehand. We can do this easily with #stub:
+
+~~~ ruby
+stub(object).foo
+~~~
+
+So, a full example would look like:
+
+~~~ ruby
+stub(object).foo
+mock(object).foo.with(1, 2).never
+object.foo(3, 4)   # ok
+object.foo(1, 2)   # fails
+~~~
+
+Alternatively, you can also use #dont_allow, although the same rules apply as
+above:
+
+~~~ ruby
+stub(object).foo
+dont_allow(object).foo.with(1, 2)
+object.foo(3, 4)   # ok
+object.foo(1, 2)   # fails
+~~~
+
+#### Expecting method to be called only once
+
+Use #once:
+
+~~~ ruby
+mock(object).foo.once
+object.foo
+object.foo    # fails
+~~~
+
+#### Expecting method to called exact number of times
+
+Use #times:
+
+~~~ ruby
+mock(object).foo.times(3)
+object.foo
+object.foo
+object.foo
+object.foo    # fails
+~~~
+
+#### Expecting method to be called minimum number of times
+
+Use #at_least.
+
+For instance, this would pass:
+
+~~~ ruby
+mock(object).foo.at_least(3)
+object.foo
+object.foo
+object.foo
+object.foo
+~~~
+
+But this would fail:
+
+~~~ ruby
+mock(object).foo.at_least(3)
+object.foo
+object.foo
+~~~
+
+#### Expecting method to be called maximum number of times
+
+Use #at_most.
+
+For instance, this would pass:
+
+~~~ ruby
+mock(object).foo.at_most(3)
+object.foo
+object.foo
+~~~
+
+But this would fail:
+
+~~~ ruby
+mock(object).foo.at_most(3)
+object.foo
+object.foo
+object.foo
+object.foo
+~~~
+
+#### Expecting method to be called any number of times
+
+Use #any_times. This effectively disables the times-called expectation.
+
+~~~ ruby
+mock(object).foo.any_times
+object.foo
+object.foo
+object.foo
+...
+~~~
+
+
 
 ### Argument wildcard matchers
 
