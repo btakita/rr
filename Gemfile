@@ -1,4 +1,4 @@
-source :rubygems
+source 'http://rubygems.org'
 
 gem "jeweler", '~> 1.8.4'
 
