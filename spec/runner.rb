@@ -14,8 +14,10 @@ class SuitesRunner
   end
 
   def run
-    TEST_SUITES.each do |path, class_fragment, desc|
+    TEST_SUITES.each_with_index do |(path, class_fragment, desc), i|
+      puts "----------------" unless i == 0
       run_examples(path, class_fragment, desc)
+      puts
     end
   end
 

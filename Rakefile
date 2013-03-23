@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'rake'
 
 require File.expand_path('../spec/runner.rb', __FILE__)
