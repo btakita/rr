@@ -112,7 +112,7 @@ describe "proxy" do
       end
 
       it "honors a #to_ary that already exists" do
-        subject.singleton_class.class_eval do
+        eigen(subject).class_eval do
           def to_ary; []; end
         end
         mock.proxy(subject).foo
