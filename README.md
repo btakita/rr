@@ -1,4 +1,4 @@
-# RR
+# RR [![Build Status](https://secure.travis-ci.org/rr/rr.png)](http://travis-ci.org/rr/rr)
 
 RR (Double Ruby) is a test double framework that features a rich selection of
 double techniques and a terse syntax.
