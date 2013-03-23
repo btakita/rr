@@ -3,7 +3,7 @@ rvm:
   - "1.8.7"
   - "1.9.3"
   - "2.0.0"
-  - rbx-19mode
+  #- rbx-19mode
 env:
   SPEC_OPTS="--format progress"
 # uncomment this line if your project needs to run something other than `rake`:
