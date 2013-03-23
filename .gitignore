@@ -1,8 +1,8 @@
 .*
 !.travis.yml
+!.rbenv-version
+!.rvmrc
+!.rspec
+!.gitignore
 Gemfile.lock
-previous_failures.txt
 pkg
-pmip
-scratch.rb
-Gemfile.lock
