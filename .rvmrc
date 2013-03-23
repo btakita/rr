@@ -1,2 +1,1 @@
-rvm 1.9.2-p180@rr
-#rvm ree@rr
+rvm use 1.9.3-p385 --install
