@@ -1,8 +1,7 @@
 require 'rubygems'
 require 'rake'
 
-require File.expand_path('../spec/runner.rb', __FILE__)
-require File.expand_path('../lib/rr/version.rb', __FILE__)
+require File.expand_path('../spec/runner', __FILE__)
 
 task :default => :spec
 
@@ -28,30 +27,8 @@ namespace :spec do
 end
 
 begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |s|
-    s.name = "rr"
-    s.summary = "RR (Double Ruby) is a double framework that features a rich " <<
-                "selection of double techniques and a terse syntax. " <<
-                "http://xunitpatterns.com/Test%20Double.html"
-    s.email = "brian@pivotallabs.com"
-    s.homepage = "http://pivotallabs.com"
-    s.description = "RR (Double Ruby) is a double framework that features a rich " <<
-                    "selection of double techniques and a terse syntax. " <<
-                    "http://xunitpatterns.com/Test%20Double.html"
-    s.authors = ["Brian Takita"]
-    s.files = FileList[
-      'CHANGES',
-      'Gemfile',
-      'introducting_rr.txt',
-      'LICENSE',
-      'Rakefile',
-      'README.rdoc',
-      'VERSION',
-      'lib/**/*.rb'
-    ].to_a
-    s.test_files = 'spec/runner.rb'
-  end
+  require 'bundler'
+  require 'bundler/gem_tasks'
 rescue LoadError
-  puts "Jeweler not available. Install it with: gem install jeweler"
+  puts "Bundler isn't installed. Run `gem install bundler` to get it."
 end

@@ -1,6 +1,4 @@
-source 'http://rubygems.org'
-
-gem "jeweler", '~> 1.8.4'
+source 'https://rubygems.org'
 
 gem "rspec", "~> 2.13.0"
 if RUBY_VERSION !~ /^1.8/
