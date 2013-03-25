@@ -15,11 +15,11 @@ Gem::Specification.new do |gem|
 
   gem.files = FileList[
     'CHANGES.md',
-    'Gemfile',
     'LICENSE',
-    'Rakefile',
-    'README.rdoc',
+    'README.md',
     'VERSION',
+    'Gemfile',
+    'Rakefile',
     'lib/**/*.rb'
   ].to_a
 
