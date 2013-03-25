@@ -4,5 +4,6 @@
 !.rvmrc
 !.rspec
 !.gitignore
+!.ruby-version
 Gemfile.lock
 pkg
