@@ -22,8 +22,8 @@ RSpec.configure do |c|
   c.include ExampleMethods
   c.extend ExampleGroupMethods
 
-  c.mock_with :nothing
-  c.include RR::Adapters::RSpec2
+  #c.mock_with :nothing
+  c.mock_framework = RR::Adapters::RSpec2
 end
 
 Dir[ File.expand_path('../shared/*.rb', __FILE__) ].each {|fn| require fn }
