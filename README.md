@@ -46,7 +46,7 @@ and so until this is fixed you will need to specify the RSpec-2 adapter:
 
 ~~~ ruby
 RSpec.configure do |config|
-  config.include(RR::Adapters::RSpec2)
+  config.mock_framework = RR::Adapters::RSpec2
 end
 ~~~
 
