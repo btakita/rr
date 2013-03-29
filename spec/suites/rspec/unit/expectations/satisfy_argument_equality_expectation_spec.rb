@@ -1,5 +1,6 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../spec_helper")
 
+=begin
 module RR
 module Expectations
   describe ArgumentEqualityExpectation, "with Satisfy argument" do
@@ -7,7 +8,7 @@ module Expectations
 
     before do
       @expected_value = :foo
-      @expectation_proc = lambda {|argument| argument == expected_value}
+      @expectation_proc = lambda {|argument| puts 'called'; argument == expected_value}
       @satisfy_matcher = satisfy(&expectation_proc)
       @expectation = ArgumentEqualityExpectation.new(satisfy_matcher)
     end
@@ -57,3 +58,4 @@ module Expectations
   end
 end
 end
+=end
