@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.5 (2013-03-28)
+
+* Compatibility with RSpec-2. There are now two adapters for RSpec, one that
+  works with RSpec-1 and a new one that works with RSpec-2. Currently, saying
+  `RSpec.configure {|c| c.mock_with(:rr) }` still uses RSpec-1; to use the new
+  one, you say `RSpec.configure {|c| c.mock_framework = RR::Adapters::RSpec2 }`.
+  (#66, #68, #80) [njay, james2m]
+* Fix MethodMissingInjection so that `[stub].flatten` works without throwing a
+  NoMethodError (undefined method #to_ary) error under Ruby 1.9 (#44)
+* Raise a MiniTest::Assertion error in the MiniTest adapter so that mock
+  failures appear in the output as failures rather than uncaught exceptions
+  (#69) [jayferd]
+* Completely remove leftover #new_instance_of method, and also remove
+  mention of #new_instance_of from the README
+* Fix tests so they all work and pass again
+
 ## 1.0.4 (2011-06-11)
 
 * Fixed bug using workaround with leftover MethodMissingInjections
