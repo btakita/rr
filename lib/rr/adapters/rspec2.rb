@@ -2,7 +2,7 @@ module RR
   module Adapters
     module RSpec2
       def self.included(mod)
-        patterns = RSpec.configuration.backtrace_clean_patterns
+        patterns = RSpec.configuration.backtrace_exclusion_patterns
         unless patterns.include?(RR::Errors::BACKTRACE_IDENTIFIER)
           patterns.push(RR::Errors::BACKTRACE_IDENTIFIER)
         end
